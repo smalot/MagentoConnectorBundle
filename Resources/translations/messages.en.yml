@@ -1,0 +1,5 @@
+pim_magento_connector:
+    jobs:
+        product_export:
+            title: Export products for Magento
+            export.title: Configuration

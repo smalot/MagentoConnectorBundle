@@ -2,8 +2,10 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
+
 
 /**
  * Magento product writer
@@ -15,10 +17,67 @@ use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 class ProductMagentoWriter extends AbstractConfigurableStepElement implements ItemWriterInterface
 {
     /**
+     * @Assert\NotBlank
+     */
+    protected $username;
+
+    /**
+     * @Assert\NotBlank
+     */
+    protected $apiKey;
+    
+    /**
+     * get username
+     * 
+     * @return string Soap mangeto username
+     */
+    public function getUsername() 
+    {
+        return $this->username;
+    }
+    
+
+    /**
+     * Set username
+     * 
+     * @param string $username Soap mangeto username
+     */
+    public function setUsername($username) 
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * get apiKey
+     * 
+     * @return string Soap mangeto apiKey
+     */
+    public function getApiKey() 
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * Set apiKey
+     * 
+     * @param string $apiKey Soap mangeto apiKey
+     */
+    public function setApiKey($apiKey) 
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function write(array $items)
     {
+        print_r($items, true);
+
         return null;
     }
 
@@ -27,6 +86,11 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements It
      */
     public function getConfigurationFields()
     {
-        return array();
+        return array(
+            'username' => array(),
+            'apiKey'   => array(
+                'type' => 'password'
+            ),
+        );
     }
 }

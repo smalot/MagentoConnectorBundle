@@ -19,7 +19,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($item)
     {
-        return null;
+        return $item;
     }
 
     /**
