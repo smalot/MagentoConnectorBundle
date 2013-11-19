@@ -1,16 +1,8 @@
 parameters:
-    pim_magento_connector.reader.product.class:    Pim\Bundle\MagentoConnectorBundle\Reader\ProductMagentoReader
     pim_magento_connector.processor.product.class: Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor
     pim_magento_connector.writer.product.class:    Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter
 
 services:
-
-    # readers
-    # pim_magento_connector.reader.product:
-    #     class: %pim_magento_connector.reader.product.class%
-    #     arguments:
-    #         - '@pim_catalog.manager.product'
-    #         - '@pim_catalog.manager.channel'
 
     # processors
     pim_magento_connector.processor.product:

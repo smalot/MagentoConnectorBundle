@@ -1,8 +1,0 @@
-parameters:
-    pim_magento_connector.authenticator.oauth.class:    Pim\Bundle\MagentoConnectorBundle\Authenticator\OAuthAuthenticator
-
-services:
-
-    # authenticators
-    pim_magento_connector.authenticator.oauth:
-        class: %pim_magento_connector.authenticator.oauth.class%
