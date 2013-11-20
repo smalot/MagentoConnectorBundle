@@ -184,45 +184,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($item)
     {
-        // We create the soap client and its session for this writer instance
-        if (!$this->client) {
-            try {
-                $this->client = new \SoapClient(
-                    $this->soapUrl . ProductMagentoWriter::SOAP_SUFFIX_URL,
-                    array(
-                        'encoding' => 'UTF-8'
-                    )
-                );
-            } catch (\Exception $e) {
-                
-                //We should create a proper exception
-                throw $e;
-            }
-            
-            try {
-                $this->session = $this->client->login(
-                    $this->soapUsername, 
-                    $this->soapApiKey
-                );
-            } catch (\Exception $e) {
-                //We should create a proper exception
-                throw $e;
-            }
-        }
-
-        // On first call we get the magento attribute set list 
-        // (to bind them with our proctut's families)
-        if (!$this->magentoAttributeSets) {
-            $attributeSets = $this->client->call(
-                $this->session, 
-                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
-            );
-
-            foreach ($attributeSets as $attributeSet) {
-                $this->magentoAttributeSets[$attributeSet['name']] =
-                    $attributeSet['set_id'];
-            }
-        }
+        
 
         //Should be fixed in BETA-3
         $item = $item[0];
@@ -310,6 +272,50 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         }
 
         return true;
+    }
+
+    protected function getMagentoAttributeSet()
+    {
+        // On first call we get the magento attribute set list 
+        // (to bind them with our proctut's families)
+        if (!$this->magentoAttributeSets) {
+            // We create the soap client and its session for this writer instance
+            if (!$this->client) {
+                try {
+                    $this->client = new \SoapClient(
+                        $this->soapUrl . ProductMagentoWriter::SOAP_SUFFIX_URL,
+                        array(
+                            'encoding' => 'UTF-8'
+                        )
+                    );
+                } catch (\Exception $e) {
+                    
+                    //We should create a proper exception
+                    throw $e;
+                }
+                
+                try {
+                    $this->session = $this->client->login(
+                        $this->soapUsername, 
+                        $this->soapApiKey
+                    );
+                } catch (\Exception $e) {
+                    //We should create a proper exception
+                    throw $e;
+                }
+            }
+
+            $attributeSets = $this->client->call(
+                $this->session, 
+                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
+            );
+
+            foreach ($attributeSets as $attributeSet) {
+                $this->magentoAttributeSets[$attributeSet['name']] =
+                    $attributeSet['set_id'];
+            }
+        }
+        
     }
 
     /**
