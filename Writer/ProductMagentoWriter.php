@@ -237,8 +237,6 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 $calls
             );
         }
-
-        print_r($this->client->__getLastResponse());
     }
 
     /**

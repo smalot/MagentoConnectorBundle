@@ -219,7 +219,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             );
 
             foreach ($attributeSets as $attributeSet) {
-                print_r($attributeSet);
                 $this->magentoAttributeSets[$attributeSet['name']] =
                     $attributeSet['set_id'];
             }
