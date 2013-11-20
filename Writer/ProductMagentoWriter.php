@@ -21,7 +21,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     const SOAP_SUFFIX_URL = '/api/soap/?wsdl';
 
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
-    const SOAP_ACTION_CATALOG_PRODUCT_UDAPTE        = 'catalog_product.udapte';
+    const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
     const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 
         'catalog_product.currentStore';
 
@@ -33,12 +33,12 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     /**
      * @Assert\NotBlank
      */
-    protected $username;
+    protected $soapUsername;
 
     /**
      * @Assert\NotBlank
      */
-    protected $apiKey;
+    protected $soapApiKey;
 
     /**
      * @Assert\NotBlank
@@ -62,47 +62,47 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     {
         $this->channelManager = $channelManager;
     }
-    
+
     /**
-     * get username
+     * get soapUsername
      * 
-     * @return string Soap mangeto username
+     * @return string Soap mangeto soapUsername
      */
-    public function getUsername() 
+    public function getSoapUsername() 
     {
-        return $this->username;
+        return $this->soapUsername;
     }
 
     /**
-     * Set username
+     * Set soapUsername
      * 
-     * @param string $username Soap mangeto username
+     * @param string $soapUsername Soap mangeto soapUsername
      */
-    public function setUsername($username) 
+    public function setSoapUsername($soapUsername) 
     {
-        $this->username = $username;
+        $this->soapUsername = $soapUsername;
 
         return $this;
     }
 
     /**
-     * get apiKey
+     * get soapApiKey
      * 
-     * @return string Soap mangeto apiKey
+     * @return string Soap mangeto soapApiKey
      */
-    public function getApiKey() 
+    public function getSoapApiKey() 
     {
-        return $this->apiKey;
+        return $this->soapApiKey;
     }
 
     /**
-     * Set apiKey
-     *
-      * @param string $apiKey Soap mangeto apiKey
+     * Set soapApiKey
+     * 
+     * @param string $soapApiKey Soap mangeto soapApiKey
      */
-    public function setApiKey($apiKey) 
+    public function setSoapApiKey($soapApiKey) 
     {
-        $this->apiKey = $apiKey;
+        $this->soapApiKey = $soapApiKey;
 
         return $this;
     }
@@ -174,8 +174,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             
             try {
                 $this->session = $this->client->login(
-                    $this->username, 
-                    $this->apiKey
+                    $this->soapUsername, 
+                    $this->soapApiKey
                 );
             } catch (\Exception $e) {
                 print_r($e);
@@ -205,7 +205,13 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             $calls
         );
 
-        $locales = $this->channel->getLocales();
+        //A locale -> storeView mapping will have to be done in configuration
+        //later. For now we will asume that we have a viewStore in magento for 
+        //each akeneo locales
+        
+        $channel = $this->channelManager
+            ->getChannels(array('code' => $this->channel));
+        $locales = $channel[0]->getLocales();
 
         //Update of each products and for each locale in their respective 
         //storeViews
@@ -232,14 +238,6 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             );
         }
 
-        
-
-        // $this->client->call(
-        //     $this->session, 
-        //     self::SOAP_ACTION_CATALOG_PRODUCT_CREATE, 
-        //     $calls[0][1]
-        // );
-
         print_r($this->client->__getLastResponse());
     }
 
@@ -249,9 +247,11 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     public function getConfigurationFields()
     {
         return array(
-            'username' => array(),
-            'apiKey'   => array(
-                'type' => 'password'
+            'soapUsername' => array(),
+            'soapApiKey'   => array(
+                //Should be remplaced by a password formType but who doesn't 
+                //empty the field at each edit
+                'type' => 'text'
             ),
             'soapUrl' => array(),
             'channel' => array(

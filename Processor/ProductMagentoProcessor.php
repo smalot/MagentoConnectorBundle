@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
 
@@ -31,12 +32,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @Assert\NotBlank
      */
-    protected $username;
+    protected $soapUsername;
 
     /**
      * @Assert\NotBlank
      */
-    protected $apiKey;
+    protected $soapApiKey;
 
     /**
      * @Assert\NotBlank
@@ -69,45 +70,45 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * get username
+     * get soapUsername
      * 
-     * @return string Soap mangeto username
+     * @return string Soap mangeto soapUsername
      */
-    public function getUsername() 
+    public function getSoapUsername() 
     {
-        return $this->username;
+        return $this->soapUsername;
     }
 
     /**
-     * Set username
+     * Set soapUsername
      * 
-     * @param string $username Soap mangeto username
+     * @param string $soapUsername Soap mangeto soapUsername
      */
-    public function setUsername($username) 
+    public function setSoapUsername($soapUsername) 
     {
-        $this->username = $username;
+        $this->soapUsername = $soapUsername;
 
         return $this;
     }
 
     /**
-     * get apiKey
+     * get soapApiKey
      * 
-     * @return string Soap mangeto apiKey
+     * @return string Soap mangeto soapApiKey
      */
-    public function getApiKey() 
+    public function getSoapApiKey() 
     {
-        return $this->apiKey;
+        return $this->soapApiKey;
     }
 
     /**
-     * Set apiKey
+     * Set soapApiKey
      * 
-     * @param string $apiKey Soap mangeto apiKey
+     * @param string $soapApiKey Soap mangeto soapApiKey
      */
-    public function setApiKey($apiKey) 
+    public function setSoapApiKey($soapApiKey) 
     {
-        $this->apiKey = $apiKey;
+        $this->soapApiKey = $soapApiKey;
 
         return $this;
     }
@@ -193,20 +194,19 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     )
                 );
             } catch (\Exception $e) {
-                print_r($e);
-
-                return null;
+                
+                //We should create a proper exception
+                throw $e;
             }
             
             try {
                 $this->session = $this->client->login(
-                    $this->username, 
-                    $this->apiKey
+                    $this->soapUsername, 
+                    $this->soapApiKey
                 );
             } catch (\Exception $e) {
-                print_r($e);
-
-                return null;
+                //We should create a proper exception
+                throw $e;
             }
         }
 
@@ -240,7 +240,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 
             );
 
-            return null;
+            //We should create a proper exception
+            throw new InvalidItemException('Magento attributeSet not found', array($item));
         }
 
         $prices = explode(',', (string) $item->getValue('price', null, null));
@@ -277,35 +278,39 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             )
         );
 
-        //A local -> storeView mapping will have to be done in configuration
+        //A locale -> storeView mapping will have to be done in configuration
         //later. For now we will asume that we have a viewStore in magento for 
         //each akeneo locales
-        $locales = $this->channel->getLocales();
+        
+        $channel = $this->channelManager
+            ->getChannels(array('code' => $this->channel));
+        $locales = $channel[0]->getLocales();
 
         foreach ($locales as $locale) {
-            $result[] = array(
-                $locale => array(
-                    (string) $item->getIdentifier(),
-                    array(
-                        'name'              => (string) $item->getValue(
-                            'name', 
-                            $locale, 
-                            $this->channel
-                        ),
-                        'description'       => (string) $item->getValue(
-                            'short_description', 
-                            $locale, 
-                            $this->channel
-                        ),
-                        'short_description' => (string) $item->getValue(
-                            'short_description', 
-                            $locale, 
-                            $this->channel
-                        )
+            $result[$locale->getCode()] = array(
+                (string) $item->getIdentifier(),
+                array(
+                    'name'              => (string) $item->getValue(
+                        'name', 
+                        $locale, 
+                        $this->channel
+                    ),
+                    'description'       => (string) $item->getValue(
+                        'short_description', 
+                        $locale, 
+                        $this->channel
+                    ),
+                    'short_description' => (string) $item->getValue(
+                        'short_description', 
+                        $locale, 
+                        $this->channel
                     )
                 )
+                
             );
         }
+
+        return true;
     }
 
     /**
@@ -314,8 +319,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     public function getConfigurationFields()
     {
         return array(
-            'username' => array(),
-            'apiKey'   => array(
+            'soapUsername' => array(),
+            'soapApiKey'   => array(
                 //Should be remplaced by a password formType but who doesn't 
                 //empty the field at each edit
                 'type' => 'text'

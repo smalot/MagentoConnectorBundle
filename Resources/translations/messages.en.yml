@@ -3,3 +3,36 @@ pim_magento_connector:
         product_export:
             title: Export products for Magento
             export.title: Configuration
+
+oro_batch:
+    product_magento_processor:
+        title: Processor
+        soapUsername:
+            label: Soap Username
+            help: Your soap username on magento
+        soapApiKey:
+            label: Soap api key
+            help: Your soap api key on magento
+        soapUrl:
+            label: Soap url
+            help: Your magento url
+        channel:
+            label: Channel
+            help: 
+        defaultLocale:
+            label: Default locale
+            help: The default locale to apply on admin storeView
+    product_magento_writer:
+        title: Processor
+        soapUsername:
+            label: Soap Username
+            help: Your soap username on magento
+        soapApiKey:
+            label: Soap api key
+            help: Your soap api key on magento
+        soapUrl:
+            label: Soap url
+            help: Your magento url
+        channel:
+            label: Channel
+            help: 
