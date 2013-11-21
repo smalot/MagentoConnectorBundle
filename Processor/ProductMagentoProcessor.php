@@ -10,6 +10,8 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
 /**
  * Magento product processor
@@ -27,6 +29,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @var ChannelManager
      */
     protected $channelManager;
+
+    /** 
+     * @var MagentoSoapClient
+     */
+    protected $magentoSoapClient;
 
     /**
      * @Assert\NotBlank
@@ -53,17 +60,19 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     protected $defaultLocale;
 
-    protected $client;
-    protected $session;
+    protected $clientParameters;
     
     /**
      * @param ChannelManager $channelManager
+     * @param MagentoSoapClient $channelManager
      */
     public function __construct(
-        ChannelManager $channelManager
+        ChannelManager $channelManager,
+        MagentoSoapClient $magentoSoapClient
     )
     {
-        $this->channelManager = $channelManager;
+        $this->channelManager    = $channelManager;
+        $this->magentoSoapClient = $magentoSoapClient;
     }
 
     /**
@@ -184,13 +193,23 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         //Should be fixed in BETA-3
         $item = $item[0];
 
+        if (!$this->clientParameters) {
+            $this->clientParameters = new MagentoSoapClientParameters(
+                $this->soapUsername,
+                $this->soapApiKey,
+                $this->soapUrl
+            );
+        }
+
         try {
             $attributeSetId = $this->magentoSoapClient
-                    ->getMagentoAttributeSetId($item->getFamily()->getCode());
+                    ->getMagentoAttributeSetId(
+                        $item->getFamily()->getCode(),
+                        $this->clientParameters
+                    );
         } catch (AttributeSetNotFoundException $e) {
             throw new InvalidItemException($e->getMessage(), $item);
         }
-        
 
         $result = array(
             'default' => array(
@@ -220,7 +239,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                         'price', 
                         null, 
                         null
-                    )->getPrices()->first(),
+                    )->getPrices()->first()->getData(),
                     'tax_class_id'      => 0,
                 )
             )
@@ -229,10 +248,10 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         //A locale -> storeView mapping will have to be done in configuration
         //later. For now we will asume that we have a viewStore in magento for 
         //each akeneo locales
-        
-        $channel = $this->channelManager
-            ->getChannels(array('code' => $this->channel));
-        $locales = $channel[0]->getLocales();
+        $locales = $this->channelManager
+            ->getChannels(array('code' => $this->channel))
+            [0]
+            ->getLocales();
 
         foreach ($locales as $locale) {
             $result[$locale->getCode()] = array(

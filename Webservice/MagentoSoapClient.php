@@ -19,47 +19,55 @@ class MagentoSoapClient
         'catalog_product.currentStore';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST = 'product_attribute_set.list';
 
-    protected $soapUsername;
-
-    protected $soapApiKey;
-
-    protected $soapUrl;
+    protected $clientParameters;
 
     protected $client;
     protected $session;
 
+    protected $calls;
+
     protected $magentoAttributeSets;
 
+
     /**
-     * Constructor
+     * Manage soap client parameters
+     *
+     * @throws Exception If there is no $clientParameters nor $this->clientParameters
      * 
-     * @param string $soapUsername Magento soap username
-     * @param string $soapApiKey   Magento soap api key
-     * @param string $soapUrl      Magento soap url (only the domain)
+     * @param MagentoSoapClientParameters $clientParameters soap parameters
      */
-    public function __construct($soapUsername, $soapApiKey, $soapUrl)
+    private function setClientParameters($clientParameters = null)
     {
-        $this->soapUsername = $soapUsername;
-        $this->soapApiKey   = $soapApiKey;
-        $this->soapUrl      = $soapUrl;
+        if (!$clientParameters) {
+            if (!$this->clientParameters) {
+                throw new \Exception('No soap client parameters given'); 
+            }
+        } else {
+            $this->clientParameters = $clientParameters;
+        }
     }
 
     /**
      * Initialize the soap client with the local informations 
      * (should be refactored)
      *
+     * @param MagentoSoapClientParameters $clientParameters soap parameters
+     * 
      * @throws ConnectionErrorException   If the connection to the soap api fail
      * @throws InvalidCredentialException If given credentials are invalid
      * 
      * @return void
      */
-    private function initClient()
+    private function initClient($clientParameters = null)
     {
         // We create the soap client and its session for this writer instance
         if (!$this->client) {
+            $this->setClientParameters($clientParameters);
+
             try {
                 $this->client = new \SoapClient(
-                    $this->soapUrl . self::SOAP_SUFFIX_URL,
+                    $this->clientParameters->getSoapUrl() . 
+                        self::SOAP_SUFFIX_URL,
                     array(
                         'encoding' => 'UTF-8'
                     )
@@ -74,8 +82,8 @@ class MagentoSoapClient
             
             try {
                 $this->session = $this->client->login(
-                    $this->soapUsername, 
-                    $this->soapApiKey
+                    $this->clientParameters->getSoapUsername(), 
+                    $this->clientParameters->getSoapApiKey()
                 );
             } catch (\Exception $e) {
                 throw new InvalidCredentialException(
@@ -90,14 +98,16 @@ class MagentoSoapClient
     /**
      * Get the magento attributeSet list from the magento platform
      * 
+     * @param MagentoSoapClientParameters $clientParameters soap parameters
+     * 
      * @return void
      */
-    private function getMagentoAttributeSet()
+    private function getMagentoAttributeSet($clientParameters = null)
     {
         // On first call we get the magento attribute set list 
         // (to bind them with our proctut's families)
         if (!$this->magentoAttributeSets) {
-            $this->initClient();
+            $this->initClient($clientParameters);
 
             $attributeSets = $this->client->call(
                 $this->session, 
@@ -111,15 +121,64 @@ class MagentoSoapClient
         }
     }
 
-    public function getMagentoAttributeSetId($code)
+    /**
+     * Get magento attributeSets from the magento api
+     * 
+     * @param  string                      $code             the attributeSet id
+     * @param  MagentoSoapClientParameters $clientParameters soap parameters
+     * @return void
+     */
+    public function getMagentoAttributeSetId($code, $clientParameters = null)
     {
-        $this->getMagentoAttributeSet();
+        $this->getMagentoAttributeSet($clientParameters);
 
         if (!$this->magentoAttributeSets || !isset(
-            $this->magentoAttributeSets[$familyCode]
+            $this->magentoAttributeSets[$code]
         )) {
             throw new AttributeSetNotFoundException(
                 'The attribute set for code "' . $code . '" was not found'
+            );
+        }
+    }
+
+    /**
+     * Set the current view store on the magento platform
+     * 
+     * @param string                      $name             the storeview name
+     * @param MagentoSoapClientParameters $clientParameters soap parameters
+     */
+    public function setCurrentStoreView($name, $clientParameters = null)
+    {
+        $this->initClient($clientParameters);
+
+        $this->client->call(
+            $this->session, 
+            self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE, 
+            $name
+        );
+    }
+
+    /**
+     * Add a call to the soap call stack
+     * 
+     * @param array                       $call             a magento soap call
+     * @param MagentoSoapClientParameters $clientParameters soap paramters
+     */
+    public function addCall($call, $clientParameters)
+    {
+        $this->initClient($clientParameters);
+
+        $this->calls[] = $call;
+    }
+
+    public function flush($clientParameters = null)
+    {
+        $this->initClient($clientParameters);
+
+        if (count($this->calls) > 0) {
+            $this->client->multiCall(
+                $this->session, 
+                $this->calls
             );
         }
     }

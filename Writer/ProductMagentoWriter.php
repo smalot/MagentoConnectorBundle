@@ -7,6 +7,8 @@ use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
  * Magento product writer
@@ -22,6 +24,11 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      * @var ChannelManager
      */
     protected $channelManager;
+
+    /** 
+     * @var MagentoSoapClient
+     */
+    protected $magentoSoapClient;
 
     /**
      * @Assert\NotBlank
@@ -43,17 +50,19 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     protected $channel;
 
-    protected $client;
-    protected $session;
+    protected $clientParameters;
     
     /**
      * @param ChannelManager $channelManager
+     * @param MagentoSoapClient $channelManager
      */
     public function __construct(
-        ChannelManager $channelManager
+        ChannelManager $channelManager,
+        MagentoSoapClient $magentoSoapClient
     )
     {
-        $this->channelManager = $channelManager;
+        $this->channelManager    = $channelManager;
+        $this->magentoSoapClient = $magentoSoapClient;
     }
 
     /**
@@ -149,86 +158,65 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     public function write(array $items)
     {
-        // We create the soap client and its session for this writer instance
-        if (!$this->client) {
-            try {
-                $this->client = new \SoapClient(
-                    $this->soapUrl . self::SOAP_SUFFIX_URL,
-                    array(
-                        'encoding' => 'UTF-8',
-                        'trace'    => true
-                    )
-                );
-            } catch (\Exception $e) {
-                print_r($e);
-
-                return null;
-            }
-            
-            try {
-                $this->session = $this->client->login(
-                    $this->soapUsername, 
-                    $this->soapApiKey
-                );
-            } catch (\Exception $e) {
-                print_r($e);
-
-                return null;
-            }
+        if (!$this->clientParameters) {
+            $this->clientParameters = new MagentoSoapClientParameters(
+                $this->soapUsername,
+                $this->soapApiKey,
+                $this->soapUrl
+            );
         }
 
-        $this->client->call(
-            $this->session, 
-            self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE, 
-            'admin'
+        $this->magentoSoapClient->setCurrentStoreView(
+            'admin', 
+            $this->clientParameters
         );
 
         $calls = array();
 
         //creation for each product in the admin storeView (with default locale)
         foreach ($items as $item) {
-            $calls[] = array(
-                self::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
-                $item['default'],
+            $this->magentoSoapClient->addCall(
+                array(
+                    MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
+                    $item['default'],
+                ),
+                $this->clientParameters
             );
         }
 
-        $this->client->multiCall(
-            $this->session, 
-            $calls
-        );
+        $this->magentoSoapClient->flush($this->clientParameters);
 
         //A locale -> storeView mapping will have to be done in configuration
         //later. For now we will asume that we have a viewStore in magento for 
         //each akeneo locales
         
-        $channel = $this->channelManager
-            ->getChannels(array('code' => $this->channel));
-        $locales = $channel[0]->getLocales();
+        $locales = $this->channelManager
+            ->getChannels(array('code' => $this->channel))
+            [0]
+            ->getLocales();
 
         //Update of each products and for each locale in their respective 
         //storeViews
         
         foreach ($locales as $locale) {
-            $this->client->call(
-                $this->session, 
-                self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE, 
-                strtolower($locale)
+            $this->magentoSoapClient->setCurrentStoreView(
+                strtolower($locale), 
+                $this->clientParameters
             );
 
             $calls = array();
 
             foreach ($items as $item) {
-                $calls[] = array(
-                    self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                    $item[$locale],
+                $this->magentoSoapClient->addCall(
+                    array(
+                        MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
+                        $item[$locale],
+                    ),
+                    $this->clientParameters
                 );
             }
 
-            $this->client->multiCall(
-                $this->session, 
-                $calls
-            );
+            $this->magentoSoapClient->flush($this->clientParameters);
         }
     }
 

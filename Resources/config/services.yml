@@ -1,0 +1,8 @@
+parameters:
+    pim_magento_connector.webservice.magento_soap.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient
+
+services:
+
+    # webservices
+    pim_magento_connector.webservice.magento_soap:
+        class: %pim_magento_connector.webservice.magento_soap.class%

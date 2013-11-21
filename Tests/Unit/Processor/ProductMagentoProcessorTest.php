@@ -14,6 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor;
 class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 {
     protected $channelManager;
+    protected $magentoSoapClient;
     protected $processor;
 
     /**
@@ -21,9 +22,13 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->channelManager = $this->getChannelManagerMock();
+        $this->channelManager    = $this->getChannelManagerMock();
+        $this->magentoSoapClient = $this->getMock('Pim\Bundle' . 
+            '\MagentoConnectorBundle\Webservice\magentoSoapClient');
+
         $this->processor      = new ProductMagentoProcessor(
-            $this->channelManager
+            $this->channelManager,
+            $this->magentoSoapClient
         );
     }
 
@@ -48,4 +53,6 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
     }
+
+
 }
