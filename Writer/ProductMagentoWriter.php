@@ -18,13 +18,6 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 class ProductMagentoWriter extends AbstractConfigurableStepElement implements 
     ItemWriterInterface
 {
-    const SOAP_SUFFIX_URL = '/api/soap/?wsdl';
-
-    const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
-    const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
-    const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 
-        'catalog_product.currentStore';
-
     /** 
      * @var ChannelManager
      */

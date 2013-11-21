@@ -9,6 +9,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 
 /**
  * Magento product processor
@@ -20,8 +21,6 @@ use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
 class ProductMagentoProcessor extends AbstractConfigurableStepElement implements 
     ItemProcessorInterface
 {
-    const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST = 'product_attribute_set.list';
-
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
     /** 
@@ -53,8 +52,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @Assert\NotBlank
      */
     protected $defaultLocale;
-
-    protected $magentoAttributeSets;
 
     protected $client;
     protected $session;
@@ -184,35 +181,21 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($item)
     {
-        
-
         //Should be fixed in BETA-3
         $item = $item[0];
 
-        if (!isset(
-            $this->magentoAttributeSets[$item->getFamily()->getCode()]
-        )) {
-            print_r(
-                array(
-                    'unknow attribute set',
-                    $item->getFamily()->getCode(),
-                    $item->getId()
-                )
-                
-            );
-
-            //We should create a proper exception
-            throw new InvalidItemException('Magento attributeSet not found', array($item));
+        try {
+            $attributeSetId = $this->magentoSoapClient
+                    ->getMagentoAttributeSetId($item->getFamily()->getCode());
+        } catch (AttributeSetNotFoundException $e) {
+            throw new InvalidItemException($e->getMessage(), $item);
         }
-
-        $prices = explode(',', (string) $item->getValue('price', null, null));
-        $price = explode(' ', $prices[0]);
-
+        
 
         $result = array(
             'default' => array(
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,
-                $this->magentoAttributeSets[$item->getFamily()->getCode()],
+                $attributeSetId,
                 (string) $item->getIdentifier(),
                 array(
                     'name'              => (string) $item->getValue(
@@ -233,7 +216,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     'weight'            => '10',
                     'status'            => (string) (int) $item->isEnabled(),
                     'visibility'        => '4',
-                    'price'             => $price[0],
+                    'price'             => (int) $item->getValue(
+                        'price', 
+                        null, 
+                        null
+                    )->getPrices()->first(),
                     'tax_class_id'      => 0,
                 )
             )
@@ -276,45 +263,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     protected function getMagentoAttributeSet()
     {
-        // On first call we get the magento attribute set list 
-        // (to bind them with our proctut's families)
-        if (!$this->magentoAttributeSets) {
-            // We create the soap client and its session for this writer instance
-            if (!$this->client) {
-                try {
-                    $this->client = new \SoapClient(
-                        $this->soapUrl . ProductMagentoWriter::SOAP_SUFFIX_URL,
-                        array(
-                            'encoding' => 'UTF-8'
-                        )
-                    );
-                } catch (\Exception $e) {
-                    
-                    //We should create a proper exception
-                    throw $e;
-                }
-                
-                try {
-                    $this->session = $this->client->login(
-                        $this->soapUsername, 
-                        $this->soapApiKey
-                    );
-                } catch (\Exception $e) {
-                    //We should create a proper exception
-                    throw $e;
-                }
-            }
-
-            $attributeSets = $this->client->call(
-                $this->session, 
-                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
-            );
-
-            foreach ($attributeSets as $attributeSet) {
-                $this->magentoAttributeSets[$attributeSet['name']] =
-                    $attributeSet['set_id'];
-            }
-        }
+        
         
     }
 
