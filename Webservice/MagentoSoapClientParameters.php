@@ -35,18 +35,6 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * Set soapUsername
-     * 
-     * @param string $soapUsername Soap mangeto soapUsername
-     */
-    public function setSoapUsername($soapUsername) 
-    {
-        $this->soapUsername = $soapUsername;
-
-        return $this;
-    }
-
-    /**
      * get soapApiKey
      * 
      * @return string Soap mangeto soapApiKey
@@ -57,18 +45,6 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * Set soapApiKey
-     * 
-     * @param string $soapApiKey Soap mangeto soapApiKey
-     */
-    public function setSoapApiKey($soapApiKey) 
-    {
-        $this->soapApiKey = $soapApiKey;
-
-        return $this;
-    }
-
-    /**
      * get soapUrl
      * 
      * @return string mangeto soap url
@@ -76,17 +52,5 @@ class MagentoSoapClientParameters
     public function getSoapUrl() 
     {
         return $this->soapUrl;
-    }
-
-    /**
-     * Set soapUrl
-     * 
-     * @param string $soapUrl mangeto soap url
-     */
-    public function setSoapUrl($soapUrl) 
-    {
-        $this->soapUrl = $soapUrl;
-
-        return $this;
     }
 }

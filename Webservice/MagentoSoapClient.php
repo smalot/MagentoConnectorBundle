@@ -175,7 +175,7 @@ class MagentoSoapClient
      * 
      * @param array $call a magento soap call
      */
-    public function addCall($call)
+    public function addCall(array $call)
     {
         $this->calls[] = $call;
     }

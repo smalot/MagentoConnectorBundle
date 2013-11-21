@@ -212,6 +212,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             throw new InvalidItemException($e->getMessage(), array($item));
         }
 
+        error_log('#######################' . print_r($item->getValue(
+                        'price', 
+                        null, 
+                        null
+                    ), true));
+
         $result = array(
             'default' => array(
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,

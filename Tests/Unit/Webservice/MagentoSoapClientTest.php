@@ -21,6 +21,8 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     const GOOD_ATTRIBUTE_SET_CODE = 'good';
     const NAME                    = 'name';
     const SET_ID                  = 'set_id';
+    const STORE_VIEW              = 'admin';
+
     /**
      * @var MagentoSoapClient
      */
@@ -34,7 +36,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->magentoSoapClient = new MagentoSoapClient();
         $this->mockSoapClient = $this->getMockBuilder('\SoapClient')
             ->disableOriginalConstructor()
-            ->setMethods(array('login', 'call'))
+            ->setMethods(array('login', 'call', 'multiCall'))
             ->getMock();
         $this->clientParameters = new MagentoSoapClientParameters(self::LOGIN, self::PASSWORD, self::URL);
     }
@@ -86,14 +88,6 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\NotConnectedException
-     */
-    public function testGetMagentoAttributeSetIdInstanciated()
-    {
-        $this->magentoSoapClient->getMagentoAttributeSetId(self::GOOD_ATTRIBUTE_SET_CODE);
-    }
-
-    /**
      * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException
      */
     public function testGetMagentoAttributeSetIdAttributeSetUnknow()
@@ -142,6 +136,58 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
             ));
 
         $this->magentoSoapClient->getMagentoAttributeSetId(self::GOOD_ATTRIBUTE_SET_CODE);
+    }
+
+    public function testSetCurrentStoreView()
+    {
+        $this->connectClient();
+
+        $this->mockSoapClient
+            ->expects($this->once())
+            ->method('call')
+            ->with(
+                true,
+                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE,
+                'admin'
+            );
+
+        $this->magentoSoapClient->setCurrentStoreView(self::STORE_VIEW);
+    }
+
+    /**
+     * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\NotConnectedException
+     */
+    public function testSendCallsInstanciated()
+    {   
+        $this->magentoSoapClient->addCall(array());
+
+        $this->magentoSoapClient->sendCalls();
+    }
+
+    public function testSendCalls()
+    {
+        $this->connectClient();
+        $this->magentoSoapClient->addCall(array());
+
+        $this->mockSoapClient
+            ->expects($this->once())
+            ->method('multiCall')
+            ->with(
+                true,
+                array(
+                    array()
+                )
+            );
+
+        $this->magentoSoapClient->sendCalls();
+    }
+
+    /**
+     * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\NotConnectedException
+     */
+    public function testCallInstanciated()
+    {
+        $this->magentoSoapClient->call(MagentoSoapClient::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST);
     }
 
     private function connectClient()
