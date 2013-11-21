@@ -132,9 +132,9 @@ class MagentoSoapClient
     {
         $this->getMagentoAttributeSet($clientParameters);
 
-        if (!$this->magentoAttributeSets || !isset(
-            $this->magentoAttributeSets[$code]
-        )) {
+        if ($this->magentoAttributeSets && isset($this->magentoAttributeSets[$code])) {
+            return $this->magentoAttributeSets[$code];
+        } else {
             throw new AttributeSetNotFoundException(
                 'The attribute set for code "' . $code . '" was not found'
             );
@@ -164,7 +164,7 @@ class MagentoSoapClient
      * @param array                       $call             a magento soap call
      * @param MagentoSoapClientParameters $clientParameters soap paramters
      */
-    public function addCall($call, $clientParameters)
+    public function addCall($call, $clientParameters = null)
     {
         $this->initClient($clientParameters);
 
@@ -180,6 +180,8 @@ class MagentoSoapClient
                 $this->session, 
                 $this->calls
             );
+
+            $this->calls = array();
         }
     }
 }

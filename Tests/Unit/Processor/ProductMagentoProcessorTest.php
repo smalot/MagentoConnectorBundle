@@ -53,6 +53,4 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
     }
-
-
 }

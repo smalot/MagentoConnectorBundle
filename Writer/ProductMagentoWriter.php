@@ -210,7 +210,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 $this->magentoSoapClient->addCall(
                     array(
                         MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                        $item[$locale],
+                        $item[$locale->getCode()],
                     ),
                     $this->clientParameters
                 );

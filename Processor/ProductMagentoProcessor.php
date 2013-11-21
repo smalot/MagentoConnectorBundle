@@ -277,7 +277,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             );
         }
 
-        return true;
+        return $result;
     }
 
     protected function getMagentoAttributeSet()
