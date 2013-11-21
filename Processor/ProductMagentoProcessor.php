@@ -69,8 +69,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     public function __construct(
         ChannelManager $channelManager,
         MagentoSoapClient $magentoSoapClient
-    )
-    {
+    ) {
         $this->channelManager    = $channelManager;
         $this->magentoSoapClient = $magentoSoapClient;
     }
@@ -201,6 +200,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             );
         }
 
+        $this->magentoSoapClient->init($this->clientParameters);
+
         try {
             $attributeSetId = $this->magentoSoapClient
                     ->getMagentoAttributeSetId(
@@ -208,7 +209,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                         $this->clientParameters
                     );
         } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), $item);
+            throw new InvalidItemException($e->getMessage(), array($item));
         }
 
         $result = array(

@@ -166,6 +166,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             );
         }
 
+        $this->magentoSoapClient->init($this->clientParameters);
+
         $this->magentoSoapClient->setCurrentStoreView(
             'admin', 
             $this->clientParameters
@@ -184,7 +186,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             );
         }
 
-        $this->magentoSoapClient->flush($this->clientParameters);
+        $this->magentoSoapClient->sendCalls($this->clientParameters);
 
         //A locale -> storeView mapping will have to be done in configuration
         //later. For now we will asume that we have a viewStore in magento for 

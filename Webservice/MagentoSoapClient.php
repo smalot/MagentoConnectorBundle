@@ -11,7 +11,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class MagentoSoapClient
 {
-    const SOAP_SUFFIX_URL = '/api/soap/?wsdl';
+    const SOAP_WSDL_URL = '/api/soap/?wsdl';
 
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
@@ -28,58 +28,64 @@ class MagentoSoapClient
 
     protected $magentoAttributeSets;
 
-
     /**
-     * Manage soap client parameters
-     *
-     * @throws Exception If there is no $clientParameters nor $this->clientParameters
+     * Init the service with credentials and soap url
      * 
-     * @param MagentoSoapClientParameters $clientParameters soap parameters
+     * @param  MagentoSoapClientParameters $clientParameters Soap parameters
      */
-    private function setClientParameters($clientParameters = null)
+    public function init(MagentoSoapClientParameters $clientParameters) 
     {
-        if (!$clientParameters) {
-            if (!$this->clientParameters) {
-                throw new \Exception('No soap client parameters given'); 
-            }
-        } else {
-            $this->clientParameters = $clientParameters;
-        }
-    }
+        $this->setParameters($clientParameters);
 
-    /**
-     * Initialize the soap client with the local informations 
-     * (should be refactored)
-     *
-     * @param MagentoSoapClientParameters $clientParameters soap parameters
-     * 
-     * @throws ConnectionErrorException   If the connection to the soap api fail
-     * @throws InvalidCredentialException If given credentials are invalid
-     * 
-     * @return void
-     */
-    private function initClient($clientParameters = null)
-    {
-        // We create the soap client and its session for this writer instance
-        if (!$this->client) {
-            $this->setClientParameters($clientParameters);
+        if (!$this->isConnected()) {
+            $wsdlUrl = $this->clientParameters->getSoapUrl() . 
+                self::SOAP_WSDL_URL;
+            $soapOptions = array('encoding' => 'UTF-8');
 
             try {
-                $this->client = new \SoapClient(
-                    $this->clientParameters->getSoapUrl() . 
-                        self::SOAP_SUFFIX_URL,
-                    array(
-                        'encoding' => 'UTF-8'
-                    )
-                );
+                $client = new \SoapClient($wsdlUrl, $soapOptions);
             } catch (\Exception $e) {
-                //We should create a proper exception
                 throw new ConnectionErrorException(
                     'The soap connection could not be established with the ' .
                     'error message : ' . $e->getMessage()
                 );
             }
-            
+
+            $this->setClient($client);
+            $this->connect();
+        }
+    }
+
+    /**
+     * Set the soap client
+     * 
+     * @param SoapClient $soapClient the soap client
+     */
+    public function setClient($soapClient)
+    {
+        $this->client = $soapClient;
+    }
+
+    /**
+     * Set the soap client parameters
+     * 
+     * @param  MagentoSoapClientParameters $clientParameters Soap parameters
+     */
+    public function setParameters(MagentoSoapClientParameters $clientParameters)
+    {
+        $this->clientParameters = $clientParameters;
+    }
+
+    /**
+     * Initialize the soap client with the local informations
+     * 
+     * @throws ConnectionErrorException   If the connection to the soap api fail
+     * @throws InvalidCredentialException If given credentials are invalid
+     */
+    public function connect()
+    {
+        if ($this->clientParameters) {
+            get_class($this->client);
             try {
                 $this->session = $this->client->login(
                     $this->clientParameters->getSoapUsername(), 
@@ -92,25 +98,24 @@ class MagentoSoapClient
                     $e->getMessage()
                 );
             }
+        } else {
+            throw new ConnectionErrorException(
+                'Invalid state : you need to call the init method first'
+            );
         }
     }
 
     /**
      * Get the magento attributeSet list from the magento platform
      * 
-     * @param MagentoSoapClientParameters $clientParameters soap parameters
-     * 
      * @return void
      */
-    private function getMagentoAttributeSet($clientParameters = null)
+    private function getMagentoAttributeSet()
     {
         // On first call we get the magento attribute set list 
         // (to bind them with our proctut's families)
         if (!$this->magentoAttributeSets) {
-            $this->initClient($clientParameters);
-
-            $attributeSets = $this->client->call(
-                $this->session, 
+            $attributeSets = $this->call(
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
             );
 
@@ -122,17 +127,28 @@ class MagentoSoapClient
     }
 
     /**
+     * Is the soap client connected ?
+     * 
+     * @return boolean
+     */
+    public function isConnected()
+    {
+        return $this->client && $this->session;
+    }
+
+    /**
      * Get magento attributeSets from the magento api
      * 
-     * @param  string                      $code             the attributeSet id
-     * @param  MagentoSoapClientParameters $clientParameters soap parameters
+     * @param  string $code the attributeSet id
      * @return void
      */
-    public function getMagentoAttributeSetId($code, $clientParameters = null)
+    public function getMagentoAttributeSetId($code)
     {
-        $this->getMagentoAttributeSet($clientParameters);
+        if (!$this->magentoAttributeSets) {
+            $this->getMagentoAttributeSet();
+        }
 
-        if ($this->magentoAttributeSets && isset($this->magentoAttributeSets[$code])) {
+        if (isset($this->magentoAttributeSets[$code])) {
             return $this->magentoAttributeSets[$code];
         } else {
             throw new AttributeSetNotFoundException(
@@ -144,15 +160,11 @@ class MagentoSoapClient
     /**
      * Set the current view store on the magento platform
      * 
-     * @param string                      $name             the storeview name
-     * @param MagentoSoapClientParameters $clientParameters soap parameters
+     * @param string $name the storeview name
      */
-    public function setCurrentStoreView($name, $clientParameters = null)
+    public function setCurrentStoreView($name)
     {
-        $this->initClient($clientParameters);
-
-        $this->client->call(
-            $this->session, 
+        $this->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE, 
             $name
         );
@@ -161,27 +173,39 @@ class MagentoSoapClient
     /**
      * Add a call to the soap call stack
      * 
-     * @param array                       $call             a magento soap call
-     * @param MagentoSoapClientParameters $clientParameters soap paramters
+     * @param array $call a magento soap call
      */
-    public function addCall($call, $clientParameters = null)
+    public function addCall($call)
     {
-        $this->initClient($clientParameters);
-
         $this->calls[] = $call;
     }
 
-    public function flush($clientParameters = null)
+    public function sendCalls()
     {
-        $this->initClient($clientParameters);
-
         if (count($this->calls) > 0) {
-            $this->client->multiCall(
-                $this->session, 
-                $this->calls
-            );
+            if ($this->isConnected()) {
+                $this->client->multiCall(
+                    $this->session, 
+                    $this->calls
+                );
+            } else {
+                throw new NotConnectedException();
+            }
 
             $this->calls = array();
+        }
+    }
+
+    public function call($resource, $params = null)
+    {
+        if ($this->isConnected()) {
+            return $this->client->call(
+                $this->session,
+                $resource, 
+                $params
+            );
+        } else {
+            throw new NotConnectedException();
         }
     }
 }
