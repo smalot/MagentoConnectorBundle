@@ -7,6 +7,7 @@ use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\CatalogBundle\Entity\Product;
 
 use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
@@ -217,32 +218,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,
                 $attributeSetId,
                 (string) $item->getIdentifier(),
-                array(
-                    'name'              => (string) $item->getValue(
-                        'name',
-                        $this->defaultLocale,
-                        $this->channel
-                    ),
-                    'description'       => (string) $item->getValue(
-                        'short_description',
-                        $this->defaultLocale,
-                        $this->channel
-                    ),
-                    'short_description' => (string) $item->getValue(
-                        'short_description',
-                        $this->defaultLocale,
-                        $this->channel
-                    ),
-                    'weight'            => '10',
-                    'status'            => (string) (int) $item->isEnabled(),
-                    'visibility'        => '4',
-                    'price'             => (int) $item->getValue(
-                        'price',
-                        null,
-                        null
-                    )->getPrices()->first()->getData(),
-                    'tax_class_id'      => 0,
-                )
+                $this->getValues($item, $this->defaultLocale, $this->channel)
             )
         );
 
@@ -257,28 +233,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         foreach ($locales as $locale) {
             $result[$locale->getCode()] = array(
                 (string) $item->getIdentifier(),
-                array(
-                    'name'              => (string) $item->getValue(
-                        'name',
-                        $locale,
-                        $this->channel
-                    ),
-                    'description'       => (string) $item->getValue(
-                        'short_description',
-                        $locale,
-                        $this->channel
-                    ),
-                    'short_description' => (string) $item->getValue(
-                        'short_description',
-                        $locale,
-                        $this->channel
-                    )
-                )
-
+                $this->getValues($item, $locale, $this->channel, true)
             );
         }
 
         return $result;
+    }
+
+    private function getValues(Product $product, $locale, $scope, $onlyLocalized = false)
+    {
+        $values = array();
+
+        foreach ($product->getAllAttributes() as $attribute) {
+            if (!$onlyLocalized || ($onlyLocalized && $attribute->getTranslatable())) {
+                $attributeCode   = $attribute->getCode();
+                $attributeLocale = ($attribute->getTranslatable()) ? $locale : null;
+                $attributeScope  = ($attribute->getScopable()) ? $scope : null;
+
+                $values[] = (string) $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+            }
+        }
+
+        return $values;
     }
 
     /**

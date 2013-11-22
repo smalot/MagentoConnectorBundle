@@ -103,4 +103,12 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($configurationFields['soapUrl']));
         $this->assertTrue(isset($configurationFields['channel']));
     }
+
+    public function testSettersAndGetters()
+    {
+        $this->assertEquals($this->writer->getSoapUsername(), self::LOGIN);
+        $this->assertEquals($this->writer->getSoapApiKey(), self::PASSWORD);
+        $this->assertEquals($this->writer->getSoapUrl(), self::URL);
+        $this->assertEquals($this->writer->getChannel(), self::CHANNEL);
+    }
 }

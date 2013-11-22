@@ -26,6 +26,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const STATUS            = 1;
     const VISIBILITY        = 4;
     const TAX_CLASS_ID      = 0;
+    const ATTRIBUTE_NAME    = 'name';
 
     const DEFAULT_LOCALE    = 'en_US';
 
@@ -121,6 +122,17 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($configurationFields['defaultLocale']));
     }
 
+    public function testSettersAndGetters()
+    {
+        $this->assertEquals($this->processor->getSoapUsername(), self::LOGIN);
+        $this->assertEquals($this->processor->getSoapApiKey(), self::PASSWORD);
+        $this->assertEquals($this->processor->getSoapUrl(), self::URL);
+        $this->assertEquals($this->processor->getChannel(), self::CHANNEL);
+
+        $this->processor->setDefaultLocale(self::DEFAULT_LOCALE);
+        $this->assertEquals($this->processor->getDefaultLocale(), self::DEFAULT_LOCALE);
+    }
+
     protected function getProductMock()
     {
         $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
@@ -131,23 +143,45 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('getCode')
             ->will($this->returnValue(self::CHANNEL));
 
-        $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductValue');
-        $priceProductValue->expects($this->once())->method('getData')->will($this->returnValue(self::PRICE));
+        // $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductValue');
+        // $priceProductValue->expects($this->once())->method('getData')->will($this->returnValue(self::PRICE));
 
-        $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
-        $priceCollection->expects($this->once())->method('first')->will($this->returnValue($priceProductValue));
+        // $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
+        // $priceCollection->expects($this->once())->method('first')->will($this->returnValue($priceProductValue));
 
-        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductPrice')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getPrices'))
-            ->getMock();
-        $price->expects($this->once())->method('getPrices')->will($this->returnValue($priceCollection));
+        // $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductPrice')
+        //     ->disableOriginalConstructor()
+        //     ->setMethods(array('getPrices'))
+        //     ->getMock();
+        // $price->expects($this->once())->method('getPrices')->will($this->returnValue($priceCollection));
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+
+        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductValue')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode', 'getTranslatable', 'getScopable'))
+            ->getMock();
+        $attribute->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue(self::ATTRIBUTE_NAME));
+        $attribute->expects($this->any())
+            ->method('getTranslatable')
+            ->will($this->returnValue(true));
+        $attribute->expects($this->any())
+            ->method('getScopable')
+            ->will($this->returnValue(true));
+
+        $attributes = array(
+            $attribute
+        );
 
         $product->expects($this->once())
             ->method('getFamily')
             ->will($this->returnValue($family));
+
+        $product->expects($this->any())
+            ->method('getAllAttributes')
+            ->will($this->returnValue($attributes));
 
         $map = array(
             array('name',              self::DEFAULT_LOCALE, self::CHANNEL, self::NAME),
@@ -157,7 +191,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
             array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
             array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
-            array('price',             null,                 null,          $price)
+            //array('price',             null,                 null,          $price)
         );
 
         $product->expects($this->any())
