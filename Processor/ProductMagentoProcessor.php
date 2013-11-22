@@ -20,17 +20,17 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductMagentoProcessor extends AbstractConfigurableStepElement implements 
+class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     ItemProcessorInterface
 {
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
-    /** 
+    /**
      * @var ChannelManager
      */
     protected $channelManager;
 
-    /** 
+    /**
      * @var MagentoSoapClient
      */
     protected $magentoSoapClient;
@@ -61,7 +61,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $defaultLocale;
 
     protected $clientParameters;
-    
+
     /**
      * @param ChannelManager $channelManager
      * @param MagentoSoapClient $channelManager
@@ -76,20 +76,20 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * get soapUsername
-     * 
+     *
      * @return string Soap mangeto soapUsername
      */
-    public function getSoapUsername() 
+    public function getSoapUsername()
     {
         return $this->soapUsername;
     }
 
     /**
      * Set soapUsername
-     * 
+     *
      * @param string $soapUsername Soap mangeto soapUsername
      */
-    public function setSoapUsername($soapUsername) 
+    public function setSoapUsername($soapUsername)
     {
         $this->soapUsername = $soapUsername;
 
@@ -98,20 +98,20 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * get soapApiKey
-     * 
+     *
      * @return string Soap mangeto soapApiKey
      */
-    public function getSoapApiKey() 
+    public function getSoapApiKey()
     {
         return $this->soapApiKey;
     }
 
     /**
      * Set soapApiKey
-     * 
+     *
      * @param string $soapApiKey Soap mangeto soapApiKey
      */
-    public function setSoapApiKey($soapApiKey) 
+    public function setSoapApiKey($soapApiKey)
     {
         $this->soapApiKey = $soapApiKey;
 
@@ -120,20 +120,20 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * get soapUrl
-     * 
+     *
      * @return string mangeto soap url
      */
-    public function getSoapUrl() 
+    public function getSoapUrl()
     {
         return $this->soapUrl;
     }
 
     /**
      * Set soapUrl
-     * 
+     *
      * @param string $soapUrl mangeto soap url
      */
-    public function setSoapUrl($soapUrl) 
+    public function setSoapUrl($soapUrl)
     {
         $this->soapUrl = $soapUrl;
 
@@ -142,20 +142,20 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * get channel
-     * 
+     *
      * @return string channel
      */
-    public function getChannel() 
+    public function getChannel()
     {
         return $this->channel;
     }
 
     /**
      * Set channel
-     * 
+     *
      * @param string $channel channel
      */
-    public function setChannel($channel) 
+    public function setChannel($channel)
     {
         $this->channel = $channel;
 
@@ -164,20 +164,20 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * get defaultLocale
-     * 
+     *
      * @return string defaultLocale
      */
-    public function getDefaultLocale() 
+    public function getDefaultLocale()
     {
         return $this->defaultLocale;
     }
 
     /**
      * Set defaultLocale
-     * 
+     *
      * @param string $defaultLocale defaultLocale
      */
-    public function setDefaultLocale($defaultLocale) 
+    public function setDefaultLocale($defaultLocale)
     {
         $this->defaultLocale = $defaultLocale;
 
@@ -212,12 +212,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             throw new InvalidItemException($e->getMessage(), array($item));
         }
 
-        error_log('#######################' . print_r($item->getValue(
-                        'price', 
-                        null, 
-                        null
-                    ), true));
-
         $result = array(
             'default' => array(
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,
@@ -225,26 +219,26 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 (string) $item->getIdentifier(),
                 array(
                     'name'              => (string) $item->getValue(
-                        'name', 
-                        $this->defaultLocale, 
+                        'name',
+                        $this->defaultLocale,
                         $this->channel
                     ),
                     'description'       => (string) $item->getValue(
-                        'short_description', 
-                        $this->defaultLocale, 
+                        'short_description',
+                        $this->defaultLocale,
                         $this->channel
                     ),
                     'short_description' => (string) $item->getValue(
-                        'short_description', 
-                        $this->defaultLocale, 
+                        'short_description',
+                        $this->defaultLocale,
                         $this->channel
                     ),
                     'weight'            => '10',
                     'status'            => (string) (int) $item->isEnabled(),
                     'visibility'        => '4',
                     'price'             => (int) $item->getValue(
-                        'price', 
-                        null, 
+                        'price',
+                        null,
                         null
                     )->getPrices()->first()->getData(),
                     'tax_class_id'      => 0,
@@ -253,7 +247,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         );
 
         //A locale -> storeView mapping will have to be done in configuration
-        //later. For now we will asume that we have a viewStore in magento for 
+        //later. For now we will asume that we have a viewStore in magento for
         //each akeneo locales
         $locales = $this->channelManager
             ->getChannels(array('code' => $this->channel))
@@ -265,32 +259,26 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 (string) $item->getIdentifier(),
                 array(
                     'name'              => (string) $item->getValue(
-                        'name', 
-                        $locale, 
+                        'name',
+                        $locale,
                         $this->channel
                     ),
                     'description'       => (string) $item->getValue(
-                        'short_description', 
-                        $locale, 
+                        'short_description',
+                        $locale,
                         $this->channel
                     ),
                     'short_description' => (string) $item->getValue(
-                        'short_description', 
-                        $locale, 
+                        'short_description',
+                        $locale,
                         $this->channel
                     )
                 )
-                
+
             );
         }
 
         return $result;
-    }
-
-    protected function getMagentoAttributeSet()
-    {
-        
-        
     }
 
     /**
@@ -301,7 +289,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         return array(
             'soapUsername' => array(),
             'soapApiKey'   => array(
-                //Should be remplaced by a password formType but who doesn't 
+                //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
                 'type' => 'text'
             ),
@@ -314,7 +302,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 )
             ),
             'defaultLocale' => array(
-                //Should be fixed to display only active locale on the selected 
+                //Should be fixed to display only active locale on the selected
                 //channel
                 'type' => 'text'
             )

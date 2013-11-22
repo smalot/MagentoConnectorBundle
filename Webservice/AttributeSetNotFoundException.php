@@ -16,7 +16,7 @@ class AttributeSetNotFoundException extends \Exception
      *
      * @param string $message
      */
-    public function __construct($message)
+    public function __construct($message = 'Attribute set not found on magento platform')
     {
         parent::__construct($message);
     }

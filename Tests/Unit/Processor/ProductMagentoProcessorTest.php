@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Processor;
 
 use Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 
 /**
  * Test related class
@@ -16,7 +17,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const LOGIN             = 'login';
     const PASSWORD          = 'password';
     const URL               = 'url';
-    const CHANNEL           = 'ecommerce';
+    const CHANNEL           = 'channel';
     const PRICE             = '13.37';
     const NAME              = 'Product example';
     const DESCRIPTION       = 'Description';
@@ -37,11 +38,12 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->channelManager    = $this->getChannelManagerMock();
-        $this->magentoSoapClient = $this->getMock('Pim\Bundle' . 
-            '\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+        $this->channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
 
-        $this->processor         = new ProductMagentoProcessor(
+        $this->processor = new ProductMagentoProcessor(
             $this->channelManager,
             $this->magentoSoapClient
         );
@@ -63,7 +65,63 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testProcess()
+    {
+        $product = $this->getProductMock();
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $this->magentoSoapClient
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+        $processor->process(array($product));
+    }
+
+    /**
+     * @expectedException Oro\Bundle\BatchBundle\Item\InvalidItemException
+     */
     public function testProcessAttributeSetNotFound()
+    {
+        $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode'))
+            ->getMock();
+        $family->expects($this->once())
+            ->method('getCode')
+            ->will($this->returnValue(self::CHANNEL));
+
+        $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+
+        $product->expects($this->once())
+            ->method('getFamily')
+            ->will($this->returnValue($family));
+
+        $this->magentoSoapClient
+            ->expects($this->once())
+            ->method('getMagentoAttributeSetId')
+            ->will($this->throwException(new AttributeSetNotFoundException()));
+
+        $this->processor->process(array($product));
+    }
+
+    public function testGetConfigurationFields()
+    {
+        $configurationFields = $this->processor->getConfigurationFields();
+
+        $this->assertTrue(isset($configurationFields['soapUsername']));
+        $this->assertTrue(isset($configurationFields['soapApiKey']));
+        $this->assertTrue(isset($configurationFields['soapUrl']));
+        $this->assertTrue(isset($configurationFields['channel']));
+        $this->assertTrue(isset($configurationFields['defaultLocale']));
+    }
+
+    protected function getProductMock()
     {
         $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
             ->disableOriginalConstructor()
@@ -79,7 +137,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
         $priceCollection->expects($this->once())->method('first')->will($this->returnValue($priceProductValue));
 
-        $price = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductPrice');
+        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductPrice')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrices'))
+            ->getMock();
         $price->expects($this->once())->method('getPrices')->will($this->returnValue($priceCollection));
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
@@ -89,31 +150,52 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($family));
 
         $map = array(
-            'name',              self::DEFAULT_LOCALE, self::CHANNEL, self::NAME,
-            'description',       self::DEFAULT_LOCALE, self::CHANNEL, self::DESCRIPTION,
-            'short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::SHORT_DESCRIPTION,
-            'weight',            self::DEFAULT_LOCALE, self::CHANNEL, self::WEIGHT,
-            'status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS,
-            'visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY,
-            'tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID,
-            'price',             null,                 null,          $price
+            array('name',              self::DEFAULT_LOCALE, self::CHANNEL, self::NAME),
+            array('short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::DESCRIPTION),
+            array('short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::SHORT_DESCRIPTION),
+            array('weight',            self::DEFAULT_LOCALE, self::CHANNEL, self::WEIGHT),
+            array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
+            array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
+            array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
+            array('price',             null,                 null,          $price)
         );
 
         $product->expects($this->any())
             ->method('getValue')
             ->will($this->returnValueMap($map));
 
-        $this->processor->process(array($product));
+        return $product;
     }
 
-    /**
-     * @return PHPUnit_Framework_MockObject_MockObject
-     */
     protected function getChannelManagerMock()
     {
-        return $this
-            ->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
+        $channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $locale = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Locale')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode'))
+            ->getMock();
+
+        $locale->expects($this->once())
+            ->method('getCode')
+            ->will($this->returnValue(self::DEFAULT_LOCALE));
+
+        $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getLocales'))
+            ->getMock();
+        $channel->expects($this->once())
+            ->method('getLocales')
+            ->will($this->returnValue(array($locale)));
+
+        $channelManager
+            ->expects($this->once())
+            ->method('getChannels')
+            ->with(array('code' => self::CHANNEL))
+            ->will($this->returnValue(array($channel)));
+
+        return $channelManager;
     }
 }
