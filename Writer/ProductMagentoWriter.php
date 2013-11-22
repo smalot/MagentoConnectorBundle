@@ -17,15 +17,15 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductMagentoWriter extends AbstractConfigurableStepElement implements 
+class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     ItemWriterInterface
 {
-    /** 
+    /**
      * @var ChannelManager
      */
     protected $channelManager;
 
-    /** 
+    /**
      * @var MagentoSoapClient
      */
     protected $magentoSoapClient;
@@ -51,7 +51,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     protected $channel;
 
     protected $clientParameters;
-    
+
     /**
      * @param ChannelManager $channelManager
      * @param MagentoSoapClient $channelManager
@@ -67,20 +67,20 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * get soapUsername
-     * 
+     *
      * @return string Soap mangeto soapUsername
      */
-    public function getSoapUsername() 
+    public function getSoapUsername()
     {
         return $this->soapUsername;
     }
 
     /**
      * Set soapUsername
-     * 
+     *
      * @param string $soapUsername Soap mangeto soapUsername
      */
-    public function setSoapUsername($soapUsername) 
+    public function setSoapUsername($soapUsername)
     {
         $this->soapUsername = $soapUsername;
 
@@ -89,20 +89,20 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * get soapApiKey
-     * 
+     *
      * @return string Soap mangeto soapApiKey
      */
-    public function getSoapApiKey() 
+    public function getSoapApiKey()
     {
         return $this->soapApiKey;
     }
 
     /**
      * Set soapApiKey
-     * 
+     *
      * @param string $soapApiKey Soap mangeto soapApiKey
      */
-    public function setSoapApiKey($soapApiKey) 
+    public function setSoapApiKey($soapApiKey)
     {
         $this->soapApiKey = $soapApiKey;
 
@@ -111,20 +111,20 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * get soapUrl
-     * 
+     *
      * @return string mangeto soap url
      */
-    public function getSoapUrl() 
+    public function getSoapUrl()
     {
         return $this->soapUrl;
     }
 
     /**
      * Set soapUrl
-     * 
+     *
      * @param string $soapUrl mangeto soap url
      */
-    public function setSoapUrl($soapUrl) 
+    public function setSoapUrl($soapUrl)
     {
         $this->soapUrl = $soapUrl;
 
@@ -133,20 +133,20 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * get channel
-     * 
+     *
      * @return string channel
      */
-    public function getChannel() 
+    public function getChannel()
     {
         return $this->channel;
     }
 
     /**
      * Set channel
-     * 
+     *
      * @param string $channel channel
      */
-    public function setChannel($channel) 
+    public function setChannel($channel)
     {
         $this->channel = $channel;
 
@@ -169,7 +169,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         $this->magentoSoapClient->init($this->clientParameters);
 
         $this->magentoSoapClient->setCurrentStoreView(
-            'admin', 
+            'admin',
             $this->clientParameters
         );
 
@@ -189,20 +189,20 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         $this->magentoSoapClient->sendCalls($this->clientParameters);
 
         //A locale -> storeView mapping will have to be done in configuration
-        //later. For now we will asume that we have a viewStore in magento for 
+        //later. For now we will asume that we have a viewStore in magento for
         //each akeneo locales
-        
+
         $locales = $this->channelManager
             ->getChannels(array('code' => $this->channel))
             [0]
             ->getLocales();
 
-        //Update of each products and for each locale in their respective 
+        //Update of each products and for each locale in their respective
         //storeViews
-        
+
         foreach ($locales as $locale) {
             $this->magentoSoapClient->setCurrentStoreView(
-                strtolower($locale), 
+                strtolower($locale->getCode()),
                 $this->clientParameters
             );
 
@@ -218,7 +218,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 );
             }
 
-            $this->magentoSoapClient->flush($this->clientParameters);
+            $this->magentoSoapClient->sendCalls($this->clientParameters);
         }
     }
 
@@ -230,7 +230,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         return array(
             'soapUsername' => array(),
             'soapApiKey'   => array(
-                //Should be remplaced by a password formType but who doesn't 
+                //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
                 'type' => 'text'
             ),

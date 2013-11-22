@@ -27,7 +27,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const VISIBILITY        = 4;
     const TAX_CLASS_ID      = 0;
 
-    const DEFAULT_LOCALE = 'en_US';
+    const DEFAULT_LOCALE    = 'en_US';
 
     protected $channelManager;
     protected $magentoSoapClient;

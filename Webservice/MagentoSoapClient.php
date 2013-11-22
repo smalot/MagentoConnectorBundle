@@ -15,9 +15,9 @@ class MagentoSoapClient
 
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
-    const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 
+    const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE =
         'catalog_product.currentStore';
-    const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST = 'product_attribute_set.list';
+    const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
 
     protected $clientParameters;
 
@@ -30,15 +30,15 @@ class MagentoSoapClient
 
     /**
      * Init the service with credentials and soap url
-     * 
+     *
      * @param  MagentoSoapClientParameters $clientParameters Soap parameters
      */
-    public function init(MagentoSoapClientParameters $clientParameters) 
+    public function init(MagentoSoapClientParameters $clientParameters)
     {
         $this->setParameters($clientParameters);
 
         if (!$this->isConnected()) {
-            $wsdlUrl = $this->clientParameters->getSoapUrl() . 
+            $wsdlUrl = $this->clientParameters->getSoapUrl() .
                 self::SOAP_WSDL_URL;
             $soapOptions = array('encoding' => 'UTF-8');
 
@@ -58,7 +58,7 @@ class MagentoSoapClient
 
     /**
      * Set the soap client
-     * 
+     *
      * @param SoapClient $soapClient the soap client
      */
     public function setClient($soapClient)
@@ -68,7 +68,7 @@ class MagentoSoapClient
 
     /**
      * Set the soap client parameters
-     * 
+     *
      * @param  MagentoSoapClientParameters $clientParameters Soap parameters
      */
     public function setParameters(MagentoSoapClientParameters $clientParameters)
@@ -78,7 +78,7 @@ class MagentoSoapClient
 
     /**
      * Initialize the soap client with the local informations
-     * 
+     *
      * @throws ConnectionErrorException   If the connection to the soap api fail
      * @throws InvalidCredentialException If given credentials are invalid
      */
@@ -88,13 +88,13 @@ class MagentoSoapClient
             get_class($this->client);
             try {
                 $this->session = $this->client->login(
-                    $this->clientParameters->getSoapUsername(), 
+                    $this->clientParameters->getSoapUsername(),
                     $this->clientParameters->getSoapApiKey()
                 );
             } catch (\Exception $e) {
                 throw new InvalidCredentialException(
                     'The given credential are invalid or not allowed to ' .
-                    'connect to the soap api. Error message : ' . 
+                    'connect to the soap api. Error message : ' .
                     $e->getMessage()
                 );
             }
@@ -107,12 +107,12 @@ class MagentoSoapClient
 
     /**
      * Get the magento attributeSet list from the magento platform
-     * 
+     *
      * @return void
      */
     private function getMagentoAttributeSet()
     {
-        // On first call we get the magento attribute set list 
+        // On first call we get the magento attribute set list
         // (to bind them with our proctut's families)
         if (!$this->magentoAttributeSets) {
             $attributeSets = $this->call(
@@ -128,7 +128,7 @@ class MagentoSoapClient
 
     /**
      * Is the soap client connected ?
-     * 
+     *
      * @return boolean
      */
     public function isConnected()
@@ -138,7 +138,7 @@ class MagentoSoapClient
 
     /**
      * Get magento attributeSets from the magento api
-     * 
+     *
      * @param  string $code the attributeSet id
      * @return void
      */
@@ -159,20 +159,20 @@ class MagentoSoapClient
 
     /**
      * Set the current view store on the magento platform
-     * 
+     *
      * @param string $name the storeview name
      */
     public function setCurrentStoreView($name)
     {
         $this->call(
-            self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE, 
+            self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE,
             $name
         );
     }
 
     /**
      * Add a call to the soap call stack
-     * 
+     *
      * @param array $call a magento soap call
      */
     public function addCall(array $call)
@@ -185,7 +185,7 @@ class MagentoSoapClient
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
                 $this->client->multiCall(
-                    $this->session, 
+                    $this->session,
                     $this->calls
                 );
             } else {
@@ -201,7 +201,7 @@ class MagentoSoapClient
         if ($this->isConnected()) {
             return $this->client->call(
                 $this->session,
-                $resource, 
+                $resource,
                 $params
             );
         } else {
