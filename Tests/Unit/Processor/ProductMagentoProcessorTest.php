@@ -71,6 +71,299 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
+        $this->magentoSoapClient
+            ->expects($this->once())
+            ->method('getAttributeList')
+            ->will($this->returnValue(
+                array(
+                    array(
+                        'code' => 'name',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'description',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'short_description',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'sku',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'weight',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'status',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'visibility',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'created_at',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'updated_at',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'price_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'sku_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'weight_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'shipment_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'links_purchased_separately',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'samples_title',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'links_title',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'price',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'tax_class_id',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'price_view',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'name',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'description',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'short_description',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'sku',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'weight',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'status',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'visibility',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'created_at',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'updated_at',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'price_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'sku_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'weight_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'shipment_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'links_purchased_separately',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'samples_title',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'links_title',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'price',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'tax_class_id',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'price_view',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'name',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'description',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'short_description',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'sku',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'weight',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'status',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'visibility',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'created_at',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'updated_at',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'price_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'sku_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'weight_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'shipment_type',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'links_purchased_separately',
+                        'required' => '1',
+                        'scope' => 'global'
+                    ),
+                    array(
+                        'code' => 'samples_title',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'links_title',
+                        'required' => '1',
+                        'scope' => 'store'
+                    ),
+                    array(
+                        'code' => 'price',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'tax_class_id',
+                        'required' => '1',
+                        'scope' => 'website'
+                    ),
+                    array(
+                        'code' => 'price_view',
+                        'required' => '1',
+                        'scope' => 'global'
+                    )
+                )
+            ));
+
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
             $this->magentoSoapClient
@@ -80,6 +373,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->setSoapApiKey(self::PASSWORD);
         $processor->setSoapUrl(self::URL);
         $processor->setChannel(self::CHANNEL);
+
+
 
         $processor->process(array($product));
     }
@@ -105,7 +400,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->magentoSoapClient
             ->expects($this->once())
-            ->method('getMagentoAttributeSetId')
+            ->method('getAttributeSetId')
             ->will($this->throwException(new AttributeSetNotFoundException()));
 
         $this->processor->process(array($product));

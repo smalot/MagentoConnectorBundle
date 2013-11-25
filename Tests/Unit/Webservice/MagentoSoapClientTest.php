@@ -90,7 +90,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException
      */
-    public function testGetMagentoAttributeSetIdAttributeSetUnknow()
+    public function testgetAttributeSetIdAttributeSetUnknow()
     {
         $this->connectClient();
 
@@ -111,10 +111,10 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
                 )
             ));
 
-        $this->magentoSoapClient->getMagentoAttributeSetId(self::BAD_ATTRIBUTE_SET_CODE);
+        $this->magentoSoapClient->getAttributeSetId(self::BAD_ATTRIBUTE_SET_CODE);
     }
 
-    public function testGetMagentoAttributeSetId()
+    public function testgetAttributeSetId()
     {
         $this->connectClient();
 
@@ -135,23 +135,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
                 )
             ));
 
-        $this->magentoSoapClient->getMagentoAttributeSetId(self::GOOD_ATTRIBUTE_SET_CODE);
-    }
-
-    public function testSetCurrentStoreView()
-    {
-        $this->connectClient();
-
-        $this->mockSoapClient
-            ->expects($this->once())
-            ->method('call')
-            ->with(
-                true,
-                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE,
-                'admin'
-            );
-
-        $this->magentoSoapClient->setCurrentStoreView(self::STORE_VIEW);
+        $this->magentoSoapClient->getAttributeSetId(self::GOOD_ATTRIBUTE_SET_CODE);
     }
 
     /**

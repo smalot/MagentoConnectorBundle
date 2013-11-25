@@ -15,9 +15,12 @@ class MagentoSoapClient
 
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
-    const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE =
-        'catalog_product.currentStore';
+    const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 'catalog_product.currentStore';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
+    const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
+    const SOAP_ACTION_STORE_LIST                    = 'store.list';
+
+    const SOAP_DEFAULT_STORE_VIEW                   = 'admin';
 
     protected $clientParameters;
 
@@ -26,7 +29,9 @@ class MagentoSoapClient
 
     protected $calls;
 
-    protected $magentoAttributeSets;
+    protected $magentoAttributeSetList;
+    protected $magentoStoreViewList;
+    protected $magentoAttributes = array();
 
     /**
      * Init the service with credentials and soap url
@@ -112,17 +117,17 @@ class MagentoSoapClient
      *
      * @return void
      */
-    private function getMagentoAttributeSet()
+    private function getMagentoAttributeSetList()
     {
         // On first call we get the magento attribute set list
         // (to bind them with our proctut's families)
-        if (!$this->magentoAttributeSets) {
+        if (!$this->magentoAttributeSetList) {
             $attributeSets = $this->call(
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
             );
 
             foreach ($attributeSets as $attributeSet) {
-                $this->magentoAttributeSets[$attributeSet['name']] =
+                $this->magentoAttributeSetList[$attributeSet['name']] =
                     $attributeSet['set_id'];
             }
         }
@@ -144,14 +149,14 @@ class MagentoSoapClient
      * @param  string $code the attributeSet id
      * @return void
      */
-    public function getMagentoAttributeSetId($code)
+    public function getAttributeSetId($code)
     {
-        if (!$this->magentoAttributeSets) {
-            $this->getMagentoAttributeSet();
+        if (!$this->magentoAttributeSetList) {
+            $this->getMagentoAttributeSetList();
         }
 
-        if (isset($this->magentoAttributeSets[$code])) {
-            return $this->magentoAttributeSets[$code];
+        if (isset($this->magentoAttributeSetList[$code])) {
+            return $this->magentoAttributeSetList[$code];
         } else {
             throw new AttributeSetNotFoundException(
                 'The attribute set for code "' . $code . '" was not found'
@@ -160,17 +165,40 @@ class MagentoSoapClient
     }
 
     /**
-     * Set the current view store on the magento platform
+     * Get magento storeview list from magento
      *
-     * @param string $name the storeview name
+     * @return array
      */
-    public function setCurrentStoreView($name)
+    public function getStoreViewsList()
     {
-        $this->call(
-            self::SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE,
-            $name
-        );
+        if (!$this->magentoStoreViewList) {
+            $this->magentoStoreViewList = $this->call(
+                self::SOAP_ACTION_STORE_LIST
+            );
+        }
+
+        return $this->magentoStoreViewList;
     }
+
+    /**
+     * Get attribute list for a given attribute set code
+     *
+     * @param string $code the storeview name
+     */
+    public function getAttributeList($code)
+    {
+        if (!isset($this->magentoAttributes[$code])) {
+            $id = $this->getAttributeSetId($code);
+
+            $this->magentoAttributes[$code] = $this->call(
+                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
+                $id
+            );
+        }
+
+        return $this->magentoAttributes[$code];
+    }
+
 
     /**
      * Add a call to the soap call stack
@@ -186,6 +214,7 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
+
                 $response = $this->client->multiCall(
                     $this->session,
                     $this->calls
@@ -203,6 +232,7 @@ class MagentoSoapClient
     public function call($resource, $params = null)
     {
         if ($this->isConnected()) {
+
             $response = $this->client->call(
                 $this->session,
                 $resource,
@@ -219,7 +249,6 @@ class MagentoSoapClient
 
     public function dumpSoapResponse($response)
     {
-        print_r($response);
-        print_r('last response ' . $this->client->__getLastResponse());
+
     }
 }

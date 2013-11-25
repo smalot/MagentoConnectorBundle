@@ -11,5 +11,4 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class InvalidCredentialException extends \Exception
 {
-
 }

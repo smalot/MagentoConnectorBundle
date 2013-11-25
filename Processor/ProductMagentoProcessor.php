@@ -62,6 +62,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $defaultLocale;
 
     protected $clientParameters;
+    protected $akeneoLocales;
 
     /**
      * @param ChannelManager $channelManager
@@ -190,9 +191,66 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($item)
     {
-        //Should be fixed in BETA-3
-        $item = $item[0];
+        //Soap init
+        $this->magentoSoapClient->init($this->getClientParameters());
 
+        //Should be fixed in BETA-3
+        $product           = $item[0];
+
+        $sku               = (string) $product->getIdentifier();
+        $defaultValues     = $this->getValues($product, $this->defaultLocale, $this->channel, false);
+        $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
+        $attributeSetId    = $this->getAttributeSetId($product);
+
+        $processedItem = array();
+
+        //For the default storeview we create an entire product
+        $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = array(
+            self::MAGENTO_SIMPLE_PRODUCT_KEY,
+            $attributeSetId,
+            $sku,
+            $defaultValues,
+            MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+        );
+
+        //For each storeview, we create a version of the product only with localized attributes
+        foreach ($magentoStoreViews as $magentoStoreView) {
+            $storeViewCode = $magentoStoreView['code'];
+
+            $locale = $this->getAkeneoLocaleForStoreView($storeViewCode);
+
+            //If a locale for this storeview exist in akeneo, we create a translated product in this locale
+            if ($locale) {
+                $values = $this->getValues($product, $locale, $this->channel, true);
+
+                $processedItem[$storeViewCode] = array(
+                    $sku,
+                    $values,
+                    $storeViewCode
+                );
+            }
+        }
+
+        print_r($processedItem);
+
+        return $processedItem;
+    }
+
+    private function getAttributeSetId($product)
+    {
+        try {
+            return $this->magentoSoapClient
+                ->getAttributeSetId(
+                    $product->getFamily()->getCode(),
+                    $this->getClientParameters()
+                );
+        } catch (AttributeSetNotFoundException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        }
+    }
+
+    private function getClientParameters()
+    {
         if (!$this->clientParameters) {
             $this->clientParameters = new MagentoSoapClientParameters(
                 $this->soapUsername,
@@ -201,60 +259,169 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             );
         }
 
-        $this->magentoSoapClient->init($this->clientParameters);
-
-        try {
-            $attributeSetId = $this->magentoSoapClient
-                    ->getMagentoAttributeSetId(
-                        $item->getFamily()->getCode(),
-                        $this->clientParameters
-                    );
-        } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array($item));
-        }
-
-        $result = array(
-            'default' => array(
-                self::MAGENTO_SIMPLE_PRODUCT_KEY,
-                $attributeSetId,
-                (string) $item->getIdentifier(),
-                $this->getValues($item, $this->defaultLocale, $this->channel)
-            )
-        );
-
-        //A locale -> storeView mapping will have to be done in configuration
-        //later. For now we will asume that we have a viewStore in magento for
-        //each akeneo locales
-        $locales = $this->channelManager
-            ->getChannels(array('code' => $this->channel))
-            [0]
-            ->getLocales();
-
-        foreach ($locales as $locale) {
-            $result[$locale->getCode()] = array(
-                (string) $item->getIdentifier(),
-                $this->getValues($item, $locale, $this->channel, true)
-            );
-        }
-
-        return $result;
+        return $this->clientParameters;
     }
 
+    /**
+     * Get the corresponding akeneo locale for a given storeview code
+     *
+     * @param  string $storeViewCode The store view code
+     * @return Locale The corresponding locale
+     */
+    private function getAkeneoLocaleForStoreView($storeViewCode)
+    {
+        foreach ($this->getAkeneoLocales() as $locale) {
+            if (strtolower($locale->getCode()) == $storeViewCode) {
+                return $locale;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get all akeneo locales for the current channel
+     * @return array The locales
+     */
+    private function getAkeneoLocales()
+    {
+        if (!$this->akeneoLocales) {
+            $this->akeneoLocales = $this->channelManager
+                ->getChannels(array('code' => $this->channel))
+                [0]
+                ->getLocales();
+        }
+
+        return $this->akeneoLocales;
+    }
+
+    /**
+     * Get values array for a given product
+     *
+     * @param  Product $product       The given product
+     * @param  string  $locale        The locale to apply
+     * @param  string  $scope         The akeno scope
+     * @param  boolean $onlyLocalized If true, only get translatable attributes
+     *
+     * @return array Computed data
+     */
     private function getValues(Product $product, $locale, $scope, $onlyLocalized = false)
     {
         $values = array();
 
-        foreach ($product->getAllAttributes() as $attribute) {
-            if (!$onlyLocalized || ($onlyLocalized && $attribute->getTranslatable())) {
-                $attributeCode   = $attribute->getCode();
-                $attributeLocale = ($attribute->getTranslatable()) ? $locale : null;
-                $attributeScope  = ($attribute->getScopable()) ? $scope : null;
+        $akeneoAttributes  = $product->getAllAttributes();
+        print_r($akeneoAttributes);
+        $magentoAttributes = $this->magentoSoapClient->getAttributeList($product->getFamily()->getCode());
 
-                $values[] = (string) $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+        foreach ($magentoAttributes as $magentoAttribute) {
+            if ($value = $this->getAkeneoValue(
+                $akeneoAttributes,
+                $magentoAttribute,
+                $product,
+                $locale,
+                $scope,
+                $onlyLocalized
+            )) {
+                $values[$magentoAttribute['code']] = $value;
             }
         }
 
         return $values;
+    }
+
+    /**
+     * Get the value the given attribute for the given product
+     * @param  array  $akeneoAttributes Akeneo attribute list for the product
+     * @param  array  $magentoAttribute Magento attribute list
+     * @param  Product $product          The product
+     * @param  string  $locale           The locale to apply
+     * @param  string  $scope            The scope to apply
+     * @param  boolean  $onlyLocalized    If true on the attribute is not translatable get a null for the value
+     * @return mixed The formated value
+     */
+    private function getAkeneoValue(
+        $akeneoAttributes,
+        $magentoAttribute,
+        Product $product,
+        $locale,
+        $scope,
+        $onlyLocalized
+    ) {
+        //If we have the same name in akeno and magento
+        if (isset($akeneoAttributes[$magentoAttribute['code']])) {
+            $akeneoAttribute = $akeneoAttributes[$magentoAttribute['code']];
+
+            $attributeCode   = $akeneoAttribute->getCode();
+            $attributeLocale = ($akeneoAttribute->getTranslatable()) ? $locale : null;
+            $attributeScope  = ($akeneoAttribute->getScopable())     ? $scope  : null;
+
+            if (!$onlyLocalized || ($onlyLocalized && $akeneoAttribute->getTranslatable())) {
+                return (string) $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+            } else {
+                return null;
+            }
+        } elseif($magentoAttribute['required']) {
+            $translatable = false;
+
+            switch ($magentoAttribute['code']) {
+                case 'description':
+                    $translatable = true;
+                    $value = (string) $product->getValue('short_description', $locale, $scope);
+                    break;
+                case 'weight':
+                    $value = '12.0';
+                    break;
+                case 'status':
+                    $value = 1;
+                    break;
+                case 'visibility':
+                    $value = 1;
+                    break;
+                case 'created_at':
+                    $value = (string) $product->getValue('release_date');
+                    break;
+                case 'updated_at':
+                    $value = (string) $product->getValue('release_date');
+                    break;
+                case 'price_type':
+                    $value = null;
+                    break;
+                case 'sku_type':
+                    $value = null;
+                    break;
+                case 'weight_type':
+                    $value = null;
+                    break;
+                case 'shipment_type':
+                    $value = null;
+                    break;
+                case 'links_purchased_separately':
+                    $value = null;
+                    break;
+                case 'samples_title':
+                    $value = null;
+                    break;
+                case 'links_title':
+                    $value = null;
+                    break;
+                case 'tax_class_id':
+                    $value = 0;
+                    break;
+                case 'price_view':
+                    $value = null;
+                    break;
+                default:
+                    print_r(array_keys($akeneoAttributes));
+                    print_r($magentoAttribute);
+                    die;
+            }
+
+            if (!$onlyLocalized || ($onlyLocalized && $translatable)) {
+                return $value;
+            } else {
+                return null;
+            }
+        }
     }
 
     /**

@@ -168,58 +168,33 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
         $this->magentoSoapClient->init($this->clientParameters);
 
-        $this->magentoSoapClient->setCurrentStoreView(
-            'admin',
-            $this->clientParameters
-        );
-
         $calls = array();
 
         //creation for each product in the admin storeView (with default locale)
         foreach ($items as $item) {
-            $this->magentoSoapClient->addCall(
-                array(
-                    MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
-                    $item['default'],
-                ),
-                $this->clientParameters
-            );
+            foreach($item as $storeViewCode => $localizedItem) {
+                if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
+                    $this->magentoSoapClient->addCall(
+                        array(
+                            MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
+                            $item[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
+                        ),
+                        $this->clientParameters
+                    );
+                } else {
+                    $this->magentoSoapClient->addCall(
+                        array(
+                            MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
+                            $item[$storeViewCode],
+                        ),
+                        $this->clientParameters
+                    );
+                }
+            }
+
         }
 
         $this->magentoSoapClient->sendCalls($this->clientParameters);
-
-        //A locale -> storeView mapping will have to be done in configuration
-        //later. For now we will asume that we have a viewStore in magento for
-        //each akeneo locales
-
-        $locales = $this->channelManager
-            ->getChannels(array('code' => $this->channel))
-            [0]
-            ->getLocales();
-
-        //Update of each products and for each locale in their respective
-        //storeViews
-
-        foreach ($locales as $locale) {
-            $this->magentoSoapClient->setCurrentStoreView(
-                strtolower($locale->getCode()),
-                $this->clientParameters
-            );
-
-            $calls = array();
-
-            foreach ($items as $item) {
-                $this->magentoSoapClient->addCall(
-                    array(
-                        MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                        $item[$locale->getCode()],
-                    ),
-                    $this->clientParameters
-                );
-            }
-
-            $this->magentoSoapClient->sendCalls();
-        }
     }
 
     /**
