@@ -218,7 +218,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 );
             }
 
-            $this->magentoSoapClient->sendCalls($this->clientParameters);
+            $this->magentoSoapClient->sendCalls();
         }
     }
 

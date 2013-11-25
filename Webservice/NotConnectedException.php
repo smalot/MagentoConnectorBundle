@@ -11,13 +11,4 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class NotConnectedException extends \Exception
 {
-    /**
-     * Constructor
-     *
-     * @param string $message
-     */
-    public function __construct($message = 'The soap client is not connected')
-    {
-        parent::__construct($message);
-    }
 }

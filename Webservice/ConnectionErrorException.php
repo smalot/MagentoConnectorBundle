@@ -11,13 +11,4 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class ConnectionErrorException extends \Exception
 {
-    /**
-     * Constructor
-     *
-     * @param string $message
-     */
-    public function __construct($message)
-    {
-        parent::__construct($message);
-    }
 }

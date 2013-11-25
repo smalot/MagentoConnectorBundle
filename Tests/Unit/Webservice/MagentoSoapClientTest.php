@@ -158,7 +158,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
      * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\NotConnectedException
      */
     public function testSendCallsInstanciated()
-    {   
+    {
         $this->magentoSoapClient->addCall(array());
 
         $this->magentoSoapClient->sendCalls();

@@ -40,14 +40,15 @@ class MagentoSoapClient
         if (!$this->isConnected()) {
             $wsdlUrl = $this->clientParameters->getSoapUrl() .
                 self::SOAP_WSDL_URL;
-            $soapOptions = array('encoding' => 'UTF-8');
+            $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1);
 
             try {
                 $client = new \SoapClient($wsdlUrl, $soapOptions);
             } catch (\Exception $e) {
                 throw new ConnectionErrorException(
-                    'The soap connection could not be established with the ' .
-                    'error message : ' . $e->getMessage()
+                    'The soap connection could not be established',
+                    $e->getCode(),
+                    $e
                 );
             }
 
@@ -94,8 +95,9 @@ class MagentoSoapClient
             } catch (\Exception $e) {
                 throw new InvalidCredentialException(
                     'The given credential are invalid or not allowed to ' .
-                    'connect to the soap api. Error message : ' .
-                    $e->getMessage()
+                    'connect to the soap api.',
+                    $e->getCode(),
+                    $e
                 );
             }
         } else {
@@ -184,10 +186,12 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
-                $this->client->multiCall(
+                $response = $this->client->multiCall(
                     $this->session,
                     $this->calls
                 );
+
+                $this->dumpSoapResponse($response);
             } else {
                 throw new NotConnectedException();
             }
@@ -199,13 +203,23 @@ class MagentoSoapClient
     public function call($resource, $params = null)
     {
         if ($this->isConnected()) {
-            return $this->client->call(
+            $response = $this->client->call(
                 $this->session,
                 $resource,
                 $params
             );
+
+            $this->dumpSoapResponse($response);
+
+            return $response;
         } else {
             throw new NotConnectedException();
         }
+    }
+
+    public function dumpSoapResponse($response)
+    {
+        print_r($response);
+        print_r('last response ' . $this->client->__getLastResponse());
     }
 }
