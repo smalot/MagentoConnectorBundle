@@ -86,7 +86,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array($locale)));
 
         $channelManager
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getChannels')
             ->with(array('code' => self::CHANNEL))
             ->will($this->returnValue(array($channel)));

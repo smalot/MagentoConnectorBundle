@@ -168,25 +168,35 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
         $this->magentoSoapClient->init($this->clientParameters);
 
+        $callCpt = 0;
+
         //creation for each product in the admin storeView (with default locale)
         foreach ($items as $item) {
-            foreach(array_keys($item) as $storeViewCode) {
-                if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
-                    $this->magentoSoapClient->addCall(
-                        array(
-                            MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
-                            $item[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
-                        ),
-                        $this->clientParameters
-                    );
-                } else {
-                    $this->magentoSoapClient->addCall(
-                        array(
-                            MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                            $item[$storeViewCode],
-                        ),
-                        $this->clientParameters
-                    );
+            foreach ($item as $itemPart) {
+                foreach(array_keys($itemPart) as $storeViewCode) {
+                    if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
+                        $this->magentoSoapClient->addCall(
+                            array(
+                                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
+                                $itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
+                            ),
+                            $this->clientParameters
+                        );
+                    } else {
+                        $this->magentoSoapClient->addCall(
+                            array(
+                                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
+                                $itemPart[$storeViewCode],
+                            ),
+                            $this->clientParameters
+                        );
+                    }
+
+                    $callCpt++;
+
+                    if ($callCpt % 10 == 0) {
+                        $this->magentoSoapClient->sendCalls($this->clientParameters);
+                    }
                 }
             }
         }

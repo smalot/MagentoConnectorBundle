@@ -214,6 +214,7 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
+                print_r($this->calls);
 
                 $response = $this->client->multiCall(
                     $this->session,

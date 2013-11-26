@@ -71,8 +71,51 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $this->magentoSoapClient
+        $magentoSoapClient = $this->getMagentoSoapClient();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $magentoSoapClient
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+
+
+        $processor->process(array($product));
+    }
+
+    private function getMagentoSoapClient()
+    {
+        $magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+
+        $magentoSoapClient
+            ->expects($this->any())
+            ->method('getAttributeSetId')
+            ->will($this->returnValue(10));
+
+        $magentoSoapClient
             ->expects($this->once())
+            ->method('getStoreViewsList')
+            ->will($this->returnValue(
+                array(
+                    array(
+                        'code' => 'admin'
+                    ),
+                    array(
+                        'code' => 'en_us'
+                    ),
+                    array(
+                        'code' => 'fr_fr'
+                    ),
+                )
+            ));
+
+        $magentoSoapClient
+            ->expects($this->any())
             ->method('getAttributeList')
             ->will($this->returnValue(
                 array(
@@ -122,41 +165,6 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                         'scope' => 'global'
                     ),
                     array(
-                        'code' => 'price_type',
-                        'required' => '1',
-                        'scope' => 'global'
-                    ),
-                    array(
-                        'code' => 'sku_type',
-                        'required' => '1',
-                        'scope' => 'global'
-                    ),
-                    array(
-                        'code' => 'weight_type',
-                        'required' => '1',
-                        'scope' => 'global'
-                    ),
-                    array(
-                        'code' => 'shipment_type',
-                        'required' => '1',
-                        'scope' => 'global'
-                    ),
-                    array(
-                        'code' => 'links_purchased_separately',
-                        'required' => '1',
-                        'scope' => 'global'
-                    ),
-                    array(
-                        'code' => 'samples_title',
-                        'required' => '1',
-                        'scope' => 'store'
-                    ),
-                    array(
-                        'code' => 'links_title',
-                        'required' => '1',
-                        'scope' => 'store'
-                    ),
-                    array(
                         'code' => 'price',
                         'required' => '1',
                         'scope' => 'website'
@@ -166,27 +174,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                         'required' => '1',
                         'scope' => 'website'
                     ),
-                    array(
-                        'code' => 'price_view',
-                        'required' => '1',
-                        'scope' => 'global'
-                    )
                 )
             ));
 
-        $processor = new ProductMagentoProcessor(
-            $this->channelManager,
-            $this->magentoSoapClient
-        );
-
-        $processor->setSoapUsername(self::LOGIN);
-        $processor->setSoapApiKey(self::PASSWORD);
-        $processor->setSoapUrl(self::URL);
-        $processor->setChannel(self::CHANNEL);
-
-
-
-        $processor->process(array($product));
+        return $magentoSoapClient;
     }
 
     /**
@@ -194,19 +185,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessAttributeSetNotFound()
     {
-        $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCode'))
-            ->getMock();
-        $family->expects($this->once())
-            ->method('getCode')
-            ->will($this->returnValue(self::CHANNEL));
-
-        $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
-
-        $product->expects($this->once())
-            ->method('getFamily')
-            ->will($this->returnValue($family));
+        $product = $this->getProductMock();
 
         $this->magentoSoapClient
             ->expects($this->once())
@@ -240,47 +219,21 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
     protected function getProductMock()
     {
-        $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCode'))
-            ->getMock();
-        $family->expects($this->once())
-            ->method('getCode')
-            ->will($this->returnValue(self::CHANNEL));
-
-        // $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductValue');
-        // $priceProductValue->expects($this->once())->method('getData')->will($this->returnValue(self::PRICE));
-
-        // $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
-        // $priceCollection->expects($this->once())->method('first')->will($this->returnValue($priceProductValue));
-
-        // $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductPrice')
-        //     ->disableOriginalConstructor()
-        //     ->setMethods(array('getPrices'))
-        //     ->getMock();
-        // $price->expects($this->once())->method('getPrices')->will($this->returnValue($priceCollection));
-
+        $family  = $this->getFamilyMock();
+        $price   = $this->getProductPriceMock();
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
 
-        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductValue')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCode', 'getTranslatable', 'getScopable'))
-            ->getMock();
-        $attribute->expects($this->any())
-            ->method('getCode')
-            ->will($this->returnValue(self::ATTRIBUTE_NAME));
-        $attribute->expects($this->any())
-            ->method('getTranslatable')
-            ->will($this->returnValue(true));
-        $attribute->expects($this->any())
-            ->method('getScopable')
-            ->will($this->returnValue(true));
+        $attributes = array();
 
-        $attributes = array(
-            $attribute
-        );
+        foreach ($this->getSampleValues() as $key => $value) {
+            $attributes[$key] = $this->getAttributeMock($value);
+        }
 
-        $product->expects($this->once())
+        $product->expects($this->any())
+            ->method('getIdentifier')
+            ->will($this->returnValue('sku-000'));
+
+        $product->expects($this->any())
             ->method('getFamily')
             ->will($this->returnValue($family));
 
@@ -290,13 +243,13 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $map = array(
             array('name',              self::DEFAULT_LOCALE, self::CHANNEL, self::NAME),
-            array('short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::DESCRIPTION),
+            array('description',       self::DEFAULT_LOCALE, self::CHANNEL, self::DESCRIPTION),
             array('short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::SHORT_DESCRIPTION),
             array('weight',            self::DEFAULT_LOCALE, self::CHANNEL, self::WEIGHT),
             array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
             array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
             array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
-            //array('price',             null,                 null,          $price)
+            array('price',             null,                 null,          $price)
         );
 
         $product->expects($this->any())
@@ -304,6 +257,106 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValueMap($map));
 
         return $product;
+    }
+
+    protected function getFamilyMock()
+    {
+        $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode'))
+            ->getMock();
+        $family->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue(self::CHANNEL));
+
+        return $family;
+    }
+
+    protected function getProductPriceMock()
+    {
+        $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductValue');
+        $priceProductValue->expects($this->any())->method('getData')->will($this->returnValue(self::PRICE));
+
+        $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
+        $priceCollection->expects($this->any())->method('first')->will($this->returnValue($priceProductValue));
+
+        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductPrice')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrices'))
+            ->getMock();
+        $price->expects($this->any())->method('getPrices')->will($this->returnValue($priceCollection));
+
+        return $price;
+    }
+
+    protected function getAttributeMock($value)
+    {
+        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductValue')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode', 'getTranslatable', 'getScopable'))
+            ->getMock();
+        $attribute->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue($value['code']));
+        $attribute->expects($this->any())
+            ->method('getTranslatable')
+            ->will($this->returnValue($value['translatable']));
+        $attribute->expects($this->any())
+            ->method('getScopable')
+            ->will($this->returnValue($value['scopable']));
+
+
+
+        return $attribute;
+    }
+
+    protected function getSampleValues()
+    {
+        return array(
+            'name' => array(
+                'scopable'     => true,
+                'translatable' => true,
+                'value'        => 'Name',
+                'code'         => 'name',
+                'type'         => 'string',
+            ),
+            'long_description' => array(
+                'scopable'     => true,
+                'translatable' => true,
+                'value'        => 'Description',
+                'code'         => 'description',
+                'mapping'      => 'long_description'
+            ),
+            'short_description' => array(
+                'scopable'     => true,
+                'translatable' => true,
+                'value'        => 'Short description',
+                'code'         => 'short_description',
+                'type'         => 'string',
+            ),
+            'status' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => true,
+                'code'         => 'status',
+                'type'         => 'bool',
+                'method'       => 'isEnabled',
+            ),
+            'visibility' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => true,
+                'code'         => 'visibility',
+                'type'         => 'bool',
+                'method'       => 'isEnabled',
+            ),
+            'tax_class_id' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => 0,
+                'code'         => 'tax_class_id'
+            ),
+        );
     }
 
     protected function getChannelManagerMock()
@@ -317,7 +370,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->setMethods(array('getCode'))
             ->getMock();
 
-        $locale->expects($this->once())
+        $locale->expects($this->any())
             ->method('getCode')
             ->will($this->returnValue(self::DEFAULT_LOCALE));
 
@@ -330,7 +383,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array($locale)));
 
         $channelManager
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getChannels')
             ->with(array('code' => self::CHANNEL))
             ->will($this->returnValue(array($channel)));
