@@ -450,7 +450,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'tax_class_id' => array(
                 'translatable' => false,
                 'type'         => 'int',
-                'method'       =>
+                'method'       => function ($product, $params) { return 0; }
             ),
         );
     }

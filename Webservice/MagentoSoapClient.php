@@ -29,7 +29,7 @@ class MagentoSoapClient
 
     protected $calls;
 
-    protected $magentoAttributeSetList;
+    protected $magentoAttributeSets;
     protected $magentoStoreViewList;
     protected $magentoAttributes = array();
 
@@ -121,13 +121,13 @@ class MagentoSoapClient
     {
         // On first call we get the magento attribute set list
         // (to bind them with our proctut's families)
-        if (!$this->magentoAttributeSetList) {
+        if (!$this->magentoAttributeSets) {
             $attributeSets = $this->call(
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
             );
 
             foreach ($attributeSets as $attributeSet) {
-                $this->magentoAttributeSetList[$attributeSet['name']] =
+                $this->magentoAttributeSets[$attributeSet['name']] =
                     $attributeSet['set_id'];
             }
         }
@@ -151,12 +151,12 @@ class MagentoSoapClient
      */
     public function getAttributeSetId($code)
     {
-        if (!$this->magentoAttributeSetList) {
+        if (!$this->magentoAttributeSets) {
             $this->getMagentoAttributeSetList();
         }
 
-        if (isset($this->magentoAttributeSetList[$code])) {
-            return $this->magentoAttributeSetList[$code];
+        if (isset($this->magentoAttributeSets[$code])) {
+            return $this->magentoAttributeSets[$code];
         } else {
             throw new AttributeSetNotFoundException(
                 'The attribute set for code "' . $code . '" was not found'

@@ -168,11 +168,9 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
         $this->magentoSoapClient->init($this->clientParameters);
 
-        $calls = array();
-
         //creation for each product in the admin storeView (with default locale)
         foreach ($items as $item) {
-            foreach($item as $storeViewCode => $localizedItem) {
+            foreach(array_keys($item) as $storeViewCode) {
                 if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
                     $this->magentoSoapClient->addCall(
                         array(
