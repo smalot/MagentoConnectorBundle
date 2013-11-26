@@ -62,7 +62,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $defaultLocale;
 
     protected $clientParameters;
-    protected $akeneoLocales;
+    protected $pimLocales;
 
     /**
      * @param ChannelManager $channelManager
@@ -270,7 +270,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     private function getAkeneoLocaleForStoreView($storeViewCode)
     {
-        foreach ($this->getAkeneoLocales() as $locale) {
+        foreach ($this->getPimLocales() as $locale) {
             if (strtolower($locale->getCode()) == $storeViewCode) {
                 return $locale;
             }
@@ -283,16 +283,16 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * Get all akeneo locales for the current channel
      * @return array The locales
      */
-    private function getAkeneoLocales()
+    private function getPimLocales()
     {
-        if (!$this->akeneoLocales) {
-            $this->akeneoLocales = $this->channelManager
+        if (!$this->pimLocales) {
+            $this->pimLocales = $this->channelManager
                 ->getChannels(array('code' => $this->channel))
                 [0]
                 ->getLocales();
         }
 
-        return $this->akeneoLocales;
+        return $this->pimLocales;
     }
 
     /**
@@ -309,13 +309,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     {
         $values = array();
 
-        $akeneoAttributes  = $product->getAllAttributes();
-        print_r($akeneoAttributes);
+        $pimAttributes     = $product->getAllAttributes();
         $magentoAttributes = $this->magentoSoapClient->getAttributeList($product->getFamily()->getCode());
 
         foreach ($magentoAttributes as $magentoAttribute) {
-            if ($value = $this->getAkeneoValue(
-                $akeneoAttributes,
+            if ($value = $this->getPimValue(
+                $pimAttributes,
                 $magentoAttribute,
                 $product,
                 $locale,
@@ -331,7 +330,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * Get the value the given attribute for the given product
-     * @param  array  $akeneoAttributes Akeneo attribute list for the product
+     * @param  array  $pimAttributes Akeneo attribute list for the product
      * @param  array  $magentoAttribute Magento attribute list
      * @param  Product $product          The product
      * @param  string  $locale           The locale to apply
@@ -339,89 +338,121 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @param  boolean  $onlyLocalized    If true on the attribute is not translatable get a null for the value
      * @return mixed The formated value
      */
-    private function getAkeneoValue(
-        $akeneoAttributes,
+    private function getPimValue(
+        $pimAttributes,
         $magentoAttribute,
         Product $product,
         $locale,
         $scope,
         $onlyLocalized
     ) {
-        //If we have the same name in akeno and magento
-        if (isset($akeneoAttributes[$magentoAttribute['code']])) {
-            $akeneoAttribute = $akeneoAttributes[$magentoAttribute['code']];
+        $attributesOptions    = $this->getAttributesOptions();
+        $magentoAttributeCode = $magentoAttribute['code'];
 
-            $attributeCode   = $akeneoAttribute->getCode();
-            $attributeLocale = ($akeneoAttribute->getTranslatable()) ? $locale : null;
-            $attributeScope  = ($akeneoAttribute->getScopable())     ? $scope  : null;
+        $value = null;
 
-            if (!$onlyLocalized || ($onlyLocalized && $akeneoAttribute->getTranslatable())) {
-                return (string) $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+        if (isset($attributesOptions[$magentoAttributeCode])) {
+            $attributeOptions = $attributesOptions[$magentoAttributeCode];
+
+            if (isset($attributeOptions['method'])) {
+                $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
+                $method     = $attributeOptions['method'];
+
+                if (is_callable($method)) {
+                    $value = $method($product, $parameters);
+                } else {
+                    $value = call_user_func_array(array($product, $attributeOptions['method']), $parameters);
+                }
             } else {
-                return null;
-            }
-        } elseif($magentoAttribute['required']) {
-            $translatable = false;
+                //If there is a mapping between magento and the pim
+                if (isset($attributeOptions['mapping'])) {
+                    $pimAttribute  = $pimAttributes[$attributeOptions['mapping']];
+                } else {
+                    print_r($magentoAttributeCode);
+                    $pimAttribute  = $pimAttributes[$magentoAttributeCode];
+                }
 
-            switch ($magentoAttribute['code']) {
-                case 'description':
-                    $translatable = true;
-                    $value = (string) $product->getValue('short_description', $locale, $scope);
-                    break;
-                case 'weight':
-                    $value = '12.0';
-                    break;
-                case 'status':
-                    $value = 1;
-                    break;
-                case 'visibility':
-                    $value = 1;
-                    break;
-                case 'created_at':
-                    $value = (string) $product->getValue('release_date');
-                    break;
-                case 'updated_at':
-                    $value = (string) $product->getValue('release_date');
-                    break;
-                case 'price_type':
-                    $value = null;
-                    break;
-                case 'sku_type':
-                    $value = null;
-                    break;
-                case 'weight_type':
-                    $value = null;
-                    break;
-                case 'shipment_type':
-                    $value = null;
-                    break;
-                case 'links_purchased_separately':
-                    $value = null;
-                    break;
-                case 'samples_title':
-                    $value = null;
-                    break;
-                case 'links_title':
-                    $value = null;
-                    break;
-                case 'tax_class_id':
-                    $value = 0;
-                    break;
-                case 'price_view':
-                    $value = null;
-                    break;
-                default:
-                    print_r(array_keys($akeneoAttributes));
-                    print_r($magentoAttribute);
-                    die;
+                $attributeCode   = $pimAttribute->getCode();
+                $attributeLocale = ($pimAttribute->getTranslatable()) ? $locale : null;
+                $attributeScope  = ($pimAttribute->getScopable())     ? $scope  : null;
+
+                $value = $product->getValue($attributeCode, $attributeLocale, $attributeScope);
             }
 
-            if (!$onlyLocalized || ($onlyLocalized && $translatable)) {
-                return $value;
-            } else {
-                return null;
+            if ($onlyLocalized && !$attributeOptions['translatable']) {
+                $value = null;
+            }
+
+            if ($value && isset($attributeOptions['type'])) {
+                switch ($attributeOptions['type']) {
+                    case 'int':
+                        $value = (int) $value;
+                        break;
+                    case 'string':
+                        $value = (string) $value;
+                        break;
+                    case 'bool':
+                        $value = (string) (int) $value;
+                        break;
+                    case 'float':
+                        $value = (float) $value;
+                        break;
+                }
             }
         }
+
+        return $value;
+    }
+
+    private function getAttributesOptions()
+    {
+        return array(
+            'name' => array(
+                'translatable' => true,
+                'type'         => 'string',
+            ),
+            'description' => array(
+                'translatable' => true,
+                'type'         => 'string',
+                'mapping'      => 'long_description',
+            ),
+            'short_description' => array(
+                'translatable' => true,
+                'type'         => 'string',
+            ),
+            'status' => array(
+                'translatable' => false,
+                'type'         => 'bool',
+                'method'       => 'getEnabled',
+            ),
+            'visibility' => array(
+                'translatable' => false,
+                'type'         => 'bool',
+                'method'       => 'getEnabled',
+            ),
+            'created_at' => array(
+                'translatable' => false,
+                'type'         => 'string',
+                'method'       => 'getCreatedAt',
+            ),
+            'updated_at' => array(
+                'translatable' => false,
+                'type'         => 'string',
+                'method'       => 'getUpdatedAt',
+            ),
+            'price' => array(
+                'translatable' => false,
+                'type'         => 'float',
+                'method'       => function($product, $params) {
+                    return $product->getValue('price')->getPrices()->first()->getData();
+                },
+            ),
+            'tax_class_id' => array(
+                'translatable' => false,
+                'type'         => 'int',
+                'method'       =>
+            ),
+        );
     }
 
     /**

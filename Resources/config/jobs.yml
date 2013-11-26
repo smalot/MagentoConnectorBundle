@@ -7,6 +7,6 @@ connector:
            steps:
                export:
                    title:     pim_magento_connector.jobs.product_export.export.title
-                   reader:    pim_import_export.reader.product
+                   reader:    pim_import_export.reader.orm.product
                    processor: pim_magento_connector.processor.product
                    writer:    pim_magento_connector.writer.product
