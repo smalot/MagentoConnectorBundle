@@ -355,55 +355,117 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             $attributeOptions = $attributesOptions[$magentoAttributeCode];
 
             if (isset($attributeOptions['method'])) {
-                $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
-                $method     = $attributeOptions['method'];
-
-                if (is_callable($method)) {
-                    $value = $method($product, $parameters);
-                } else {
-                    $value = call_user_func_array(array($product, $attributeOptions['method']), $parameters);
-                }
+                $value = $this->getValueFromMethod($product, $attributeOptions);
             } else {
-                //If there is a mapping between magento and the pim
-                if (isset($attributeOptions['mapping'])) {
-                    $pimAttribute  = $pimAttributes[$attributeOptions['mapping']];
-                } else {
-                    print_r($magentoAttributeCode);
-                    $pimAttribute  = $pimAttributes[$magentoAttributeCode];
-                }
-
-                $attributeCode   = $pimAttribute->getCode();
-                $attributeLocale = ($pimAttribute->getTranslatable()) ? $locale : null;
-                $attributeScope  = ($pimAttribute->getScopable())     ? $scope  : null;
-
-                $value = $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+                $value = $this->getValueFromPimAttribute(
+                    $product,
+                    $attributeOptions,
+                    $magentoAttributeCode,
+                    $locale,
+                    $scope
+                );
             }
 
             if ($onlyLocalized && !$attributeOptions['translatable']) {
                 $value = null;
             }
 
-            if ($value && isset($attributeOptions['type'])) {
-                switch ($attributeOptions['type']) {
-                    case 'int':
-                        $value = (int) $value;
-                        break;
-                    case 'string':
-                        $value = (string) $value;
-                        break;
-                    case 'bool':
-                        $value = (string) (int) $value;
-                        break;
-                    case 'float':
-                        $value = (float) $value;
-                        break;
-                }
+            $value = $this->castValue($value, $attributeOptions);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Call the method from $attributeOptions and return the computed value
+     *
+     * @param  Product $product          The concerned product
+     * @param  array   $attributeOptions Attribute options
+     *
+     * @return mixed The computed value
+     */
+    private function getValueFromMethod(Product $product, $attributeOptions)
+    {
+        $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
+        $method     = $attributeOptions['method'];
+
+        if (is_callable($method)) {
+            $value = $method($product, $parameters);
+        } else {
+            $value = call_user_func_array(array($product, $attributeOptions['method']), $parameters);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Getting the value from the akeneo attribute
+     *
+     * @param  Product $product              The concerned product
+     * @param  array   $attributeOptions     Attribute options
+     * @param  string  $magentoAttributeCode The magento attribute code
+     * @param  string  $locale               The locale to apply
+     * @param  string  $scope                The scope to apply
+     *
+     * @return mixed
+     */
+    private function getValueFromPimAttribute(
+        Product $product,
+        $attributeOptions,
+        $magentoAttributeCode,
+        $locale,
+        $scope
+    ) {
+        //If there is a mapping between magento and the pim
+        if (isset($attributeOptions['mapping'])) {
+            $pimAttribute  = $pimAttributes[$attributeOptions['mapping']];
+        } else {
+            $pimAttribute  = $pimAttributes[$magentoAttributeCode];
+        }
+
+        $attributeCode   = $pimAttribute->getCode();
+        $attributeLocale = ($pimAttribute->getTranslatable()) ? $locale : null;
+        $attributeScope  = ($pimAttribute->getScopable())     ? $scope  : null;
+
+        return $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+    }
+
+    /**
+     * Cast the given value
+     *
+     * @param  mixed $value            Our value
+     * @param  array $attributeOptions The attribute options
+     *
+     * @return mixed
+     */
+    private function castValue($value, $attributeOptions)
+    {
+        if ($value && isset($attributeOptions['type'])) {
+            switch ($attributeOptions['type']) {
+                case 'int':
+                    $value = (int) $value;
+                    break;
+                case 'string':
+                    $value = (string) $value;
+                    break;
+                case 'bool':
+                    $value = (string) (int) $value;
+                    break;
+                case 'float':
+                    $value = (float) $value;
+                    break;
             }
         }
 
         return $value;
     }
 
+
+    /**
+     * Getting the attributes options
+     *
+     * @return array
+     */
     private function getAttributesOptions()
     {
         return array(
