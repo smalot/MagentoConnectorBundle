@@ -97,7 +97,15 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('getAttributeSetId')
             ->will($this->returnValue(10));
 
-        $magentoSoapClient
+        $magentoSoapClient = $this->addGetStoreViewListMock($magentoSoapClient);
+        $magentoSoapClient = $this->addGetAttributeListMock($magentoSoapClient);
+
+        return $magentoSoapClient;
+    }
+
+    private function addGetStoreViewListMock($mock)
+    {
+        $mock
             ->expects($this->once())
             ->method('getStoreViewsList')
             ->will($this->returnValue(
@@ -114,7 +122,12 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                 )
             ));
 
-        $magentoSoapClient
+        return $mock;
+    }
+
+    private function addGetAttributeListMock($mock)
+    {
+        $mock
             ->expects($this->any())
             ->method('getAttributeList')
             ->will($this->returnValue(
@@ -177,7 +190,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                 )
             ));
 
-        return $magentoSoapClient;
+        return $mock;
     }
 
     /**

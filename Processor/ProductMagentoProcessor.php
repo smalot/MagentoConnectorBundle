@@ -201,6 +201,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             $defaultValues     = $this->getValues($product, $this->defaultLocale, $this->channel, false);
             $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
 
+            print_r($magentoStoreViews);
+
             $processedItem = array();
 
             //For the default storeview we create an entire product

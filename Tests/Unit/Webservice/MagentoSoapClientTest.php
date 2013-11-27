@@ -190,4 +190,65 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->magentoSoapClient->connect();
     }
 
+    public function testGetStoreViewsList()
+    {
+        $this->getAttributeListSoapClientMock();
+
+        $this->magentoSoapClient->getStoreViewsList();
+    }
+
+    public function testGetStoreViewsListAllreadyCalled()
+    {
+        $this->getAttributeListSoapClientMock();
+
+        $this->magentoSoapClient->getStoreViewsList();
+        $this->magentoSoapClient->getStoreViewsList();
+    }
+
+    private function getAttributeListSoapClientMock()
+    {
+        $this->connectClient();
+
+        $expectedResult = array(
+            array(
+                'store_id'   => '1',
+                'code'       => 'default',
+                'website_id' => '1',
+                'group_id'   => '1',
+                'name'       => 'Default Store View',
+                'sort_order' => '0',
+                'is_active'  => '1',
+            ),
+            array(
+                'store_id'   => '2',
+                'code'       => 'en_us',
+                'website_id' => '1',
+                'group_id'   => '1',
+                'name'       => 'en_US',
+                'sort_order' => '0',
+                'is_active'  => '1',
+            ),
+            array(
+                'store_id'   => '3',
+                'code'       => 'fr_fr',
+                'website_id' => '1',
+                'group_id'   => '1',
+                'name'       => 'fr_FR',
+                'sort_order' => '0',
+                'is_active'  => '1',
+            )
+        );
+
+        $this->mockSoapClient
+            ->expects($this->once())
+            ->method('call')
+            ->with(
+                true,
+                MagentoSoapClient::SOAP_ACTION_STORE_LIST,
+                null
+            )
+            ->will($this->returnValue(
+                $expectedResult
+            ));
+    }
 }
