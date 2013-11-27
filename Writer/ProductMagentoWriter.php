@@ -201,9 +201,15 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     private function createCall($itemPart, $storeViewCode)
     {
         if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
+            if (count($itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW]) == 5) {
+                $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
+            } else {
+                $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
+            }
+
             $this->magentoSoapClient->addCall(
                 array(
-                    MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
+                    $resource,
                     $itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
                 ),
                 self::MAXIMUM_CALLS

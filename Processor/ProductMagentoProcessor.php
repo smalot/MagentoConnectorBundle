@@ -196,10 +196,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         $processedItems = array();
 
         $magentoProducts = $this->magentoSoapClient->getProductsStatus($items);
+        $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
 
         foreach ($items as $product) {
-            $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
-
             $processedItem = array();
 
             $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
@@ -231,6 +230,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         return $processedItems;
     }
 
+    protected function getSerializedProduct()
+    {
+
+    }
+
     protected function getDefaultProduct(
         Product $product,
         $magentoProducts
@@ -239,7 +243,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         $defaultValues = $this->getValues($product, $this->defaultLocale, $this->channel, false);
 
         if ($this->magentoProductExist($product, $magentoProducts)) {
-            $defaultProduct =  array(
+            $defaultProduct = array(
                 $sku,
                 $defaultValues,
                 MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
@@ -247,7 +251,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         } else {
             $attributeSetId = $this->getAttributeSetId($product);
             //For the default storeview we create an entire product
-            $defaultProduct =  array(
+            $defaultProduct = array(
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,
                 $attributeSetId,
                 $sku,
