@@ -5,9 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\CatalogBundle\Entity\Product;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
 /**
