@@ -195,44 +195,43 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         $processedItems = array();
 
-        $magentoProducts = $this->magentoSoapClient->getProductsStatus($items);
+        $magentoProducts   = $this->magentoSoapClient->getProductsStatus($items);
         $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
 
         foreach ($items as $product) {
-            $processedItem = array();
-
-            $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
-                $product,
-                $magentoProducts
-            );
-
-            //For each storeview, we create a version of the product only with localized attributes
-            foreach ($magentoStoreViews as $magentoStoreView) {
-                $storeViewCode = $magentoStoreView['code'];
-
-                $locale = $this->getAkeneoLocaleForStoreView($storeViewCode);
-
-                //If a locale for this storeview exist in akeneo, we create a translated product in this locale
-                if ($locale) {
-                    $values = $this->getValues($product, $locale, $this->channel, true);
-
-                    $processedItem[$storeViewCode] = array(
-                        (string) $product->getIdentifier(),
-                        $values,
-                        $storeViewCode
-                    );
-                }
-            }
-
-            $processedItems[] = $processedItem;
+            $processedItems[] = $this->getSerializedProduct($product, $magentoProducts, $magentoStoreViews);
         }
 
         return $processedItems;
     }
 
-    protected function getSerializedProduct()
+    protected function getSerializedProduct(Product $product, $magentoProducts, $magentoStoreViews)
     {
+        $processedItem = array();
 
+        $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+            $product,
+            $magentoProducts
+        );
+
+        //For each storeview, we create a version of the product only with localized attributes
+        foreach ($magentoStoreViews as $magentoStoreView) {
+            $storeViewCode = $magentoStoreView['code'];
+            $locale        = $this->getAkeneoLocaleForStoreView($storeViewCode);
+
+            //If a locale for this storeview exist in akeneo, we create a translated product in this locale
+            if ($locale) {
+                $values = $this->getValues($product, $locale, $this->channel, true);
+
+                $processedItem[$storeViewCode] = array(
+                    (string) $product->getIdentifier(),
+                    $values,
+                    $storeViewCode
+                );
+            }
+        }
+
+        return $processedItem;
     }
 
     protected function getDefaultProduct(
