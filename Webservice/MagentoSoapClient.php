@@ -234,7 +234,6 @@ class MagentoSoapClient
         return $this->magentoAttributes[$code];
     }
 
-
     /**
      * Add a call to the soap call stack
      *

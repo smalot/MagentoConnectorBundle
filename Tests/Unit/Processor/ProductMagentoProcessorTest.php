@@ -27,6 +27,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const VISIBILITY        = 4;
     const TAX_CLASS_ID      = 0;
     const ATTRIBUTE_NAME    = 'name';
+    const SKU               = 'sku-010';
 
     const DEFAULT_LOCALE    = 'en_US';
 
@@ -83,8 +84,6 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->setSoapUrl(self::URL);
         $processor->setChannel(self::CHANNEL);
 
-
-
         $processor->process(array($product));
     }
 
@@ -99,6 +98,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $magentoSoapClient = $this->addGetStoreViewListMock($magentoSoapClient);
         $magentoSoapClient = $this->addGetAttributeListMock($magentoSoapClient);
+        $magentoSoapClient = $this->addGetProductsStatusMock($magentoSoapClient);
 
         return $magentoSoapClient;
     }
@@ -193,6 +193,22 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
+    private function addGetProductsStatusMock($mock)
+    {
+        $mock
+            ->expects($this->any())
+            ->method('getProductsStatus')
+            ->will($this->returnValue(
+                array(
+                    array(
+                        'sku' => self::SKU
+                    )
+                )
+            ));
+
+        return $mock;
+    }
+
     /**
      * @expectedException Oro\Bundle\BatchBundle\Item\InvalidItemException
      */
@@ -200,10 +216,14 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $product = $this->getProductMock();
 
+        $this->magentoSoapClient = $this->addGetAttributeListMock($this->magentoSoapClient);
+        $this->magentoSoapClient = $this->addGetProductsStatusMock($this->magentoSoapClient);
+
         $this->magentoSoapClient
             ->expects($this->once())
             ->method('getAttributeSetId')
             ->will($this->throwException(new AttributeSetNotFoundException()));
+
 
         $this->processor->process(array($product));
     }

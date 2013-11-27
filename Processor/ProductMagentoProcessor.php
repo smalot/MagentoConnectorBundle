@@ -6,12 +6,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Entity\Product;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 
 /**
  * Magento product processor
@@ -23,8 +23,6 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     ItemProcessorInterface
 {
-    const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
-
     /**
      * @var ChannelManager
      */
@@ -34,6 +32,16 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @var MagentoSoapClient
      */
     protected $magentoSoapClient;
+
+    /**
+     * @var ProductCreateNormalizer
+     */
+    protected $productCreateNormalizer;
+
+    /**
+     * @var ProductUpdateNormalizer
+     */
+    protected $productUpdateNormalizer;
 
     /**
      * @Assert\NotBlank
@@ -61,7 +69,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $defaultLocale;
 
     protected $clientParameters;
-    protected $pimLocales;
 
     /**
      * @param ChannelManager $channelManager
@@ -69,10 +76,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoSoapClient $magentoSoapClient
+        MagentoSoapClient $magentoSoapClient,
+        ProductCreateNormalizer $productCreateNormalizer,
+        ProductUpdateNormalizer $productUpdateNormalizer
     ) {
-        $this->channelManager    = $channelManager;
-        $this->magentoSoapClient = $magentoSoapClient;
+        $this->channelManager          = $channelManager;
+        $this->magentoSoapClient       = $magentoSoapClient;
+        $this->productCreateNormalizer = $productCreateNormalizer;
+        $this->productUpdateNormalizer = $productUpdateNormalizer;
     }
 
     /**
@@ -198,68 +209,25 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         $magentoProducts   = $this->magentoSoapClient->getProductsStatus($items);
         $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
 
-        foreach ($items as $product) {
-            $processedItems[] = $this->getSerializedProduct($product, $magentoProducts, $magentoStoreViews);
-        }
-
-        return $processedItems;
-    }
-
-    protected function getSerializedProduct(Product $product, $magentoProducts, $magentoStoreViews)
-    {
-        $processedItem = array();
-
-        $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
-            $product,
-            $magentoProducts
+        $context = array(
+            'magentoStoreViews' => $magentoStoreViews,
+            'defaultLocale'     => $this->defaultLocale,
+            'channel'           => $this->channel,
         );
 
-        //For each storeview, we create a version of the product only with localized attributes
-        foreach ($magentoStoreViews as $magentoStoreView) {
-            $storeViewCode = $magentoStoreView['code'];
-            $locale        = $this->getAkeneoLocaleForStoreView($storeViewCode);
+        foreach ($items as $product) {
+            $context['attributeSetId']    = $this->getAttributeSetId($product);
+            $context['magentoAttributes'] = $this->magentoSoapClient
+                ->getAttributeList($product->getFamily()->getCode());
 
-            //If a locale for this storeview exist in akeneo, we create a translated product in this locale
-            if ($locale) {
-                $values = $this->getValues($product, $locale, $this->channel, true);
-
-                $processedItem[$storeViewCode] = array(
-                    (string) $product->getIdentifier(),
-                    $values,
-                    $storeViewCode
-                );
+            if ($this->magentoProductExist($product, $magentoProducts)) {
+                $processedItems[] = $this->productUpdateNormalizer->normalize($product, null, $context);
+            } else {
+                $processedItems[] = $this->productCreateNormalizer->normalize($product, null, $context);
             }
         }
 
-        return $processedItem;
-    }
-
-    protected function getDefaultProduct(
-        Product $product,
-        $magentoProducts
-    ) {
-        $sku           = (string) $product->getIdentifier();
-        $defaultValues = $this->getValues($product, $this->defaultLocale, $this->channel, false);
-
-        if ($this->magentoProductExist($product, $magentoProducts)) {
-            $defaultProduct = array(
-                $sku,
-                $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
-            );
-        } else {
-            $attributeSetId = $this->getAttributeSetId($product);
-            //For the default storeview we create an entire product
-            $defaultProduct = array(
-                self::MAGENTO_SIMPLE_PRODUCT_KEY,
-                $attributeSetId,
-                $sku,
-                $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
-            );
-        }
-
-        return $defaultProduct;
+        return $processedItems;
     }
 
     /**
@@ -280,25 +248,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         return false;
     }
 
-    /**
-     * Get the attribute set id for the given product
-     *
-     * @param  Product $product The product
-     * @return integer
-     */
-    protected function getAttributeSetId(Product $product)
-    {
-        try {
-            return $this->magentoSoapClient
-                ->getAttributeSetId(
-                    $product->getFamily()->getCode(),
-                    $this->getClientParameters()
-                );
-        } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        }
-    }
-
     protected function getClientParameters()
     {
         if (!$this->clientParameters) {
@@ -313,277 +262,21 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * Get the corresponding akeneo locale for a given storeview code
+     * Get the attribute set id for the given product
      *
-     * @param  string $storeViewCode The store view code
-     * @return Locale The corresponding locale
+     * @param  Product $product The product
+     * @return integer
      */
-    protected function getAkeneoLocaleForStoreView($storeViewCode)
+    protected function getAttributeSetId(Product $product)
     {
-        $pimLocales = $this->getPimLocales();
-        foreach ($pimLocales as $locale) {
-            if (strtolower($locale->getCode()) == $storeViewCode) {
-                return $locale;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get all akeneo locales for the current channel
-     * @return array The locales
-     */
-    protected function getPimLocales()
-    {
-        if (!$this->pimLocales) {
-            $this->pimLocales = $this->channelManager
-                ->getChannels(array('code' => $this->channel))
-                [0]
-                ->getLocales();
-        }
-
-        return $this->pimLocales;
-    }
-
-    /**
-     * Get values array for a given product
-     *
-     * @param  Product $product       The given product
-     * @param  string  $locale        The locale to apply
-     * @param  string  $scope         The akeno scope
-     * @param  boolean $onlyLocalized If true, only get translatable attributes
-     *
-     * @return array Computed data
-     */
-    protected function getValues(Product $product, $locale, $scope, $onlyLocalized = false)
-    {
-        $values = array();
-
-        $pimAttributes     = $product->getAllAttributes();
-        $magentoAttributes = $this->magentoSoapClient->getAttributeList($product->getFamily()->getCode());
-
-        foreach ($magentoAttributes as $magentoAttribute) {
-            if (($value = $this->getPimValue(
-                $pimAttributes,
-                $magentoAttribute,
-                $product,
-                $locale,
-                $scope,
-                $onlyLocalized
-            )) !== null) {
-                $values[$magentoAttribute['code']] = $value;
-            }
-        }
-
-        return $values;
-    }
-
-    /**
-     * Get the value the given attribute for the given product
-     * @param  array  $pimAttributes Akeneo attribute list for the product
-     * @param  array  $magentoAttribute Magento attribute list
-     * @param  Product $product          The product
-     * @param  string  $locale           The locale to apply
-     * @param  string  $scope            The scope to apply
-     * @param  boolean  $onlyLocalized   If true on the attribute is not translatable get a null for the value
-     * @return mixed The formated value
-     */
-    protected function getPimValue(
-        $pimAttributes,
-        $magentoAttribute,
-        Product $product,
-        $locale,
-        $scope,
-        $onlyLocalized
-    ) {
-        $attributesOptions    = $this->getAttributesOptions();
-        $magentoAttributeCode = $magentoAttribute['code'];;
-
-        $value = null;
-
-        if (isset($attributesOptions[$magentoAttributeCode]) &&
-            (
-                !$onlyLocalized ||
-                $onlyLocalized && $attributesOptions[$magentoAttributeCode]['translatable']
-            )
-        ) {
-            $attributeOptions = $attributesOptions[$magentoAttributeCode];
-
-            if (isset($attributeOptions['method'])) {
-                $value = $this->getValueFromMethod($product, $attributeOptions);
-            } else {
-                $value = $this->getValueFromPimAttribute(
-                    $product,
-                    $attributeOptions,
-                    $pimAttributes,
-                    $magentoAttributeCode,
-                    $locale,
-                    $scope
+        try {
+            return $this->magentoSoapClient
+                ->getAttributeSetId(
+                    $product->getFamily()->getCode()
                 );
-            }
-
-            $value = $this->castValue($value, $attributeOptions);
+        } catch (AttributeSetNotFoundException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
         }
-
-        return $value;
-    }
-
-    /**
-     * Call the method from $attributeOptions and return the computed value
-     *
-     * @param  Product $product          The concerned product
-     * @param  array   $attributeOptions Attribute options
-     *
-     * @return mixed The computed value
-     */
-    protected function getValueFromMethod(Product $product, $attributeOptions)
-    {
-        $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
-        $method     = $attributeOptions['method'];
-
-        if (is_callable($method)) {
-            $value = $method($product, $parameters);
-        } else {
-            $value = call_user_func_array(array($product, $attributeOptions['method']), $parameters);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Getting the value from the akeneo attribute
-     *
-     * @param  Product $product              The concerned product
-     * @param  array   $attributeOptions     Attribute options
-     * @param  array   $pimAttributes        Pim attributes
-     * @param  string  $magentoAttributeCode The magento attribute code
-     * @param  string  $locale               The locale to apply
-     * @param  string  $scope                The scope to apply
-     *
-     * @return mixed
-     */
-    protected function getValueFromPimAttribute(
-        Product $product,
-        $attributeOptions,
-        $pimAttributes,
-        $magentoAttributeCode,
-        $locale,
-        $scope
-    ) {
-        //If there is a mapping between magento and the pim
-        if (isset($attributeOptions['mapping'])) {
-            $pimAttribute  = $pimAttributes[$attributeOptions['mapping']];
-        } else {
-            $pimAttribute  = $pimAttributes[$magentoAttributeCode];
-        }
-
-        $attributeCode   = $pimAttribute->getCode();
-        $attributeLocale = ($pimAttribute->getTranslatable()) ? $locale : null;
-        $attributeScope  = ($pimAttribute->getScopable())     ? $scope  : null;
-
-        return $product->getValue($attributeCode, $attributeLocale, $attributeScope);
-    }
-
-    /**
-     * Cast the given value
-     *
-     * @param  mixed $value            Our value
-     * @param  array $attributeOptions The attribute options
-     *
-     * @return mixed
-     */
-    protected function castValue($value, $attributeOptions)
-    {
-        if ($value !== null && isset($attributeOptions['type'])) {
-            $castMethod = $this->getCastOptions()[$attributeOptions['type']];
-
-            $value = $castMethod($value);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Get cast options
-     *
-     * @return array
-     */
-    protected function getCastOptions()
-    {
-        return array(
-            'int' => function($value) {
-                return (int) $value;
-            },
-            'string' => function($value) {
-                return (string) $value;
-            },
-            'bool' => function($value) {
-                return (int) $value;
-            },
-            'float' => function($value) {
-                return (float) $value;
-            },
-            'date' => function($value) {
-                return (string) $value->format(\DateTime::ATOM);
-            },
-        );
-    }
-
-    /**
-     * Getting the attributes options
-     *
-     * @return array
-     */
-    protected function getAttributesOptions()
-    {
-        return array(
-            'name' => array(
-                'translatable' => true,
-                'type'         => 'string',
-            ),
-            'description' => array(
-                'translatable' => true,
-                'type'         => 'string',
-                'mapping'      => 'long_description',
-            ),
-            'short_description' => array(
-                'translatable' => true,
-                'type'         => 'string',
-            ),
-            'status' => array(
-                'translatable' => false,
-                'type'         => 'bool',
-                'method'       => 'isEnabled',
-            ),
-            'visibility' => array(
-                'translatable' => false,
-                'type'         => 'bool',
-                'method'       => 'isEnabled',
-            ),
-            'created_at' => array(
-                'translatable' => false,
-                'type'         => 'date',
-                'method'       => 'getCreated',
-            ),
-            'updated_at' => array(
-                'translatable' => false,
-                'type'         => 'date',
-                'method'       => 'getUpdated',
-            ),
-            'price' => array(
-                'translatable' => false,
-                'type'         => 'float',
-                'method'       => function($product, $params) {
-                    return $product->getValue('price')->getPrices()->first()->getData();
-                },
-            ),
-            'tax_class_id' => array(
-                'translatable' => false,
-                'type'         => 'int',
-                'method'       => function ($product, $params) { return 0; }
-            ),
-        );
     }
 
     /**
