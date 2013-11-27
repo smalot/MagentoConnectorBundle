@@ -20,6 +20,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     ItemWriterInterface
 {
+    const MAXIMUM_CALLS = 10;
+
     /**
      * @var ChannelManager
      */
@@ -168,24 +170,26 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
         $this->magentoSoapClient->init($this->clientParameters);
 
-        $callCpt = 0;
-
         //creation for each product in the admin storeView (with default locale)
         foreach ($items as $item) {
-            foreach ($item as $itemPart) {
-                foreach(array_keys($itemPart) as $storeViewCode) {
-                    $this->createCall($itemPart, $storeViewCode);
-
-                    $callCpt++;
-
-                    if ($callCpt % 10 == 0) {
-                        $this->magentoSoapClient->sendCalls($this->clientParameters);
-                    }
-                }
-            }
+            $this->computeItem($item);
         }
 
         $this->magentoSoapClient->sendCalls($this->clientParameters);
+    }
+
+    /**
+     * Compute an individual product and all his parts (translations)
+     *
+     * @param  array $item The product and his parts
+     */
+    private function computeItem($item)
+    {
+        foreach ($item as $itemPart) {
+            foreach(array_keys($itemPart) as $storeViewCode) {
+                $this->createCall($itemPart, $storeViewCode);
+            }
+        }
     }
 
     /**
@@ -202,7 +206,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                     MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
                     $itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
                 ),
-                $this->clientParameters
+                self::MAXIMUM_CALLS
             );
         } else {
             $this->magentoSoapClient->addCall(
@@ -210,7 +214,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                     MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
                     $itemPart[$storeViewCode],
                 ),
-                $this->clientParameters
+                self::MAXIMUM_CALLS
             );
         }
     }
