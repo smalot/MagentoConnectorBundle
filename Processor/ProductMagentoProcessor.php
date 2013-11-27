@@ -360,8 +360,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         $value = null;
 
-        if (isset($attributesOptions[$magentoAttributeCode])) {
-
+        if (isset($attributesOptions[$magentoAttributeCode]) &&
+            (
+                !$onlyLocalized ||
+                $onlyLocalized && $attributeOptions['translatable']
+            )
+        ) {
             $attributeOptions = $attributesOptions[$magentoAttributeCode];
 
             if (isset($attributeOptions['method'])) {
@@ -375,10 +379,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     $locale,
                     $scope
                 );
-            }
-
-            if ($onlyLocalized && !$attributeOptions['translatable']) {
-                $value = null;
             }
 
             $value = $this->castValue($value, $attributeOptions);
