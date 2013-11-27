@@ -195,23 +195,16 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         $processedItems = array();
 
-        foreach ($items as $product) {
-            $sku               = (string) $product->getIdentifier();
-            $attributeSetId    = $this->getAttributeSetId($product);
-            $defaultValues     = $this->getValues($product, $this->defaultLocale, $this->channel, false);
-            $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
+        $magentoProducts = $this->magentoSoapClient->getProductsStatus($items);
 
-            print_r($magentoStoreViews);
+        foreach ($items as $product) {
+            $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
 
             $processedItem = array();
 
-            //For the default storeview we create an entire product
-            $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = array(
-                self::MAGENTO_SIMPLE_PRODUCT_KEY,
-                $attributeSetId,
-                $sku,
-                $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+            $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+                $product,
+                $magentoProducts
             );
 
             //For each storeview, we create a version of the product only with localized attributes
@@ -225,7 +218,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     $values = $this->getValues($product, $locale, $this->channel, true);
 
                     $processedItem[$storeViewCode] = array(
-                        $sku,
+                        (string) $product->getIdentifier(),
                         $values,
                         $storeViewCode
                     );
@@ -238,13 +231,59 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         return $processedItems;
     }
 
+    protected function getDefaultProduct(
+        Product $product,
+        $magentoProducts
+    ) {
+        $sku           = (string) $product->getIdentifier();
+        $defaultValues = $this->getValues($product, $this->defaultLocale, $this->channel, false);
+
+        if ($this->magentoProductExist($product, $magentoProducts)) {
+            $defaultProduct =  array(
+                $sku,
+                $defaultValues,
+                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+            );
+        } else {
+            $attributeSetId = $this->getAttributeSetId($product);
+            //For the default storeview we create an entire product
+            $defaultProduct =  array(
+                self::MAGENTO_SIMPLE_PRODUCT_KEY,
+                $attributeSetId,
+                $sku,
+                $defaultValues,
+                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+            );
+        }
+
+        return $defaultProduct;
+    }
+
+    /**
+     * Test if a product allready exist on magento platform
+     *
+     * @param  Product $product         The product
+     * @param  array   $magentoProducts Magento products
+     * @return bool
+     */
+    protected function magentoProductExist(Product $product, $magentoProducts)
+    {
+        foreach ($magentoProducts as $magentoProduct) {
+            if ($magentoProduct['sku'] == $product->getIdentifier()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Get the attribute set id for the given product
      *
      * @param  Product $product The product
      * @return integer
      */
-    private function getAttributeSetId(Product $product)
+    protected function getAttributeSetId(Product $product)
     {
         try {
             return $this->magentoSoapClient
@@ -257,7 +296,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         }
     }
 
-    private function getClientParameters()
+    protected function getClientParameters()
     {
         if (!$this->clientParameters) {
             $this->clientParameters = new MagentoSoapClientParameters(
@@ -276,7 +315,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @param  string $storeViewCode The store view code
      * @return Locale The corresponding locale
      */
-    private function getAkeneoLocaleForStoreView($storeViewCode)
+    protected function getAkeneoLocaleForStoreView($storeViewCode)
     {
         $pimLocales = $this->getPimLocales();
         foreach ($pimLocales as $locale) {
@@ -292,7 +331,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * Get all akeneo locales for the current channel
      * @return array The locales
      */
-    private function getPimLocales()
+    protected function getPimLocales()
     {
         if (!$this->pimLocales) {
             $this->pimLocales = $this->channelManager
@@ -314,7 +353,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @return array Computed data
      */
-    private function getValues(Product $product, $locale, $scope, $onlyLocalized = false)
+    protected function getValues(Product $product, $locale, $scope, $onlyLocalized = false)
     {
         $values = array();
 
@@ -347,7 +386,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @param  boolean  $onlyLocalized   If true on the attribute is not translatable get a null for the value
      * @return mixed The formated value
      */
-    private function getPimValue(
+    protected function getPimValue(
         $pimAttributes,
         $magentoAttribute,
         Product $product,
@@ -363,7 +402,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         if (isset($attributesOptions[$magentoAttributeCode]) &&
             (
                 !$onlyLocalized ||
-                $onlyLocalized && $attributeOptions['translatable']
+                $onlyLocalized && $attributesOptions[$magentoAttributeCode]['translatable']
             )
         ) {
             $attributeOptions = $attributesOptions[$magentoAttributeCode];
@@ -395,7 +434,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @return mixed The computed value
      */
-    private function getValueFromMethod(Product $product, $attributeOptions)
+    protected function getValueFromMethod(Product $product, $attributeOptions)
     {
         $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
         $method     = $attributeOptions['method'];
@@ -421,7 +460,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @return mixed
      */
-    private function getValueFromPimAttribute(
+    protected function getValueFromPimAttribute(
         Product $product,
         $attributeOptions,
         $pimAttributes,
@@ -451,7 +490,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @return mixed
      */
-    private function castValue($value, $attributeOptions)
+    protected function castValue($value, $attributeOptions)
     {
         if ($value !== null && isset($attributeOptions['type'])) {
             $castMethod = $this->getCastOptions()[$attributeOptions['type']];
@@ -467,7 +506,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @return array
      */
-    private function getCastOptions()
+    protected function getCastOptions()
     {
         return array(
             'int' => function($value) {
@@ -493,7 +532,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @return array
      */
-    private function getAttributesOptions()
+    protected function getAttributesOptions()
     {
         return array(
             'name' => array(
