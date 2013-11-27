@@ -9,7 +9,6 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Entity\Product;
 
-use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
@@ -196,8 +195,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         $processedItems = array();
 
-        $magentoProducts = $this->magentoSoapClient->getProductsStatus($items);
-
         foreach ($items as $product) {
             $sku               = (string) $product->getIdentifier();
             $attributeSetId    = $this->getAttributeSetId($product);
@@ -239,7 +236,13 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         return $processedItems;
     }
 
-    private function getAttributeSetId($product)
+    /**
+     * Get the attribute set id for the given product
+     *
+     * @param  Product $product The product
+     * @return integer
+     */
+    private function getAttributeSetId(Product $product)
     {
         try {
             return $this->magentoSoapClient
@@ -371,8 +374,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     $scope
                 );
             }
-
-
 
             if ($onlyLocalized && !$attributeOptions['translatable']) {
                 $value = null;

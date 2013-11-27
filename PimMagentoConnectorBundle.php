@@ -2,7 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Oro\Bundle\BatchBundle\Connector\Connector;
 
 /**
