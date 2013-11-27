@@ -196,6 +196,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         $processedItems = array();
 
+        $magentoProducts = $this->magentoSoapClient->getProductsStatus($items);
+
         foreach ($items as $product) {
             $sku               = (string) $product->getIdentifier();
             $attributeSetId    = $this->getAttributeSetId($product);
@@ -230,8 +232,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     );
                 }
             }
-
-            print_r($processedItem);
 
             $processedItems[] = $processedItem;
         }
@@ -451,28 +451,39 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     private function castValue($value, $attributeOptions)
     {
         if ($value !== null && isset($attributeOptions['type'])) {
-            switch ($attributeOptions['type']) {
-                case 'int':
-                    $value = (int) $value;
-                    break;
-                case 'string':
-                    $value = (string) $value;
-                    break;
-                case 'bool':
-                    $value = (int) $value;
-                    break;
-                case 'float':
-                    $value = (float) $value;
-                    break;
-                case 'date':
-                    $value = (string) $value->format(\DateTime::ATOM);
-                    break;
-            }
+            $castMethod = $this->getCastOptions()[$attributeOptions['type']];
+
+            $value = $castMethod($value);
         }
 
         return $value;
     }
 
+    /**
+     * Get cast options
+     *
+     * @return array
+     */
+    private function getCastOptions()
+    {
+        return array(
+            'int' => function($value) {
+                return (int) $value;
+            },
+            'string' => function($value) {
+                return (string) $value;
+            },
+            'bool' => function($value) {
+                return (int) $value;
+            },
+            'float' => function($value) {
+                return (float) $value;
+            },
+            'date' => function($value) {
+                return (string) $value->format(\DateTime::ATOM);
+            },
+        );
+    }
 
     /**
      * Getting the attributes options

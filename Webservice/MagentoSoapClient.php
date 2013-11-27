@@ -16,6 +16,7 @@ class MagentoSoapClient
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
     const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 'catalog_product.currentStore';
+    const SOAP_ACTION_CATALOG_PRODUCT_LIST          = 'catalog_product.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
@@ -133,6 +134,40 @@ class MagentoSoapClient
         }
     }
 
+    public function getProductsStatus($products)
+    {
+        $productsIds = $this->getProductsIds($products);
+
+        $condition        = new \StdClass();
+        $condition->key   = 'in';
+        $condition->value = $productsIds;
+
+        $fieldFilter        = new \StdClass();
+        $fieldFilter->key   = 'sku';
+        $fieldFilter->value = $condition;
+
+        $filters = new \StdClass();
+        $filters->complex_filter = array(
+            $fieldFilter
+        );
+
+        return $this->call(
+            self::SOAP_ACTION_CATALOG_PRODUCT_LIST,
+            $filters
+        );
+    }
+
+    private function getProductsIds($products)
+    {
+        $ids = '';
+
+        foreach ($products as $product) {
+            $ids .= $product->getIdentifier() . ',';
+        }
+
+        return substr($ids, 0, strlen($ids) - 1);
+    }
+
     /**
      * Is the soap client connected ?
      *
@@ -214,8 +249,6 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
-                print_r($this->calls);
-
                 $response = $this->client->multiCall(
                     $this->session,
                     $this->calls
@@ -239,8 +272,6 @@ class MagentoSoapClient
                 $resource,
                 $params
             );
-
-            $this->dumpSoapResponse($response);
 
             return $response;
         } else {

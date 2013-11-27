@@ -73,7 +73,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
             ->setMethods(array('getCode'))
             ->getMock();
 
-        $locale->expects($this->exactly(2))
+        $locale->expects($this->any())
             ->method('getCode')
             ->will($this->returnValue(self::DEFAULT_LOCALE));
 
@@ -81,7 +81,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getLocales'))
             ->getMock();
-        $channel->expects($this->once())
+        $channel->expects($this->any())
             ->method('getLocales')
             ->will($this->returnValue(array($locale)));
 
