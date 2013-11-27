@@ -174,23 +174,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         foreach ($items as $item) {
             foreach ($item as $itemPart) {
                 foreach(array_keys($itemPart) as $storeViewCode) {
-                    if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
-                        $this->magentoSoapClient->addCall(
-                            array(
-                                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
-                                $itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
-                            ),
-                            $this->clientParameters
-                        );
-                    } else {
-                        $this->magentoSoapClient->addCall(
-                            array(
-                                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                                $itemPart[$storeViewCode],
-                            ),
-                            $this->clientParameters
-                        );
-                    }
+                    $this->createCall($itemPart, $storeViewCode);
 
                     $callCpt++;
 
@@ -202,6 +186,33 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         }
 
         $this->magentoSoapClient->sendCalls($this->clientParameters);
+    }
+
+    /**
+     * Create a call for the given item part
+     *
+     * @param  array  $itemPart      A product part
+     * @param  string $storeViewCode The storeview code
+     */
+    private function createCall($itemPart, $storeViewCode)
+    {
+        if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
+            $this->magentoSoapClient->addCall(
+                array(
+                    MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE,
+                    $itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
+                ),
+                $this->clientParameters
+            );
+        } else {
+            $this->magentoSoapClient->addCall(
+                array(
+                    MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
+                    $itemPart[$storeViewCode],
+                ),
+                $this->clientParameters
+            );
+        }
     }
 
     /**
