@@ -9,30 +9,36 @@ oro_batch:
         title: Processor
         soapUsername:
             label: Soap Username
-            help: Your soap username on magento
+            help: Your soap username on Magento
         soapApiKey:
             label: Soap api key
-            help: Your soap api key on magento
+            help: Your soap api key on Magento
         soapUrl:
             label: Soap url
             help: Your magento url
         channel:
             label: Channel
-            help: 
+            help:
         defaultLocale:
             label: Default locale
             help: The default locale to apply on admin storeView
+        enabled:
+            label: Status on Magento
+            help:
+        visibility:
+            label: Visibility on Magento
+            help:
     product_magento_writer:
         title: Processor
         soapUsername:
             label: Soap Username
-            help: Your soap username on magento
+            help: Your soap username on Magento
         soapApiKey:
             label: Soap api key
-            help: Your soap api key on magento
+            help: Your soap api key on Magento
         soapUrl:
             label: Soap url
-            help: Your magento url
+            help: Your Magento url
         channel:
             label: Channel
-            help: 
+            help:

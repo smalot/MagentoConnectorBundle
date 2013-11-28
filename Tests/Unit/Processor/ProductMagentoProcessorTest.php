@@ -45,15 +45,121 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
 
+        $this->productCreateNormalizer = $this->getProductCreateNormalizerMock();
+        $this->productUpdateNormalizer = $this->getProductUpdateNormalizerMock();
+
+
         $this->processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $this->magentoSoapClient
+            $this->magentoSoapClient,
+            $this->productCreateNormalizer,
+            $this->productUpdateNormalizer
         );
 
         $this->processor->setSoapUsername(self::LOGIN);
         $this->processor->setSoapApiKey(self::PASSWORD);
         $this->processor->setSoapUrl(self::URL);
         $this->processor->setChannel(self::CHANNEL);
+    }
+
+    private function getProductCreateNormalizerMock()
+    {
+        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('normalize')
+            ->will($this->returnValue(
+                array(
+                    'admin' => array(
+                        'sku-000',
+                        array(
+                            'name'              => 'Simple product edited',
+                            'description'       => 'long description',
+                            'short_description' => 'short description',
+                            'status'            => '0',
+                            'visibility'        => '4',
+                            'price'             => '12',
+                            'tax_class_id'      => '0',
+                            'websites'          => array(
+                                '0' => 'base',
+                            )
+                        ),
+                        'admin',
+                    ),
+                    'en_us' => array(
+                        'sku-000',
+                        array(
+                            'name'              => 'Simple product edited',
+                            'description'       => 'long description',
+                            'short_description' => 'short description',
+                        ),
+                        'en_us',
+                    ),
+                    'fr_fr' => array(
+                        'sku-000',
+                        array(
+                            'name'              => 'Exemple de produit',
+                            'description'       => 'produit long',
+                            'short_description' => 'produit',
+                        ),
+                        'fr_fr'
+                    )
+                )
+            ));
+
+        return $mock;
+    }
+
+    private function getProductUpdateNormalizerMock()
+    {
+        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('normalize')
+            ->will($this->returnValue(
+                array(
+                    'admin' => array(
+                        'sku-000',
+                        array(
+                            'name'              => 'Simple product edited',
+                            'description'       => 'long description',
+                            'short_description' => 'short description',
+                            'status'            => '0',
+                            'visibility'        => '4',
+                            'price'             => '12',
+                            'tax_class_id'      => '0',
+                            'websites'          => array(
+                                '0' => 'base',
+                            )
+                        ),
+                        'admin',
+                    ),
+                    'en_us' => array(
+                        'sku-000',
+                        array(
+                            'name'              => 'Simple product edited',
+                            'description'       => 'long description',
+                            'short_description' => 'short description',
+                        ),
+                        'en_us',
+                    ),
+                    'fr_fr' => array(
+                        'sku-000',
+                        array(
+                            'name'              => 'Exemple de produit',
+                            'description'       => 'produit long',
+                            'short_description' => 'produit',
+                        ),
+                        'fr_fr'
+                    )
+                )
+            ));
+
+        return $mock;
     }
 
     /**
@@ -76,7 +182,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient
+            $magentoSoapClient,
+            $this->getProductCreateNormalizerMock(),
+            $this->getProductUpdateNormalizerMock()
         );
 
         $processor->setSoapUsername(self::LOGIN);
@@ -407,19 +515,19 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('getCode')
             ->will($this->returnValue(self::DEFAULT_LOCALE));
 
-        $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getLocales'))
-            ->getMock();
-        $channel->expects($this->once())
-            ->method('getLocales')
-            ->will($this->returnValue(array($locale)));
+        // $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
+        //     ->disableOriginalConstructor()
+        //     ->setMethods(array('getLocales'))
+        //     ->getMock();
+        // $channel->expects($this->once())
+        //     ->method('getLocales')
+        //     ->will($this->returnValue(array($locale)));
 
-        $channelManager
-            ->expects($this->any())
-            ->method('getChannels')
-            ->with(array('code' => self::CHANNEL))
-            ->will($this->returnValue(array($channel)));
+        // $channelManager
+        //     ->expects($this->any())
+        //     ->method('getChannels')
+        //     ->with(array('code' => self::CHANNEL))
+        //     ->will($this->returnValue(array($channel)));
 
         return $channelManager;
     }

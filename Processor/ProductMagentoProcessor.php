@@ -68,6 +68,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $channel;
 
     protected $enabled;
+
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
     /**
