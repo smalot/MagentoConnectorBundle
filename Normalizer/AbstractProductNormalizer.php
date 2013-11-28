@@ -374,18 +374,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 'translatable' => false,
                 'type'         => 'int',
                 'method'       => function($value) {
-                    return 4; //Catalog and search
+                    return $this->visibility;
                 },
-            ),
-            'created_at' => array(
-                'translatable' => false,
-                'type'         => 'date',
-                'method'       => 'getCreated',
-            ),
-            'updated_at' => array(
-                'translatable' => false,
-                'type'         => 'date',
-                'method'       => 'getUpdated',
             ),
             'price' => array(
                 'translatable' => false,

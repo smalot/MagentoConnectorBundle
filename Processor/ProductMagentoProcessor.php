@@ -25,6 +25,8 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     ItemProcessorInterface
 {
+    const MAGENTO_VISIBILITY_VISIBLE = 4;
+
     /**
      * @var ChannelManager
      */
@@ -66,6 +68,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $channel;
 
     protected $enabled;
+    protected $visibility = self::MAGENTO_VISIBILITY_VISIBLE;
 
     /**
      * @Assert\NotBlank
@@ -206,6 +209,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
+     * get visibility
+     *
+     * @return string visibility
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * Set visibility
+     *
+     * @param string $visibility visibility
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
      * get defaultLocale
      *
      * @return string defaultLocale
@@ -268,6 +293,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'channel'           => $this->channel,
             'website'           => $this->website,
             'enabled'           => $this->enabled,
+            'visibility'        => $this->visibility,
         );
 
         foreach ($items as $product) {
@@ -388,15 +414,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 'type' => 'text'
             ),
             'website' => array(
-                //Should be fixed to display only active locale on the selected
-                //channel
                 'type' => 'text'
             ),
             'enabled' => array(
-                //Should be fixed to display only active locale on the selected
-                //channel
                 'type' => 'switch'
-            )
+            ),
+            'visibility' => array(
+                'type' => 'text'
+            ),
         );
     }
 }

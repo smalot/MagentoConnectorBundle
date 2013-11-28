@@ -45,6 +45,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
 
+        $this->getMock('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer');
+        $this->getMock('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer');
+
         $this->processor = new ProductMagentoProcessor(
             $this->channelManager,
             $this->magentoSoapClient

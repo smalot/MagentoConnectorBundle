@@ -16,7 +16,8 @@ class ProductUpdateNormalizer extends AbstractProductNormalizer
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $this->enabled = $context['enabled'];
+        $this->enabled    = $context['enabled'];
+        $this->visibility = $context['visibility'];
 
         return $this->getNormalizedProduct(
             $object,
