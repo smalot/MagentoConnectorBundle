@@ -57,6 +57,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $attributeSetId,
         $defaultLocale,
         $channel,
+        $website,
         $create
     ) {
         $processedItem = array();
@@ -67,6 +68,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             $attributeSetId,
             $defaultLocale,
             $channel,
+            $website,
             $create
         );
 
@@ -96,12 +98,15 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $attributeSetId,
         $defaultLocale,
         $channel,
+        $website,
         $create
     ) {
         $sku           = (string) $product->getIdentifier();
         $defaultValues = $this->getValues($product, $magentoAttributes, $defaultLocale, $channel, false);
 
         if ($create) {
+            $defaultValues['websistes'] = array($website);
+
             //For the default storeview we create an entire product
             $defaultProduct = array(
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,
@@ -183,8 +188,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 $values[$magentoAttribute['code']] = $value;
             }
         }
-
-        $values['websites'] = array('base');
 
         return $values;
     }

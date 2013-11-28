@@ -23,6 +23,7 @@ class ProductUpdateNormalizer extends AbstractProductNormalizer
             $context['attributeSetId'],
             $context['defaultLocale'],
             $context['channel'],
+            $context['website'],
             false
         );
     }

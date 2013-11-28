@@ -23,6 +23,7 @@ class ProductCreateNormalizer extends AbstractProductNormalizer
             $context['attributeSetId'],
             $context['defaultLocale'],
             $context['channel'],
+            $context['website'],
             true
         );
     }

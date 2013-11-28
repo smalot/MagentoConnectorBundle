@@ -70,6 +70,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     protected $defaultLocale;
 
+    /**
+     * @Assert\NotBlank
+     */
+    protected $website = 'base';
+
     protected $clientParameters;
 
     /**
@@ -199,6 +204,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
+     * get website
+     *
+     * @return string website
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * Set website
+     *
+     * @param string $website website
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function process($items)
@@ -215,6 +242,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'magentoStoreViews' => $magentoStoreViews,
             'defaultLocale'     => $this->defaultLocale,
             'channel'           => $this->channel,
+            'website'           => $this->website,
         );
 
         foreach ($items as $product) {
@@ -223,6 +251,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 ->getAttributeList($product->getFamily()->getCode());
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
+                if ($this->attributeSetChanged($product, $magentoProducts)) {
+                    throw new InvalidItemException('The product family has changed. This modification cannot be' .
+                        'applied to magento. In order to change the family of this product, please manualy delete' .
+                        ' this product in magento and re-run this connector.', array($product));
+                }
+
                 $processedItems[] = $this->productUpdateNormalizer->normalize($product, null, $context);
             } else {
                 $processedItems[] = $this->productCreateNormalizer->normalize($product, null, $context);
@@ -244,6 +278,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier()) {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Test if the product attribute set changed
+     *
+     * @param  Product $product         The product
+     * @param  array   $magentoProducts Magento products
+     * @return bool
+     */
+    protected function attributeSetChanged(Product $product, $magentoProducts)
+    {
+        foreach ($magentoProducts as $magentoProduct) {
+            if ($magentoProduct['sku'] == $product->getIdentifier()) {
+                if ($magentoProduct['set'] != $this->getAttributeSetId($product)) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
 
@@ -302,6 +358,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 )
             ),
             'defaultLocale' => array(
+                //Should be fixed to display only active locale on the selected
+                //channel
+                'type' => 'text'
+            ),
+            'website' => array(
                 //Should be fixed to display only active locale on the selected
                 //channel
                 'type' => 'text'
