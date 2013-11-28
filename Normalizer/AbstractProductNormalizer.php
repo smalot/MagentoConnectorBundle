@@ -184,6 +184,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             }
         }
 
+        $values['websites'] = array('base');
+
         return $values;
     }
 

@@ -253,6 +253,7 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
+
                 $response = $this->client->multiCall(
                     $this->session,
                     $this->calls
@@ -285,6 +286,5 @@ class MagentoSoapClient
 
     public function dumpSoapResponse($response)
     {
-
     }
 }
