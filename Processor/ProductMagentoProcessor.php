@@ -25,7 +25,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     ItemProcessorInterface
 {
-    const MAGENTO_VISIBILITY_CATALOG_AND_SEARCH = 4;
+    const MAGENTO_VISIBILITY_CATALOG_SEARCH = 4;
 
     /**
      * @var ChannelManager
@@ -68,7 +68,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $channel;
 
     protected $enabled;
-    protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_AND_SEARCH;
+    protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
     /**
      * @Assert\NotBlank
