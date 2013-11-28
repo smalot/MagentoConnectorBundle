@@ -65,6 +65,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     protected $channel;
 
+    protected $enabled;
+
     /**
      * @Assert\NotBlank
      */
@@ -182,6 +184,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
+     * get enabled
+     *
+     * @return string enabled
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Set enabled
+     *
+     * @param string $enabled enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
      * get defaultLocale
      *
      * @return string defaultLocale
@@ -243,6 +267,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'defaultLocale'     => $this->defaultLocale,
             'channel'           => $this->channel,
             'website'           => $this->website,
+            'enabled'           => $this->enabled,
         );
 
         foreach ($items as $product) {
@@ -366,6 +391,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 //Should be fixed to display only active locale on the selected
                 //channel
                 'type' => 'text'
+            ),
+            'enabled' => array(
+                //Should be fixed to display only active locale on the selected
+                //channel
+                'type' => 'switch'
             )
         );
     }

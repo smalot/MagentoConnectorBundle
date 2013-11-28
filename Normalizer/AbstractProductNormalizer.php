@@ -101,12 +101,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $website,
         $create
     ) {
-        $sku           = (string) $product->getIdentifier();
-        $defaultValues = $this->getValues($product, $magentoAttributes, $defaultLocale, $channel, false);
+        $sku                       = (string) $product->getIdentifier();
+        $defaultValues             = $this->getValues($product, $magentoAttributes, $defaultLocale, $channel, false);
+        $defaultValues['websites'] = array($website);
 
         if ($create) {
-            $defaultValues['websistes'] = array($website);
-
             //For the default storeview we create an entire product
             $defaultProduct = array(
                 self::MAGENTO_SIMPLE_PRODUCT_KEY,
@@ -367,12 +366,16 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             'status' => array(
                 'translatable' => false,
                 'type'         => 'bool',
-                'method'       => 'isEnabled',
+                'method'       => function($product) {
+                    return $this->enabled;
+                },
             ),
             'visibility' => array(
                 'translatable' => false,
-                'type'         => 'bool',
-                'method'       => 'isEnabled',
+                'type'         => 'int',
+                'method'       => function($value) {
+                    return 4; //Catalog and search
+                },
             ),
             'created_at' => array(
                 'translatable' => false,

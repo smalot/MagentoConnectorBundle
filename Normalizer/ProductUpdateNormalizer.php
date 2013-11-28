@@ -16,6 +16,8 @@ class ProductUpdateNormalizer extends AbstractProductNormalizer
      */
     public function normalize($object, $format = null, array $context = array())
     {
+        $this->enabled = $context['enabled'];
+
         return $this->getNormalizedProduct(
             $object,
             $context['magentoStoreViews'],
