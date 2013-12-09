@@ -51,8 +51,35 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $this->writer->setChannel(self::CHANNEL);
 
         $items = array(array(
-            'default'              => array(
+            'admin'              => array(
 
+            ),
+            self::DEFAULT_LOCALE   => array(
+
+            )
+        ));
+
+        $this->writer->write($items);
+    }
+
+    public function testWrite()
+    {
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $this->writer = new ProductMagentoWriter($this->channelManager, $this->magentoSoapClient);
+
+        $this->writer->setSoapUsername(self::LOGIN);
+        $this->writer->setSoapApiKey(self::PASSWORD);
+        $this->writer->setSoapUrl(self::URL);
+        $this->writer->setChannel(self::CHANNEL);
+
+        $items = array(array(
+            'admin'              => array(
+                '1',
+                '1',
+                '1',
+                '1',
+                '1',
             ),
             self::DEFAULT_LOCALE   => array(
 

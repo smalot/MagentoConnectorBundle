@@ -185,10 +185,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     private function computeItem($item)
     {
-        foreach ($item as $itemPart) {
-            foreach(array_keys($itemPart) as $storeViewCode) {
-                $this->createCall($itemPart, $storeViewCode);
-            }
+        foreach(array_keys($item) as $storeViewCode) {
+            $this->createCall($item[$storeViewCode], $storeViewCode);
         }
     }
 
@@ -201,7 +199,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     private function createCall($itemPart, $storeViewCode)
     {
         if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
-            if (count($itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW]) == 5) {
+            if (count($itemPart) == 5) {
                 $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
             } else {
                 $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
@@ -210,7 +208,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             $this->magentoSoapClient->addCall(
                 array(
                     $resource,
-                    $itemPart[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW],
+                    $itemPart,
                 ),
                 self::MAXIMUM_CALLS
             );
@@ -218,7 +216,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             $this->magentoSoapClient->addCall(
                 array(
                     MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                    $itemPart[$storeViewCode],
+                    $itemPart,
                 ),
                 self::MAXIMUM_CALLS
             );
@@ -237,8 +235,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 //empty the field at each edit
                 'type' => 'text'
             ),
-            'soapUrl' => array(),
-            'channel' => array(
+            'soapUrl'      => array(),
+            'channel'      => array(
                 'type'    => 'choice',
                 'options' => array(
                     'choices'  => $this->channelManager->getChannelChoices(),
