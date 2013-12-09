@@ -18,6 +18,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const PASSWORD          = 'password';
     const URL               = 'url';
     const CHANNEL           = 'channel';
+    const ENABLED           = true;
+    const WEBSITE           = 0;
     const PRICE             = '13.37';
     const NAME              = 'Product example';
     const DESCRIPTION       = 'Description';
@@ -28,6 +30,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const TAX_CLASS_ID      = 0;
     const ATTRIBUTE_NAME    = 'name';
     const SKU               = 'sku-010';
+    const SET               = '10';
 
     const DEFAULT_LOCALE    = 'en_US';
 
@@ -60,6 +63,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->processor->setSoapApiKey(self::PASSWORD);
         $this->processor->setSoapUrl(self::URL);
         $this->processor->setChannel(self::CHANNEL);
+        $this->processor->setEnabled(self::ENABLED);
+        $this->processor->setVisibility(self::VISIBILITY);
+        $this->processor->setWebsite(self::WEBSITE);
     }
 
     private function getProductCreateNormalizerMock()
@@ -73,7 +79,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(
                 array(
                     'admin' => array(
-                        'sku-000',
+                        self::SKU,
                         array(
                             'name'              => 'Simple product edited',
                             'description'       => 'long description',
@@ -89,7 +95,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                         'admin',
                     ),
                     'en_us' => array(
-                        'sku-000',
+                        self::SKU,
                         array(
                             'name'              => 'Simple product edited',
                             'description'       => 'long description',
@@ -98,7 +104,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                         'en_us',
                     ),
                     'fr_fr' => array(
-                        'sku-000',
+                        self::SKU,
                         array(
                             'name'              => 'Exemple de produit',
                             'description'       => 'produit long',
@@ -123,7 +129,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(
                 array(
                     'admin' => array(
-                        'sku-000',
+                        self::SKU,
                         array(
                             'name'              => 'Simple product edited',
                             'description'       => 'long description',
@@ -139,7 +145,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                         'admin',
                     ),
                     'en_us' => array(
-                        'sku-000',
+                        self::SKU,
                         array(
                             'name'              => 'Simple product edited',
                             'description'       => 'long description',
@@ -148,7 +154,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
                         'en_us',
                     ),
                     'fr_fr' => array(
-                        'sku-000',
+                        self::SKU,
                         array(
                             'name'              => 'Exemple de produit',
                             'description'       => 'produit long',
@@ -179,6 +185,109 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->channelManager = $this->getChannelManagerMock();
 
         $magentoSoapClient = $this->getMagentoSoapClient();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $magentoSoapClient,
+            $this->getProductCreateNormalizerMock(),
+            $this->getProductUpdateNormalizerMock()
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+        $processor->process(array($product));
+    }
+
+    public function testProcessProductDoesntExist()
+    {
+        $family  = $this->getFamilyMock();
+        $price   = $this->getProductPriceMock();
+        $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+
+        $attributes = array();
+
+        foreach ($this->getSampleValues() as $key => $value) {
+            $attributes[$key] = $this->getAttributeMock($value);
+        }
+
+        $product->expects($this->any())
+            ->method('getIdentifier')
+            ->will($this->returnValue('sku-011'));
+
+        $product->expects($this->any())
+            ->method('getFamily')
+            ->will($this->returnValue($family));
+
+        $product->expects($this->any())
+            ->method('getAllAttributes')
+            ->will($this->returnValue($attributes));
+
+        $map = array(
+            array('name',              self::DEFAULT_LOCALE, self::CHANNEL, self::NAME),
+            array('description',       self::DEFAULT_LOCALE, self::CHANNEL, self::DESCRIPTION),
+            array('short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::SHORT_DESCRIPTION),
+            array('weight',            self::DEFAULT_LOCALE, self::CHANNEL, self::WEIGHT),
+            array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
+            array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
+            array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
+            array('price',             null,                 null,          $price)
+        );
+
+        $product->expects($this->any())
+            ->method('getValue')
+            ->will($this->returnValueMap($map));
+
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $magentoSoapClient = $this->getMagentoSoapClient();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $magentoSoapClient,
+            $this->getProductCreateNormalizerMock(),
+            $this->getProductUpdateNormalizerMock()
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+        $processor->process(array($product));
+    }
+
+    /**
+     * @expectedException Oro\Bundle\BatchBundle\Item\InvalidItemException
+     */
+    public function testProcessAttributeSetChanged()
+    {
+        $product = $this->getProductMock();
+
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+
+        $magentoSoapClient
+            ->expects($this->any())
+            ->method('getAttributeSetId')
+            ->will($this->returnValue(10));
+
+        $magentoSoapClient = $this->addGetStoreViewListMock($magentoSoapClient);
+        $magentoSoapClient = $this->addGetAttributeListMock($magentoSoapClient);
+
+        $magentoSoapClient->expects($this->any())
+            ->method('getProductsStatus')
+            ->will($this->returnValue(
+                array(
+                    array(
+                        'sku' => self::SKU,
+                        'set' => 11
+                    )
+                )
+            ));
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -309,7 +418,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(
                 array(
                     array(
-                        'sku' => self::SKU
+                        'sku' => self::SKU,
+                        'set' => self::SET
                     )
                 )
             ));
@@ -350,9 +460,12 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     public function testSettersAndGetters()
     {
         $this->assertEquals($this->processor->getSoapUsername(), self::LOGIN);
-        $this->assertEquals($this->processor->getSoapApiKey(), self::PASSWORD);
-        $this->assertEquals($this->processor->getSoapUrl(), self::URL);
-        $this->assertEquals($this->processor->getChannel(), self::CHANNEL);
+        $this->assertEquals($this->processor->getSoapApiKey(),   self::PASSWORD);
+        $this->assertEquals($this->processor->getSoapUrl(),      self::URL);
+        $this->assertEquals($this->processor->getChannel(),      self::CHANNEL);
+        $this->assertEquals($this->processor->getEnabled(),      self::ENABLED);
+        $this->assertEquals($this->processor->getVisibility(),   self::VISIBILITY);
+        $this->assertEquals($this->processor->getWebsite(),      self::WEBSITE);
 
         $this->processor->setDefaultLocale(self::DEFAULT_LOCALE);
         $this->assertEquals($this->processor->getDefaultLocale(), self::DEFAULT_LOCALE);
@@ -372,7 +485,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $product->expects($this->any())
             ->method('getIdentifier')
-            ->will($this->returnValue('sku-000'));
+            ->will($this->returnValue(self::SKU));
 
         $product->expects($this->any())
             ->method('getFamily')
@@ -445,8 +558,6 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $attribute->expects($this->any())
             ->method('getScopable')
             ->will($this->returnValue($value['scopable']));
-
-
 
         return $attribute;
     }

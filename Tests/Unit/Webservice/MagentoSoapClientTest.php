@@ -90,7 +90,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException
      */
-    public function testgetAttributeSetIdAttributeSetUnknow()
+    public function testGetAttributeSetIdAttributeSetUnknow()
     {
         $this->connectClient();
 
@@ -112,6 +112,46 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
             ));
 
         $this->magentoSoapClient->getAttributeSetId(self::BAD_ATTRIBUTE_SET_CODE);
+    }
+
+    public function testGetProductStatus()
+    {
+        $this->connectClient();
+
+        $condition        = new \StdClass();
+        $condition->key   = 'in';
+        $condition->value = '1,2';
+
+        $fieldFilter        = new \StdClass();
+        $fieldFilter->key   = 'sku';
+        $fieldFilter->value = $condition;
+
+        $filters = new \StdClass();
+        $filters->complex_filter = array(
+            $fieldFilter
+        );
+
+        $product1 = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+        $product1->expects($this->once())
+            ->method('getIdentifier')
+            ->will($this->returnValue(1));
+        $product2 = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+        $product2->expects($this->once())
+            ->method('getIdentifier')
+            ->will($this->returnValue(2));
+
+        $products = array($product1, $product2);
+
+        $this->mockSoapClient
+            ->expects($this->once())
+            ->method('call')
+            ->with(
+                true,
+                MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_LIST,
+                $filters
+            );
+
+        $this->magentoSoapClient->getProductsStatus($products);
     }
 
     public function testgetAttributeSetId()

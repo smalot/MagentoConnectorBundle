@@ -328,6 +328,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected function magentoProductExist(Product $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
+
             if ($magentoProduct['sku'] == $product->getIdentifier()) {
                 return true;
             }
@@ -349,8 +350,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             if ($magentoProduct['sku'] == $product->getIdentifier()) {
                 if ($magentoProduct['set'] != $this->getAttributeSetId($product)) {
                     return true;
-                } else {
-                    return false;
                 }
             }
         }

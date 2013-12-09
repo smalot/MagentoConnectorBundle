@@ -157,6 +157,12 @@ class MagentoSoapClient
         );
     }
 
+    /**
+     * Serialize products id in csv
+     *
+     * @param  array $products The given products
+     * @return string The serialization result
+     */
     private function getProductsIds($products)
     {
         $ids = '';
