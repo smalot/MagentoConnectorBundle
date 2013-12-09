@@ -131,11 +131,11 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
             $fieldFilter
         );
 
-        $product1 = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+        $product1 = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
         $product1->expects($this->once())
             ->method('getIdentifier')
             ->will($this->returnValue(1));
-        $product2 = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+        $product2 = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
         $product2->expects($this->once())
             ->method('getIdentifier')
             ->will($this->returnValue(2));

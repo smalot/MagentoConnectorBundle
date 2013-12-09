@@ -205,7 +205,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $family  = $this->getFamilyMock();
         $price   = $this->getProductPriceMock();
-        $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+        $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
 
         $attributes = array();
 
@@ -233,7 +233,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
             array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
             array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
-            array('price',             null,                 null,          $price)
+            array('price',             self::DEFAULT_LOCALE, self::CHANNEL, $price)
         );
 
         $product->expects($this->any())
@@ -475,7 +475,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $family  = $this->getFamilyMock();
         $price   = $this->getProductPriceMock();
-        $product = $this->getMock('Pim\Bundle\CatalogBundle\Entity\Product');
+        $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
 
         $attributes = array();
 
@@ -503,7 +503,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
             array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
             array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
-            array('price',             null,                 null,          $price)
+            array('price',             self::DEFAULT_LOCALE, self::CHANNEL, $price)
         );
 
         $product->expects($this->any())
@@ -528,13 +528,13 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
     protected function getProductPriceMock()
     {
-        $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductValue');
+        $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Model\ProductValue');
         $priceProductValue->expects($this->any())->method('getData')->will($this->returnValue(self::PRICE));
 
         $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
         $priceCollection->expects($this->any())->method('first')->will($this->returnValue($priceProductValue));
 
-        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductPrice')
+        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Model\ProductPrice')
             ->disableOriginalConstructor()
             ->setMethods(array('getPrices'))
             ->getMock();
@@ -545,18 +545,18 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
     protected function getAttributeMock($value)
     {
-        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\ProductValue')
+        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Model\ProductValue')
             ->disableOriginalConstructor()
-            ->setMethods(array('getCode', 'getTranslatable', 'getScopable'))
+            ->setMethods(array('getCode', 'isTranslatable', 'isScopable'))
             ->getMock();
         $attribute->expects($this->any())
             ->method('getCode')
             ->will($this->returnValue($value['code']));
         $attribute->expects($this->any())
-            ->method('getTranslatable')
+            ->method('isTranslatable')
             ->will($this->returnValue($value['translatable']));
         $attribute->expects($this->any())
-            ->method('getScopable')
+            ->method('isScopable')
             ->will($this->returnValue($value['scopable']));
 
         return $attribute;

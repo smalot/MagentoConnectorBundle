@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
-use Pim\Bundle\CatalogBundle\Entity\Product;
+use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
 /**
@@ -223,7 +223,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             $attributeOptions = $attributesOptions[$magentoAttributeCode];
 
             if (isset($attributeOptions['method'])) {
-                $value = $this->getValueFromMethod($product, $attributeOptions);
+                $value = $this->getValueFromMethod($product, $attributeOptions, $locale, $scope);
             } else {
                 $value = $this->getValueFromPimAttribute(
                     $product,
@@ -246,13 +246,20 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      *
      * @param  Product $product          The concerned product
      * @param  array   $attributeOptions Attribute options
+     * @param  string  $locale           Locale code
+     * @param  string  $scope            Scope code
      *
      * @return mixed The computed value
      */
-    protected function getValueFromMethod(Product $product, $attributeOptions)
+    protected function getValueFromMethod(Product $product, $attributeOptions, $locale = null, $scope = null)
     {
         $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
-        $method     = $attributeOptions['method'];
+        $parameters = array_merge(array(
+            'locale' => $locale,
+            'scope'  => $scope
+        ), $parameters);
+
+        $method = $attributeOptions['method'];
 
         if (is_callable($method)) {
             $value = $method($product, $parameters);
@@ -291,8 +298,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         }
 
         $attributeCode   = $pimAttribute->getCode();
-        $attributeLocale = ($pimAttribute->getTranslatable()) ? $locale : null;
-        $attributeScope  = ($pimAttribute->getScopable())     ? $scope  : null;
+        $attributeLocale = ($pimAttribute->isTranslatable()) ? $locale : null;
+        $attributeScope  = ($pimAttribute->isScopable())     ? $scope  : null;
 
         return $product->getValue($attributeCode, $attributeLocale, $attributeScope);
     }
@@ -378,10 +385,17 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 },
             ),
             'price' => array(
-                'translatable' => false,
+                'translatable' => true,
                 'type'         => 'float',
                 'method'       => function($product, $params) {
-                    return $product->getValue('price')->getPrices()->first()->getData();
+                    print_r('#######################');
+                    print_r($product->getValue('price'));
+                    print_r($product->getValue($params));
+                    print_r($product->getValue($params['scope']));
+                    return $product->getValue('price', $params['locale'], $params['scope'])
+                        ->getPrices()
+                        ->first()
+                        ->getData();
                 },
             ),
             'tax_class_id' => array(
