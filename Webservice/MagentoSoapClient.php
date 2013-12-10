@@ -295,8 +295,6 @@ class MagentoSoapClient
     {
         $this->calls[] = $call;
 
-        print_r($call);
-
         if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
             $this->sendCalls();
         }

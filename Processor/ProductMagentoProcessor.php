@@ -289,9 +289,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         $magentoStoreViews        = $this->magentoSoapClient->getStoreViewsList();
         $magentoAttributesOptions = $this->magentoSoapClient->getAllAttributesOptions();
 
-
-            // print_r($magentoAttributesOptions);
-
         $context = array(
             'magentoStoreViews'        => $magentoStoreViews,
             'magentoAttributesOptions' => $magentoAttributesOptions,
