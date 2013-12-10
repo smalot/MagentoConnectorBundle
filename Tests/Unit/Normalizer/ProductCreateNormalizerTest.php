@@ -265,7 +265,7 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $locale->expects($this->any())
-            ->method('getCode')
+            ->method('__toString')
             ->will($this->returnValue(self::DEFAULT_LOCALE));
 
         $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')

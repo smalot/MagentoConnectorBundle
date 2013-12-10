@@ -201,7 +201,8 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
                 array(
                     array()
                 )
-            );
+            )
+            ->will($this->returnValue(array()));
 
         $this->magentoSoapClient->sendCalls();
     }
