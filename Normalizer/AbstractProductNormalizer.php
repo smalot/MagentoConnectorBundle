@@ -384,6 +384,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     return $this->visibility;
                 },
             ),
+            'color' => array(
+                'translatable' => false,
+                'type'         => 'select',
+                'method'       => function() {
+                    return ;
+                }
+            ),
             'price' => array(
                 'translatable' => true,
                 'type'         => 'float',

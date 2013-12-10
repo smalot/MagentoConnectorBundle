@@ -170,6 +170,16 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
         $this->magentoSoapClient->init($this->clientParameters);
 
+        $attributes = $this->magentoSoapClient->getAttributeList('shirt');
+
+        foreach ($attributes as $attribute) {
+            if ($attribute['type'] == 'select') {
+
+            }
+        }
+
+        die;
+
         //creation for each product in the admin storeView (with default locale)
         foreach($items as $batch) {
             foreach ($batch as $item) {

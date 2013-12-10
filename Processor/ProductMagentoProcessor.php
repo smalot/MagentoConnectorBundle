@@ -285,16 +285,21 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         $processedItems = array();
 
-        $magentoProducts   = $this->magentoSoapClient->getProductsStatus($items);
-        $magentoStoreViews = $this->magentoSoapClient->getStoreViewsList();
+        $magentoProducts          = $this->magentoSoapClient->getProductsStatus($items);
+        $magentoStoreViews        = $this->magentoSoapClient->getStoreViewsList();
+        $magentoAttributesOptions = $this->magentoSoapClient->getAllAttributesOptions();
+
+
+            // print_r($magentoAttributesOptions);
 
         $context = array(
-            'magentoStoreViews' => $magentoStoreViews,
-            'defaultLocale'     => $this->defaultLocale,
-            'channel'           => $this->channel,
-            'website'           => $this->website,
-            'enabled'           => $this->enabled,
-            'visibility'        => $this->visibility,
+            'magentoStoreViews'        => $magentoStoreViews,
+            'magentoAttributesOptions' => $magentoAttributesOptions,
+            'defaultLocale'            => $this->defaultLocale,
+            'channel'                  => $this->channel,
+            'website'                  => $this->website,
+            'enabled'                  => $this->enabled,
+            'visibility'               => $this->visibility,
         );
 
         foreach ($items as $product) {

@@ -17,11 +17,13 @@ class MagentoSoapClient
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
     const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 'catalog_product.currentStore';
     const SOAP_ACTION_CATALOG_PRODUCT_LIST          = 'catalog_product.list';
+    const SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS     = 'catalog_product_attribute.options';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
 
     const SOAP_DEFAULT_STORE_VIEW                   = 'default';
+    const SOAP_ATTRIBUTE_ID                         = 'attribute_id';
 
     protected $clientParameters;
 
@@ -33,6 +35,9 @@ class MagentoSoapClient
     protected $magentoAttributeSets;
     protected $magentoStoreViewList;
     protected $magentoAttributes = array();
+
+    protected $attributeList = array();
+    protected $attributeSetList = array();
 
     /**
      * Init the service with credentials and soap url
@@ -118,7 +123,7 @@ class MagentoSoapClient
      *
      * @return void
      */
-    private function getMagentoAttributeSetList()
+    protected function getAttributeSetList()
     {
         // On first call we get the magento attribute set list
         // (to bind them with our proctut's families)
@@ -132,6 +137,31 @@ class MagentoSoapClient
                     $attributeSet['set_id'];
             }
         }
+
+        return $this->magentoAttributeSets;
+    }
+
+    protected function getAttributeOptions($attribute)
+    {
+        $options = $this->attributeOptions[$attribute] = $this->call(
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+            array($attribute)
+        );
+
+        return $options;
+    }
+
+    public function getAllAttributesOptions()
+    {
+        $attributeList = $this->getAllAttributes();
+
+        foreach ($attributeList as $attributeCode => $attribute) {
+            if ($attribute['type'] == 'select') {
+                $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
+            }
+        }
+
+        return $this->attributeOptionList;
     }
 
     public function getProductsStatus($products)
@@ -163,7 +193,7 @@ class MagentoSoapClient
      * @param  array $products The given products
      * @return string The serialization result
      */
-    private function getProductsIds($products)
+    protected function getProductsIds($products)
     {
         $ids = '';
 
@@ -192,9 +222,7 @@ class MagentoSoapClient
      */
     public function getAttributeSetId($code)
     {
-        if (!$this->magentoAttributeSets) {
-            $this->getMagentoAttributeSetList();
-        }
+        $this->getAttributeSetList();
 
         if (isset($this->magentoAttributeSets[$code])) {
             return $this->magentoAttributeSets[$code];
@@ -221,23 +249,40 @@ class MagentoSoapClient
         return $this->magentoStoreViewList;
     }
 
+    protected function getAllAttributes()
+    {
+        if (!$this->attributeList) {
+            $attributeSetList = $this->getAttributeSetList();
+
+            foreach (array_keys($attributeSetList) as $attributeSet) {
+                $attributes = $this->getAttributeList($attributeSet);
+                $this->attributeSetList[$attributeSet] = array();
+
+                foreach ($attributes as $attribute) {
+                    $this->attributeList[$attribute['code']]                = $attribute;
+                    $this->attributeSetList[$attributeSet][$attributeSet]   = $attribute['code'];
+                }
+            }
+        }
+
+        return $this->attributeList;
+    }
+
     /**
      * Get attribute list for a given attribute set code
      *
-     * @param string $code the storeview name
+     * @param string $attributeSetId the attribute set id
      */
-    public function getAttributeList($code)
+    public function getAttributeList($attributeSetCode)
     {
-        if (!isset($this->magentoAttributes[$code])) {
-            $id = $this->getAttributeSetId($code);
+        $id = $this->getAttributeSetId($attributeSetCode);
 
-            $this->magentoAttributes[$code] = $this->call(
-                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
-                $id
-            );
-        }
+        $attributes[$attributeSetCode] = $this->call(
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
+            $id
+        );
 
-        return $this->magentoAttributes[$code];
+        return $attributes[$attributeSetCode];
     }
 
     /**
@@ -249,6 +294,8 @@ class MagentoSoapClient
     public function addCall(array $call, $maximumCalls = 0)
     {
         $this->calls[] = $call;
+
+        print_r($call);
 
         if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
             $this->sendCalls();
