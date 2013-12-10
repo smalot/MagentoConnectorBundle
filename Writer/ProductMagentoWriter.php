@@ -20,7 +20,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     ItemWriterInterface
 {
-    const MAXIMUM_CALLS = 10;
+    const MAXIMUM_CALLS = 1;
 
     /**
      * @var ChannelManager
@@ -171,8 +171,10 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         $this->magentoSoapClient->init($this->clientParameters);
 
         //creation for each product in the admin storeView (with default locale)
-        foreach ($items as $item) {
-            $this->computeItem($item);
+        foreach($items as $batch) {
+            foreach ($batch as $item) {
+                $this->computeItem($item);
+            }
         }
 
         $this->magentoSoapClient->sendCalls($this->clientParameters);

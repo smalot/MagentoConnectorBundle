@@ -21,7 +21,7 @@ class MagentoSoapClient
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
 
-    const SOAP_DEFAULT_STORE_VIEW                   = 'admin';
+    const SOAP_DEFAULT_STORE_VIEW                   = 'default';
 
     protected $clientParameters;
 
@@ -260,12 +260,14 @@ class MagentoSoapClient
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
 
-                $response = $this->client->multiCall(
+                $responses = $this->client->multiCall(
                     $this->session,
                     $this->calls
                 );
 
-                $this->dumpSoapResponse($response);
+                foreach ($responses as $response) {
+                    $this->processSoapResponse($response);
+                }
             } else {
                 throw new NotConnectedException();
             }
@@ -290,7 +292,16 @@ class MagentoSoapClient
         }
     }
 
-    public function dumpSoapResponse($response)
+    public function processSoapResponse($response)
     {
+        if (is_array($response)) {
+            if (isset($response['isFault']) && $response['isFault'] == 1) {
+
+            }
+        } else {
+            if ($response == 1) {
+
+            }
+        }
     }
 }

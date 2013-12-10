@@ -251,7 +251,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      *
      * @return mixed The computed value
      */
-    protected function getValueFromMethod(Product $product, $attributeOptions, $locale = null, $scope = null)
+    protected function getValueFromMethod(Product $product, $attributeOptions, $locale, $scope)
     {
         $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
         $parameters = array_merge(array(
@@ -373,14 +373,14 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             'status' => array(
                 'translatable' => false,
                 'type'         => 'bool',
-                'method'       => function($product) {
+                'method'       => function($product, $params) {
                     return $this->enabled;
                 },
             ),
             'visibility' => array(
                 'translatable' => false,
                 'type'         => 'int',
-                'method'       => function($value) {
+                'method'       => function($product, $params) {
                     return $this->visibility;
                 },
             ),
@@ -388,11 +388,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 'translatable' => true,
                 'type'         => 'float',
                 'method'       => function($product, $params) {
-                    print_r('#######################');
-                    print_r($product->getValue('price'));
-                    print_r($product->getValue($params));
-                    print_r($product->getValue($params['scope']));
-                    return $product->getValue('price', $params['locale'], $params['scope'])
+                    return $product->getValue('price', (string) $params['locale'], (string) $params['scope'])
                         ->getPrices()
                         ->first()
                         ->getData();
