@@ -9,7 +9,9 @@ services:
         class: %pim_magento_connector.normalizer.product_create.class%
         arguments:
             - '@pim_catalog.manager.channel'
+            - '@pim_catalog.manager.media'
     pim_magento_connector.normalizer.product_update:
         class: %pim_magento_connector.normalizer.product_update.class%
         arguments:
             - '@pim_catalog.manager.channel'
+            - '@pim_catalog.manager.media'

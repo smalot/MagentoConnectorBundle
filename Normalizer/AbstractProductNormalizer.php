@@ -7,6 +7,9 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\FlexibleEntityBundle\Entity\Metric;
+use Pim\Bundle\CatalogBundle\Model\Media;
+use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -28,16 +31,23 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * @var array
      */
     protected $supportedFormats = array('json', 'xml');
+
     /**
      * @var ChannelManager
      */
     protected $channelManager;
 
+    /**
+     * @var MediaManager
+     */
+    protected $mediaManager;
+
     protected $pimLocales;
 
-    public function __construct(ChannelManager $channelManager)
+    public function __construct(ChannelManager $channelManager, MediaManager $mediaManager)
     {
         $this->channelManager = $channelManager;
+        $this->mediaManager   = $mediaManager;
     }
 
     /**
@@ -180,268 +190,395 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * Get values array for a given product
      *
      * @param  Product $product       The given product
-     * @param  string  $locale        The locale to apply
-     * @param  string  $scope         The akeno scope
+     * @param  string  $localeCode    The locale to apply
+     * @param  string  $scopeCode     The akeno scope
      * @param  boolean $onlyLocalized If true, only get translatable attributes
      *
      * @return array Computed data
      */
-    protected function getValues(Product $product, $magentoAttributes, $locale, $scope, $onlyLocalized = false)
+    protected function getValues(Product $product, $magentoAttributes, $localeCode, $scopeCode, $onlyLocalized = false)
     {
-        $values = array();
+        // $values = array();
 
-        $pimAttributes = $product->getAllAttributes();
+        $identifier = $product->getIdentifier();
 
-        foreach ($magentoAttributes as $magentoAttribute) {
-            if (($value = $this->getPimValue(
-                $pimAttributes,
-                $magentoAttribute,
-                $product,
-                $locale,
-                $scope,
-                $onlyLocalized
-            )) !== null) {
-                $values[$magentoAttribute['code']] = $value;
-            }
-        }
+        $filteredValues = $product->getValues()->filter(
+            function ($value) use ($identifier, $scopeCode, $localeCode) {
+                return (
+                    ($value !== $identifier) &&
+                    (
+                        ($scopeCode == null) ||
+                        (!$value->getAttribute()->isScopable()) ||
+                        ($value->getAttribute()->isScopable() && $value->getScope() == $scopeCode)
+                    ) &&
+                    (
+                        ($localeCode == null) ||
+                        (!$value->getAttribute()->isTranslatable()) ||
+                        ($value->getAttribute()->isTranslatable() && $value->getLocale() == $localeCode)
 
-        return $values;
-    }
-
-    /**
-     * Get the value the given attribute for the given product
-     * @param  array   $pimAttributes Akeneo attribute list for the product
-     * @param  array   $magentoAttribute Magento attribute list
-     * @param  Product $product          The product
-     * @param  string  $locale           The locale to apply
-     * @param  string  $scope            The scope to apply
-     * @param  boolean $onlyLocalized   If true on the attribute is not translatable get a null for the value
-     * @return mixed The formated value
-     */
-    protected function getPimValue(
-        $pimAttributes,
-        $magentoAttribute,
-        Product $product,
-        $locale,
-        $scope,
-        $onlyLocalized
-    ) {
-        $attributesOptions    = $this->getAttributesOptions();
-        $magentoAttributeCode = $magentoAttribute['code'];;
-
-        $value = null;
-
-        if (isset($attributesOptions[$magentoAttributeCode]) &&
-            (
-                !$onlyLocalized ||
-                $onlyLocalized && $attributesOptions[$magentoAttributeCode]['translatable']
-            )
-        ) {
-            $attributeOptions = $attributesOptions[$magentoAttributeCode];
-
-            if (isset($attributeOptions['method'])) {
-                $value = $this->getValueFromMethod($product, $attributeOptions, $locale, $scope);
-            } else {
-                $value = $this->getValueFromPimAttribute(
-                    $product,
-                    $attributeOptions,
-                    $pimAttributes,
-                    $magentoAttributeCode,
-                    $locale,
-                    $scope
+                    )
                 );
             }
+        );
 
-            $value = $this->castValue($value, $attributeOptions);
+        $normalizedValues = array();
+        foreach ($filteredValues as $value) {
+            $normalizedValues = array_merge(
+                $normalizedValues,
+                $this->normalizeValue($value)
+            );
         }
+        ksort($normalizedValues);
 
-        return $value;
+
+        // $pimAttributes = $product->getAllAttributes();
+
+        // foreach ($magentoAttributes as $magentoAttribute) {
+        //     if (($value = $this->getPimValue(
+        //         $pimAttributes,
+        //         $magentoAttribute,
+        //         $product,
+        //         $locale,
+        //         $scope,
+        //         $onlyLocalized
+        //     )) !== null) {
+        //         $values[$magentoAttribute['code']] = $value;
+        //     }
+        // }
+
+        return $normalizedValues;
     }
 
     /**
-     * Call the method from $attributeOptions and return the computed value
+     * Normalizes a value
      *
-     * @param  Product $product          The concerned product
-     * @param  array   $attributeOptions Attribute options
-     * @param  string  $locale           Locale code
-     * @param  string  $scope            Scope code
-     *
-     * @return mixed The computed value
-     */
-    protected function getValueFromMethod(Product $product, $attributeOptions, $locale, $scope)
-    {
-        $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
-        $parameters = array_merge(array(
-            'locale' => $locale,
-            'scope'  => $scope
-        ), $parameters);
-
-        $method = $attributeOptions['method'];
-
-        if (is_callable($method)) {
-            $value = $method($product, $parameters);
-        } else {
-            $value = call_user_func_array(array($product, $attributeOptions['method']), $parameters);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Getting the value from the akeneo attribute
-     *
-     * @param  Product $product              The concerned product
-     * @param  array   $attributeOptions     Attribute options
-     * @param  array   $pimAttributes        Pim attributes
-     * @param  string  $magentoAttributeCode The magento attribute code
-     * @param  string  $locale               The locale to apply
-     * @param  string  $scope                The scope to apply
-     *
-     * @return mixed
-     */
-    protected function getValueFromPimAttribute(
-        Product $product,
-        $attributeOptions,
-        $pimAttributes,
-        $magentoAttributeCode,
-        $locale,
-        $scope
-    ) {
-        //If there is a mapping between magento and the pim
-        if (isset($attributeOptions['mapping'])) {
-            $pimAttribute  = $pimAttributes[$attributeOptions['mapping']];
-        } else {
-            $pimAttribute  = $pimAttributes[$magentoAttributeCode];
-        }
-
-        $attributeCode   = $pimAttribute->getCode();
-        $attributeLocale = ($pimAttribute->isTranslatable()) ? $locale : null;
-        $attributeScope  = ($pimAttribute->isScopable())     ? $scope  : null;
-
-        return $product->getValue($attributeCode, $attributeLocale, $attributeScope);
-    }
-
-    /**
-     * Cast the given value
-     *
-     * @param  mixed $value            Our value
-     * @param  array $attributeOptions The attribute options
-     *
-     * @return mixed
-     */
-    protected function castValue($value, $attributeOptions)
-    {
-        if ($value !== null && isset($attributeOptions['type'])) {
-            $castMethod = $this->getCastOptions()[$attributeOptions['type']];
-
-            $value = $castMethod($value);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Get cast options
+     * @param mixed $value
      *
      * @return array
      */
-    protected function getCastOptions()
+    protected function normalizeValue($value)
     {
-        return array(
-            'int' => function($value) {
-                return (int) $value;
-            },
-            'string' => function($value) {
-                return (string) $value;
-            },
-            'bool' => function($value) {
-                return (int) $value;
-            },
-            'float' => function($value) {
-                return (float) $value;
-            },
-            'date' => function($value) {
-                return (string) $value->format(\DateTime::ATOM);
-            },
-            'array' => function($value) {
-                return $value;
-            },
-            'id' => function($value) {
-                return (int) $value;
+        $data = $value->getData();
+
+        $attributeCode = $value->getAttribute()->getCode();
+
+        if (is_bool($data)) {
+            $data = ($data) ? 1 : 0;
+        } elseif ($data instanceof \DateTime) {
+            $data = $data->format(\DateTime::ATOM);
+        } elseif ($data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
+            $data = $this->getOptionId($attributeCode, $data->getCode());
+        } elseif ($data instanceof \Doctrine\Common\Collections\Collection) {
+            $data = $this->normalizeCollectionData($data, $attributeCode);
+        } elseif ($data instanceof Media) {
+            $data = $this->mediaManager->getExportPath($data);
+        } elseif ($data instanceof Metric) {
+            $fieldName = $value->getAttribute()->getCode();
+
+            return array(
+                $fieldName                     => $data->getData(),
+                sprintf('%s-unit', $fieldName) => ($data->getData() !== null) ? $data->getUnit() : '',
+            );
+        }
+
+        return array($value->getAttribute()->getCode() => $data);
+    }
+
+    /**
+     * Normalize the value collection data
+     *
+     * @param array $data
+     *
+     * @return string
+     */
+    protected function normalizeCollectionData($data, $attributeCode)
+    {
+        $result = array();
+        foreach ($data as $item) {
+            if ($item instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
+                $optionCode = $item->getCode();
+
+                $result[] = $this->getOptionId($attributeCode, $optionCode);
+            } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
+                if ($item->getData() !== null) {
+                    $result[] = $item->getData();
+                }
+            } else {
+                $result[] = (string) $item;
             }
-        );
+        }
+
+        return $result;
     }
 
-    /**
-     * Getting the attributes options
-     *
-     * @return array
-     */
-    protected function getAttributesOptions()
-    {
-        return array(
-            'name' => array(
-                'translatable' => true,
-                'type'         => 'string',
-            ),
-            'description' => array(
-                'translatable' => true,
-                'type'         => 'string',
-                'mapping'      => 'long_description',
-            ),
-            'short_description' => array(
-                'translatable' => true,
-                'type'         => 'string',
-            ),
-            'status' => array(
-                'translatable' => false,
-                'type'         => 'bool',
-                'method'       => function($product, $params) {
-                    return $this->enabled;
-                },
-            ),
-            'visibility' => array(
-                'translatable' => false,
-                'type'         => 'id',
-                'method'       => function($product, $params) {
-                    return $this->visibility;
-                },
-            ),
-            'multiple_color' => array(
-                'translatable' => false,
-                'type'         => 'array',
-                'method'       => function($product, $params) {
-                    $colors = $product->getValue('color', self::DEFAULT_LOCALE)->getOptions();
 
-                    return $this->getMatchedOptions($colors, 'multiple_color');
-                }
-            ),
-            'size' => array(
-                'translatable' => false,
-                'type'         => 'id',
-                'method'       => function($product, $params) {
-                    $size = strtolower($product->getSize()->getOption()->getCode());
 
-                    return $this->getOptionId('size', $size);
-                }
-            ),
-            'price' => array(
-                'translatable' => true,
-                'type'         => 'float',
-                'method'       => function($product, $params) {
-                    return $product->getValue('price', (string) $params['locale'], (string) $params['scope'])
-                        ->getPrices()
-                        ->first()
-                        ->getData();
-                },
-            ),
-            'tax_class_id' => array(
-                'translatable' => false,
-                'type'         => 'id',
-                'method'       => function ($product, $params) { return 0; }
-            ),
-        );
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // /**
+    //  * Get the value the given attribute for the given product
+    //  * @param  array   $pimAttributes    Akeneo attribute list for the product
+    //  * @param  array   $magentoAttribute Magento attribute list
+    //  * @param  Product $product          The product
+    //  * @param  string  $locale           The locale to apply
+    //  * @param  string  $scope            The scope to apply
+    //  * @param  boolean $onlyLocalized    If true on the attribute is not translatable get a null for the value
+    //  * @return mixed The formated value
+    //  */
+    // protected function getPimValue(
+    //     $pimAttributes,
+    //     $magentoAttribute,
+    //     Product $product,
+    //     $locale,
+    //     $scope,
+    //     $onlyLocalized
+    // ) {
+    //     $attributesOptions    = $this->getAttributesOptions();
+    //     $magentoAttributeCode = $magentoAttribute['code'];;
+
+    //     $value = null;
+
+
+    //     if (isset($attributesOptions[$magentoAttributeCode]) &&
+    //         (
+    //             !$onlyLocalized ||
+    //             $onlyLocalized && $attributesOptions[$magentoAttributeCode]['translatable']
+    //         )
+    //     ) {
+    //         $attributeOptions = $attributesOptions[$magentoAttributeCode];
+
+    //         if (isset($attributeOptions['method'])) {
+    //             $value = $this->getValueFromMethod($product, $attributeOptions, $locale, $scope);
+    //         } else {
+    //             $value = $this->getValueFromPimAttribute(
+    //                 $product,
+    //                 $attributeOptions,
+    //                 $pimAttributes,
+    //                 $magentoAttributeCode,
+    //                 $locale,
+    //                 $scope
+    //             );
+    //         }
+
+    //         $value = $this->castValue($value, $attributeOptions);
+    //     }
+
+    //     return $value;
+    // }
+
+    // /**
+    //  * Call the method from $attributeOptions and return the computed value
+    //  *
+    //  * @param  Product $product          The concerned product
+    //  * @param  array   $attributeOptions Attribute options
+    //  * @param  string  $locale           Locale code
+    //  * @param  string  $scope            Scope code
+    //  *
+    //  * @return mixed The computed value
+    //  */
+    // protected function getValueFromMethod(Product $product, $attributeOptions, $locale, $scope)
+    // {
+    //     $parameters = isset($attributeOptions['parameters']) ? $attributeOptions['parameters'] : array();
+    //     $parameters = array_merge(array(
+    //         'locale' => $locale,
+    //         'scope'  => $scope
+    //     ), $parameters);
+
+    //     $method = $attributeOptions['method'];
+
+    //     if (is_callable($method)) {
+    //         $value = $method($product, $parameters);
+    //     } else {
+    //         $value = call_user_func_array(array($product, $attributeOptions['method']), $parameters);
+    //     }
+
+    //     return $value;
+    // }
+
+    // /**
+    //  * Getting the value from the akeneo attribute
+    //  *
+    //  * @param  Product $product              The concerned product
+    //  * @param  array   $attributeOptions     Attribute options
+    //  * @param  array   $pimAttributes        Pim attributes
+    //  * @param  string  $magentoAttributeCode The magento attribute code
+    //  * @param  string  $locale               The locale to apply
+    //  * @param  string  $scope                The scope to apply
+    //  *
+    //  * @return mixed
+    //  */
+    // protected function getValueFromPimAttribute(
+    //     Product $product,
+    //     $attributeOptions,
+    //     $pimAttributes,
+    //     $magentoAttributeCode,
+    //     $locale,
+    //     $scope
+    // ) {
+    //     //If there is a mapping between magento and the pim
+    //     if (isset($attributeOptions['mapping'])) {
+    //         $pimAttribute  = $pimAttributes[$attributeOptions['mapping']];
+    //     } else {
+    //         $pimAttribute  = $pimAttributes[$magentoAttributeCode];
+    //     }
+
+    //     print_r($pimAttribute->getAttributeType());
+
+    //     $attributeCode   = $pimAttribute->getCode();
+    //     $attributeLocale = ($pimAttribute->isTranslatable()) ? $locale : null;
+    //     $attributeScope  = ($pimAttribute->isScopable())     ? $scope  : null;
+
+    //     return $product->getValue($attributeCode, $attributeLocale, $attributeScope);
+    // }
+
+    // /**
+    //  * Cast the given value
+    //  *
+    //  * @param  mixed $value            Our value
+    //  * @param  array $attributeOptions The attribute options
+    //  *
+    //  * @return mixed
+    //  */
+    // protected function castValue($value, $attributeOptions)
+    // {
+    //     if ($value !== null && isset($attributeOptions['type'])) {
+    //         $castMethod = $this->getCastOptions()[$attributeOptions['type']];
+
+    //         $value = $castMethod($value);
+    //     }
+
+    //     return $value;
+    // }
+
+    // /**
+    //  * Get cast options
+    //  *
+    //  * @return array
+    //  */
+    // protected function getCastOptions()
+    // {
+    //     return array(
+    //         'int' => function($value) {
+    //             return (int) $value;
+    //         },
+    //         'string' => function($value) {
+    //             return (string) $value;
+    //         },
+    //         'bool' => function($value) {
+    //             return (int) $value;
+    //         },
+    //         'float' => function($value) {
+    //             return (float) $value;
+    //         },
+    //         'date' => function($value) {
+    //             return (string) $value->format(\DateTime::ATOM);
+    //         },
+    //         'array' => function($value) {
+    //             return $value;
+    //         },
+    //         'id' => function($value) {
+    //             return (int) $value;
+    //         }
+    //     );
+    // }
+
+    // /**
+    //  * Getting the attributes options
+    //  *
+    //  * @return array
+    //  */
+    // protected function getAttributesOptions()
+    // {
+    //     return array(
+    //         'name' => array(
+    //             'translatable' => true,
+    //             'type'         => 'string',
+    //         ),
+    //         'description' => array(
+    //             'translatable' => true,
+    //             'type'         => 'string',
+    //             'mapping'      => 'long_description',
+    //         ),
+    //         'short_description' => array(
+    //             'translatable' => true,
+    //             'type'         => 'string',
+    //         ),
+    //         'status' => array(
+    //             'translatable' => false,
+    //             'type'         => 'bool',
+    //             'method'       => function($product, $params) {
+    //                 return $this->enabled;
+    //             },
+    //         ),
+    //         'visibility' => array(
+    //             'translatable' => false,
+    //             'type'         => 'id',
+    //             'method'       => function($product, $params) {
+    //                 return $this->visibility;
+    //             },
+    //         ),
+    //         'multiple_color' => array(
+    //             'translatable' => false,
+    //             'type'         => 'array',
+    //             'method'       => function($product, $params) {
+    //                 $colors = $product->getValue('color', self::DEFAULT_LOCALE)->getOptions();
+
+    //                 return $this->getMatchedOptions($colors, 'multiple_color');
+    //             }
+    //         ),
+    //         'size' => array(
+    //             'translatable' => false,
+    //             'type'         => 'id',
+    //             'method'       => function($product, $params) {
+    //                 $size = strtolower($product->getSize()->getOption()->getCode());
+
+    //                 return $this->getOptionId('size', $size);
+    //             }
+    //         ),
+    //         'price' => array(
+    //             'translatable' => true,
+    //             'type'         => 'float',
+    //             'method'       => function($product, $params) {
+    //                 return $product->getValue('price', (string) $params['locale'], (string) $params['scope'])
+    //                     ->getPrices()
+    //                     ->first()
+    //                     ->getData();
+    //             },
+    //         ),
+    //         'tax_class_id' => array(
+    //             'translatable' => false,
+    //             'type'         => 'id',
+    //             'method'       => function ($product, $params) { return 0; }
+    //         ),
+    //     );
+    // }
 
     /**
      * Get the id of the given magento option code
@@ -452,6 +589,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected function getOptionId($attributeCode, $optionCode)
     {
+        $attributeCode = strtolower($attributeCode);
+        $optionCode    = strtolower($optionCode);
+
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
             throw new InvalidOptionException('The attribute "' . $attributeCode . '" doesn\'t have any option named "' .
                 $optionCode . '" on Magento side. You should add this option in your "' . $attributeCode .
@@ -461,23 +601,23 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return $this->magentoAttributesOptions[$attributeCode][$optionCode];
     }
 
-    /**
-     * Get an array of magento options ids for the given attribute
-     *
-     * @param  array  $options       List of PIM options for the given attribute
-     * @param  string $attributeCode The magento attribute code
-     * @return array
-     */
-    protected function getMatchedOptions($options, $attributeCode)
-    {
-        $matchedOptions = array();
+    // /**
+    //  * Get an array of magento options ids for the given attribute
+    //  *
+    //  * @param  array  $options       List of PIM options for the given attribute
+    //  * @param  string $attributeCode The magento attribute code
+    //  * @return array
+    //  */
+    // protected function getMatchedOptions($options, $attributeCode)
+    // {
+    //     $matchedOptions = array();
 
-        foreach ($options as $option) {
-            $optionCode = strtolower($option->getCode());
+    //     foreach ($options as $option) {
+    //         $optionCode = strtolower($option->getCode());
 
-            $matchedOptions[] = $this->getOptionId($attributeCode, $optionCode);
-        }
+    //         $matchedOptions[] = $this->getOptionId($attributeCode, $optionCode);
+    //     }
 
-        return $matchedOptions;
-    }
+    //     return $matchedOptions;
+    // }
 }
