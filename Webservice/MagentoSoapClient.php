@@ -324,7 +324,6 @@ class MagentoSoapClient
     public function addCall(array $call, $maximumCalls = 0)
     {
         $this->calls[] = $call;
-        print_r($call);
 
         if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
             $this->sendCalls();
@@ -374,8 +373,6 @@ class MagentoSoapClient
                 $params
             );
 
-            print_r($resource . "\n");
-
             return $response;
         } else {
             throw new NotConnectedException();
@@ -398,7 +395,5 @@ class MagentoSoapClient
 
             }
         }
-
-        print_r($response);
     }
 }

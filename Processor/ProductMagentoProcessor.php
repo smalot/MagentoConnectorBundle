@@ -14,6 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 
 /**
  * Magento product processor
@@ -306,14 +307,23 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
-                    throw new InvalidItemException('The product family has changed. This modification cannot be' .
-                        'applied to magento. In order to change the family of this product, please manualy delete' .
-                        ' this product in magento and re-run this connector.', array($product));
+                    throw new InvalidItemException('The product family has changed of this product. This modification '.
+                        'cannot be applied to magento. In order to change the family of this product, please manualy ' .
+                        'delete this product in magento and re-run this connector.', array($product));
                 }
 
-                $processedItems[] = $this->productUpdateNormalizer->normalize($product, null, $context);
+                try {
+                    $processedItems[] = $this->productUpdateNormalizer->normalize($product, null, $context);
+                } catch (InvalidOptionException $e) {
+                    throw new InvalidItemException($e->getMessage(), array($product));
+                }
+
             } else {
-                $processedItems[] = $this->productCreateNormalizer->normalize($product, null, $context);
+                try {
+                    $processedItems[] = $this->productCreateNormalizer->normalize($product, null, $context);
+                } catch (InvalidOptionException $e) {
+                    throw new InvalidItemException($e->getMessage(), array($product));
+                }
             }
         }
 

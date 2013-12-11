@@ -7,7 +7,6 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -364,8 +363,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             'date' => function($value) {
                 return (string) $value->format(\DateTime::ATOM);
             },
-            'select' => function($value) {
+            'array' => function($value) {
                 return $value;
+            },
+            'id' => function($value) {
+                return (int) $value;
             }
         );
     }
@@ -400,18 +402,27 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             ),
             'visibility' => array(
                 'translatable' => false,
-                'type'         => 'int',
+                'type'         => 'id',
                 'method'       => function($product, $params) {
                     return $this->visibility;
                 },
             ),
             'multiple_color' => array(
                 'translatable' => false,
-                'type'         => 'select',
+                'type'         => 'array',
                 'method'       => function($product, $params) {
                     $colors = $product->getValue('color', self::DEFAULT_LOCALE)->getOptions();
 
                     return $this->getMatchedOptions($colors, 'multiple_color');
+                }
+            ),
+            'size' => array(
+                'translatable' => false,
+                'type'         => 'id',
+                'method'       => function($product, $params) {
+                    $size = strtolower($product->getSize()->getOption()->getCode());
+
+                    return $this->getOptionId('size', $size);
                 }
             ),
             'price' => array(
@@ -426,7 +437,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             ),
             'tax_class_id' => array(
                 'translatable' => false,
-                'type'         => 'int',
+                'type'         => 'id',
                 'method'       => function ($product, $params) { return 0; }
             ),
         );
@@ -436,23 +447,24 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * Get the id of the given magento option code
      *
      * @param  string $attributeCode The product attribute code
-     * @param  string $optionLabel   The option label
+     * @param  string $optionCode    The option label
      * @return integer
      */
-    protected function getOptionId($attributeCode, $optionLabel)
+    protected function getOptionId($attributeCode, $optionCode)
     {
-        if (!isset($this->magentoAttributesOptions[$attributeCode][$optionLabel])) {
-            throw new InvalidItemException('The attribute ' . $attributeCode . ' doesn\'t have any option named ' .
-                $optionLabel);
+        if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
+            throw new InvalidOptionException('The attribute "' . $attributeCode . '" doesn\'t have any option named "' .
+                $optionCode . '" on Magento side. You should add this option in your "' . $attributeCode .
+                '" attribute on Magento or export the PIM options using this Magento connector.');
         }
 
-        return $this->magentoAttributesOptions[$attributeCode][$optionLabel];
+        return $this->magentoAttributesOptions[$attributeCode][$optionCode];
     }
 
     /**
      * Get an array of magento options ids for the given attribute
      *
-     * @param  array  $options       List of pim options for the given attribute
+     * @param  array  $options       List of PIM options for the given attribute
      * @param  string $attributeCode The magento attribute code
      * @return array
      */
