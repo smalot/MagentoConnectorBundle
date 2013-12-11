@@ -98,6 +98,18 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return $processedItem;
     }
 
+    /**
+     * Get the default product with all attributes (ie : event the non localizables ones)
+     *
+     * @param  Product $product           The given product
+     * @param  array   $magentoAttributes Magento attribute list
+     * @param  integer $attributeSetId    Attribute set id
+     * @param  string  $defaultLocale     Default locale
+     * @param  string  $channel           Channel
+     * @param  string  $website           Website name
+     * @param  bool    $create            Is it a creation ?
+     * @return array The default product data
+     */
     protected function getDefaultProduct(
         Product $product,
         $magentoAttributes,
@@ -199,12 +211,12 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
     /**
      * Get the value the given attribute for the given product
-     * @param  array  $pimAttributes Akeneo attribute list for the product
-     * @param  array  $magentoAttribute Magento attribute list
+     * @param  array   $pimAttributes Akeneo attribute list for the product
+     * @param  array   $magentoAttribute Magento attribute list
      * @param  Product $product          The product
      * @param  string  $locale           The locale to apply
      * @param  string  $scope            The scope to apply
-     * @param  boolean  $onlyLocalized   If true on the attribute is not translatable get a null for the value
+     * @param  boolean $onlyLocalized   If true on the attribute is not translatable get a null for the value
      * @return mixed The formated value
      */
     protected function getPimValue(
@@ -420,6 +432,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         );
     }
 
+    /**
+     * Get the id of the given magento option code
+     *
+     * @param  string $attributeCode The product attribute code
+     * @param  string $optionLabel   The option label
+     * @return integer
+     */
     protected function getOptionId($attributeCode, $optionLabel)
     {
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionLabel])) {
@@ -430,14 +449,21 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return $this->magentoAttributesOptions[$attributeCode][$optionLabel];
     }
 
-    protected function getMatchedOptions($options, $attributeName)
+    /**
+     * Get an array of magento options ids for the given attribute
+     *
+     * @param  array  $options       List of pim options for the given attribute
+     * @param  string $attributeCode The magento attribute code
+     * @return array
+     */
+    protected function getMatchedOptions($options, $attributeCode)
     {
         $matchedOptions = array();
 
         foreach ($options as $option) {
             $optionCode = strtolower($option->getCode());
 
-            $matchedOptions[] = $this->getOptionId($attributeName, $optionCode);
+            $matchedOptions[] = $this->getOptionId($attributeCode, $optionCode);
         }
 
         return $matchedOptions;

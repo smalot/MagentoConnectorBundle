@@ -182,6 +182,11 @@ class MagentoSoapClient
         return $this->attributeOptionList;
     }
 
+    /**
+     * Get product status in magento (do they exist ?)
+     * @param  Product $products the given products
+     * @return array
+     */
     public function getProductsStatus($products)
     {
         $productsIds = $this->getProductsIds($products);
@@ -267,6 +272,11 @@ class MagentoSoapClient
         return $this->magentoStoreViewList;
     }
 
+    /**
+     * Get all attributes from magento
+     *
+     * @return array
+     */
     protected function getAllAttributes()
     {
         if (!$this->attributeList) {
@@ -321,6 +331,11 @@ class MagentoSoapClient
         }
     }
 
+    /**
+     * Send pending calls to the magento soap api (with multiCall function)
+     *
+     * @return mixed The soap response
+     */
     public function sendCalls()
     {
         if (count($this->calls) > 0) {
@@ -342,6 +357,13 @@ class MagentoSoapClient
         }
     }
 
+    /**
+     * Call the soap api on the given resource
+     *
+     * @param  string $resource The resource to call
+     * @param  array  $params   Parameters
+     * @return string The soap response
+     */
     public function call($resource, $params = null)
     {
         if ($this->isConnected()) {
@@ -360,6 +382,11 @@ class MagentoSoapClient
         }
     }
 
+    /**
+     * Process the soap response
+     *
+     * @param  mixed $response The soap response-
+     */
     public function processSoapResponse($response)
     {
         if (is_array($response)) {
