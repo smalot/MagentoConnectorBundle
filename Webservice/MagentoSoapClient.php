@@ -148,7 +148,13 @@ class MagentoSoapClient
             array($attribute)
         );
 
-        return $options;
+        $formatedOptions = array();
+
+        foreach ($options as $option) {
+            $formatedOptions[$option['label']] = $option['value'];
+        }
+
+        return $formatedOptions;
     }
 
     public function getAllAttributesOptions()

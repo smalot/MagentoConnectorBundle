@@ -18,6 +18,11 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 abstract class AbstractProductNormalizer implements NormalizerInterface
 {
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
+    const DEFAULT_LOCALE             = 'en_US';
+
+    protected $enabled;
+    protected $visibility;
+    protected $magentoAttributesOptions;
 
     /**
      * @var array
@@ -346,6 +351,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             'date' => function($value) {
                 return (string) $value->format(\DateTime::ATOM);
             },
+            'select' => function($value) {
+                return $value;
+            }
         );
     }
 
@@ -384,11 +392,20 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     return $this->visibility;
                 },
             ),
-            'color' => array(
+            'multiple_color' => array(
                 'translatable' => false,
                 'type'         => 'select',
-                'method'       => function() {
-                    return ;
+                'method'       => function($product, $params) {
+                    $colors = $product->getValue('color', self::DEFAULT_LOCALE)->getOptions();
+                    $matchedColors = array();
+
+                    foreach ($colors as $color) {
+                        $colorCode = strtolower($color->getCode());
+
+                        $matchedColors[] = $this->getOptionId('color', $colorCode);
+                    }
+
+                    return $matchedColors;
                 }
             ),
             'price' => array(
@@ -407,5 +424,15 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 'method'       => function ($product, $params) { return 0; }
             ),
         );
+    }
+
+    protected function getOptionId($attributeCode, $optionLabel)
+    {
+        if (!isset($this->magentoAttributesOptions[$attributeCode][$optionLabel])) {
+            throw new \InvalidItemException('The attribute ' . $attributeCode . ' doesn\'t have any option named ' .
+                $optionLabel);
+        }
+
+        return $this->magentoAttributesOptions[$attributeCode][$optionLabel];
     }
 }
