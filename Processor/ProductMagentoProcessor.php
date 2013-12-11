@@ -312,22 +312,36 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                         'delete this product in magento and re-run this connector.', array($product));
                 }
 
-                try {
-                    $processedItems[] = $this->productUpdateNormalizer->normalize($product, null, $context);
-                } catch (InvalidOptionException $e) {
-                    throw new InvalidItemException($e->getMessage(), array($product));
-                }
-
+                $processedItems[] = $this->normalizeProduct($product, $context, false);
             } else {
-                try {
-                    $processedItems[] = $this->productCreateNormalizer->normalize($product, null, $context);
-                } catch (InvalidOptionException $e) {
-                    throw new InvalidItemException($e->getMessage(), array($product));
-                }
+                $processedItems[] = $this->normalizeProduct($product, $context, true);
             }
         }
 
         return $processedItems;
+    }
+
+    /**
+     * Normalize the given product
+     *
+     * @param  Product $product [description]
+     * @param  array   $context The context
+     * @param  boolean $create  Is it a product creation ?
+     * @return array processed item
+     */
+    protected function normalizeProduct(Product $product, $context, $create)
+    {
+        try {
+            if ($create) {
+                $processedItem = $this->productCreateNormalizer->normalize($product, null, $context);
+            } else {
+                $processedItem = $this->productUpdateNormalizer->normalize($product, null, $context);
+            }
+        } catch (InvalidOptionException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        }
+
+        return $processedItem;
     }
 
     /**
