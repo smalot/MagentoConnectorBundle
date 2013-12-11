@@ -37,18 +37,24 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
     public function testNormalize()
     {
         $context = array(
-            'magentoStoreViews' => array(
+            'magentoStoreViews'        => array(
                 array('code' => 'admin'),
                 array('code' => 'en_us'),
                 array('code' => 'fr_fr'),
             ),
-            'defaultLocale'     => 'en_US',
-            'channel'           => 'channel',
-            'website'           => 'base',
-            'enabled'           => true,
-            'visibility'        => 4,
-            'attributeSetId'    => 10,
-            'magentoAttributes' => array(
+            'magentoAttributesOptions' => array(
+                'color' => array(
+                    'blue' => 4,
+                    'red' => 3
+                )
+            ),
+            'defaultLocale'            => 'en_US',
+            'channel'                  => 'channel',
+            'website'                  => 'base',
+            'enabled'                  => true,
+            'visibility'               => 4,
+            'attributeSetId'           => 10,
+            'magentoAttributes'        => array(
                 array(
                     'code'     => 'name',
                     'required' => 1,

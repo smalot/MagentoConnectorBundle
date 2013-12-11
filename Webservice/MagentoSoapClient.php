@@ -36,7 +36,8 @@ class MagentoSoapClient
     protected $magentoStoreViewList;
     protected $magentoAttributes = array();
 
-    protected $attributeList = array();
+    protected $attributeList    = array();
+    protected $attributes       = array();
     protected $attributeSetList = array();
 
     /**
@@ -141,11 +142,17 @@ class MagentoSoapClient
         return $this->magentoAttributeSets;
     }
 
-    protected function getAttributeOptions($attribute)
+    /**
+     * Get options for the given attribute
+     *
+     * @param  string $attributeCode Attribute code
+     * @return array the formated options for the given attribute
+     */
+    protected function getAttributeOptions($attributeCode)
     {
-        $options = $this->attributeOptions[$attribute] = $this->call(
+        $options = $this->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
-            array($attribute)
+            array($attributeCode)
         );
 
         $formatedOptions = array();
@@ -157,12 +164,17 @@ class MagentoSoapClient
         return $formatedOptions;
     }
 
+    /**
+     * Get attribute options for all attributes
+     *
+     * @return array
+     */
     public function getAllAttributesOptions()
     {
         $attributeList = $this->getAllAttributes();
 
         foreach ($attributeList as $attributeCode => $attribute) {
-            if ($attribute['type'] == 'select') {
+            if (in_array($attribute['type'], array('select', 'multiselect'))) {
                 $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
             }
         }
@@ -281,14 +293,16 @@ class MagentoSoapClient
      */
     public function getAttributeList($attributeSetCode)
     {
-        $id = $this->getAttributeSetId($attributeSetCode);
+        if (!isset($this->attributes[$attributeSetCode])) {
+            $id = $this->getAttributeSetId($attributeSetCode);
 
-        $attributes[$attributeSetCode] = $this->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
-            $id
-        );
+            $this->attributes[$attributeSetCode] = $this->call(
+                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
+                $id
+            );
+        }
 
-        return $attributes[$attributeSetCode];
+        return $this->attributes[$attributeSetCode];
     }
 
     /**
@@ -300,6 +314,7 @@ class MagentoSoapClient
     public function addCall(array $call, $maximumCalls = 0)
     {
         $this->calls[] = $call;
+        print_r($call);
 
         if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
             $this->sendCalls();
@@ -337,6 +352,8 @@ class MagentoSoapClient
                 $params
             );
 
+            print_r($resource . "\n");
+
             return $response;
         } else {
             throw new NotConnectedException();
@@ -354,5 +371,7 @@ class MagentoSoapClient
 
             }
         }
+
+        print_r($response);
     }
 }

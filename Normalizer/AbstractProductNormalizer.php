@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -397,15 +398,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 'type'         => 'select',
                 'method'       => function($product, $params) {
                     $colors = $product->getValue('color', self::DEFAULT_LOCALE)->getOptions();
-                    $matchedColors = array();
 
-                    foreach ($colors as $color) {
-                        $colorCode = strtolower($color->getCode());
-
-                        $matchedColors[] = $this->getOptionId('color', $colorCode);
-                    }
-
-                    return $matchedColors;
+                    return $this->getMatchedOptions($colors, 'multiple_color');
                 }
             ),
             'price' => array(
@@ -429,10 +423,23 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     protected function getOptionId($attributeCode, $optionLabel)
     {
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionLabel])) {
-            throw new \InvalidItemException('The attribute ' . $attributeCode . ' doesn\'t have any option named ' .
+            throw new InvalidItemException('The attribute ' . $attributeCode . ' doesn\'t have any option named ' .
                 $optionLabel);
         }
 
         return $this->magentoAttributesOptions[$attributeCode][$optionLabel];
+    }
+
+    protected function getMatchedOptions($options, $attributeName)
+    {
+        $matchedOptions = array();
+
+        foreach ($options as $option) {
+            $optionCode = strtolower($option->getCode());
+
+            $matchedOptions[] = $this->getOptionId($attributeName, $optionCode);
+        }
+
+        return $matchedOptions;
     }
 }
