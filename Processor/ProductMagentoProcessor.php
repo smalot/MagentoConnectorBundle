@@ -15,6 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
 
 /**
  * Magento product processor
@@ -298,6 +299,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'website'                  => $this->website,
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
+            'magentoAttributes'        => $this->magentoSoapClient->getAllAttributes()
         );
 
         foreach ($items as $product) {
@@ -336,6 +338,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 $processedItem = $this->productUpdateNormalizer->normalize($product, null, $context);
             }
         } catch (InvalidOptionException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        } catch(InvalidScopeMatchException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 

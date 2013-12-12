@@ -277,7 +277,7 @@ class MagentoSoapClient
      *
      * @return array
      */
-    protected function getAllAttributes()
+    public function getAllAttributes()
     {
         if (!$this->attributeList) {
             $attributeSetList = $this->getAttributeSetList();
@@ -292,6 +292,8 @@ class MagentoSoapClient
                 }
             }
         }
+
+        print_r($this->attributeList);
 
         return $this->attributeList;
     }

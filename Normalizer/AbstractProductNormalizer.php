@@ -23,9 +23,12 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 {
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
+    const STORE_SCOPE = 'store';
+
     protected $enabled;
     protected $visibility;
     protected $magentoAttributesOptions;
+    protected $magentoAttributes;
 
     /**
      * @var array
@@ -92,7 +95,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
             //If a locale for this storeview exist in akeneo, we create a translated product in this locale
             if ($locale) {
-                $values = $this->getValues($product, $magentoAttributes, $locale, $channel, true);
+                $values = $this->getValues($product, $locale, $channel, true);
 
                 $processedItem[$storeViewCode] = array(
                     (string) $product->getIdentifier(),
@@ -101,6 +104,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 );
             }
         }
+
+        print_r($processedItem);
 
         return $processedItem;
     }
@@ -209,7 +214,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                         ($localeCode == null) ||
                         (!$value->getAttribute()->isTranslatable()) ||
                         ($value->getAttribute()->isTranslatable() && $value->getLocale() == $localeCode)
-
                     ) &&
                     (
                         (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
@@ -240,28 +244,49 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected function normalizeValue(ProductValue $value)
     {
-        $data = $value->getData();
+        $data            = $value->getData();
+        $attributeCode   = $value->getAttribute()->getCode();
+        $valueNormalizer = $this->getValueNormalizers();
 
-        $attributeCode = $value->getAttribute()->getCode();
+        $cpt = 0;
+        $end = count($valueNormalizer);
 
-        if (is_bool($data)) {
-            $data = ($data) ? 1 : 0;
-        } elseif ($data instanceof \DateTime) {
-            $data = $data->format(\DateTime::ATOM);
-        } elseif ($data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
-            $data = $this->getOptionId($attributeCode, $data->getCode());
-        } elseif ($data instanceof \Doctrine\Common\Collections\Collection) {
-            $data = $this->normalizeCollectionData($data, $attributeCode);
-        } elseif ($data instanceof Media) {
-            $data = $this->mediaManager->getExportPath($data);
-        } elseif ($data instanceof Metric) {
-            return array(
-                $attributeCode                     => $data->getData(),
-                sprintf('%s-unit', $attributeCode) => ($data->getData() !== null) ? $data->getUnit() : '',
-            );
+        while ($cpt < $end && !$valueNormalizer[$cpt]['filter']($data)) {
+            $cpt++;
         }
 
-        return array($attributeCode => $data);
+        $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
+
+        if ($attributeScope == self::STORE_SCOPE &&
+            $value->getAttribute()->isTranslatable()
+        ) {
+            $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array('attributeCode' => $attributeCode));
+        } else {
+            $message = 'The PIM attribute "%s" is %s, however his corresponding Magento attribute has the %s ' .
+                'scope. To export the "%s" attribute, you must set his scope to %s in Magento.';
+
+            if ($value->getAttribute()->isTranslatable()) {
+                throw new InvalidScopeMatchException(sprintf(
+                    $message,
+                    $attributeCode,
+                    'translatable',
+                    'global',
+                    $attributeCode,
+                    'webview'
+                ));
+            } else {
+                throw new InvalidScopeMatchException(sprintf(
+                    $message,
+                    $attributeCode,
+                    'not translatable',
+                    'webview',
+                    $attributeCode,
+                    'global'
+                ));
+            }
+        }
+
+        return array($attributeCode => $normalizedValue);
     }
 
     protected function getValueNormalizers()
@@ -269,18 +294,37 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return array(
             array(
                 'filter'     => function($data) { return is_bool($data); },
-                'normalizer' => function($data, $parameters) {
-                    return ($data) ? 1 : 0;
-                }
+                'normalizer' => function($data, $parameters) { return ($data) ? 1 : 0; }
             ),
             array(
                 'filter'     => function($data) { return $data instanceof \DateTime; },
+                'normalizer' => function($data, $parameters) { return $data->format(\DateTime::ATOM); }
+            ),
+            array(
+                'filter'     => function($data) {
+                    return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+                },
                 'normalizer' => function($data, $parameters) {
-                    return $data->format(\DateTime::ATOM);
+                    return $this->getOptionId($parameters['attributeCode'], $data->getCode());;
                 }
             ),
             array(
-                'filter'     =>
+                'filter'     => function($data) { return $data instanceof \Doctrine\Common\Collections\Collection; },
+                'normalizer' => function($data, $parameters) {
+                    return $this->normalizeCollectionData($data, $parameters['attributeCode']);
+                }
+            ),
+            array(
+                'filter'     => function($data) { return $data instanceof Media; },
+                'normalizer' => function($data, $parameters) { return $this->mediaManager->getExportPath($data); }
+            ),
+            array(
+                'filter'     => function($data) { return $data instanceof Metric; },
+                'normalizer' => function($data, $parameters) { return $data->getData(); }
+            ),
+            array(
+                'filter'     => function($data) { return true; },
+                'normalizer' => function($data, $parameters) { return $data; }
             )
         );
     }

@@ -19,6 +19,7 @@ class ProductCreateNormalizer extends AbstractProductNormalizer
         $this->enabled                  = $context['enabled'];
         $this->visibility               = $context['visibility'];
         $this->magentoAttributesOptions = $context['magentoAttributesOptions'];
+        $this->magentoAttributes        = $context['magentoAttributes'];
 
         return $this->getNormalizedProduct(
             $object,
