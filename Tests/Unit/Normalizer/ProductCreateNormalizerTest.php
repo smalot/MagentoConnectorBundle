@@ -28,9 +28,13 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->channelManager = $this->getChannelManagerMock();
+        $this->mediaManager   = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\MediaManager')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->normalizer = new ProductCreateNormalizer(
-            $this->channelManager
+            $this->channelManager,
+            $this->mediaManager
         );
     }
 

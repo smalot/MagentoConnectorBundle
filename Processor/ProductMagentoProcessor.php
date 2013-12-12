@@ -339,8 +339,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 
-        print_r($processedItem);
-
         return $processedItem;
     }
 
