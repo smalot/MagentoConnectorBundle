@@ -258,7 +258,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
 
         if ($attributeScope == self::STORE_SCOPE &&
-            $value->getAttribute()->isTranslatable()
+            $value->getAttribute()->isTranslatable() ||
+            in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes())
         ) {
             $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array('attributeCode' => $attributeCode));
         } else {
@@ -305,7 +306,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
                 },
                 'normalizer' => function($data, $parameters) {
-                    return $this->getOptionId($parameters['attributeCode'], $data->getCode());;
+                    return $this->getOptionId($parameters['attributeCode'], $data->getCode());
                 }
             ),
             array(
@@ -327,6 +328,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 'normalizer' => function($data, $parameters) { return $data; }
             )
         );
+    }
+
+    protected function getIgnoredScopeMatchingAttributes()
+    {
+        return array();
     }
 
     /**
