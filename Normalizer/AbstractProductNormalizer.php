@@ -254,8 +254,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             print_r($data->getCode());
             $data = $this->getOptionId($attributeCode, $data->getCode());
         } elseif ($data instanceof \Doctrine\Common\Collections\Collection) {
-            if ($data->getAttribute()->isTranslatable())
-
             $data = $this->normalizeCollectionData($data, $attributeCode);
         } elseif ($data instanceof Media) {
             $data = $this->mediaManager->getExportPath($data);
