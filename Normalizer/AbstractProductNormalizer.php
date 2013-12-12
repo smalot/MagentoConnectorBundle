@@ -264,6 +264,27 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return array($attributeCode => $data);
     }
 
+    protected function getValueNormalizers()
+    {
+        return array(
+            array(
+                'filter'     => function($data) { return is_bool($data); },
+                'normalizer' => function($data, $parameters) {
+                    return ($data) ? 1 : 0;
+                }
+            ),
+            array(
+                'filter'     => function($data) { return $data instanceof \DateTime; },
+                'normalizer' => function($data, $parameters) {
+                    return $data->format(\DateTime::ATOM);
+                }
+            ),
+            array(
+                'filter'     =>
+            )
+        );
+    }
+
     /**
      * Normalize the value collection data
      *
