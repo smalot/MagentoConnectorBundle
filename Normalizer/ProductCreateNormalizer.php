@@ -23,7 +23,6 @@ class ProductCreateNormalizer extends AbstractProductNormalizer
         return $this->getNormalizedProduct(
             $object,
             $context['magentoStoreViews'],
-            $context['magentoAttributes'],
             $context['attributeSetId'],
             $context['defaultLocale'],
             $context['channel'],

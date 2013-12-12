@@ -302,8 +302,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
         foreach ($items as $product) {
             $context['attributeSetId']    = $this->getAttributeSetId($product);
-            $context['magentoAttributes'] = $this->magentoSoapClient
-                ->getAttributeList($product->getFamily()->getCode());
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
