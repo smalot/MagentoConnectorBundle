@@ -203,7 +203,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $identifier = $product->getIdentifier();
 
         $filteredValues = $product->getValues()->filter(
-            function ($value) use ($identifier, $scopeCode, $localeCode) {
+            function ($value) use ($identifier, $scopeCode, $localeCode, $onlyLocalized) {
                 return (
                     ($value !== $identifier) &&
                     (
@@ -216,6 +216,10 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                         (!$value->getAttribute()->isTranslatable()) ||
                         ($value->getAttribute()->isTranslatable() && $value->getLocale() == $localeCode)
 
+                    ) &&
+                    (
+                        (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
+                        $value->getAttribute()->isTranslatable()
                     )
                 );
             }
@@ -229,22 +233,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             );
         }
         ksort($normalizedValues);
-
-
-        // $pimAttributes = $product->getAllAttributes();
-
-        // foreach ($magentoAttributes as $magentoAttribute) {
-        //     if (($value = $this->getPimValue(
-        //         $pimAttributes,
-        //         $magentoAttribute,
-        //         $product,
-        //         $locale,
-        //         $scope,
-        //         $onlyLocalized
-        //     )) !== null) {
-        //         $values[$magentoAttribute['code']] = $value;
-        //     }
-        // }
 
         return $normalizedValues;
     }
@@ -267,21 +255,20 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         } elseif ($data instanceof \DateTime) {
             $data = $data->format(\DateTime::ATOM);
         } elseif ($data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
+            print_r($data->getCode());
             $data = $this->getOptionId($attributeCode, $data->getCode());
         } elseif ($data instanceof \Doctrine\Common\Collections\Collection) {
             $data = $this->normalizeCollectionData($data, $attributeCode);
         } elseif ($data instanceof Media) {
             $data = $this->mediaManager->getExportPath($data);
         } elseif ($data instanceof Metric) {
-            $fieldName = $value->getAttribute()->getCode();
-
             return array(
-                $fieldName                     => $data->getData(),
-                sprintf('%s-unit', $fieldName) => ($data->getData() !== null) ? $data->getUnit() : '',
+                $attributeCode                     => $data->getData(),
+                sprintf('%s-unit', $attributeCode) => ($data->getData() !== null) ? $data->getUnit() : '',
             );
         }
 
-        return array($value->getAttribute()->getCode() => $data);
+        return array($attributeCode => $data);
     }
 
     /**
