@@ -194,8 +194,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected function getValues(Product $product, $localeCode, $scopeCode, $onlyLocalized = false)
     {
-        // $values = array();
-
         $identifier = $product->getIdentifier();
 
         $filteredValues = $product->getValues()->filter(
@@ -251,7 +249,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         } elseif ($data instanceof \DateTime) {
             $data = $data->format(\DateTime::ATOM);
         } elseif ($data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
-            print_r($data->getCode());
             $data = $this->getOptionId($attributeCode, $data->getCode());
         } elseif ($data instanceof \Doctrine\Common\Collections\Collection) {
             $data = $this->normalizeCollectionData($data, $attributeCode);
