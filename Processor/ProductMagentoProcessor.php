@@ -72,6 +72,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @Assert\NotBlank
      */
+    protected $currencyMapping;
+
+    /**
+     * @Assert\NotBlank
+     */
     protected $taxClassId;
 
     protected $enabled;
@@ -190,6 +195,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     public function setChannel($channel)
     {
         $this->channel = $channel;
+
+        return $this;
+    }
+
+    /**
+     * get currencyMapping
+     *
+     * @return string currencyMapping
+     */
+    public function getCurrencyMapping()
+    {
+        return $this->currencyMapping;
+    }
+
+    /**
+     * Set currencyMapping
+     *
+     * @param string $currencyMapping currencyMapping
+     */
+    public function setCurrencyMapping($currencyMapping)
+    {
+        $this->currencyMapping = $currencyMapping;
 
         return $this;
     }
@@ -477,6 +504,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             ),
             'visibility' => array(
                 'type' => 'text'
+            ),
+            'currencyMapping' => array(
+                'type' => 'textarea'
             ),
             'taxClassId' => array(
                 'type'    => 'choice',

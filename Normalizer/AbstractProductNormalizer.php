@@ -280,7 +280,10 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 !$value->getAttribute()->isTranslatable()
             )
         ) {
-            $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array('attributeCode' => $attributeCode));
+            $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array(
+                'attributeCode'     => $attributeCode,
+                'channelCurrencies' => $this->$this->channelManager->getChannelByCode($this->channel)->getCurrencies()
+            ));
         } else {
             throw new InvalidScopeMatchException(sprintf(
                 'The scope for the PIM attribute "%s" is not matching the scope of his corresponding Magento ' .
@@ -323,7 +326,12 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             array(
                 'filter'     => function($data) { return $data instanceof \Doctrine\Common\Collections\Collection; },
                 'normalizer' => function($data, $parameters) {
-                    return $this->normalizeCollectionData($data, $parameters['attributeCode']);
+
+                    return $this->normalizeCollectionData(
+                        $data,
+                        $parameters['attributeCode'],
+                        $parameters['channelCurrencies']
+                    );
                 }
             ),
             array(
@@ -348,9 +356,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected function getIgnoredAttributes()
     {
-        return array(
-            'price'
-        );
+        return array();
     }
 
     /**
@@ -383,7 +389,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             self::TAX_CLASS_ID => $this->taxClassId,
             self::VISIBILITY   => $this->visibility,
             self::ENABLED      => $this->enabled,
-            'price'            => 10,
             'created_at'       => (new \DateTime())->format(\DateTime::ATOM),
             'updated_at'       => (new \DateTime())->format(\DateTime::ATOM)
         );
@@ -396,7 +401,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      *
      * @return string
      */
-    protected function normalizeCollectionData($data, $attributeCode)
+    protected function normalizeCollectionData($data, $attributeCode, $currencies)
     {
         $result = array();
         foreach ($data as $item) {
@@ -405,8 +410,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
                 $result[] = $this->getOptionId($attributeCode, $optionCode);
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
-                if ($item->getData() !== null) {
-                    $result[] = $item->getData();
+                if (
+                    $item->getData() !== null &&
+                    in_array($item->getCurrency(), $currencies)
+                ) {
+                    return $item->getData();
                 }
             } else {
                 $result[] = (string) $item;
