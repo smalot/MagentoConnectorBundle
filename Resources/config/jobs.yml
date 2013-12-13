@@ -1,12 +1,12 @@
 connector:
     name: Magento Connector
     jobs:
-       product_export:
-           title: pim_magento_connector.jobs.product_export.title
-           type:  export
-           steps:
-               export:
-                   title:     pim_magento_connector.jobs.product_export.export.title
-                   reader:    pim_import_export.reader.orm.product
-                   processor: pim_magento_connector.processor.product
-                   writer:    pim_magento_connector.writer.product
+        magento_product_export:
+            title: pim_magento_connector.jobs.product_export.title
+            type:  export
+            steps:
+                export:
+                    title:     pim_magento_connector.jobs.product_export.export.title
+                    reader:    pim_import_export.reader.orm.product
+                    processor: pim_magento_connector.processor.product
+                    writer:    pim_magento_connector.writer.product
