@@ -23,9 +23,14 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 {
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
-    const STORE_SCOPE = 'store';
+    const GLOBAL_SCOPE = 'global';
+
+    const TAX_CLASS_ID = 'tax_class_id';
+    const VISIBILITY   = 'visibility';
+    const ENABLED      = 'status';
 
     protected $enabled;
+    protected $taxClassId;
     protected $visibility;
     protected $magentoAttributesOptions;
     protected $magentoAttributes;
@@ -218,7 +223,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     (
                         (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
                         $value->getAttribute()->isTranslatable()
-                    )
+                    ) &&
+                    !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes())
                 );
             }
         );
@@ -230,6 +236,12 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 $this->normalizeValue($value)
             );
         }
+
+        $normalizedValues = array_merge(
+            $normalizedValues,
+            $this->getCustomValue()
+        );
+
         ksort($normalizedValues);
 
         return $normalizedValues;
@@ -257,34 +269,29 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
         $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
 
-        if ($attributeScope == self::STORE_SCOPE &&
-            $value->getAttribute()->isTranslatable() ||
-            in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes())
+        if (
+            in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
+            (
+                $attributeScope != self::GLOBAL_SCOPE &&
+                $value->getAttribute()->isTranslatable()
+            ) ||
+            (
+                $attributeScope == self::GLOBAL_SCOPE &&
+                !$value->getAttribute()->isTranslatable()
+            )
         ) {
             $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array('attributeCode' => $attributeCode));
         } else {
-            $message = 'The PIM attribute "%s" is %s, however his corresponding Magento attribute has the %s ' .
-                'scope. To export the "%s" attribute, you must set his scope to %s in Magento.';
-
-            if ($value->getAttribute()->isTranslatable()) {
-                throw new InvalidScopeMatchException(sprintf(
-                    $message,
-                    $attributeCode,
-                    'translatable',
-                    'global',
-                    $attributeCode,
-                    'webview'
-                ));
-            } else {
-                throw new InvalidScopeMatchException(sprintf(
-                    $message,
-                    $attributeCode,
-                    'not translatable',
-                    'webview',
-                    $attributeCode,
-                    'global'
-                ));
-            }
+            throw new InvalidScopeMatchException(sprintf(
+                'The scope for the PIM attribute "%s" is not matching the scope of his corresponding Magento ' .
+                'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.' .
+                "\nMagento scope : %s\n" .
+                "PIM scope : %s" ,
+                $attributeCode,
+                $attributeCode,
+                $attributeScope,
+                (($value->getAttribute()->isTranslatable()) ? 'translatable' : 'not translatable')
+            ));
         }
 
         return array($attributeCode => $normalizedValue);
@@ -306,6 +313,10 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
                 },
                 'normalizer' => function($data, $parameters) {
+                    if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
+                        return $data->getCode();
+                    }
+
                     return $this->getOptionId($parameters['attributeCode'], $data->getCode());
                 }
             ),
@@ -330,9 +341,52 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         );
     }
 
+    /**
+     * Get all ignored attribute
+     *
+     * @return array
+     */
+    protected function getIgnoredAttributes()
+    {
+        return array(
+            'price'
+        );
+    }
+
+    /**
+     * Get all ignored attribute in scope matching test
+     *
+     * @return array
+     */
     protected function getIgnoredScopeMatchingAttributes()
     {
-        return array();
+        return array(
+            'visibility'
+        );
+    }
+
+    /**
+     * Get all ignored attribute in option matching test
+     *
+     * @return array
+     */
+    protected function getIgnoredOptionMatchingAttributes()
+    {
+        return array(
+            'visibility'
+        );
+    }
+
+    protected function getCustomValue()
+    {
+        return array(
+            self::TAX_CLASS_ID => $this->taxClassId,
+            self::VISIBILITY   => $this->visibility,
+            self::ENABLED      => $this->enabled,
+            'price'            => 10,
+            'created_at'       => (new \DateTime())->format(\DateTime::ATOM),
+            'updated_at'       => (new \DateTime())->format(\DateTime::ATOM)
+        );
     }
 
     /**

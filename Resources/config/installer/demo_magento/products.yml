@@ -14,5 +14,5 @@ products:
         price-en_US: '43.21 EUR,19.70 USD'
         enabled: '1'
         visibility: 4
-        size: S
+        # size: S
         weight: 360 GRAM

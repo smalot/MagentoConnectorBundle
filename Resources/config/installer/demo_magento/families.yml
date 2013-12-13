@@ -8,7 +8,7 @@ families:
             - name
             - short_description
             - description
-            - size
+            # - size
             - color
             - price
             - weight
@@ -19,7 +19,7 @@ families:
                 - name
                 - short_description
                 - description
-                - size
+                # - size
                 - color
                 - price
                 - weight

@@ -75,38 +75,6 @@ attributes:
             dateMin:             '2012-01-01'
             dateMax:             '2014-01-01'
             sortOrder:           5
-    size:
-        labels:
-            en_US: Size
-            fr_FR: Taille
-        type:  pim_catalog_simpleselect
-        group: sizes
-        parameters:
-            useableAsGridColumn: true
-            useableAsGridFilter: true
-            sortOrder:           1
-            defaultValue:        M
-        options:
-            XS:
-                labels:
-                    fr_FR: XS
-                    en_US: XS
-            S:
-                labels:
-                    fr_FR: S
-                    en_US: S
-            M:
-                labels:
-                    fr_FR: M
-                    en_US: M
-            L:
-                labels:
-                    fr_FR: L
-                    en_US: L
-            XL:
-                labels:
-                    fr_FR: XL
-                    en_US: XL
     visibility:
         labels:
             en_US: Visibility
@@ -118,6 +86,7 @@ attributes:
             useableAsGridFilter: true
             sortOrder:           1
             defaultValue:        4
+            translatable:        false
         options:
             1:
                 labels:
@@ -145,7 +114,7 @@ attributes:
             useableAsGridColumn: true
             useableAsGridFilter: true
             sortOrder:           1
-            translatable:        true
+            translatable:        false
         options:
             Red:
                 labels:

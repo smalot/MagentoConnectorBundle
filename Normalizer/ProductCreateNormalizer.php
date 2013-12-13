@@ -18,6 +18,7 @@ class ProductCreateNormalizer extends AbstractProductNormalizer
     {
         $this->enabled                  = $context['enabled'];
         $this->visibility               = $context['visibility'];
+        $this->taxClassId               = $context['taxClassId'];
         $this->magentoAttributesOptions = $context['magentoAttributesOptions'];
         $this->magentoAttributes        = $context['magentoAttributes'];
 

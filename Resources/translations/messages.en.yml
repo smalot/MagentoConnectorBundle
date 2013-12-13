@@ -1,10 +1,10 @@
 pim_magento_connector:
     jobs:
-        product_export:
+        magento_product_export:
             title: Export products for Magento
             export.title: Configuration
 
-oro_batch:
+pim_import_export:
     product_magento_processor:
         title: Processor
         soapUsername:

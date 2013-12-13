@@ -69,6 +69,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     protected $channel;
 
+    /**
+     * @Assert\NotBlank
+     */
+    protected $taxClassId;
+
     protected $enabled;
 
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
@@ -190,6 +195,28 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
+     * get taxClassId
+     *
+     * @return string taxClassId
+     */
+    public function getTaxClassId()
+    {
+        return $this->taxClassId;
+    }
+
+    /**
+     * Set taxClassId
+     *
+     * @param string $taxClassId taxClassId
+     */
+    public function setTaxClassId($taxClassId)
+    {
+        $this->taxClassId = $taxClassId;
+
+        return $this;
+    }
+
+    /**
      * get enabled
      *
      * @return string enabled
@@ -296,6 +323,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'defaultLocale'            => $this->defaultLocale,
             'channel'                  => $this->channel,
+            'taxClassId'               => $this->taxClassId,
             'website'                  => $this->website,
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
@@ -450,6 +478,16 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'visibility' => array(
                 'type' => 'text'
             ),
+            'taxClassId' => array(
+                'type'    => 'choice',
+                'options' => array(
+                    'choices' => array(
+                        0 => 'pim_import_export.export.tax_class_id.options.none',
+                        2 => 'pim_import_export.export.tax_class_id.options.taxable_goods',
+                        4 => 'pim_import_export.export.tax_class_id.options.shipping'
+                    )
+                )
+            )
         );
     }
 }
