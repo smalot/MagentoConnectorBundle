@@ -1,17 +1,14 @@
 products:
     sku-000:
         sku: sku-000
-        family: shirt
+        family: Default
         groups: ''
         categories: 'default'
-        color-en_US: 'Red'
         name-en_US: 'Iusto ea sint.'
         name-fr_FR: 'Neque eveniet quasi accusantium.'
         short_description-en_US-magento: 'Short description'
         short_description-fr_FR-magento: 'Courte description'
         description-en_US-magento: 'Description'
         description-fr_FR-magento: 'Description'
-        price-en_US: '43.21 EUR'
-        enabled: '1'
-        visibility: 4
+        price-en_US: '43.21 EUR,50.00 USD'
         weight: 360 GRAM

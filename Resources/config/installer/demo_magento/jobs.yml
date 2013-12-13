@@ -5,11 +5,12 @@ jobs:
         label:     Magento product export
         type:      export
         configuration:
-            channel:       magento
-            soapUsername:  soap
-            soapApiKey:    magento1
-            soapUrl:       http://magento.dev/
-            defaultLocale: en_US
-            website:       base
-            enabled:       true
-            taxClassId:  4
+            channel:         magento
+            soapUsername:    soap
+            soapApiKey:      magento1
+            soapUrl:         http://magento.dev/
+            defaultLocale:   en_US
+            website:         base
+            enabled:         true
+            taxClassId:      4
+            currencyMapping: "base:EUR"

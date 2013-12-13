@@ -1,5 +1,5 @@
 families:
-    shirt:
+    Default:
         labels:
             en_US: Shirt
             fr_FR: Chemise
@@ -8,19 +8,13 @@ families:
             - name
             - short_description
             - description
-            # - size
-            - color
             - price
             - weight
-            - visibility
         attributeAsLabel: name
         requirements:
             magento:
                 - name
                 - short_description
                 - description
-                # - size
-                - color
                 - price
                 - weight
-                - visibility
