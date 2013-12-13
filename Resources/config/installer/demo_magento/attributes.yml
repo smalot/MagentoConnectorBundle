@@ -1,0 +1,171 @@
+attributes:
+    sku:
+        labels:
+            en_US: SKU
+            fr_FR: SKU
+        type:  pim_catalog_identifier
+        group: general
+        parameters:
+            required:            true
+            unique:              true
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            sortOrder:           1
+    name:
+        labels:
+            en_US: Name
+            fr_FR: Nom
+        type:  pim_catalog_text
+        group: general
+        parameters:
+            translatable:        true
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            sortOrder:           2
+    price:
+        labels:
+            en_US: Price
+            fr_FR: Prix
+        type:  pim_catalog_price_collection
+        group: marketing
+        parameters:
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            numberMin:           1
+            numberMax:           500
+            sortOrder:           1
+            decimalsAllowed:     true
+            translatable:        true
+    short_description:
+        labels:
+            en_US: Short Description
+            fr_FR: Description courte
+        type:  pim_catalog_textarea
+        group: general
+        parameters:
+            translatable:        true
+            scopable:            true
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            maxCharacters:       100
+            sortOrder:           3
+    description:
+        labels:
+            en_US: Description
+            fr_FR: Description
+        type:  pim_catalog_textarea
+        group: general
+        parameters:
+            translatable:        true
+            scopable:            true
+            useableAsGridColumn: false
+            useableAsGridFilter: true
+            wysiwygEnabled:      true
+            sortOrder:           4
+    release_date:
+        labels:
+            en_US: Release date
+            fr_FR: Date de sortie
+        type:  pim_catalog_date
+        group: general
+        parameters:
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            dateType:            'date'
+            dateMin:             '2012-01-01'
+            dateMax:             '2014-01-01'
+            sortOrder:           5
+    size:
+        labels:
+            en_US: Size
+            fr_FR: Taille
+        type:  pim_catalog_simpleselect
+        group: sizes
+        parameters:
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            sortOrder:           1
+            defaultValue:        M
+        options:
+            XS:
+                labels:
+                    fr_FR: XS
+                    en_US: XS
+            S:
+                labels:
+                    fr_FR: S
+                    en_US: S
+            M:
+                labels:
+                    fr_FR: M
+                    en_US: M
+            L:
+                labels:
+                    fr_FR: L
+                    en_US: L
+            XL:
+                labels:
+                    fr_FR: XL
+                    en_US: XL
+    visibility:
+        labels:
+            en_US: Visibility
+            fr_FR: Visibilité
+        type:  pim_catalog_simpleselect
+        group: seo
+        parameters:
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            sortOrder:           1
+            defaultValue:        4
+        options:
+            1:
+                labels:
+                    fr_FR: Non visible individuellement
+                    en_US: Not visible individually
+            2:
+                labels:
+                    fr_FR: Catalogue
+                    en_US: Catalog
+            3:
+                labels:
+                    fr_FR: Recherche
+                    en_US: Search
+            4:
+                labels:
+                    fr_FR: Catalogue et recherche
+                    en_US: Catalog and search
+    color:
+        labels:
+            en_US: Color
+            fr_FR: Couleur
+        type:  pim_catalog_simpleselect
+        group: colors
+        parameters:
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            sortOrder:           1
+            translatable:        true
+        options:
+            Red:
+                labels:
+                    en_US: Red
+                    fr_FR: Rouge
+            Blue:
+                labels:
+                    en_US: Blue
+                    fr_FR: Bleu
+    weight:
+        labels:
+            en_US: Weight
+            fr_FR: Poids
+        type:  pim_catalog_metric
+        group: general
+        parameters:
+            useableAsGridColumn: true
+            useableAsGridFilter: true
+            sortOrder:           10
+            metricFamily:        Weight
+            defaultMetricUnit:   GRAM
+            decimalsAllowed:     true
+            translatable:        false

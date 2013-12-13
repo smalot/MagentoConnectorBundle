@@ -1,0 +1,14 @@
+jobs:
+    magento_product_export:
+        connector: Magento Connector
+        alias:     magento_product_export
+        label:     Magento product export
+        type:      export
+        configuration:
+            channel:       magento
+            soapUsername:  soap
+            soapApiKey:    magento1
+            soapUrl:       http://magento.dev/
+            defaultLocale: en_US
+            website:       base
+            enabled:       true
