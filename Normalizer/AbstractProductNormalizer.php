@@ -281,8 +281,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             )
         ) {
             $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array(
-                'attributeCode'     => $attributeCode,
-                'channelCurrencies' => $this->$this->channelManager->getChannelByCode($this->channel)->getCurrencies()
+                'attributeCode' => $attributeCode
             ));
         } else {
             throw new InvalidScopeMatchException(sprintf(
@@ -329,8 +328,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
                     return $this->normalizeCollectionData(
                         $data,
-                        $parameters['attributeCode'],
-                        $parameters['channelCurrencies']
+                        $parameters['attributeCode']
                     );
                 }
             ),
@@ -401,7 +399,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      *
      * @return string
      */
-    protected function normalizeCollectionData($data, $attributeCode, $currencies)
+    protected function normalizeCollectionData($data, $attributeCode)
     {
         $result = array();
         foreach ($data as $item) {
@@ -411,8 +409,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 $result[] = $this->getOptionId($attributeCode, $optionCode);
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
                 if (
-                    $item->getData() !== null &&
-                    in_array($item->getCurrency(), $currencies)
+                    $item->getData() !== null
                 ) {
                     return $item->getData();
                 }

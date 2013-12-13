@@ -471,6 +471,17 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         }
     }
 
+    protected function getProcessedCurrencyMapping()
+    {
+        $websites = explode($this->getCurrencyMapping, chr(10));
+        $result = array();
+
+        foreach ($websites as $website) {
+            list($websiteId, $currency) = explode($website, ':');
+            $result[$websiteId] = $currency;
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
