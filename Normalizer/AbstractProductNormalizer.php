@@ -34,6 +34,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     protected $visibility;
     protected $magentoAttributesOptions;
     protected $magentoAttributes;
+    protected $currency;
 
     /**
      * @var array
@@ -109,8 +110,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 );
             }
         }
-
-        print_r($processedItem);
 
         return $processedItem;
     }
@@ -409,7 +408,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 $result[] = $this->getOptionId($attributeCode, $optionCode);
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
                 if (
-                    $item->getData() !== null
+                    $item->getData() !== null &&
+                    $item->getCurrency() == $this->currency
                 ) {
                     return $item->getData();
                 }

@@ -21,6 +21,7 @@ class ProductCreateNormalizer extends AbstractProductNormalizer
         $this->taxClassId               = $context['taxClassId'];
         $this->magentoAttributesOptions = $context['magentoAttributesOptions'];
         $this->magentoAttributes        = $context['magentoAttributes'];
+        $this->currency                 = $context['currency'];
 
         return $this->getNormalizedProduct(
             $object,

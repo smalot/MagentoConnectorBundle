@@ -72,7 +72,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @Assert\NotBlank
      */
-    protected $currencyMapping;
+    protected $currency;
 
     /**
      * @Assert\NotBlank
@@ -200,23 +200,23 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * get currencyMapping
+     * get currency
      *
-     * @return string currencyMapping
+     * @return string currency
      */
-    public function getCurrencyMapping()
+    public function getCurrency()
     {
-        return $this->currencyMapping;
+        return $this->currency;
     }
 
     /**
-     * Set currencyMapping
+     * Set currency
      *
-     * @param string $currencyMapping currencyMapping
+     * @param string $currency currency
      */
-    public function setCurrencyMapping($currencyMapping)
+    public function setCurrency($currency)
     {
-        $this->currencyMapping = $currencyMapping;
+        $this->currency = $currency;
 
         return $this;
     }
@@ -354,7 +354,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'website'                  => $this->website,
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
-            'magentoAttributes'        => $this->magentoSoapClient->getAllAttributes()
+            'magentoAttributes'        => $this->magentoSoapClient->getAllAttributes(),
+            'currency'                 => $this->currency
         );
 
         foreach ($items as $product) {
@@ -471,9 +472,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         }
     }
 
-    protected function getProcessedCurrencyMapping()
+    protected function getProcessedCurrency()
     {
-        $websites = explode($this->getCurrencyMapping, chr(10));
+        $websites = explode($this->getCurrency, chr(10));
         $result = array();
 
         foreach ($websites as $website) {
@@ -516,8 +517,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'visibility' => array(
                 'type' => 'text'
             ),
-            'currencyMapping' => array(
-                'type' => 'textarea'
+            'currency' => array(
+                'type' => 'text'
             ),
             'taxClassId' => array(
                 'type'    => 'choice',
