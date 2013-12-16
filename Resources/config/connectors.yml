@@ -12,6 +12,7 @@ services:
             - '@pim_magento_connector.webservice.magento_soap'
             - '@pim_magento_connector.normalizer.product_create'
             - '@pim_magento_connector.normalizer.product_update'
+            - '@pim_import_export.converter.metric'
 
     # writers
     pim_magento_connector.writer.product:

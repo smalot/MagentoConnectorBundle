@@ -4,13 +4,13 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-
-use Pim\Bundle\CatalogBundle\Model\Product;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\FlexibleEntityBundle\Entity\Metric;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\CatalogBundle\Model\Product;
+
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -53,8 +53,10 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
     protected $pimLocales;
 
-    public function __construct(ChannelManager $channelManager, MediaManager $mediaManager)
-    {
+    public function __construct(
+        ChannelManager $channelManager,
+        MediaManager $mediaManager
+    ) {
         $this->channelManager = $channelManager;
         $this->mediaManager   = $mediaManager;
     }
@@ -337,7 +339,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             ),
             array(
                 'filter'     => function($data) { return $data instanceof Metric; },
-                'normalizer' => function($data, $parameters) { return $data->getData(); }
+                'normalizer' => function($data, $parameters) {
+                    return $data->getData();
+                }
             ),
             array(
                 'filter'     => function($data) { return true; },

@@ -293,8 +293,6 @@ class MagentoSoapClient
             }
         }
 
-        print_r($this->attributeList);
-
         return $this->attributeList;
     }
 

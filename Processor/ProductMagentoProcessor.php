@@ -7,9 +7,10 @@ use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
@@ -33,6 +34,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      * @var ChannelManager
      */
     protected $channelManager;
+
+    /**
+     * @var metricConverter
+     */
+    protected $metricConverter;
 
     /**
      * @var MagentoSoapClient
@@ -103,12 +109,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         ChannelManager $channelManager,
         MagentoSoapClient $magentoSoapClient,
         ProductCreateNormalizer $productCreateNormalizer,
-        ProductUpdateNormalizer $productUpdateNormalizer
+        ProductUpdateNormalizer $productUpdateNormalizer,
+        MetricConverter $metricConverter
     ) {
         $this->channelManager          = $channelManager;
         $this->magentoSoapClient       = $magentoSoapClient;
         $this->productCreateNormalizer = $productCreateNormalizer;
         $this->productUpdateNormalizer = $productUpdateNormalizer;
+        $this->metricConverter         = $metricConverter;
     }
 
     /**
@@ -357,6 +365,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'magentoAttributes'        => $this->magentoSoapClient->getAllAttributes(),
             'currency'                 => $this->currency
         );
+
+        $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
 
         foreach ($items as $product) {
             $context['attributeSetId']    = $this->getAttributeSetId($product);
