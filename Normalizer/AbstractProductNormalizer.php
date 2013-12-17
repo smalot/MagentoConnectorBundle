@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\FlexibleEntityBundle\Entity\Metric;
+use Pim\Bundle\CatalogBundle\Model\Metric;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
@@ -344,7 +344,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             array(
                 'filter'     => function($data) { return $data instanceof Metric; },
                 'normalizer' => function($data, $parameters) {
-                    return $data->getData();
+                    return (string) $data->getData();
                 }
             ),
             array(

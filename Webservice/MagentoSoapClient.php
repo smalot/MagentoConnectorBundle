@@ -321,7 +321,13 @@ class MagentoSoapClient
 
     public function getImages($sku)
     {
-        return $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, $sku);
+        try {
+            $images = $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, $sku);
+        } catch (\Exception $e) {
+            $images = array();
+        }
+
+        return $images;
     }
 
     public function deleteImage($sku, $imageFilename)
@@ -353,7 +359,6 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
-
                 $responses = $this->client->multiCall(
                     $this->session,
                     $this->calls
