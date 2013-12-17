@@ -159,7 +159,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     /**
      * {@inheritdoc}
      */
-    public function write(array $items)
+    public function write(array $products)
     {
         if (!$this->clientParameters) {
             $this->clientParameters = new MagentoSoapClientParameters(
@@ -172,9 +172,9 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         $this->magentoSoapClient->init($this->clientParameters);
 
         //creation for each product in the admin storeView (with default locale)
-        foreach($items as $batch) {
-            foreach ($batch as $item) {
-                $this->computeProduct($item);
+        foreach($products as $batch) {
+            foreach ($batch as $product) {
+                $this->computeProduct($product);
             }
         }
 
@@ -184,27 +184,27 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     /**
      * Compute an individual product and all his parts (translations)
      *
-     * @param  array $item The product and his parts
+     * @param  array $product The product and his parts
      */
-    private function computeProduct($item)
+    private function computeProduct($product)
     {
-        $this->pruneImages($item);
+        $this->pruneImages($product);
 
-        foreach(array_keys($item) as $storeViewCode) {
-            $this->createCall($item[$storeViewCode], $storeViewCode);
+        foreach(array_keys($product) as $storeViewCode) {
+            $this->createCall($product[$storeViewCode], $storeViewCode);
         }
     }
 
     /**
-     * Create a call for the given item part
+     * Create a call for the given product part
      *
-     * @param  array  $itemPart      A product part
+     * @param  array  $productPart      A product part
      * @param  string $storeViewCode The storeview code
      */
-    private function createCall($itemPart, $storeViewCode)
+    private function createCall($productPart, $storeViewCode)
     {
         if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
-            if (count($itemPart) == self::CREATE_PRODUCT_SIZE) {
+            if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
                 $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
             } else {
                 $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
@@ -213,25 +213,17 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             $this->magentoSoapClient->addCall(
                 array(
                     $resource,
-                    $itemPart,
+                    $productPart,
                 ),
                 self::MAXIMUM_CALLS
             );
         } elseif ($storeViewCode == MagentoSoapClient::IMAGES) {
-            foreach ($itemPart as $imageCall) {
-                $this->magentoSoapClient->addCall(
-                    array(
-                        MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
-                        $imageCall
-                    ),
-                    self::MAXIMUM_CALLS
-                );
-            }
+            $this->sendImages($productPart);
         } else {
             $this->magentoSoapClient->addCall(
                 array(
                     MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                    $itemPart,
+                    $productPart,
                 ),
                 self::MAXIMUM_CALLS
             );
@@ -239,9 +231,28 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * [getProductSku description]
-     * @param  [type] $product [description]
-     * @return [type]          [description]
+     * Send all product images
+     *
+     * @param  array $imagesCall All images to send
+     */
+    protected function sendImages($imagesCall)
+    {
+        foreach ($imagesCall as $imageCall) {
+            $this->magentoSoapClient->addCall(
+                array(
+                    MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
+                    $imageCall
+                ),
+                self::MAXIMUM_CALLS
+            );
+        }
+    }
+
+    /**
+     * Get the sku of the given normalized product
+     *
+     * @param  array $product
+     * @return string
      */
     protected function getProductSku($product)
     {
@@ -254,6 +265,11 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         }
     }
 
+    /**
+     * Clean old images on magento product
+     *
+     * @param  array $product
+     */
     protected function pruneImages($product)
     {
         $sku = $this->getProductSku($product);
