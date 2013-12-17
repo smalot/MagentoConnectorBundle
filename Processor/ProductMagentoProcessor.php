@@ -17,6 +17,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
 
 /**
  * Magento product processor
@@ -406,6 +407,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         } catch (InvalidOptionException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         } catch(InvalidScopeMatchException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        } catch(AttributeNotFoundException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 

@@ -96,6 +96,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             $create
         );
 
+        $processedItem[MagentoSoapClient::IMAGES] = $this->getNormalizedImages($product);
+
         //For each storeview, we update the product only with localized attributes
         foreach ($magentoStoreViews as $magentoStoreView) {
             $storeViewCode = $magentoStoreView['code'];
@@ -225,7 +227,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                         (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
                         $value->getAttribute()->isTranslatable()
                     ) &&
-                    !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes())
+                    !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
+                    !($value->getData() instanceof Media)
                 );
             }
         );
@@ -266,6 +269,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
         while ($cpt < $end && !$valueNormalizer[$cpt]['filter']($data)) {
             $cpt++;
+        }
+
+        if (!isset($this->magentoAttributes[$attributeCode])) {
+            throw new AttributeNotFoundException(sprintf('The magento attribute %s doesn\'t exist. You should create ' .
+                'it first on you Magento installation', $attributeCode));
         }
 
         $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
@@ -326,16 +334,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             array(
                 'filter'     => function($data) { return $data instanceof \Doctrine\Common\Collections\Collection; },
                 'normalizer' => function($data, $parameters) {
-
                     return $this->normalizeCollectionData(
                         $data,
                         $parameters['attributeCode']
                     );
                 }
-            ),
-            array(
-                'filter'     => function($data) { return $data instanceof Media; },
-                'normalizer' => function($data, $parameters) { return $this->mediaManager->getExportPath($data); }
             ),
             array(
                 'filter'     => function($data) { return $data instanceof Metric; },
@@ -444,5 +447,40 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         }
 
         return $this->magentoAttributesOptions[$attributeCode][$optionCode];
+    }
+
+    protected function getNormalizedImages(Product $product)
+    {
+        $imagesValue = $product->getValues()->filter(
+            function ($value) {
+                return $value->getData() instanceof Media;
+            }
+        );
+
+        $images = array();
+
+
+        foreach ($imagesValue as $imageValue) {
+            $data = $imageValue->getData();
+
+            if ($imageData = $this->mediaManager->getBase64($data)) {
+                $images[] = array(
+                    (string) $product->getIdentifier(),
+                    array(
+                        'file' => array(
+                            'name' => $data->getFilename(),
+                            'content' => $imageData,
+                            'mime'    => 'image/jpeg',//$data->getFile()->getMimeType()
+                        ),
+                        'label'    => 'Cool Image Through Soap',
+                        'position' => 0,
+                        'types'    => array('small_image'),
+                        'exclude'  => 0
+                    )
+                );
+            }
+        }
+
+        return $images;
     }
 }

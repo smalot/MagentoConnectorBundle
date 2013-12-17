@@ -21,8 +21,12 @@ class MagentoSoapClient
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
+    const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'product_media.create';
+    const SOAP_ACTION_PRODUCT_MEDIA_LIST            = 'catalog_product_attribute_media.list';
+    const SOAP_ACTION_PRODUCT_MEDIA_REMOVE          = 'catalog_product_attribute_media.remove';
 
     const SOAP_DEFAULT_STORE_VIEW                   = 'default';
+    const IMAGES                                    = 'images';
     const SOAP_ATTRIBUTE_ID                         = 'attribute_id';
 
     protected $clientParameters;
@@ -315,6 +319,18 @@ class MagentoSoapClient
         return $this->attributes[$attributeSetCode];
     }
 
+    public function getImages($sku)
+    {
+        return $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, $sku);
+    }
+
+    public function deleteImage($imageFilename, $sku)
+    {
+        echo "remove image : \n";
+        var_dump($sku);
+        return $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array('product' => $sku, 'file' => $imageFilename));
+    }
+
     /**
      * Add a call to the soap call stack
      *
@@ -325,7 +341,7 @@ class MagentoSoapClient
     {
         $this->calls[] = $call;
 
-        print_r($call);
+        var_dump($call);
 
         if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
             $this->sendCalls();
@@ -368,7 +384,6 @@ class MagentoSoapClient
     public function call($resource, $params = null)
     {
         if ($this->isConnected()) {
-
             $response = $this->client->call(
                 $this->session,
                 $resource,

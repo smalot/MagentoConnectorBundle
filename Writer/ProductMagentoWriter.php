@@ -173,7 +173,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         //creation for each product in the admin storeView (with default locale)
         foreach($items as $batch) {
             foreach ($batch as $item) {
-                $this->computeItem($item);
+                $this->computeProduct($item);
             }
         }
 
@@ -185,10 +185,13 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      *
      * @param  array $item The product and his parts
      */
-    private function computeItem($item)
+    private function computeProduct($item)
     {
+        $imageToModify = $this->getImagesToModify($item);
+        $this->pruneImages($imageToModify, $item);
+
         foreach(array_keys($item) as $storeViewCode) {
-            $this->createCall($item[$storeViewCode], $storeViewCode);
+            $this->createCall($item[$storeViewCode], $storeViewCode, $imageToModify);
         }
     }
 
@@ -198,7 +201,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      * @param  array  $itemPart      A product part
      * @param  string $storeViewCode The storeview code
      */
-    private function createCall($itemPart, $storeViewCode)
+    private function createCall($itemPart, $storeViewCode, $imageToModify)
     {
         if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
             if (count($itemPart) == 5) {
@@ -214,6 +217,25 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 ),
                 self::MAXIMUM_CALLS
             );
+        } elseif ($storeViewCode == MagentoSoapClient::IMAGES) {
+            foreach ($itemPart as $imageCall) {
+                $pimImageFilename = $imageCall[1]['file']['name'];
+
+                if (
+                    $magentoImageFilename =
+                        $this->imageHasToBeUpdated($pimImageFilename, $imageToModify['toUpdate'])
+                ) {
+                    $this->magentoSoapClient->deleteImage($magentoImageFilename, $itemPart[0][0]);
+                }
+
+                $this->magentoSoapClient->addCall(
+                    array(
+                        MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
+                        $imageCall
+                    ),
+                    self::MAXIMUM_CALLS
+                );
+            }
         } else {
             $this->magentoSoapClient->addCall(
                 array(
@@ -222,6 +244,69 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 ),
                 self::MAXIMUM_CALLS
             );
+        }
+    }
+
+    protected function isSameImage($pimFilename, $magentoFilename)
+    {
+        $pimFilename = str_replace(' ', '_', $pimFilename);
+        $pimFilename = str_replace(':', '_', $pimFilename);
+
+        return ($pimFilename && $magentoFilename) && (false !== strpos($magentoFilename, $pimFilename));
+    }
+
+    protected function imageHasToBeDeleted($magentoImage, $pimImages)
+    {
+        foreach ($pimImages as $pimImage) {
+            $pimImageFilename = $pimImage[1]['file']['name'];
+
+            if ($this->isSameImage($pimImageFilename, $magentoImage['file'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected function imageHasToBeUpdated($pimImageFilename, $toUpdateImages)
+    {
+        foreach ($toUpdateImages as $toUpdateImage) {
+            if ($this->isSameImage($pimImageFilename, $toUpdateImage)) {
+                return $toUpdateImage;
+            }
+        }
+
+        return false;
+    }
+
+    protected function getImagesToModify($item)
+    {
+        if (!isset($item['default'][0])) {
+            var_dump($item);
+        }
+        $magentoImages = $this->magentoSoapClient->getImages($item['default'][0]);
+        $pimImages     = $item[MagentoSoapClient::IMAGES];
+
+        $imagesToModify = array(
+            'toDelete' => array(),
+            'toUpdate' => array()
+        );
+
+        foreach ($magentoImages as $magentoImage) {
+            if ($this->imageHasToBeDeleted($magentoImage ,$pimImages)) {
+                $imagesToModify['toDelete'][] = $magentoImage['file'];
+            } else {
+                $imagesToModify['toUpdate'][] = $magentoImage['file'];
+            }
+        }
+
+        return $imagesToModify;
+    }
+
+    protected function pruneImages($imagesToModify, $item)
+    {
+        foreach ($imagesToModify['toDelete'] as $imageToDelete) {
+            $this->magentoSoapClient->deleteImage($imageToDelete, (string) $item['default'][0]);
         }
     }
 
