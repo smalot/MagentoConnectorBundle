@@ -20,7 +20,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     ItemWriterInterface
 {
-    const MAXIMUM_CALLS = 1;
+    const MAXIMUM_CALLS       = 1;
+    const CREATE_PRODUCT_SIZE = 5;
 
     /**
      * @var ChannelManager
@@ -187,11 +188,10 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     private function computeProduct($item)
     {
-        $imageToModify = $this->getImagesToModify($item);
-        $this->pruneImages($imageToModify, $item);
+        $this->pruneImages($item);
 
         foreach(array_keys($item) as $storeViewCode) {
-            $this->createCall($item[$storeViewCode], $storeViewCode, $imageToModify);
+            $this->createCall($item[$storeViewCode], $storeViewCode);
         }
     }
 
@@ -201,10 +201,10 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      * @param  array  $itemPart      A product part
      * @param  string $storeViewCode The storeview code
      */
-    private function createCall($itemPart, $storeViewCode, $imageToModify)
+    private function createCall($itemPart, $storeViewCode)
     {
         if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
-            if (count($itemPart) == 5) {
+            if (count($itemPart) == self::CREATE_PRODUCT_SIZE) {
                 $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
             } else {
                 $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
@@ -219,15 +219,6 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             );
         } elseif ($storeViewCode == MagentoSoapClient::IMAGES) {
             foreach ($itemPart as $imageCall) {
-                $pimImageFilename = $imageCall[1]['file']['name'];
-
-                if (
-                    $magentoImageFilename =
-                        $this->imageHasToBeUpdated($pimImageFilename, $imageToModify['toUpdate'])
-                ) {
-                    $this->magentoSoapClient->deleteImage($magentoImageFilename, $itemPart[0][0]);
-                }
-
                 $this->magentoSoapClient->addCall(
                     array(
                         MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
@@ -247,66 +238,29 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         }
     }
 
-    protected function isSameImage($pimFilename, $magentoFilename)
+    /**
+     * [getProductSku description]
+     * @param  [type] $product [description]
+     * @return [type]          [description]
+     */
+    protected function getProductSku($product)
     {
-        $pimFilename = str_replace(' ', '_', $pimFilename);
-        $pimFilename = str_replace(':', '_', $pimFilename);
+        $defaultStoreviewProduct = $product[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW];
 
-        return ($pimFilename && $magentoFilename) && (false !== strpos($magentoFilename, $pimFilename));
+        if (count($defaultStoreviewProduct) == self::CREATE_PRODUCT_SIZE) {
+            return (string) $defaultStoreviewProduct[2];
+        } else {
+            return (string) $defaultStoreviewProduct[0];
+        }
     }
 
-    protected function imageHasToBeDeleted($magentoImage, $pimImages)
+    protected function pruneImages($product)
     {
-        foreach ($pimImages as $pimImage) {
-            $pimImageFilename = $pimImage[1]['file']['name'];
+        $sku = $this->getProductSku($product);
+        $images = $this->magentoSoapClient->getImages($sku);
 
-            if ($this->isSameImage($pimImageFilename, $magentoImage['file'])) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    protected function imageHasToBeUpdated($pimImageFilename, $toUpdateImages)
-    {
-        foreach ($toUpdateImages as $toUpdateImage) {
-            if ($this->isSameImage($pimImageFilename, $toUpdateImage)) {
-                return $toUpdateImage;
-            }
-        }
-
-        return false;
-    }
-
-    protected function getImagesToModify($item)
-    {
-        if (!isset($item['default'][0])) {
-            var_dump($item);
-        }
-        $magentoImages = $this->magentoSoapClient->getImages($item['default'][0]);
-        $pimImages     = $item[MagentoSoapClient::IMAGES];
-
-        $imagesToModify = array(
-            'toDelete' => array(),
-            'toUpdate' => array()
-        );
-
-        foreach ($magentoImages as $magentoImage) {
-            if ($this->imageHasToBeDeleted($magentoImage ,$pimImages)) {
-                $imagesToModify['toDelete'][] = $magentoImage['file'];
-            } else {
-                $imagesToModify['toUpdate'][] = $magentoImage['file'];
-            }
-        }
-
-        return $imagesToModify;
-    }
-
-    protected function pruneImages($imagesToModify, $item)
-    {
-        foreach ($imagesToModify['toDelete'] as $imageToDelete) {
-            $this->magentoSoapClient->deleteImage($imageToDelete, (string) $item['default'][0]);
+        foreach ($images as $image) {
+            $this->magentoSoapClient->deleteImage($sku, $image['file']);
         }
     }
 

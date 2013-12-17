@@ -324,10 +324,8 @@ class MagentoSoapClient
         return $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, $sku);
     }
 
-    public function deleteImage($imageFilename, $sku)
+    public function deleteImage($sku, $imageFilename)
     {
-        echo "remove image : \n";
-        var_dump($sku);
         return $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array('product' => $sku, 'file' => $imageFilename));
     }
 
@@ -340,8 +338,6 @@ class MagentoSoapClient
     public function addCall(array $call, $maximumCalls = 0)
     {
         $this->calls[] = $call;
-
-        var_dump($call);
 
         if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
             $this->sendCalls();
