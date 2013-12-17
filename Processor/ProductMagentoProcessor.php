@@ -86,8 +86,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     protected $taxClassId;
 
+    /**
+     * @var boolean
+     */
     protected $enabled;
 
+    /**
+     * @var integer
+     */
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
     /**
@@ -100,6 +106,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     protected $website = 'base';
 
+    /**
+     * @var MagentoSoapClientParameters
+     */
     protected $clientParameters;
 
     /**
@@ -454,6 +463,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         return false;
     }
 
+    /**
+     * Get the magento soap client parameters
+     *
+     * @return MagentoSoapClientParameters
+     */
     protected function getClientParameters()
     {
         if (!$this->clientParameters) {
@@ -482,17 +496,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 );
         } catch (AttributeSetNotFoundException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
-        }
-    }
-
-    protected function getProcessedCurrency()
-    {
-        $websites = explode($this->getCurrency, chr(10));
-        $result = array();
-
-        foreach ($websites as $website) {
-            list($websiteId, $currency) = explode($website, ':');
-            $result[$websiteId] = $currency;
         }
     }
 

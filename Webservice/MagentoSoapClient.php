@@ -319,6 +319,12 @@ class MagentoSoapClient
         return $this->attributes[$attributeSetCode];
     }
 
+    /**
+     * Get all images attached to a product
+     *
+     * @param  string $sku The product sku
+     * @return array
+     */
     public function getImages($sku)
     {
         try {
@@ -330,6 +336,12 @@ class MagentoSoapClient
         return $images;
     }
 
+    /**
+     * Delete image for a given sku and a given filename
+     * @param  string $sku
+     * @param  string $imageFilename
+     * @return string
+     */
     public function deleteImage($sku, $imageFilename)
     {
         return $this->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array('product' => $sku, 'file' => $imageFilename));

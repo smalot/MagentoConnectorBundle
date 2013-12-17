@@ -24,16 +24,38 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
     const GLOBAL_SCOPE = 'global';
-
     const TAX_CLASS_ID = 'tax_class_id';
     const VISIBILITY   = 'visibility';
     const ENABLED      = 'status';
 
+    /**
+     * @var boolean
+     */
     protected $enabled;
+
+    /**
+     * @var integer
+     */
     protected $taxClassId;
+
+    /**
+     * @var boolean
+     */
     protected $visibility;
+
+    /**
+     * @var array
+     */
     protected $magentoAttributesOptions;
+
+    /**
+     * @var array
+     */
     protected $magentoAttributes;
+
+    /**
+     * @var string
+     */
     protected $currency;
 
     /**
@@ -51,6 +73,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected $mediaManager;
 
+    /**
+     * @var array
+     */
     protected $pimLocales;
 
     public function __construct(
@@ -473,6 +498,12 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return $this->magentoAttributesOptions[$attributeCode][$optionCode];
     }
 
+    /**
+     * Get all images of a product normalized
+     *
+     * @param  Product $product
+     * @return array
+     */
     protected function getNormalizedImages(Product $product)
     {
         $imagesValue = $product->getValues()->filter(
