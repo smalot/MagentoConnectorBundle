@@ -262,14 +262,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     {
         $data            = $value->getData();
         $attributeCode   = $value->getAttribute()->getCode();
-        $valueNormalizer = $this->getValueNormalizers();
-
-        $cpt = 0;
-        $end = count($valueNormalizer);
-
-        while ($cpt < $end && !$valueNormalizer[$cpt]['filter']($data)) {
-            $cpt++;
-        }
 
         if (!isset($this->magentoAttributes[$attributeCode])) {
             print_r($this->magentoAttributes);
@@ -277,6 +269,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 'it first on you Magento installation', $attributeCode));
         }
 
+        $normalizer     = $this->getNormalizer($data);
         $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
 
         if (
@@ -290,7 +283,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 !$value->getAttribute()->isTranslatable()
             )
         ) {
-            $normalizedValue = $valueNormalizer[$cpt]['normalizer']($data, array(
+            $normalizedValue = $normalizer($data, array(
                 'attributeCode' => $attributeCode
             ));
         } else {
@@ -309,6 +302,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         return array($attributeCode => $normalizedValue);
     }
 
+    /**
+     * Get all value normalizer (filter and normlizer)
+     *
+     * @return array
+     */
     protected function getValueNormalizers()
     {
         return array(
@@ -388,6 +386,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         );
     }
 
+    /**
+     * Get custom values (not provided by the PIM product)
+     *
+     * @return mixed
+     */
     protected function getCustomValue()
     {
         return array(
@@ -397,6 +400,26 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             'created_at'       => (new \DateTime())->format(\DateTime::ATOM),
             'updated_at'       => (new \DateTime())->format(\DateTime::ATOM)
         );
+    }
+
+    /**
+     * Get normalizer closure matching the corresponding filter with $data
+     *
+     * @param  mixed $data
+     * @return closure
+     */
+    protected function getNormalizer($data)
+    {
+        $valueNormalizers = $this->getValueNormalizers();
+
+        $cpt = 0;
+        $end = count($valueNormalizers);
+
+        while ($cpt < $end && !$valueNormalizers[$cpt]['filter']($data)) {
+            $cpt++;
+        }
+
+        return $valueNormalizers[$cpt]['normalizer'];
     }
 
     /**
