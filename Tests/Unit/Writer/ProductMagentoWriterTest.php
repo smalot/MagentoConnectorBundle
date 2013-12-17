@@ -30,6 +30,10 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+        $this->magentoSoapClient->expects($this->any())
+            ->method('getImages')
+            ->will($this->returnValue(array()));
+
 
         $this->writer = new ProductMagentoWriter($this->channelManager, $this->magentoSoapClient);
 
@@ -50,14 +54,18 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $this->writer->setSoapUrl(self::URL);
         $this->writer->setChannel(self::CHANNEL);
 
-        $items = array(array(
-            'admin'              => array(
-
+        $items = array(array(array(
+            MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW => array(
+                '1',
+                '1',
+                '1',
+                '1',
+                '1',
             ),
-            self::DEFAULT_LOCALE   => array(
+            self::DEFAULT_LOCALE                       => array(
 
             )
-        ));
+        )));
 
         $this->writer->write($items);
     }
@@ -73,18 +81,18 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $this->writer->setSoapUrl(self::URL);
         $this->writer->setChannel(self::CHANNEL);
 
-        $items = array(array(
-            'admin'              => array(
+        $items = array(array(array(
+            MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW => array(
                 '1',
                 '1',
                 '1',
                 '1',
                 '1',
             ),
-            self::DEFAULT_LOCALE   => array(
+            self::DEFAULT_LOCALE                       => array(
 
             )
-        ));
+        )));
 
         $this->writer->write($items);
     }

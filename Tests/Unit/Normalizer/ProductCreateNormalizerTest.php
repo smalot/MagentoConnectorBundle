@@ -59,58 +59,59 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
             'enabled'                  => true,
             'visibility'               => 4,
             'attributeSetId'           => 10,
+            'currency'                 => 'EUR',
             'magentoAttributes'        => array(
-                array(
+                'name' => array(
                     'code'     => 'name',
                     'required' => 1,
-                    'scope'    => 'store',
+                    'scope'    => 'global',
                 ),
-                array(
+                'description' => array(
                     'code'     => 'description',
                     'required' => 1,
                     'scope'    => 'store',
                 ),
-                array(
+                'short_description' => array(
                     'code' => 'short_description',
                     'required' => 1,
                     'scope' => 'store',
                 ),
-                array(
+                'sku' => array(
                     'code'     => 'sku',
                     'required' => 1,
                     'scope'    => 'global',
                 ),
-                array(
+                'weight' => array(
                     'code'     => 'weight',
                     'required' => 1,
                     'scope'    => 'global',
                 ),
-                array(
+                'status' => array(
                     'code'     => 'status',
                     'required' => 1,
                     'scope'    => 'website',
                 ),
-                array(
+                'visibility' => array(
                     'code'     => 'visibility',
                     'required' => 1,
                     'scope'    => 'store',
                 ),
-                array(
+                'created_at' => array(
                     'code'     => 'created_at',
                     'required' => 1,
                     'scope'    => 'global',
                 ),
-                array(
+                'updated_at' => array(
                     'code'     => 'updated_at',
                     'required' => 1,
                     'scope'    => 'global',
                 ),
-                array(
+                'price' => array(
                     'code'     => 'price',
                     'required' => 1,
                     'scope'    => 'website',
                 ),
-                array(
+                'tax_class_id' => array(
                     'code'     => 'tax_class_id',
                     'required' => 1,
                     'scope'    => 'website',
@@ -120,48 +121,35 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $product = $this->getProductMock();
 
+
+
         $this->normalizer->normalize($product, null, $context);
         $this->assertTrue(true);
     }
 
     protected function getProductMock()
     {
-        $family  = $this->getFamilyMock();
-        $price   = $this->getProductPriceMock();
+        $attribute = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductAttribute');
+
+        $attribute->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue('name'));
+
+        $productValue = $this->getMock('Pim\Bundle\CatalogBundle\Model\ProductValue');
+
+        $productValue->expects($this->any())
+            ->method('getAttribute')
+            ->will($this->returnValue($attribute));
+
+        $values = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $values->add($productValue);
+
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
 
-        $attributes = array();
-
-        foreach ($this->getSampleValues() as $key => $value) {
-            $attributes[$key] = $this->getAttributeMock($value);
-        }
-
         $product->expects($this->any())
-            ->method('getIdentifier')
-            ->will($this->returnValue(self::SKU));
-
-        $product->expects($this->any())
-            ->method('getFamily')
-            ->will($this->returnValue($family));
-
-        $product->expects($this->any())
-            ->method('getAllAttributes')
-            ->will($this->returnValue($attributes));
-
-        $map = array(
-            array('name',              self::DEFAULT_LOCALE, self::CHANNEL, self::NAME),
-            array('description',       self::DEFAULT_LOCALE, self::CHANNEL, self::DESCRIPTION),
-            array('short_description', self::DEFAULT_LOCALE, self::CHANNEL, self::SHORT_DESCRIPTION),
-            array('weight',            self::DEFAULT_LOCALE, self::CHANNEL, self::WEIGHT),
-            array('status',            self::DEFAULT_LOCALE, self::CHANNEL, self::STATUS),
-            array('visibility',        self::DEFAULT_LOCALE, self::CHANNEL, self::VISIBILITY),
-            array('tax_class_id',      self::DEFAULT_LOCALE, self::CHANNEL, self::TAX_CLASS_ID),
-            array('price',             self::DEFAULT_LOCALE, self::CHANNEL, $price)
-        );
-
-        $product->expects($this->any())
-            ->method('getValue')
-            ->will($this->returnValueMap($map));
+            ->method('getValues')
+            ->will($this->returnValue($values));
 
         return $product;
     }

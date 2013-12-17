@@ -43,20 +43,26 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->channelManager = $this->getChannelManagerMock();
         $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
 
         $this->productCreateNormalizer = $this->getProductCreateNormalizerMock();
         $this->productUpdateNormalizer = $this->getProductUpdateNormalizerMock();
+        $this->metricConverter         = $this->getMockBuilder(
+                'Pim\Bundle\ImportExportBundle\Converter\MetricConverter'
+            )->disableOriginalConstructor()
+            ->getMock();
 
+        $this->metricConverter->expects($this->any())
+            ->method('convert')
+            ->will($this->returnValue('10.40'));
 
         $this->processor = new ProductMagentoProcessor(
             $this->channelManager,
             $this->magentoSoapClient,
             $this->productCreateNormalizer,
-            $this->productUpdateNormalizer
+            $this->productUpdateNormalizer,
+            $this->metricConverter
         );
 
         $this->processor->setSoapUsername(self::LOGIN);
@@ -190,7 +196,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             $this->channelManager,
             $magentoSoapClient,
             $this->getProductCreateNormalizerMock(),
-            $this->getProductUpdateNormalizerMock()
+            $this->getProductUpdateNormalizerMock(),
+            $this->metricConverter
         );
 
         $processor->setSoapUsername(self::LOGIN);
@@ -248,7 +255,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             $this->channelManager,
             $magentoSoapClient,
             $this->getProductCreateNormalizerMock(),
-            $this->getProductUpdateNormalizerMock()
+            $this->getProductUpdateNormalizerMock(),
+            $this->metricConverter
         );
 
         $processor->setSoapUsername(self::LOGIN);
@@ -293,7 +301,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             $this->channelManager,
             $magentoSoapClient,
             $this->getProductCreateNormalizerMock(),
-            $this->getProductUpdateNormalizerMock()
+            $this->getProductUpdateNormalizerMock(),
+            $this->metricConverter
         );
 
         $processor->setSoapUsername(self::LOGIN);
@@ -617,6 +626,15 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $channelManager->expects($this->any())
+            ->method('getChannelByCode')
+            ->will($this->returnValue($this->getChannelMock()));
+
+        return $channelManager;
+    }
+
+    protected function getChannelMock()
+    {
         $locale = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Locale')
             ->disableOriginalConstructor()
             ->setMethods(array('getCode'))
@@ -626,20 +644,14 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->method('getCode')
             ->will($this->returnValue(self::DEFAULT_LOCALE));
 
-        // $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
-        //     ->disableOriginalConstructor()
-        //     ->setMethods(array('getLocales'))
-        //     ->getMock();
-        // $channel->expects($this->once())
-        //     ->method('getLocales')
-        //     ->will($this->returnValue(array($locale)));
+        $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getLocales'))
+            ->getMock();
+        $channel->expects($this->any())
+            ->method('getLocales')
+            ->will($this->returnValue(array($locale)));
 
-        // $channelManager
-        //     ->expects($this->any())
-        //     ->method('getChannels')
-        //     ->with(array('code' => self::CHANNEL))
-        //     ->will($this->returnValue(array($channel)));
-
-        return $channelManager;
+        return $channel;
     }
 }
