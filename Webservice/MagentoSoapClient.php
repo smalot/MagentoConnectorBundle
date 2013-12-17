@@ -425,7 +425,5 @@ class MagentoSoapClient
 
             }
         }
-
-        print_r($response);
     }
 }
