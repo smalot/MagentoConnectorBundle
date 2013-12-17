@@ -28,6 +28,9 @@ class MagentoSoapClient
     const SOAP_DEFAULT_STORE_VIEW                   = 'default';
     const IMAGES                                    = 'images';
     const SOAP_ATTRIBUTE_ID                         = 'attribute_id';
+    const SMALL_IMAGE                               = 'small_image';
+    const SELECT                                    = 'select';
+    const MULTI_SELECT                              = 'multiselect';
 
     protected $clientParameters;
 
@@ -40,9 +43,10 @@ class MagentoSoapClient
     protected $magentoStoreViewList;
     protected $magentoAttributes = array();
 
-    protected $attributeList    = array();
-    protected $attributes       = array();
-    protected $attributeSetList = array();
+    protected $attributeList       = array();
+    protected $attributes          = array();
+    protected $attributeSetList    = array();
+    protected $attributeOptionList = array();
 
     /**
      * Init the service with credentials and soap url
@@ -178,7 +182,7 @@ class MagentoSoapClient
         $attributeList = $this->getAllAttributes();
 
         foreach ($attributeList as $attributeCode => $attribute) {
-            if (in_array($attribute['type'], array('select', 'multiselect'))) {
+            if (in_array($attribute['type'], array(self::SELECT, self::MULTI_SELECT))) {
                 $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
             }
         }

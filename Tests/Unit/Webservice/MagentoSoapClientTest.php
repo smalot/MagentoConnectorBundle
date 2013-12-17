@@ -20,6 +20,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     const BAD_ATTRIBUTE_SET_CODE  = 'bad';
     const GOOD_ATTRIBUTE_SET_CODE = 'good';
     const NAME                    = 'name';
+    const SIZE                    = 'size';
     const SET_ID                  = 'set_id';
     const STORE_VIEW              = 'admin';
 
@@ -112,6 +113,49 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
             ));
 
         $this->magentoSoapClient->getAttributeSetId(self::BAD_ATTRIBUTE_SET_CODE);
+    }
+
+    public function testGetAllAttributesOptions()
+    {
+        $this->connectClient();
+
+        $attributeSetList = array(
+            self::GOOD_ATTRIBUTE_SET_CODE => array(
+                self::NAME   => self::GOOD_ATTRIBUTE_SET_CODE,
+                self::SET_ID => 1
+            )
+        );
+
+        $attributeList = array(
+            array(
+                'code' => self::NAME,
+                'type' => 'text'
+            ),
+            array(
+                'code' => self::SIZE,
+                'type' => 'select'
+            )
+        );
+
+        $optionList = array(
+            array(
+                'label' => 'Red',
+                'value' => '3'
+            )
+        );
+
+        $values = array(
+            array(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST, null, $attributeSetList),
+            array(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, 1, $attributeList),
+            array(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('size'), $optionList)
+        );
+
+        $this->mockSoapClient
+            ->expects($this->any())
+            ->method('call')
+            ->will($this->returnValueMap($values));
+
+        $this->magentoSoapClient->getAllAttributesOptions();
     }
 
     public function testGetProductStatus()

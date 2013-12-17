@@ -489,9 +489,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $optionCode    = strtolower($optionCode);
 
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
-            throw new InvalidOptionException('The attribute "' . $attributeCode . '" doesn\'t have any option named "' .
-                $optionCode . '" on Magento side. You should add this option in your "' . $attributeCode .
-                '" attribute on Magento or export the PIM options using this Magento connector.');
+            throw new InvalidOptionException(sprintf('The attribute "%s" doesn\'t have any option named "%s" on ' .
+                'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
+                'options using this Magento connector.'), $attributeCode, $optionCode, $attributeCode);
         }
 
         return $this->magentoAttributesOptions[$attributeCode][$optionCode];
@@ -524,11 +524,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                         'file' => array(
                             'name' => $data->getFilename(),
                             'content' => $imageData,
-                            'mime'    => 'image/jpeg',//$data->getFile()->getMimeType()
+                            'mime'    => $data->getFile()->getMimeType()
                         ),
-                        'label'    => 'Cool Image Through Soap',
+                        'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array('small_image'),
+                        'types'    => array(MagentoSoapClient::SMALL_IMAGE),
                         'exclude'  => 0
                     )
                 );
