@@ -7,4 +7,5 @@ channels:
             - fr_FR
         currencies:
             - EUR
+            - USD
         tree: default
