@@ -4,6 +4,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Processor;
 
 use Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 
 /**
  * Test related class
@@ -27,6 +30,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const WEIGHT            = '10';
     const STATUS            = 1;
     const VISIBILITY        = 4;
+    const CURRENCY          = 0;
     const TAX_CLASS_ID      = 0;
     const ATTRIBUTE_NAME    = 'name';
     const SKU               = 'sku-010';
@@ -72,9 +76,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->processor->setEnabled(self::ENABLED);
         $this->processor->setVisibility(self::VISIBILITY);
         $this->processor->setWebsite(self::WEBSITE);
+        $this->processor->setCurrency(self::CURRENCY);
+        $this->processor->setTaxClassId(self::TAX_CLASS_ID);
     }
 
-    private function getProductCreateNormalizerMock()
+    protected function getProductCreateNormalizerMock()
     {
         $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer')
             ->disableOriginalConstructor()
@@ -124,7 +130,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
-    private function getProductUpdateNormalizerMock()
+
+    protected function getProductUpdateNormalizerMock()
     {
         $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
             ->disableOriginalConstructor()
@@ -174,6 +181,104 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
+    protected function getProductUpdateNormalizerMockThrowing($exception)
+    {
+        $mock = $this
+            ->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('normalize')
+            ->will($this->throwException($exception));
+
+        return $mock;
+    }
+
+    /**
+     * @expectedException Oro\Bundle\BatchBundle\Item\InvalidItemException
+     */
+    public function testNormalizeProductWithInvalidScopeMatch()
+    {
+        $product = $this->getProductMock();
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $magentoSoapClient,
+            $this->getProductCreateNormalizerMock(),
+            $this->getProductUpdateNormalizerMockThrowing(
+                new InvalidScopeMatchException()
+            ),
+            $this->metricConverter
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+        $processor->process(array($product));
+    }
+
+    /**
+     * @expectedException Oro\Bundle\BatchBundle\Item\InvalidItemException
+     */
+    public function testNormalizeProductWithAttributeNotFound()
+    {
+        $product = $this->getProductMock();
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $magentoSoapClient,
+            $this->getProductCreateNormalizerMock(),
+            $this->getProductUpdateNormalizerMockThrowing(
+                new AttributeNotFoundException()
+            ),
+            $this->metricConverter
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+        $processor->process(array($product));
+    }
+
+    /**
+     * @expectedException Oro\Bundle\BatchBundle\Item\InvalidItemException
+     */
+    public function testNormalizeProductWithInvalidOption()
+    {
+        $product = $this->getProductMock();
+        $this->channelManager = $this->getChannelManagerMock();
+
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
+
+        $processor = new ProductMagentoProcessor(
+            $this->channelManager,
+            $magentoSoapClient,
+            $this->getProductCreateNormalizerMock(),
+            $this->getProductUpdateNormalizerMockThrowing(
+                new InvalidOptionException()
+            ),
+            $this->metricConverter
+        );
+
+        $processor->setSoapUsername(self::LOGIN);
+        $processor->setSoapApiKey(self::PASSWORD);
+        $processor->setSoapUrl(self::URL);
+        $processor->setChannel(self::CHANNEL);
+
+        $processor->process(array($product));
+    }
+
     /**
      * Test instance of current instance tested
      */
@@ -190,7 +295,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -249,7 +354,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -313,7 +418,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process(array($product));
     }
 
-    private function getMagentoSoapClient()
+    protected function getMagentoSoapClientMock()
     {
         $magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
 
@@ -329,7 +434,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $magentoSoapClient;
     }
 
-    private function addGetStoreViewListMock($mock)
+    protected function addGetStoreViewListMock($mock)
     {
         $mock
             ->expects($this->once())
@@ -351,7 +456,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
-    private function addGetAttributeListMock($mock)
+    protected function addGetAttributeListMock($mock)
     {
         $mock
             ->expects($this->any())
@@ -419,7 +524,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
-    private function addGetProductsStatusMock($mock)
+    protected function addGetProductsStatusMock($mock)
     {
         $mock
             ->expects($this->any())
@@ -475,6 +580,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->processor->getEnabled(),      self::ENABLED);
         $this->assertEquals($this->processor->getVisibility(),   self::VISIBILITY);
         $this->assertEquals($this->processor->getWebsite(),      self::WEBSITE);
+        $this->assertEquals($this->processor->getCurrency(),     self::CURRENCY);
+        $this->assertEquals($this->processor->getTaxClassId(),   self::TAX_CLASS_ID);
 
         $this->processor->setDefaultLocale(self::DEFAULT_LOCALE);
         $this->assertEquals($this->processor->getDefaultLocale(), self::DEFAULT_LOCALE);

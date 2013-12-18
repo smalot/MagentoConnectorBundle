@@ -15,11 +15,15 @@ use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
  */
 class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
 {
-    const LOGIN             = 'login';
-    const PASSWORD          = 'password';
-    const URL               = 'url';
-    const CHANNEL           = 'channel';
-    const DEFAULT_LOCALE    = 'en_US';
+    const LOGIN          = 'login';
+    const PASSWORD       = 'password';
+    const URL            = 'url';
+    const CHANNEL        = 'channel';
+    const DEFAULT_LOCALE = 'en_US';
+    const IMAGES         = 'images';
+    const SKU            = 'sku';
+    const IMAGE_FILENAME = 'test.jpeg';
+    const JPEG_TYPE_MIME = 'image/jpeg';
 
     /**
      * {@inheritdoc}
@@ -86,11 +90,25 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
                 '1',
                 '1',
                 '1',
-                '1',
-                '1',
             ),
             self::DEFAULT_LOCALE                       => array(
 
+            ),
+            self::IMAGES                               => array(
+                array(
+                    self::SKU,
+                    array(
+                        'file' => array(
+                            'name' => self::IMAGE_FILENAME,
+                            'content' => '',
+                            'mime'    => self::JPEG_TYPE_MIME
+                        ),
+                        'label'    => self::IMAGE_FILENAME,
+                        'position' => 0,
+                        'types'    => array(MagentoSoapClient::SMALL_IMAGE),
+                        'exclude'  => 0
+                    )
+                )
             )
         )));
 

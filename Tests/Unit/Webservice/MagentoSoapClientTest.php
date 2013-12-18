@@ -23,6 +23,8 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     const SIZE                    = 'size';
     const SET_ID                  = 'set_id';
     const STORE_VIEW              = 'admin';
+    const SKU                     = 'sku-000';
+    const IMAGE_FILENAME          = 'test.jpg';
 
     /**
      * @var MagentoSoapClient
@@ -230,6 +232,45 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->magentoSoapClient->addCall(array());
 
         $this->magentoSoapClient->sendCalls();
+    }
+
+    public function testGetImages()
+    {
+        $this->connectClient();
+
+        $this->mockSoapClient->expects($this->once())
+            ->method('call')
+            ->with(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_LIST, self::SKU)
+            ->will($this->returnValue(array()));
+
+        $this->magentoSoapClient->getImages(self::SKU);
+    }
+
+    public function testGetImagesException()
+    {
+        $this->connectClient();
+
+        $this->mockSoapClient->expects($this->once())
+            ->method('call')
+            ->with(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_LIST, self::SKU)
+            ->will($this->throwException(new \Exception()));
+
+        $this->assertEquals($this->magentoSoapClient->getImages(self::SKU), array());
+    }
+
+    public function testDeleteImage()
+    {
+        $this->connectClient();
+
+        $this->mockSoapClient->expects($this->once())
+            ->method('call')
+            ->with(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
+                'product' => self::SKU,
+                'file'    => self::IMAGE_FILENAME
+            ))
+            ->will($this->returnValue(self::IMAGE_FILENAME));
+
+        $this->assertEquals($this->magentoSoapClient->deleteImage(self::SKU, self::IMAGE_FILENAME), self::IMAGE_FILENAME);
     }
 
     public function testSendCalls()

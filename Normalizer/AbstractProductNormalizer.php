@@ -9,6 +9,7 @@ use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
@@ -405,9 +406,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected function getIgnoredOptionMatchingAttributes()
     {
-        return array(
-            'visibility'
-        );
+        return array();
     }
 
     /**
@@ -491,7 +490,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
             throw new InvalidOptionException(sprintf('The attribute "%s" doesn\'t have any option named "%s" on ' .
                 'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
-                'options using this Magento connector.'), $attributeCode, $optionCode, $attributeCode);
+                'options using this Magento connector.', $attributeCode, $optionCode, $attributeCode));
         }
 
         return $this->magentoAttributesOptions[$attributeCode][$optionCode];
@@ -512,7 +511,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         );
 
         $images = array();
-
 
         foreach ($imagesValue as $imageValue) {
             $data = $imageValue->getData();
