@@ -40,13 +40,247 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
 
     public function testNormalize()
     {
-        $context = array(
+        $context = $this->getContext();
+
+        $product = $this->getProductMock($this->getSampleAttributes());
+
+        $this->normalizer->normalize($product, null, $context);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException
+     */
+    public function testNormalizeAttributeNotFound()
+    {
+        $context = $this->getContext();
+
+        $product = $this->getProductMock($this->getUnknowAttributes());
+
+        $this->normalizer->normalize($product, null, $context);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException
+     */
+    public function testNormalizeInvalidScope()
+    {
+        $context = $this->getContext();
+
+        $product = $this->getProductMock($this->getInvalidScopeAttributes());
+
+        $this->normalizer->normalize($product, null, $context);
+        $this->assertTrue(true);
+    }
+
+    protected function getProductMock($attributes)
+    {
+        $values = $this->getSampleProductValues($attributes);
+
+        $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
+
+        $product->expects($this->any())
+            ->method('getValues')
+            ->will($this->returnValue($values));
+
+        return $product;
+    }
+
+    protected function getFamilyMock()
+    {
+        $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode'))
+            ->getMock();
+        $family->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue(self::CHANNEL));
+
+        return $family;
+    }
+
+    protected function getProductPriceMock()
+    {
+        $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Model\ProductValue');
+        $priceProductValue->expects($this->any())->method('getData')->will($this->returnValue(self::PRICE));
+
+        $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
+        $priceCollection->expects($this->any())->method('first')->will($this->returnValue($priceProductValue));
+
+        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Model\ProductPrice')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrices'))
+            ->getMock();
+        $price->expects($this->any())->method('getPrices')->will($this->returnValue($priceCollection));
+
+        return $price;
+    }
+
+    protected function getSampleProductValues($attributes)
+    {
+        $values = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach ($attributes as $sampleAttribute) {
+            $attribute = $this->getAttributeMock($sampleAttribute);
+
+            $productValue = $this->getMock('Pim\Bundle\CatalogBundle\Model\ProductValue');
+
+            $productValue->expects($this->any())
+                ->method('getAttribute')
+                ->will($this->returnValue($attribute));
+
+            $productValue->expects($this->any())
+                ->method('getData')
+                ->will($this->returnValue($sampleAttribute['value']));
+
+            $values->add($productValue);
+        }
+
+        return $values;
+    }
+
+    protected function getAttributeMock($value)
+    {
+        $attribute = $this->getMockBuilder('Pim\Bundle\FlexibleEntityBundle\Entity\Attribute')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getCode', 'isTranslatable', 'isScopable'))
+            ->getMock();
+        $attribute->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue($value['code']));
+        $attribute->expects($this->any())
+            ->method('isTranslatable')
+            ->will($this->returnValue($value['translatable']));
+        $attribute->expects($this->any())
+            ->method('isScopable')
+            ->will($this->returnValue($value['scopable']));
+
+        return $attribute;
+    }
+
+    protected function getSampleAttributes()
+    {
+        $colors = new \Doctrine\Common\Collections\ArrayCollection();
+        $colorRed = $this->getMock('\Pim\Bundle\CatalogBundle\Entity\AttributeOption');
+        $colorRed->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue('red'));
+        $colorBlue = $this->getMock('\Pim\Bundle\CatalogBundle\Entity\AttributeOption');
+        $colorBlue->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue('blue'));
+
+        $colors->add($colorRed);
+        $colors->add($colorBlue);
+
+        return array(
+            'name' => array(
+                'scopable'     => true,
+                'translatable' => true,
+                'value'        => 'Name',
+                'code'         => 'name',
+            ),
+            'long_description' => array(
+                'scopable'     => true,
+                'translatable' => true,
+                'value'        => 'Description',
+                'code'         => 'description',
+                'mapping'      => 'long_description'
+            ),
+            'short_description' => array(
+                'scopable'     => true,
+                'translatable' => true,
+                'value'        => 'Short description',
+                'code'         => 'short_description',
+            ),
+            'status' => array(
+                'scopable'     => false,
+                'translatable' => true,
+                'value'        => true,
+                'code'         => 'status',
+                'method'       => 'isEnabled',
+            ),
+            'visibility' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => true,
+                'code'         => 'visibility',
+                'method'       => 'isEnabled',
+            ),
+            'visibility' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => true,
+                'code'         => 'visibility',
+                'method'       => 'isEnabled',
+            ),
+            'price' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => 10.3,
+                'code'         => 'price',
+            ),
+            'tax_class_id' => array(
+                'scopable'     => false,
+                'translatable' => true,
+                'value'        => 0,
+                'code'         => 'tax_class_id'
+            ),
+            'colors' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => $colors,
+                'code'         => 'colors'
+            ),
+            'color' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => $colorBlue,
+                'code'         => 'color'
+            )
+        );
+    }
+
+    protected function getUnknowAttributes()
+    {
+        return array(
+            'attribute_example' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => true,
+                'code'         => 'attribute_example',
+                'type'         => 'string',
+            )
+        );
+    }
+
+    protected function getInvalidScopeAttributes()
+    {
+        return array(
+            'status' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => true,
+                'code'         => 'status',
+                'method'       => 'isEnabled',
+            ),
+        );
+    }
+
+    protected function getContext()
+    {
+        return array(
             'magentoStoreViews'        => array(
                 array('code' => 'admin'),
                 array('code' => 'en_us'),
                 array('code' => 'fr_fr'),
             ),
             'magentoAttributesOptions' => array(
+                'colors' => array(
+                    'blue' => 4,
+                    'red' => 3
+                ),
                 'color' => array(
                     'blue' => 4,
                     'red' => 3
@@ -109,7 +343,17 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
                 'price' => array(
                     'code'     => 'price',
                     'required' => 1,
-                    'scope'    => 'website',
+                    'scope'    => 'global',
+                ),
+                'colors' => array(
+                    'code'     => 'colors',
+                    'required' => 1,
+                    'scope'    => 'global',
+                ),
+                'color' => array(
+                    'code'     => 'color',
+                    'required' => 1,
+                    'scope'    => 'global',
                 ),
                 'tax_class_id' => array(
                     'code'     => 'tax_class_id',
@@ -117,138 +361,6 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
                     'scope'    => 'website',
                 )
             )
-        );
-
-        $product = $this->getProductMock();
-
-
-
-        $this->normalizer->normalize($product, null, $context);
-        $this->assertTrue(true);
-    }
-
-    protected function getProductMock()
-    {
-        $attribute = $this->getMock('Pim\Bundle\CatalogBundle\Entity\ProductAttribute');
-
-        $attribute->expects($this->any())
-            ->method('getCode')
-            ->will($this->returnValue('name'));
-
-        $productValue = $this->getMock('Pim\Bundle\CatalogBundle\Model\ProductValue');
-
-        $productValue->expects($this->any())
-            ->method('getAttribute')
-            ->will($this->returnValue($attribute));
-
-        $values = new \Doctrine\Common\Collections\ArrayCollection();
-
-        $values->add($productValue);
-
-        $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
-
-        $product->expects($this->any())
-            ->method('getValues')
-            ->will($this->returnValue($values));
-
-        return $product;
-    }
-
-    protected function getFamilyMock()
-    {
-        $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCode'))
-            ->getMock();
-        $family->expects($this->any())
-            ->method('getCode')
-            ->will($this->returnValue(self::CHANNEL));
-
-        return $family;
-    }
-
-    protected function getProductPriceMock()
-    {
-        $priceProductValue = $this->getMock('Pim\Bundle\CatalogBundle\Model\ProductValue');
-        $priceProductValue->expects($this->any())->method('getData')->will($this->returnValue(self::PRICE));
-
-        $priceCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
-        $priceCollection->expects($this->any())->method('first')->will($this->returnValue($priceProductValue));
-
-        $price = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Model\ProductPrice')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getPrices'))
-            ->getMock();
-        $price->expects($this->any())->method('getPrices')->will($this->returnValue($priceCollection));
-
-        return $price;
-    }
-
-    protected function getAttributeMock($value)
-    {
-        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Model\ProductValue')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCode', 'isTranslatable', 'isScopable'))
-            ->getMock();
-        $attribute->expects($this->any())
-            ->method('getCode')
-            ->will($this->returnValue($value['code']));
-        $attribute->expects($this->any())
-            ->method('isTranslatable')
-            ->will($this->returnValue($value['translatable']));
-        $attribute->expects($this->any())
-            ->method('isScopable')
-            ->will($this->returnValue($value['scopable']));
-
-        return $attribute;
-    }
-
-    protected function getSampleValues()
-    {
-        return array(
-            'name' => array(
-                'scopable'     => true,
-                'translatable' => true,
-                'value'        => 'Name',
-                'code'         => 'name',
-                'type'         => 'string',
-            ),
-            'long_description' => array(
-                'scopable'     => true,
-                'translatable' => true,
-                'value'        => 'Description',
-                'code'         => 'description',
-                'mapping'      => 'long_description'
-            ),
-            'short_description' => array(
-                'scopable'     => true,
-                'translatable' => true,
-                'value'        => 'Short description',
-                'code'         => 'short_description',
-                'type'         => 'string',
-            ),
-            'status' => array(
-                'scopable'     => false,
-                'translatable' => false,
-                'value'        => true,
-                'code'         => 'status',
-                'type'         => 'bool',
-                'method'       => 'isEnabled',
-            ),
-            'visibility' => array(
-                'scopable'     => false,
-                'translatable' => false,
-                'value'        => true,
-                'code'         => 'visibility',
-                'type'         => 'bool',
-                'method'       => 'isEnabled',
-            ),
-            'tax_class_id' => array(
-                'scopable'     => false,
-                'translatable' => false,
-                'value'        => 0,
-                'code'         => 'tax_class_id'
-            ),
         );
     }
 
@@ -267,11 +379,15 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
             ->method('__toString')
             ->will($this->returnValue(self::DEFAULT_LOCALE));
 
+        $locale->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue(self::DEFAULT_LOCALE));
+
         $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
             ->disableOriginalConstructor()
             ->setMethods(array('getLocales'))
             ->getMock();
-        $channel->expects($this->once())
+        $channel->expects($this->any())
             ->method('getLocales')
             ->will($this->returnValue(array($locale)));
 
