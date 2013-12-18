@@ -203,7 +203,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -231,7 +231,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -259,7 +259,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -295,7 +295,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -354,7 +354,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClient();
+        $magentoSoapClient = $this->getMagentoSoapClientMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
@@ -418,7 +418,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process(array($product));
     }
 
-    protected function getMagentoSoapClient()
+    protected function getMagentoSoapClientMock()
     {
         $magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
 
