@@ -23,6 +23,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     const SIZE                    = 'size';
     const SET_ID                  = 'set_id';
     const STORE_VIEW              = 'admin';
+    const SKU                     = 'sku-000';
 
     /**
      * @var MagentoSoapClient
@@ -230,6 +231,18 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->magentoSoapClient->addCall(array());
 
         $this->magentoSoapClient->sendCalls();
+    }
+
+    public function testGetImages()
+    {
+        $this->connectClient();
+
+        $this->mockSoapClient->expects($this->once())
+            ->method('call')
+            ->with(true, MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_LIST, self::SKU)
+            ->will($this->returnValue(array()));
+
+        $this->magentoSoapClient->getImages(self::SKU);
     }
 
     public function testSendCalls()
