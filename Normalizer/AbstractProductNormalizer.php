@@ -441,8 +441,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             $cpt++;
         }
 
-        var_dump($data);
-
         return $valueNormalizers[$cpt]['normalizer'];
     }
 
@@ -487,7 +485,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     {
         $attributeCode = strtolower($attributeCode);
         $optionCode    = strtolower($optionCode);
-        var_dump($this->magentoAttributesOptions);
+
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
             throw new InvalidOptionException(sprintf('The attribute "%s" doesn\'t have any option named "%s" on ' .
                 'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .

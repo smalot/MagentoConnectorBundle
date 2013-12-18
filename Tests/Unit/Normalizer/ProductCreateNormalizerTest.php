@@ -24,6 +24,7 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
     const DEFAULT_LOCALE    = 'en_US';
     const CHANNEL           = 'channel';
     const SKU               = 'sku-010';
+    const CURRENCY          = 'EUR';
 
     protected function setUp()
     {
@@ -174,6 +175,22 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
         $colors->add($colorRed);
         $colors->add($colorBlue);
 
+        $size = $this->getMock('Pim\Bundle\CatalogBundle\Model\Metric');
+
+        $price = $this->getMock('\Pim\Bundle\CatalogBundle\Model\ProductPrice');
+        $price->expects($this->any())
+            ->method('getData')
+            ->will($this->returnValue(10.22));
+        $price->expects($this->any())
+            ->method('getCurrency')
+            ->will($this->returnValue(self::CURRENCY));
+
+        $prices = new \Doctrine\Common\Collections\ArrayCollection();
+        $prices->add($price);
+
+        $sizes = new \Doctrine\Common\Collections\ArrayCollection();
+        $sizes->add('XS');
+
         return array(
             'name' => array(
                 'scopable'     => true,
@@ -218,7 +235,7 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
             'price' => array(
                 'scopable'     => false,
                 'translatable' => false,
-                'value'        => 10.3,
+                'value'        => $prices,
                 'code'         => 'price',
             ),
             'tax_class_id' => array(
@@ -238,7 +255,19 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
                 'translatable' => false,
                 'value'        => $colorBlue,
                 'code'         => 'color'
-            )
+            ),
+            'size' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => $size,
+                'code'         => 'size'
+            ),
+            'sizes' => array(
+                'scopable'     => false,
+                'translatable' => false,
+                'value'        => $sizes,
+                'code'         => 'sizes'
+            ),
         );
     }
 
@@ -293,7 +322,7 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
             'enabled'                  => true,
             'visibility'               => 4,
             'attributeSetId'           => 10,
-            'currency'                 => 'EUR',
+            'currency'                 => self::CURRENCY,
             'magentoAttributes'        => array(
                 'name' => array(
                     'code'     => 'name',
@@ -352,6 +381,16 @@ class ProductCreateNormalizerTest extends \PHPUnit_Framework_TestCase
                 ),
                 'color' => array(
                     'code'     => 'color',
+                    'required' => 1,
+                    'scope'    => 'global',
+                ),
+                'size' => array(
+                    'code'     => 'size',
+                    'required' => 1,
+                    'scope'    => 'global',
+                ),
+                'sizes' => array(
+                    'code'     => 'sizes',
                     'required' => 1,
                     'scope'    => 'global',
                 ),
