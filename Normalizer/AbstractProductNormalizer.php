@@ -29,15 +29,12 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     const VISIBILITY   = 'visibility';
     const ENABLED      = 'status';
 
+    const DATE_FORMAT  = 'Y-m-d H:i:s';
+
     /**
      * @var boolean
      */
     protected $enabled;
-
-    /**
-     * @var integer
-     */
-    protected $taxClassId;
 
     /**
      * @var boolean
@@ -341,7 +338,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             ),
             array(
                 'filter'     => function($data) { return $data instanceof \DateTime; },
-                'normalizer' => function($data, $parameters) { return $data->format(\DateTime::ATOM); }
+                'normalizer' => function($data, $parameters) { return $data->format(self::DATE_FORMAT); }
             ),
             array(
                 'filter'     => function($data) {
@@ -417,11 +414,10 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     protected function getCustomValue()
     {
         return array(
-            self::TAX_CLASS_ID => $this->taxClassId,
             self::VISIBILITY   => $this->visibility,
             self::ENABLED      => $this->enabled,
-            'created_at'       => (new \DateTime())->format(\DateTime::ATOM),
-            'updated_at'       => (new \DateTime())->format(\DateTime::ATOM)
+            'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
+            'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT)
         );
     }
 
@@ -485,7 +481,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     protected function getOptionId($attributeCode, $optionCode)
     {
         $attributeCode = strtolower($attributeCode);
-        $optionCode    = strtolower($optionCode);
 
         if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
             throw new InvalidOptionException(sprintf('The attribute "%s" doesn\'t have any option named "%s" on ' .
@@ -520,9 +515,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     (string) $product->getIdentifier(),
                     array(
                         'file' => array(
-                            'name' => $data->getFilename(),
+                            'name'    => $data->getFilename(),
                             'content' => $imageData,
-                            'mime'    => $data->getFile()->getMimeType()
+                            'mime'    => $data->getMimeType()
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,

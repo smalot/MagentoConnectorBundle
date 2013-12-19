@@ -29,7 +29,7 @@ pim_import_export:
             label: Visibility on Magento
             help:
     product_magento_writer:
-        title: Processor
+        title: Writer
         soapUsername:
             label: Soap Username
             help: Your soap username on Magento
@@ -42,3 +42,32 @@ pim_import_export:
         channel:
             label: Channel
             help:
+    export:
+        title: Processor
+        soapUsername:
+            label: Soap Username
+            help: Your soap username on Magento
+        soapApiKey:
+            label: Soap api key
+            help: Your soap api key on Magento
+        soapUrl:
+            label: Soap url
+            help: Your magento url
+        channel:
+            label: Channel
+            help:
+        defaultLocale:
+            label: Default locale
+            help: The default locale to apply on admin storeView
+        enabled:
+            label: Status on Magento
+            help:
+        visibility:
+            label: Visibility on Magento
+            help:
+        website:
+            label: Website
+            help: The website to which the products will be sent
+        currency:
+            label: Currency
+            help: The currency to send to Magento

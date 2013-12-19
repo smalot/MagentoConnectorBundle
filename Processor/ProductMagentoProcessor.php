@@ -82,11 +82,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $currency;
 
     /**
-     * @Assert\NotBlank
-     */
-    protected $taxClassId;
-
-    /**
      * @var boolean
      */
     protected $enabled;
@@ -240,28 +235,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * get taxClassId
-     *
-     * @return string taxClassId
-     */
-    public function getTaxClassId()
-    {
-        return $this->taxClassId;
-    }
-
-    /**
-     * Set taxClassId
-     *
-     * @param string $taxClassId taxClassId
-     */
-    public function setTaxClassId($taxClassId)
-    {
-        $this->taxClassId = $taxClassId;
-
-        return $this;
-    }
-
-    /**
      * get enabled
      *
      * @return string enabled
@@ -368,7 +341,6 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'defaultLocale'            => $this->defaultLocale,
             'channel'                  => $this->channel,
-            'taxClassId'               => $this->taxClassId,
             'website'                  => $this->website,
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
@@ -505,13 +477,24 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     public function getConfigurationFields()
     {
         return array(
-            'soapUsername' => array(),
+            'soapUsername' => array(
+                'options' => array(
+                    'required' => true
+                )
+            ),
             'soapApiKey'   => array(
                 //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
-                'type' => 'text'
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true
+                )
             ),
-            'soapUrl' => array(),
+            'soapUrl' => array(
+                'options' => array(
+                    'required' => true
+                )
+            ),
             'channel' => array(
                 'type'    => 'choice',
                 'options' => array(
@@ -522,28 +505,33 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'defaultLocale' => array(
                 //Should be fixed to display only active locale on the selected
                 //channel
-                'type' => 'text'
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true
+                )
             ),
             'website' => array(
-                'type' => 'text'
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true
+                )
             ),
             'enabled' => array(
-                'type' => 'switch'
+                'type'    => 'switch',
+                'options' => array(
+                    'required' => true
+                )
             ),
             'visibility' => array(
-                'type' => 'text'
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true
+                )
             ),
             'currency' => array(
-                'type' => 'text'
-            ),
-            'taxClassId' => array(
-                'type'    => 'choice',
+                'type'    => 'text',
                 'options' => array(
-                    'choices' => array(
-                        0 => 'pim_import_export.export.tax_class_id.options.none',
-                        2 => 'pim_import_export.export.tax_class_id.options.taxable_goods',
-                        4 => 'pim_import_export.export.tax_class_id.options.shipping'
-                    )
+                    'required' => true
                 )
             )
         );

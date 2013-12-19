@@ -286,13 +286,24 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     public function getConfigurationFields()
     {
         return array(
-            'soapUsername' => array(),
+            'soapUsername' => array(
+                'options' => array(
+                    'required' => true
+                )
+            ),
             'soapApiKey'   => array(
                 //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
-                'type' => 'text'
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true
+                )
             ),
-            'soapUrl'      => array(),
+            'soapUrl'      => array(
+                'options' => array(
+                    'required' => true
+                )
+            ),
             'channel'      => array(
                 'type'    => 'choice',
                 'options' => array(
