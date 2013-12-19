@@ -73,6 +73,7 @@ class MagentoSoapClient
             }
 
             $this->setClient($client);
+
             $this->connect();
         }
     }
