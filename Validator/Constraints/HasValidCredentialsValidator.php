@@ -9,6 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\ConnectionErrorException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class HasValidCredentialsValidator extends ConstraintValidator
 {
@@ -35,10 +36,10 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
         try {
             $this->magentoSoapClient->init($clientParameters);
-        } catch (ConnectionErrorException $e) {
-            $this->context->addViolation($constraint->message . ' url', array('soapUrl'));
         } catch (InvalidCredentialException $e) {
-            $this->context->addViolation($constraint->message, array('soapUsername', 'soapApiKey'));
+            $this->context->addViolation($constraint->messageBadCredentials, array('soapUsername', 'soapApiKey'));
+        } catch (ConnectionErrorException $e) {
+            $this->context->addViolation($constraint->messageConnectionError, array('soapUrl'));
         }
     }
 }

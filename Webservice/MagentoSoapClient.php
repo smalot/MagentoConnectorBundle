@@ -58,12 +58,11 @@ class MagentoSoapClient
         $this->setParameters($clientParameters);
 
         if (!$this->isConnected()) {
-            $wsdlUrl = $this->clientParameters->getSoapUrl() .
-                self::SOAP_WSDL_URL;
-            $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1);
+            $wsdlUrl     = $this->clientParameters->getSoapUrl() . self::SOAP_WSDL_URL;
+            $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
 
             try {
-                $client = new \SoapClient($wsdlUrl, $soapOptions);
+                $this->client = new \SoapClient($wsdlUrl, $soapOptions);
             } catch (\Exception $e) {
                 throw new ConnectionErrorException(
                     'The soap connection could not be established',
@@ -72,8 +71,6 @@ class MagentoSoapClient
                 );
             }
 
-            $this->setClient($client);
-
             $this->connect();
         }
     }
@@ -81,11 +78,11 @@ class MagentoSoapClient
     /**
      * Set the soap client
      *
-     * @param SoapClient $soapClient the soap client
+     * @param SoapClient $client the soap client
      */
-    public function setClient($soapClient)
+    public function setClient($client)
     {
-        $this->client = $soapClient;
+        $this->client = $client;
     }
 
     /**
@@ -107,7 +104,6 @@ class MagentoSoapClient
     public function connect()
     {
         if ($this->clientParameters) {
-            get_class($this->client);
             try {
                 $this->session = $this->client->login(
                     $this->clientParameters->getSoapUsername(),
