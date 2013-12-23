@@ -17,6 +17,12 @@ class IsValidWsdlUrlValidator extends ConstraintValidator
 
     }
 
+    /**
+     * Test if the given base url leads to a valid wsdl url
+     *
+     * @param  string  $url The given url
+     * @return boolean
+     */
     public function isValidWsdlUrl($url)
     {
         $curl = curl_init();
@@ -24,10 +30,7 @@ class IsValidWsdlUrlValidator extends ConstraintValidator
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($curl);
         curl_close($curl);
-        if (simplexml_load_string($output)) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return is_object(simplexml_load_string($output));
     }
 }
