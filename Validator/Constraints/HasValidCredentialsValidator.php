@@ -19,11 +19,18 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $magentoSoapClient;
 
     /**
-     * @param MagentoSoapClient $magentoSoapClient
+     * @var IsValidWsdlUrlValidator
      */
-    public function __construct(MagentoSoapClient $magentoSoapClient)
+    protected $isValidWsdlUrlValidator;
+
+    /**
+     * @param MagentoSoapClient       $magentoSoapClient
+     * @param IsValidWsdlUrlValidator $isValidWsdlUrlValidator
+     */
+    public function __construct(MagentoSoapClient $magentoSoapClient, IsValidWsdlUrlValidator $isValidWsdlUrlValidator)
     {
-        $this->magentoSoapClient = $magentoSoapClient;
+        $this->magentoSoapClient       = $magentoSoapClient;
+        $this->isValidWsdlUrlValidator = $isValidWsdlUrlValidator;
     }
 
     public function validate($protocol, Constraint $constraint)
@@ -34,12 +41,12 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getSoapUrl()
         );
 
-        try {
-            $this->magentoSoapClient->init($clientParameters);
-        } catch (InvalidCredentialException $e) {
-            $this->context->addViolation($constraint->messageBadCredentials, array('soapUsername', 'soapApiKey'));
-        } catch (ConnectionErrorException $e) {
-            $this->context->addViolation($constraint->messageConnectionError, array('soapUrl'));
+        if ($this->isValidWsdlUrlValidator->isValidWsdlUrl($protocol->getSoapUrl())) {
+            try {
+                $this->magentoSoapClient->init($clientParameters);
+            } catch (InvalidCredentialException $e) {
+                $this->context->addViolation($constraint->message, array('soapUsername', 'soapApiKey'));
+            }
         }
     }
 }

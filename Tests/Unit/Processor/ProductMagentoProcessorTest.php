@@ -31,10 +31,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const STATUS            = 1;
     const VISIBILITY        = 4;
     const CURRENCY          = 0;
-    const TAX_CLASS_ID      = 0;
     const ATTRIBUTE_NAME    = 'name';
     const SKU               = 'sku-010';
     const SET               = '10';
+    const TAX_CLASS_ID      = 4;
 
     const DEFAULT_LOCALE    = 'en_US';
 
@@ -77,7 +77,6 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->processor->setVisibility(self::VISIBILITY);
         $this->processor->setWebsite(self::WEBSITE);
         $this->processor->setCurrency(self::CURRENCY);
-        $this->processor->setTaxClassId(self::TAX_CLASS_ID);
     }
 
     protected function getProductCreateNormalizerMock()
@@ -581,7 +580,6 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->processor->getVisibility(),   self::VISIBILITY);
         $this->assertEquals($this->processor->getWebsite(),      self::WEBSITE);
         $this->assertEquals($this->processor->getCurrency(),     self::CURRENCY);
-        $this->assertEquals($this->processor->getTaxClassId(),   self::TAX_CLASS_ID);
 
         $this->processor->setDefaultLocale(self::DEFAULT_LOCALE);
         $this->assertEquals($this->processor->getDefaultLocale(), self::DEFAULT_LOCALE);

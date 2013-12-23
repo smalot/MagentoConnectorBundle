@@ -25,7 +25,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
     const GLOBAL_SCOPE = 'global';
-    const TAX_CLASS_ID = 'tax_class_id';
     const VISIBILITY   = 'visibility';
     const ENABLED      = 'status';
 

@@ -19,6 +19,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
 
 /**
  * Magento product processor
@@ -71,6 +72,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank
+     * @IsValidWsdlUrl()
      */
     protected $soapUrl;
 

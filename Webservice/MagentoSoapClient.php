@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
+use Symfony\Component\Debug\ErrorHandler;
+
 /**
  * A magento soap client to abstract interaction with the magento api
  *

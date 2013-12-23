@@ -9,8 +9,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class HasValidCredentials extends Constraint
 {
-    public $messageBadCredentials  = 'The given magento credentials are invalid';
-    public $messageConnectionError = 'The given magento url seems to be invalid';
+    public $message = 'The given magento credentials are invalid';
 
     public function getTargets()
     {

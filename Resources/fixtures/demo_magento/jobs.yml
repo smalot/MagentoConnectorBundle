@@ -12,5 +12,4 @@ jobs:
             defaultLocale: en_US
             website:       base
             enabled:       true
-            taxClassId:    4
             currency:      EUR

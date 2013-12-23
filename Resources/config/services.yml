@@ -1,6 +1,7 @@
 parameters:
     pim_magento_connector.webservice.magento_soap.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
+    pim_magento_connector.validator.is_valid_wsdl_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrlValidator
 services:
     # webservices
     pim_magento_connector.webservice.magento_soap:
@@ -10,5 +11,10 @@ services:
         class: %pim_magento_connector.validator.has_valid_credentials.class%
         arguments:
             - "@pim_magento_connector.webservice.magento_soap"
+            - "@pim_magento_connector.validator.is_valid_wsdl_url"
         tags:
             - { name: validator.constraint_validator, alias: has_valid_magento_credentials }
+    pim_magento_connector.validator.is_valid_wsdl_url:
+        class: %pim_magento_connector.validator.is_valid_wsdl_url.class%
+        tags:
+            - { name: validator.constraint_validator, alias: is_valid_wsdl_url }
