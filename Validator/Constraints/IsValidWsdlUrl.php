@@ -11,6 +11,9 @@ class IsValidWsdlUrl extends Constraint
 {
     public $message = 'The given magento url is not valid';
 
+    /**
+     *{@inheritDoc}
+     */
     public function validatedBy()
     {
         return 'is_valid_wsdl_url';

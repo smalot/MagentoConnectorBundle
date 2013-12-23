@@ -9,12 +9,14 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
 class IsValidWsdlUrlValidator extends ConstraintValidator
 {
+    /**
+     *{@inheritDoc}
+     */
     public function validate($value, Constraint $constraint)
     {
         if (!$this->isValidWsdlUrl($value)) {
             $this->context->addViolation($constraint->message, array('%string%' => $value));
         }
-
     }
 
     /**

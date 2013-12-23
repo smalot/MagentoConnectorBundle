@@ -33,6 +33,9 @@ class HasValidCredentialsValidator extends ConstraintValidator
         $this->isValidWsdlUrlValidator = $isValidWsdlUrlValidator;
     }
 
+    /**
+     *{@inheritDoc}
+     */
     public function validate($protocol, Constraint $constraint)
     {
         $clientParameters = new MagentoSoapClientParameters(
