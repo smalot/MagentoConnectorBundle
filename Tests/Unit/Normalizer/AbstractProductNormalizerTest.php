@@ -130,7 +130,6 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
                     'red' => 3
                 )
             ),
-            'taxClassId'               => 4,
             'defaultLocale'            => 'en_US',
             'channel'                  => 'channel',
             'website'                  => 'base',

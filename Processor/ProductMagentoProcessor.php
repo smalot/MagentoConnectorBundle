@@ -18,6 +18,8 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
 
 /**
  * Magento product processor
@@ -25,6 +27,8 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ *
+ * @HasValidCredentials()
  */
 class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     ItemProcessorInterface
@@ -68,6 +72,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank
+     * @Assert\Url
+     * @IsValidWsdlUrl()
      */
     protected $soapUrl;
 
@@ -107,8 +113,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $clientParameters;
 
     /**
-     * @param ChannelManager $channelManager
-     * @param MagentoSoapClient $channelManager
+     * @param ChannelManager          $channelManager
+     * @param MagentoSoapClient       $magentoSoapClient
+     * @param ProductCreateNormalizer $productCreateNormalizer
+     * @param ProductUpdateNormalizer $productUpdateNormalizer
+     * @param MetricConverter         $metricConverter
      */
     public function __construct(
         ChannelManager $channelManager,
