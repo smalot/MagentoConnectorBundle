@@ -49,6 +49,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank
+     * @Assert\Url
      * @IsValidWsdlUrl()
      */
     protected $soapUrl;

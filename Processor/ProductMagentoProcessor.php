@@ -72,6 +72,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank
+     * @Assert\Url
      * @IsValidWsdlUrl()
      */
     protected $soapUrl;
@@ -112,11 +113,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $clientParameters;
 
     /**
-     * @param ChannelManager    $channelManager
-     * @param MagentoSoapClient $magentoSoapClient
+     * @param ChannelManager          $channelManager
+     * @param MagentoSoapClient       $magentoSoapClient
      * @param ProductCreateNormalizer $productCreateNormalizer
      * @param ProductUpdateNormalizer $productUpdateNormalizer
-     * @param MetricConverter $metricConverter
+     * @param MetricConverter         $metricConverter
      */
     public function __construct(
         ChannelManager $channelManager,
