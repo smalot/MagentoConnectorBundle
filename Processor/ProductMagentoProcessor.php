@@ -72,8 +72,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
-     * @Assert\Url(groups={"Execution"})
-     * @IsValidWsdlUrl(groups={"Execution"})
+     * @Assert\Url
+     * @IsValidWsdlUrl
      */
     protected $soapUrl;
 
@@ -127,7 +127,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         MetricConverter          $metricConverter
     ) {
         $this->channelManager           = $channelManager;
-        $this->magentoWebservice        = $magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
         $this->productCreateNormalizer  = $productCreateNormalizer;
         $this->productUpdateNormalizer  = $productUpdateNormalizer;
         $this->metricConverter          = $metricConverter;
@@ -336,6 +336,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($items)
     {
+        $this->magentoSoapClient = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+
         $processedItems = array();
 
         $magentoProducts          = $this->magentoSoapClient->getProductsStatus($items);

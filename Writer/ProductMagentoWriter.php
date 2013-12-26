@@ -33,6 +33,11 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     protected $channelManager;
 
     /**
+     * @var MagentoWebserviceGuesser
+     */
+    protected $magentoWebserviceGuesser;
+
+    /**
      * @var MagentoWebservice
      */
     protected $magentoWebservice;
@@ -49,8 +54,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
-     * @Assert\Url(groups={"Execution"})
-     * @IsValidWsdlUrl(groups={"Execution"})
+     * @Assert\Url
+     * @IsValidWsdlUrl
      */
     protected $soapUrl;
 
@@ -70,8 +75,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         MagentoWebserviceGuesser $magentoWebserviceGuesser
     )
     {
-        $this->channelManager    = $channelManager;
-        $this->magentoWebservice = $magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->channelManager           = $channelManager;
+        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
     }
 
     /**
@@ -167,9 +172,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     public function write(array $products)
     {
-        $this->magentoSoapClient = $this->MagentoWebserviceGuesser($this->getClientParameters());
-
-        $this->magentoSoapClient->init($this->clientParameters);
+        $this->magentoSoapClient = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
 
         //creation for each product in the admin storeView (with default locale)
         foreach($products as $batch) {

@@ -11,7 +11,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class MagentoSoapClient
 {
-    const SOAP_WSDL_URL = 'http://magento.dev/api/soap/?wsdl';
+    const SOAP_WSDL_URL = '/api/soap/?wsdl';
 
     protected $session;
 
@@ -52,8 +52,8 @@ class MagentoSoapClient
         if ($this->clientParameters) {
             try {
                 $this->session = $this->client->login(
-                    'soap',//$this->clientParameters->getSoapUsername(),
-                    'magento1'//$this->clientParameters->getSoapApiKey()
+                    $this->clientParameters->getSoapUsername(),
+                    $this->clientParameters->getSoapApiKey()
                 );
             } catch (\Exception $e) {
                 throw new InvalidCredentialException(
