@@ -1,16 +1,16 @@
 parameters:
-    pim_magento_connector.webservice.magento_soap.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient
+    pim_magento_connector.webservice.magento_soap_guesser.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
     pim_magento_connector.validator.is_valid_wsdl_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrlValidator
 services:
     # webservices
-    pim_magento_connector.webservice.magento_soap:
-        class: %pim_magento_connector.webservice.magento_soap.class%
+    pim_magento_connector.webservice.magento_soap_guesser:
+        class: %pim_magento_connector.webservice.magento_soap_guesser.class%
 
     pim_magento_connector.validator.has_valid_credentials:
         class: %pim_magento_connector.validator.has_valid_credentials.class%
         arguments:
-            - "@pim_magento_connector.webservice.magento_soap"
+            - "@pim_magento_connector.webservice.magento_soap_guesser"
             - "@pim_magento_connector.validator.is_valid_wsdl_url"
         tags:
             - { name: validator.constraint_validator, alias: has_valid_magento_credentials }

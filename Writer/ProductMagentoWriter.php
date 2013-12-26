@@ -7,7 +7,7 @@ use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
@@ -33,29 +33,29 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     protected $channelManager;
 
     /**
-     * @var MagentoSoapClient
+     * @var MagentoWebservice
      */
-    protected $magentoSoapClient;
+    protected $magentoWebservice;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $soapUsername;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $soapApiKey;
 
     /**
-     * @Assert\NotBlank
-     * @Assert\Url
-     * @IsValidWsdlUrl()
+     * @Assert\NotBlank(groups={"Execution"})
+     * @Assert\Url(groups={"Execution"})
+     * @IsValidWsdlUrl(groups={"Execution"})
      */
     protected $soapUrl;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $channel;
 
@@ -63,15 +63,15 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * @param ChannelManager $channelManager
-     * @param MagentoSoapClient $channelManager
+     * @param MagentoWebserviceGuesser $channelManager
      */
     public function __construct(
-        ChannelManager $channelManager,
-        MagentoSoapClient $magentoSoapClient
+        ChannelManager           $channelManager,
+        MagentoWebserviceGuesser $magentoWebserviceGuesser
     )
     {
         $this->channelManager    = $channelManager;
-        $this->magentoSoapClient = $magentoSoapClient;
+        $this->magentoWebservice = $magentoWebserviceGuesser->getWebservice($this->getClientParameters());
     }
 
     /**
@@ -167,13 +167,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     public function write(array $products)
     {
-        if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->soapUrl
-            );
-        }
+        $this->magentoSoapClient = $this->MagentoWebserviceGuesser($this->getClientParameters());
 
         $this->magentoSoapClient->init($this->clientParameters);
 
@@ -184,7 +178,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
             }
         }
 
-        $this->magentoSoapClient->sendCalls($this->clientParameters);
+        $this->magentoSoapClient->sendCalls();
     }
 
     /**
@@ -284,6 +278,24 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
         foreach ($images as $image) {
             $this->magentoSoapClient->deleteImage($sku, $image['file']);
         }
+    }
+
+    /**
+     * Get the magento soap client parameters
+     *
+     * @return MagentoSoapClientParameters
+     */
+    protected function getClientParameters()
+    {
+        if (!$this->clientParameters) {
+            $this->clientParameters = new MagentoSoapClientParameters(
+                $this->soapUsername,
+                $this->soapApiKey,
+                $this->soapUrl
+            );
+        }
+
+        return $this->clientParameters;
     }
 
     /**

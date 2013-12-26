@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
@@ -12,7 +12,7 @@ class MagentoSoapClientParameters
 
     /**
      * Constructor
-     * 
+     *
      * @param string $soapUsername Magento soap username
      * @param string $soapApiKey   Magento soap api key
      * @param string $soapUrl      Magento soap url (only the domain)
@@ -26,30 +26,30 @@ class MagentoSoapClientParameters
 
     /**
      * get soapUsername
-     * 
+     *
      * @return string Soap mangeto soapUsername
      */
-    public function getSoapUsername() 
+    public function getSoapUsername()
     {
         return $this->soapUsername;
     }
 
     /**
      * get soapApiKey
-     * 
+     *
      * @return string Soap mangeto soapApiKey
      */
-    public function getSoapApiKey() 
+    public function getSoapApiKey()
     {
         return $this->soapApiKey;
     }
 
     /**
      * get soapUrl
-     * 
+     *
      * @return string mangeto soap url
      */
-    public function getSoapUrl() 
+    public function getSoapUrl()
     {
         return $this->soapUrl;
     }

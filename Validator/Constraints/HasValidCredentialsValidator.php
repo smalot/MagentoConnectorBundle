@@ -5,16 +5,16 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 
 class HasValidCredentialsValidator extends ConstraintValidator
 {
     /**
-     * @var MagentoSoapClient
+     * @var MagentoWebserviceGuesser
      */
-    protected $magentoSoapClient;
+    protected $magentoWebserviceGuesser;
 
     /**
      * @var IsValidWsdlUrlValidator
@@ -22,13 +22,15 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $isValidWsdlUrlValidator;
 
     /**
-     * @param MagentoSoapClient       $magentoSoapClient
-     * @param IsValidWsdlUrlValidator $isValidWsdlUrlValidator
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param IsValidWsdlUrlValidator  $isValidWsdlUrlValidator
      */
-    public function __construct(MagentoSoapClient $magentoSoapClient, IsValidWsdlUrlValidator $isValidWsdlUrlValidator)
-    {
-        $this->magentoSoapClient       = $magentoSoapClient;
-        $this->isValidWsdlUrlValidator = $isValidWsdlUrlValidator;
+    public function __construct(
+        MagentoWebserviceGuesser $magentoWebserviceGuesser,
+        IsValidWsdlUrlValidator $isValidWsdlUrlValidator
+    ) {
+        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
+        $this->isValidWsdlUrlValidator  = $isValidWsdlUrlValidator;
     }
 
     /**
@@ -44,7 +46,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
         if ($this->isValidWsdlUrlValidator->isValidWsdlUrl($protocol->getSoapUrl())) {
             try {
-                $this->magentoSoapClient->init($clientParameters);
+                $client = $this->magentoWebserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidCredentialException $e) {
                 $this->context->addViolation($constraint->message, array('soapUsername', 'soapApiKey'));
             }
