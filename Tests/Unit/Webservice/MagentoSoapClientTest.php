@@ -29,7 +29,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * @var MagentoSoapClient
      */
-    private $magentoSoapClient;
+    protected $magentoSoapClient;
 
     /**
      * {@inheritdoc}
@@ -300,7 +300,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->magentoSoapClient->call(MagentoSoapClient::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST);
     }
 
-    private function connectClient()
+    protected function connectClient()
     {
         $this->mockSoapClient
             ->expects($this->once())
@@ -331,7 +331,7 @@ class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->magentoSoapClient->getStoreViewsList();
     }
 
-    private function getAttributeListSoapClientMock()
+    protected function getAttributeListSoapClientMock()
     {
         $this->connectClient();
 

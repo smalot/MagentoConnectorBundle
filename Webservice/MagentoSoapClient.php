@@ -21,7 +21,7 @@ class MagentoSoapClient
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
-    const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'product_media.create';
+    const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'catalog_product_attribute_media.create';
     const SOAP_ACTION_PRODUCT_MEDIA_LIST            = 'catalog_product_attribute_media.list';
     const SOAP_ACTION_PRODUCT_MEDIA_REMOVE          = 'catalog_product_attribute_media.remove';
 
@@ -269,8 +269,20 @@ class MagentoSoapClient
     public function getStoreViewsList()
     {
         if (!$this->magentoStoreViewList) {
-            $this->magentoStoreViewList = $this->call(
-                self::SOAP_ACTION_STORE_LIST
+            // $this->magentoStoreViewList = $this->call(
+            //     self::SOAP_ACTION_STORE_LIST
+            // );
+
+            $this->magentoStoreViewList = array(
+                array(
+                    'store_id'   => '1',
+                    'code'       => 'default',
+                    'website_id' => '1',
+                    'group_id'   => '1',
+                    'name'       => 'Default Store View',
+                    'sort_order' => '0',
+                    'is_active'  => '1'
+                )
             );
         }
 

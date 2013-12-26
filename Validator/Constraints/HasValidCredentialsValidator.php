@@ -8,7 +8,6 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
-use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 
 class HasValidCredentialsValidator extends ConstraintValidator
 {
@@ -35,7 +34,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
     /**
      *{@inheritDoc}
      */
-    public function validate(AbstractConfigurableStepElement $protocol, Constraint $constraint)
+    public function validate($protocol, Constraint $constraint)
     {
         $clientParameters = new MagentoSoapClientParameters(
             $protocol->getSoapUsername(),

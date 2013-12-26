@@ -286,8 +286,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $attributeCode   = $value->getAttribute()->getCode();
 
         if (!isset($this->magentoAttributes[$attributeCode])) {
-            throw new AttributeNotFoundException(sprintf('The magento attribute %s doesn\'t exist. You should create ' .
-                'it first on you Magento installation', $attributeCode));
+            throw new AttributeNotFoundException(sprintf(
+                'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should create ' .
+                'it first or adding it to the corresponding attributeSet',
+                $attributeCode
+            ));
         }
 
         $normalizer     = $this->getNormalizer($data);

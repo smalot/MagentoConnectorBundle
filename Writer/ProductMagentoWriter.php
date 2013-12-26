@@ -192,7 +192,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      *
      * @param  array $product The product and his parts
      */
-    private function computeProduct($product)
+    protected function computeProduct($product)
     {
         $this->pruneImages($product);
 
@@ -207,7 +207,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      * @param  array  $productPart      A product part
      * @param  string $storeViewCode The storeview code
      */
-    private function createCall($productPart, $storeViewCode)
+    protected function createCall($productPart, $storeViewCode)
     {
         if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
             if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
