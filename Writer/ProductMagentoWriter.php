@@ -8,6 +8,7 @@ use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
@@ -24,9 +25,6 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
 class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     ItemWriterInterface
 {
-    const MAXIMUM_CALLS       = 1;
-    const CREATE_PRODUCT_SIZE = 5;
-
     /**
      * @var ChannelManager
      */
@@ -54,8 +52,8 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
-     * @Assert\Url
-     * @IsValidWsdlUrl
+     * @Assert\Url(groups={"Execution"})
+     * @IsValidWsdlUrl(groups={"Execution"})
      */
     protected $soapUrl;
 
@@ -172,7 +170,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     public function write(array $products)
     {
-        $this->magentoSoapClient = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
 
         //creation for each product in the admin storeView (with default locale)
         foreach($products as $batch) {
@@ -180,8 +178,6 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
                 $this->computeProduct($product);
             }
         }
-
-        $this->magentoSoapClient->sendCalls();
     }
 
     /**
@@ -206,48 +202,15 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     protected function createCall($productPart, $storeViewCode)
     {
-        if ($storeViewCode == MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW) {
-            if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
-                $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
-            } else {
-                $resource = MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
-            }
-
-            $this->magentoSoapClient->addCall(
-                array(
-                    $resource,
-                    $productPart,
-                ),
-                self::MAXIMUM_CALLS
-            );
-        } elseif ($storeViewCode == MagentoSoapClient::IMAGES) {
-            $this->sendImages($productPart);
-        } else {
-            $this->magentoSoapClient->addCall(
-                array(
-                    MagentoSoapClient::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                    $productPart,
-                ),
-                self::MAXIMUM_CALLS
-            );
-        }
-    }
-
-    /**
-     * Send all product images
-     *
-     * @param  array $imagesCall All images to send
-     */
-    protected function sendImages($imagesCall)
-    {
-        foreach ($imagesCall as $imageCall) {
-            $this->magentoSoapClient->addCall(
-                array(
-                    MagentoSoapClient::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
-                    $imageCall
-                ),
-                self::MAXIMUM_CALLS
-            );
+        switch ($storeViewCode) {
+            case MagentoWebservice::SOAP_DEFAULT_STORE_VIEW:
+                $this->magentoWebservice->sendProduct($productPart);
+            break;
+            case MagentoWebservice::IMAGES:
+                $this->magentoWebservice->sendImages($productPart);
+            break;
+            default:
+                $this->magentoWebservice->updateProductPart($productPart);
         }
     }
 
@@ -259,9 +222,9 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
      */
     protected function getProductSku($product)
     {
-        $defaultStoreviewProduct = $product[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW];
+        $defaultStoreviewProduct = $product[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW];
 
-        if (count($defaultStoreviewProduct) == self::CREATE_PRODUCT_SIZE) {
+        if (count($defaultStoreviewProduct) == MagentoWebservice::CREATE_PRODUCT_SIZE) {
             return (string) $defaultStoreviewProduct[2];
         } else {
             return (string) $defaultStoreviewProduct[0];
@@ -276,10 +239,10 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     protected function pruneImages($product)
     {
         $sku = $this->getProductSku($product);
-        $images = $this->magentoSoapClient->getImages($sku);
+        $images = $this->magentoWebservice->getImages($sku);
 
         foreach ($images as $image) {
-            $this->magentoSoapClient->deleteImage($sku, $image['file']);
+            $this->magentoWebservice->deleteImage($sku, $image['file']);
         }
     }
 

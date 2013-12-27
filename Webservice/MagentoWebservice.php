@@ -30,6 +30,9 @@ class MagentoWebservice
     const SELECT                                    = 'select';
     const MULTI_SELECT                              = 'multiselect';
 
+    const MAXIMUM_CALLS       = 1;
+    const CREATE_PRODUCT_SIZE = 5;
+
     protected $client;
 
     protected $magentoAttributeSets;
@@ -259,6 +262,52 @@ class MagentoWebservice
         }
 
         return $images;
+    }
+
+    /**
+     * Send all product images
+     *
+     * @param  array $images All images to send
+     */
+    public function sendImages($images)
+    {
+        foreach ($images as $image) {
+            $this->client->addCall(
+                array(
+                    self::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
+                    $image
+                ),
+                self::MAXIMUM_CALLS
+            );
+        }
+    }
+
+    public function updateProductPart($productPart)
+    {
+        $this->client->addCall(
+            array(
+                self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
+                $productPart,
+            ),
+            self::MAXIMUM_CALLS
+        );
+    }
+
+    public function sendProduct($productPart)
+    {
+        if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
+            $resource = MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
+        } else {
+            $resource = MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
+        }
+
+        $this->client->addCall(
+            array(
+                $resource,
+                $productPart,
+            ),
+            self::MAXIMUM_CALLS
+        );
     }
 
     /**

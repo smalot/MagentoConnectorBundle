@@ -11,7 +11,7 @@ use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -109,7 +109,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     ) {
         $processedItem = array();
 
-        $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
             $product,
             $attributeSetId,
             $defaultLocale,
@@ -118,7 +118,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             $create
         );
 
-        $processedItem[MagentoSoapClient::IMAGES] = $this->getNormalizedImages($product);
+        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
 
         //For each storeview, we update the product only with localized attributes
         foreach ($magentoStoreViews as $magentoStoreView) {
@@ -170,13 +170,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 $attributeSetId,
                 $sku,
                 $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW
             );
         } else {
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW
             );
         }
 
@@ -523,7 +523,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(MagentoSoapClient::SMALL_IMAGE),
+                        'types'    => array(MagentoWebservice::SMALL_IMAGE),
                         'exclude'  => 0
                     )
                 );

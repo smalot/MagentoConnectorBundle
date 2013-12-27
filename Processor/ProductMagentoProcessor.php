@@ -72,8 +72,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
-     * @Assert\Url
-     * @IsValidWsdlUrl
+     * @Assert\Url(groups={"Execution"})
+     * @IsValidWsdlUrl(groups={"Execution"})
      */
     protected $soapUrl;
 
