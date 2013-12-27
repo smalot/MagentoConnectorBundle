@@ -21,21 +21,30 @@ class MagentoSoapClient
 
     protected $clientParameters;
 
-    function __construct(MagentoSoapClientParameters $clientParameters)
+    /**
+     * Create and init the soap client
+     *
+     * @param MagentoSoapClientParameters $clientParameters
+     */
+    function __construct(MagentoSoapClientParameters $clientParameters, $soapClient = null)
     {
         $this->clientParameters = $clientParameters;
 
-        $wsdlUrl                = $this->clientParameters->getSoapUrl() . self::SOAP_WSDL_URL;
-        $soapOptions            = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
+        if (!$soapClient) {
+            $wsdlUrl                = $this->clientParameters->getSoapUrl() . self::SOAP_WSDL_URL;
+            $soapOptions            = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
 
-        try {
-            $this->client = new \SoapClient($wsdlUrl, $soapOptions);
-        } catch (\Exception $e) {
-            throw new ConnectionErrorException(
-                'The soap connection could not be established',
-                $e->getCode(),
-                $e
-            );
+            try {
+                $this->client = new \SoapClient($wsdlUrl, $soapOptions);
+            } catch (\Exception $e) {
+                throw new ConnectionErrorException(
+                    'The soap connection could not be established',
+                    $e->getCode(),
+                    $e
+                );
+            }
+        } else {
+            $this->client = $soapClient;
         }
 
         $this->connect();
@@ -44,50 +53,27 @@ class MagentoSoapClient
     /**
      * Initialize the soap client with the local informations
      *
-     * @throws ConnectionErrorException   If the connection to the soap api fail
      * @throws InvalidCredentialException If given credentials are invalid
      */
     protected function connect()
     {
-        if ($this->clientParameters) {
-            try {
-                $this->session = $this->client->login(
-                    $this->clientParameters->getSoapUsername(),
-                    $this->clientParameters->getSoapApiKey()
-                );
-            } catch (\Exception $e) {
-                throw new InvalidCredentialException(
-                    'The given credential are invalid or not allowed to ' .
-                    'connect to the soap api.',
-                    $e->getCode(),
-                    $e
-                );
-            }
-        } else {
-            throw new ConnectionErrorException(
-                'Invalid state : you need to call the init method first'
+        try {
+            $this->session = $this->client->login(
+                $this->clientParameters->getSoapUsername(),
+                $this->clientParameters->getSoapApiKey()
+            );
+        } catch (\Exception $e) {
+            throw new InvalidCredentialException(
+                'The given credential are invalid or not allowed to ' .
+                'connect to the soap api.',
+                $e->getCode(),
+                $e
             );
         }
     }
 
-    public function setClient($client)
-    {
-        $this->client = $client;
-    }
-
     /**
-     * Login to the Magento platform
-     */
-    public function login()
-    {
-        $this->session = $this->client->login(
-            $this->clientParameters->getUsername(),
-            $this->clientParameters->getApiKey()
-        );
-    }
-
-    /**
-     * Is th client connected
+     * Is the client connected ?
      *
      * @return boolean
      */
