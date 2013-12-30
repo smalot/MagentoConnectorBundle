@@ -228,21 +228,21 @@ class MagentoWebservice
     public function getStoreViewsList()
     {
         if (!$this->magentoStoreViewList) {
-            // $this->magentoStoreViewList = $this->call(
-            //     self::SOAP_ACTION_STORE_LIST
-            // );
-
-            $this->magentoStoreViewList = array(
-                array(
-                    'store_id'   => '1',
-                    'code'       => 'default',
-                    'website_id' => '1',
-                    'group_id'   => '1',
-                    'name'       => 'Default Store View',
-                    'sort_order' => '0',
-                    'is_active'  => '1'
-                )
+            $this->magentoStoreViewList = $this->client->call(
+                self::SOAP_ACTION_STORE_LIST
             );
+
+            // $this->magentoStoreViewList = array(
+            //     array(
+            //         'store_id'   => '1',
+            //         'code'       => 'default',
+            //         'website_id' => '1',
+            //         'group_id'   => '1',
+            //         'name'       => 'Default Store View',
+            //         'sort_order' => '0',
+            //         'is_active'  => '1'
+            //     )
+            // );
         }
 
         return $this->magentoStoreViewList;
