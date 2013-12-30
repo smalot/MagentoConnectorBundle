@@ -39,7 +39,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const DEFAULT_LOCALE    = 'en_US';
 
     protected $channelManager;
-    protected $magentoSoapClient;
+    protected $magentoWebservice;
     protected $processor;
 
     /**
@@ -48,7 +48,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->channelManager = $this->getChannelManagerMock();
-        $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+        $this->magentoWebservice = $this->getMagentoWebserviceMock();
 
         $this->productCreateNormalizer = $this->getProductCreateNormalizerMock();
         $this->productUpdateNormalizer = $this->getProductUpdateNormalizerMock();
@@ -63,7 +63,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $this->magentoSoapClient,
+            $this->magentoWebservice,
             $this->productCreateNormalizer,
             $this->productUpdateNormalizer,
             $this->metricConverter
@@ -202,11 +202,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClientMock();
+        $magentoWebservice = $this->getMagentoWebserviceMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient,
+            $magentoWebservice,
             $this->getProductCreateNormalizerMock(),
             $this->getProductUpdateNormalizerMockThrowing(
                 new InvalidScopeMatchException()
@@ -230,11 +230,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClientMock();
+        $magentoWebservice = $this->getMagentoWebserviceMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient,
+            $magentoWebservice,
             $this->getProductCreateNormalizerMock(),
             $this->getProductUpdateNormalizerMockThrowing(
                 new AttributeNotFoundException()
@@ -258,11 +258,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClientMock();
+        $magentoWebservice = $this->getMagentoWebserviceMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient,
+            $magentoWebservice,
             $this->getProductCreateNormalizerMock(),
             $this->getProductUpdateNormalizerMockThrowing(
                 new InvalidOptionException()
@@ -294,11 +294,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $product = $this->getProductMock();
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClientMock();
+        $magentoWebservice = $this->getMagentoWebserviceMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient,
+            $magentoWebservice,
             $this->getProductCreateNormalizerMock(),
             $this->getProductUpdateNormalizerMock(),
             $this->metricConverter
@@ -353,11 +353,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMagentoSoapClientMock();
+        $magentoWebservice = $this->getMagentoWebserviceMock();
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient,
+            $magentoWebservice,
             $this->getProductCreateNormalizerMock(),
             $this->getProductUpdateNormalizerMock(),
             $this->metricConverter
@@ -380,17 +380,17 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->channelManager = $this->getChannelManagerMock();
 
-        $magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+        $magentoWebservice = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice');
 
-        $magentoSoapClient
+        $magentoWebservice
             ->expects($this->any())
             ->method('getAttributeSetId')
             ->will($this->returnValue(10));
 
-        $magentoSoapClient = $this->addGetStoreViewListMock($magentoSoapClient);
-        $magentoSoapClient = $this->addGetAttributeListMock($magentoSoapClient);
+        $magentoWebservice = $this->addGetStoreViewListMock($magentoWebservice);
+        $magentoWebservice = $this->addGetAttributeListMock($magentoWebservice);
 
-        $magentoSoapClient->expects($this->any())
+        $magentoWebservice->expects($this->any())
             ->method('getProductsStatus')
             ->will($this->returnValue(
                 array(
@@ -403,7 +403,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $processor = new ProductMagentoProcessor(
             $this->channelManager,
-            $magentoSoapClient,
+            $magentoWebservice,
             $this->getProductCreateNormalizerMock(),
             $this->getProductUpdateNormalizerMock(),
             $this->metricConverter
@@ -417,20 +417,30 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process(array($product));
     }
 
-    protected function getMagentoSoapClientMock()
+    protected function getMagentoWebserviceMock()
     {
-        $magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
+        $magentoSoapClientMock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $magentoSoapClient
+        $magentoWebservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $magentoWebservice->expects($this->any())
+            ->method('getWebservice')
+            ->will($this->returnValue($magentoSoapClientMock));
+
+        $magentoWebservice
             ->expects($this->any())
             ->method('getAttributeSetId')
             ->will($this->returnValue(10));
 
-        $magentoSoapClient = $this->addGetStoreViewListMock($magentoSoapClient);
-        $magentoSoapClient = $this->addGetAttributeListMock($magentoSoapClient);
-        $magentoSoapClient = $this->addGetProductsStatusMock($magentoSoapClient);
+        $magentoWebservice = $this->addGetStoreViewListMock($magentoWebservice);
+        $magentoWebservice = $this->addGetAttributeListMock($magentoWebservice);
+        $magentoWebservice = $this->addGetProductsStatusMock($magentoWebservice);
 
-        return $magentoSoapClient;
+        return $magentoWebservice;
     }
 
     protected function addGetStoreViewListMock($mock)
@@ -547,10 +557,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $product = $this->getProductMock();
 
-        $this->magentoSoapClient = $this->addGetAttributeListMock($this->magentoSoapClient);
-        $this->magentoSoapClient = $this->addGetProductsStatusMock($this->magentoSoapClient);
+        $this->magentoWebservice = $this->addGetAttributeListMock($this->magentoWebservice);
+        $this->magentoWebservice = $this->addGetProductsStatusMock($this->magentoWebservice);
 
-        $this->magentoSoapClient
+        $this->magentoWebservice
             ->expects($this->once())
             ->method('getAttributeSetId')
             ->will($this->throwException(new AttributeSetNotFoundException()));

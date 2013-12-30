@@ -283,6 +283,20 @@ class MagentoWebservice
         }
     }
 
+    /**
+     * Delete image for a given sku and a given filename
+     * @param  string $sku
+     * @param  string $imageFilename
+     * @return string
+     */
+    public function deleteImage($sku, $imageFilename)
+    {
+        return $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
+            'product' => $sku,
+            'file'    => $imageFilename
+        ));
+    }
+
     public function updateProductPart($productPart)
     {
         $this->client->addCall(
@@ -297,9 +311,9 @@ class MagentoWebservice
     public function sendProduct($productPart)
     {
         if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
-            $resource = MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
+            $resource = self::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
         } else {
-            $resource = MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
+            $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
         }
 
         $this->client->addCall(
@@ -309,19 +323,5 @@ class MagentoWebservice
             ),
             self::MAXIMUM_CALLS
         );
-    }
-
-    /**
-     * Delete image for a given sku and a given filename
-     * @param  string $sku
-     * @param  string $imageFilename
-     * @return string
-     */
-    public function deleteImage($sku, $imageFilename)
-    {
-        return $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
-            'product' => $sku,
-            'file'    => $imageFilename
-        ));
     }
 }

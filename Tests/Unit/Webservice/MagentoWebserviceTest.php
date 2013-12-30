@@ -132,6 +132,62 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->updateProductPart(array('productPart'));
     }
 
+    public function testSendProductCreate()
+    {
+        $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
+
+        $productPart = array(
+            'productPart',
+            'test',
+            'create',
+            'product',
+            'test'
+        );
+
+        $magentoSoapClientMock->expects($this->once())
+            ->method('addCall')
+            ->with(array(MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_CREATE, $productPart), 1);
+
+        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+
+        $magentoWebservice->sendProduct($productPart);
+    }
+
+    public function testSendProductUpdate()
+    {
+        $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
+
+        $productPart = array(
+            'productPart',
+            'test',
+            'update'
+        );
+
+        $magentoSoapClientMock->expects($this->once())
+            ->method('addCall')
+            ->with(array(MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart), 1);
+
+        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+
+        $magentoWebservice->sendProduct($productPart);
+    }
+
+    public function testDeleteImage()
+    {
+        $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
+
+        $calls = array(
+            array(MagentoWebservice::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
+                'product' => 'sku-000',
+                'file'    => 'filename'
+            ), true),
+        );
+
+        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
+
+        $magentoWebservice->deleteImage('sku-000', 'filename');
+    }
+
     protected function getMagentoWebserviceWithCallMap($callsMap, $expects = null)
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
