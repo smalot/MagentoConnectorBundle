@@ -50,6 +50,71 @@ class MagentoWebservice
     }
 
     /**
+     * Get options for the given attribute
+     *
+     * @param  string $attributeCode Attribute code
+     * @return array the formated options for the given attribute
+     */
+    protected function getAttributeOptions($attributeCode)
+    {
+        $options = $this->client->call(
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+            array($attributeCode)
+        );
+
+        $formatedOptions = array();
+
+        foreach ($options as $option) {
+            $formatedOptions[$option['label']] = $option['value'];
+        }
+
+
+        return $formatedOptions;
+    }
+
+    /**
+     * Get attribute options for all attributes
+     *
+     * @return array
+     */
+    public function getAllAttributesOptions()
+    {
+        $attributeList = $this->getAllAttributes();
+
+        foreach ($attributeList as $attributeCode => $attribute) {
+            if (in_array($attribute['type'], array(self::SELECT, self::MULTI_SELECT))) {
+                $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
+            }
+        }
+
+        return $this->attributeOptionList;
+    }
+
+    /**
+     * Get all attributes from magento
+     *
+     * @return array
+     */
+    public function getAllAttributes()
+    {
+        if (!$this->attributeList) {
+            $attributeSetList = $this->getAttributeSetList();
+
+            foreach (array_keys($attributeSetList) as $attributeSet) {
+                $attributes = $this->getAttributeList($attributeSet);
+                $this->attributeSetList[$attributeSet] = array();
+
+                foreach ($attributes as $attribute) {
+                    $this->attributeList[$attribute['code']]                = $attribute;
+                    $this->attributeSetList[$attributeSet][$attributeSet]   = $attribute['code'];
+                }
+            }
+        }
+
+        return $this->attributeList;
+    }
+
+    /**
      * Get the magento attributeSet list from the magento platform
      *
      * @return void
@@ -73,43 +138,22 @@ class MagentoWebservice
     }
 
     /**
-     * Get options for the given attribute
+     * Get attribute list for a given attribute set code
      *
-     * @param  string $attributeCode Attribute code
-     * @return array the formated options for the given attribute
+     * @param string $attributeSetId the attribute set id
      */
-    protected function getAttributeOptions($attributeCode)
+    public function getAttributeList($attributeSetCode)
     {
-        $options = $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
-            array($attributeCode)
-        );
+        if (!isset($this->attributes[$attributeSetCode])) {
+            $id = $this->getAttributeSetId($attributeSetCode);
 
-        $formatedOptions = array();
-
-        foreach ($options as $option) {
-            $formatedOptions[$option['label']] = $option['value'];
+            $this->attributes[$attributeSetCode] = $this->client->call(
+                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
+                $id
+            );
         }
 
-        return $formatedOptions;
-    }
-
-    /**
-     * Get attribute options for all attributes
-     *
-     * @return array
-     */
-    public function getAllAttributesOptions()
-    {
-        $attributeList = $this->getAllAttributes();
-
-        foreach ($attributeList as $attributeCode => $attribute) {
-            if (in_array($attribute['type'], array(self::SELECT, self::MULTI_SELECT))) {
-                $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
-            }
-        }
-
-        return $this->attributeOptionList;
+        return $this->attributes[$attributeSetCode];
     }
 
     /**
@@ -202,49 +246,6 @@ class MagentoWebservice
         }
 
         return $this->magentoStoreViewList;
-    }
-
-    /**
-     * Get all attributes from magento
-     *
-     * @return array
-     */
-    public function getAllAttributes()
-    {
-        if (!$this->attributeList) {
-            $attributeSetList = $this->getAttributeSetList();
-
-            foreach (array_keys($attributeSetList) as $attributeSet) {
-                $attributes = $this->getAttributeList($attributeSet);
-                $this->attributeSetList[$attributeSet] = array();
-
-                foreach ($attributes as $attribute) {
-                    $this->attributeList[$attribute['code']]                = $attribute;
-                    $this->attributeSetList[$attributeSet][$attributeSet]   = $attribute['code'];
-                }
-            }
-        }
-
-        return $this->attributeList;
-    }
-
-    /**
-     * Get attribute list for a given attribute set code
-     *
-     * @param string $attributeSetId the attribute set id
-     */
-    public function getAttributeList($attributeSetCode)
-    {
-        if (!isset($this->attributes[$attributeSetCode])) {
-            $id = $this->getAttributeSetId($attributeSetCode);
-
-            $this->attributes[$attributeSetCode] = $this->client->call(
-                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
-                $id
-            );
-        }
-
-        return $this->attributes[$attributeSetCode];
     }
 
     /**

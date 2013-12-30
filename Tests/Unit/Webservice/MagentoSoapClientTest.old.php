@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoSoapClientTest extends \PHPUnit_Framework_TestCase
+class MagentoSoapClientTest extends WebserviceTestCase
 {
     const LOGIN                   = 'login';
     const PASSWORD                = 'password';
