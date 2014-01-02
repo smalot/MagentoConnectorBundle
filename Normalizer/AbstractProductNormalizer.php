@@ -140,7 +140,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         //For each storeview, we update the product only with localized attributes
         foreach ($magentoStoreViews as $magentoStoreView) {
             $storeViewCode = $magentoStoreView['code'];
-            $locale        = $this->getAkeneoLocaleForStoreView($storeViewCode, $channel);
+            $locale        = $this->getPimLocaleForStoreView($storeViewCode, $channel);
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
             if ($locale) {
@@ -201,13 +201,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the corresponding akeneo locale for a given storeview code
+     * Get the corresponding Pim locale for a given storeview code
      *
      * @param  string $storeViewCode The store view code
      * @param  string $channel
      * @return Locale The corresponding locale
      */
-    protected function getAkeneoLocaleForStoreView($storeViewCode, $channel)
+    protected function getPimLocaleForStoreView($storeViewCode, $channel)
     {
         $pimLocales = $this->getPimLocales($channel);
         foreach ($pimLocales as $locale) {
@@ -220,7 +220,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get all akeneo locales for the given channel
+     * Get all Pim locales for the given channel
      * @param  string $channel
      * @return array The locales
      */

@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 /**
  * Exception thrown if the givent credential are not valid
  *
- * @author    Julien Sanchez <gildas@akeneo.com>
+ * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
