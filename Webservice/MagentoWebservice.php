@@ -195,13 +195,13 @@ class MagentoWebservice
      */
     protected function getProductsIds($products)
     {
-        $ids = '';
+        $ids = array();
 
         foreach ($products as $product) {
-            $ids .= $product->getIdentifier() . ',';
+            $ids[] = $product->getIdentifier();
         }
 
-        return substr($ids, 0, strlen($ids) - 1);
+        return implode(',', $ids);
     }
 
     /**

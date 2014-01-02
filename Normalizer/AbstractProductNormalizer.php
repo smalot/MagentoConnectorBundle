@@ -58,7 +58,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     /**
      * @var array
      */
-    protected $supportedFormats = array('json', 'xml');
+    protected $supportedFormats = array('MagentoArray');
 
     /**
      * @var ChannelManager

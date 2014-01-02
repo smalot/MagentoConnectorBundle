@@ -30,7 +30,7 @@ class MagentoWebserviceGuesser
                 $magentoWebservice = new MagentoWebservice($client);
             break;
             case 1.6:
-                $magentoWebservice = new MagentoWebservice($client);
+                $magentoWebservice = new MagentoWebservice16($client);
             break;
             default:
                 $magentoWebservice = new MagentoWebservice($client);

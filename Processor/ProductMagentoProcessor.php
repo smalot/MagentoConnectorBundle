@@ -389,9 +389,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     {
         try {
             if ($create) {
-                $processedItem = $this->productCreateNormalizer->normalize($product, null, $context);
+                $processedItem = $this->productCreateNormalizer->normalize($product, 'MagentoArray', $context);
             } else {
-                $processedItem = $this->productUpdateNormalizer->normalize($product, null, $context);
+                $processedItem = $this->productUpdateNormalizer->normalize($product, 'MagentoArray', $context);
             }
         } catch (InvalidOptionException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
