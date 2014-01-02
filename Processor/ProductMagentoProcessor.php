@@ -12,7 +12,7 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
@@ -46,9 +46,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $metricConverter;
 
     /**
-     * @var MagentoSoapClient
+     * @var MagentoWebservice
      */
-    protected $magentoSoapClient;
+    protected $magentoWebservice;
 
     /**
      * @var ProductCreateNormalizer
@@ -61,29 +61,29 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $productUpdateNormalizer;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $soapUsername;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $soapApiKey;
 
     /**
-     * @Assert\NotBlank
-     * @Assert\Url
-     * @IsValidWsdlUrl()
+     * @Assert\NotBlank(groups={"Execution"})
+     * @Assert\Url(groups={"Execution"})
+     * @IsValidWsdlUrl(groups={"Execution"})
      */
     protected $soapUrl;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $channel;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $currency;
 
@@ -98,12 +98,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $defaultLocale;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Execution"})
      */
     protected $website = 'base';
 
@@ -113,24 +113,24 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $clientParameters;
 
     /**
-     * @param ChannelManager          $channelManager
-     * @param MagentoSoapClient       $magentoSoapClient
-     * @param ProductCreateNormalizer $productCreateNormalizer
-     * @param ProductUpdateNormalizer $productUpdateNormalizer
-     * @param MetricConverter         $metricConverter
+     * @param ChannelManager           $channelManager
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param ProductCreateNormalizer  $productCreateNormalizer
+     * @param ProductUpdateNormalizer  $productUpdateNormalizer
+     * @param MetricConverter          $metricConverter
      */
     public function __construct(
-        ChannelManager $channelManager,
-        MagentoSoapClient $magentoSoapClient,
-        ProductCreateNormalizer $productCreateNormalizer,
-        ProductUpdateNormalizer $productUpdateNormalizer,
-        MetricConverter $metricConverter
+        ChannelManager           $channelManager,
+        MagentoWebserviceGuesser $magentoWebserviceGuesser,
+        ProductCreateNormalizer  $productCreateNormalizer,
+        ProductUpdateNormalizer  $productUpdateNormalizer,
+        MetricConverter          $metricConverter
     ) {
-        $this->channelManager          = $channelManager;
-        $this->magentoSoapClient       = $magentoSoapClient;
-        $this->productCreateNormalizer = $productCreateNormalizer;
-        $this->productUpdateNormalizer = $productUpdateNormalizer;
-        $this->metricConverter         = $metricConverter;
+        $this->channelManager           = $channelManager;
+        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
+        $this->productCreateNormalizer  = $productCreateNormalizer;
+        $this->productUpdateNormalizer  = $productUpdateNormalizer;
+        $this->metricConverter          = $metricConverter;
     }
 
     /**
@@ -336,14 +336,13 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($items)
     {
-        //Soap init
-        $this->magentoSoapClient->init($this->getClientParameters());
+        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
 
         $processedItems = array();
 
-        $magentoProducts          = $this->magentoSoapClient->getProductsStatus($items);
-        $magentoStoreViews        = $this->magentoSoapClient->getStoreViewsList();
-        $magentoAttributesOptions = $this->magentoSoapClient->getAllAttributesOptions();
+        $magentoProducts          = $this->magentoWebservice->getProductsStatus($items);
+        $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
+        $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
 
         $context = array(
             'magentoStoreViews'        => $magentoStoreViews,
@@ -353,7 +352,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'website'                  => $this->website,
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
-            'magentoAttributes'        => $this->magentoSoapClient->getAllAttributes(),
+            'magentoAttributes'        => $this->magentoWebservice->getAllAttributes(),
             'currency'                 => $this->currency
         );
 
@@ -390,9 +389,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     {
         try {
             if ($create) {
-                $processedItem = $this->productCreateNormalizer->normalize($product, null, $context);
+                $processedItem = $this->productCreateNormalizer->normalize($product, 'MagentoArray', $context);
             } else {
-                $processedItem = $this->productUpdateNormalizer->normalize($product, null, $context);
+                $processedItem = $this->productUpdateNormalizer->normalize($product, 'MagentoArray', $context);
             }
         } catch (InvalidOptionException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
@@ -434,10 +433,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected function attributeSetChanged(Product $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if ($magentoProduct['sku'] == $product->getIdentifier()) {
-                if ($magentoProduct['set'] != $this->getAttributeSetId($product)) {
-                    return true;
-                }
+            if (
+                $magentoProduct['sku'] == $product->getIdentifier() &&
+                $magentoProduct['set'] != $this->getAttributeSetId($product)
+            ) {
+                return true;
             }
         }
 
@@ -471,7 +471,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected function getAttributeSetId(Product $product)
     {
         try {
-            return $this->magentoSoapClient
+            return $this->magentoWebservice
                 ->getAttributeSetId(
                     $product->getFamily()->getCode()
                 );

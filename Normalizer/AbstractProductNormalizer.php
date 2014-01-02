@@ -11,7 +11,7 @@ use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -58,7 +58,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     /**
      * @var array
      */
-    protected $supportedFormats = array('json', 'xml');
+    protected $supportedFormats = array('MagentoArray');
 
     /**
      * @var ChannelManager
@@ -75,9 +75,14 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected $pimLocales;
 
+    /**
+     * Constructor
+     * @param ChannelManager $channelManager
+     * @param MediaManager   $mediaManager
+     */
     public function __construct(
         ChannelManager $channelManager,
-        MediaManager $mediaManager
+        MediaManager   $mediaManager
     ) {
         $this->channelManager = $channelManager;
         $this->mediaManager   = $mediaManager;
@@ -98,6 +103,18 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * @param  array   $magentoStoreViews List of storeviews (in magento platform)
      * @return array The generated product
      */
+
+    /**
+     * Serialize the given product
+     * @param  Product $product
+     * @param  array   $magentoStoreViews List of storeviews (in magento platform)
+     * @param  int     $attributeSetId
+     * @param  string  $defaultLocale     Locale for the default storeview
+     * @param  string  $channel
+     * @param  string  $website           The website where to send data
+     * @param  bool    $create            Is it a new product or an existing product
+     * @return array The normalized product
+     */
     protected function getNormalizedProduct(
         Product $product,
         $magentoStoreViews,
@@ -109,7 +126,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     ) {
         $processedItem = array();
 
-        $processedItem[MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
             $product,
             $attributeSetId,
             $defaultLocale,
@@ -118,14 +135,14 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             $create
         );
 
-        $processedItem[MagentoSoapClient::IMAGES] = $this->getNormalizedImages($product);
+        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
 
         //For each storeview, we update the product only with localized attributes
         foreach ($magentoStoreViews as $magentoStoreView) {
             $storeViewCode = $magentoStoreView['code'];
-            $locale        = $this->getAkeneoLocaleForStoreView($storeViewCode, $channel);
+            $locale        = $this->getPimLocaleForStoreView($storeViewCode, $channel);
 
-            //If a locale for this storeview exist in akeneo, we create a translated product in this locale
+            //If a locale for this storeview exist in PIM, we create a translated product in this locale
             if ($locale) {
                 $values = $this->getValues($product, $locale, $channel, true);
 
@@ -170,13 +187,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 $attributeSetId,
                 $sku,
                 $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW
             );
         } else {
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW
+                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW
             );
         }
 
@@ -184,12 +201,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the corresponding akeneo locale for a given storeview code
+     * Get the corresponding Pim locale for a given storeview code
      *
      * @param  string $storeViewCode The store view code
+     * @param  string $channel
      * @return Locale The corresponding locale
      */
-    protected function getAkeneoLocaleForStoreView($storeViewCode, $channel)
+    protected function getPimLocaleForStoreView($storeViewCode, $channel)
     {
         $pimLocales = $this->getPimLocales($channel);
         foreach ($pimLocales as $locale) {
@@ -202,7 +220,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get all akeneo locales for the current channel
+     * Get all Pim locales for the given channel
+     * @param  string $channel
      * @return array The locales
      */
     protected function getPimLocales($channel)
@@ -224,7 +243,6 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * @param  string  $localeCode    The locale to apply
      * @param  string  $scopeCode     The akeno scope
      * @param  boolean $onlyLocalized If true, only get translatable attributes
-     *
      * @return array Computed data
      */
     protected function getValues(Product $product, $localeCode, $scopeCode, $onlyLocalized = false)
@@ -256,6 +274,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         );
 
         $normalizedValues = array();
+
         foreach ($filteredValues as $value) {
             $normalizedValues = array_merge(
                 $normalizedValues,
@@ -276,7 +295,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     /**
      * Normalizes a value
      *
-     * @param mixed $value
+     * @param ProductValue $value
      *
      * @return array
      */
@@ -523,7 +542,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(MagentoSoapClient::SMALL_IMAGE),
+                        'types'    => array(MagentoWebservice::SMALL_IMAGE),
                         'exclude'  => 0
                     )
                 );

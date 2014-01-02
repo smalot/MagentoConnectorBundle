@@ -2,9 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 
 /**
  * Test related class
@@ -20,148 +20,142 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     const URL            = 'url';
     const CHANNEL        = 'channel';
     const DEFAULT_LOCALE = 'en_US';
-    const IMAGES         = 'images';
-    const SKU            = 'sku';
-    const IMAGE_FILENAME = 'test.jpeg';
-    const JPEG_TYPE_MIME = 'image/jpeg';
 
     /**
-     * {@inheritdoc}
+     * Test the corresponding method
      */
-    protected function setUp()
-    {
-        $this->channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->magentoSoapClient = $this->getMock('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient');
-        $this->magentoSoapClient->expects($this->any())
-            ->method('getImages')
-            ->will($this->returnValue(array()));
-
-
-        $this->writer = new ProductMagentoWriter($this->channelManager, $this->magentoSoapClient);
-
-        $this->writer->setSoapUsername(self::LOGIN);
-        $this->writer->setSoapApiKey(self::PASSWORD);
-        $this->writer->setSoapUrl(self::URL);
-        $this->writer->setChannel(self::CHANNEL);
-    }
-
     public function testWriteInstanciated()
     {
-        $this->channelManager = $this->getChannelManagerMock();
+        $channelManagerMock           = $this->getChannelManagerMock();
+        $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
 
-        $this->writer = new ProductMagentoWriter($this->channelManager, $this->magentoSoapClient);
+        $writer = new ProductMagentoWriter($channelManagerMock, $magentoWebserviceGuesserMock);
 
-        $this->writer->setSoapUsername(self::LOGIN);
-        $this->writer->setSoapApiKey(self::PASSWORD);
-        $this->writer->setSoapUrl(self::URL);
-        $this->writer->setChannel(self::CHANNEL);
+        $products = array(array(
+            array(
+                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW => array(
+                    '1',
+                    '1',
+                    '1',
+                    '1',
+                    '1',
+                ),
+                self::DEFAULT_LOCALE                       => array(
 
-        $items = array(array(array(
-            MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW => array(
-                '1',
-                '1',
-                '1',
-                '1',
-                '1',
+                ),
+                MagentoWebservice::IMAGES                  => array(
+
+                )
             ),
-            self::DEFAULT_LOCALE                       => array(
-
-            )
-        )));
-
-        $this->writer->write($items);
-    }
-
-    public function testWrite()
-    {
-        $this->channelManager = $this->getChannelManagerMock();
-
-        $this->writer = new ProductMagentoWriter($this->channelManager, $this->magentoSoapClient);
-
-        $this->writer->setSoapUsername(self::LOGIN);
-        $this->writer->setSoapApiKey(self::PASSWORD);
-        $this->writer->setSoapUrl(self::URL);
-        $this->writer->setChannel(self::CHANNEL);
-
-        $items = array(array(array(
-            MagentoSoapClient::SOAP_DEFAULT_STORE_VIEW => array(
-                '1',
-                '1',
-                '1',
-            ),
-            self::DEFAULT_LOCALE                       => array(
-
-            ),
-            self::IMAGES                               => array(
-                array(
-                    self::SKU,
-                    array(
-                        'file' => array(
-                            'name' => self::IMAGE_FILENAME,
-                            'content' => '',
-                            'mime'    => self::JPEG_TYPE_MIME
-                        ),
-                        'label'    => self::IMAGE_FILENAME,
-                        'position' => 0,
-                        'types'    => array(MagentoSoapClient::SMALL_IMAGE),
-                        'exclude'  => 0
-                    )
+            array(
+                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW => array(
+                    '1',
+                    '1',
+                    '1'
                 )
             )
-        )));
+        ));
 
-        $this->writer->write($items);
+        $writer->write($products);
     }
 
+    /**
+     * Test setters and getters
+     */
+    public function testSettersAndGetters()
+    {
+        $channelManagerMock           = $this->getChannelManagerMock();
+        $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
+
+        $writer = new ProductMagentoWriter($channelManagerMock, $magentoWebserviceGuesserMock);
+
+        $writer->setSoapUsername(self::LOGIN);
+        $writer->setSoapApiKey(self::PASSWORD);
+        $writer->setSoapUrl(self::URL);
+        $writer->setChannel(self::CHANNEL);
+
+        $this->assertEquals($writer->getSoapUsername(), self::LOGIN);
+        $this->assertEquals($writer->getSoapApiKey(), self::PASSWORD);
+        $this->assertEquals($writer->getSoapUrl(), self::URL);
+        $this->assertEquals($writer->getChannel(), self::CHANNEL);
+    }
+
+    /**
+     * Get the channel manager mock
+     * @return ChannelManagerMock
+     */
     protected function getChannelManagerMock()
     {
         $channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $locale = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Locale')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCode'))
-            ->getMock();
-
-        $locale->expects($this->any())
-            ->method('getCode')
-            ->will($this->returnValue(self::DEFAULT_LOCALE));
-
-        $channel = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Channel')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getLocales'))
-            ->getMock();
-        $channel->expects($this->any())
-            ->method('getLocales')
-            ->will($this->returnValue(array($locale)));
-
-        $channelManager
-            ->expects($this->any())
-            ->method('getChannels')
-            ->with(array('code' => self::CHANNEL))
-            ->will($this->returnValue(array($channel)));
-
         return $channelManager;
     }
 
+    /**
+     * Get a all settled ProductMagentoWriter
+     * @param  ChannelManager           $channelManager
+     * @param  MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @return ProductMagentoWriter
+     */
+    protected function getProductMagentoWriter(
+        ChannelManager $channelManager,
+        MagentoWebserviceGuesser $magentoWebserviceGuesser
+    ) {
+        $writer = new ProductMagentoWriter($channelManager, $magentoWebserviceGuesser);
+
+        $writer->setSoapUsername(self::LOGIN);
+        $writer->setSoapApiKey(self::PASSWORD);
+        $writer->setSoapUrl(self::URL);
+        $writer->setChannel(self::CHANNEL);
+
+        return $writer;
+    }
+
+    /**
+     * Get a MagentoWebserviceGuesser mock
+     * @return MagentoWebserviceGuesserMock
+     */
+    protected function getMagentoWebserviceGuesserMock()
+    {
+        $magentoWebservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $magentoWebservice->expects($this->any())
+            ->method('getImages')
+            ->will($this->returnValue(array(array('file' => 'filename.jpg'))));
+
+        $magentoWebserviceGuesserMock = $this->getMockBuilder(
+            'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser'
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $magentoWebserviceGuesserMock->expects($this->any())
+            ->method('getWebservice')
+            ->with(new MagentoSoapClientParameters(null, null, null))
+            ->will($this->returnValue($magentoWebservice));
+
+        return $magentoWebserviceGuesserMock;
+    }
+
+    /**
+     * Test configurable fields
+     */
     public function testGetConfigurationFields()
     {
-        $configurationFields = $this->writer->getConfigurationFields();
+        $channelManagerMock           = $this->getChannelManagerMock();
+        $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
+
+        $writer = new ProductMagentoWriter($channelManagerMock, $magentoWebserviceGuesserMock);
+
+        $configurationFields = $writer->getConfigurationFields();
 
         $this->assertTrue(isset($configurationFields['soapUsername']));
         $this->assertTrue(isset($configurationFields['soapApiKey']));
         $this->assertTrue(isset($configurationFields['soapUrl']));
         $this->assertTrue(isset($configurationFields['channel']));
-    }
-
-    public function testSettersAndGetters()
-    {
-        $this->assertEquals($this->writer->getSoapUsername(), self::LOGIN);
-        $this->assertEquals($this->writer->getSoapApiKey(), self::PASSWORD);
-        $this->assertEquals($this->writer->getSoapUrl(), self::URL);
-        $this->assertEquals($this->writer->getChannel(), self::CHANNEL);
     }
 }
