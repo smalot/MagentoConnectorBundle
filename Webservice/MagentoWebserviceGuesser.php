@@ -23,17 +23,15 @@ class MagentoWebserviceGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case 1.8:
+            case '1.8':
+            case '1.7':
                 $magentoWebservice = new MagentoWebservice($client);
             break;
-            case 1.7:
-                $magentoWebservice = new MagentoWebservice($client);
-            break;
-            case 1.6:
+            case '1.6':
                 $magentoWebservice = new MagentoWebservice16($client);
             break;
             default:
-                $magentoWebservice = new MagentoWebservice($client);
+                throw new NotSupportedVersionException('Your Magento version is not supported yet.');
         }
 
         return $magentoWebservice;
@@ -46,6 +44,14 @@ class MagentoWebserviceGuesser
      */
     protected function getMagentoVersion($client)
     {
-        return (float) $client->call('magento.info')['magento_version'];
+        $magentoVersion = $client->call('magento.info')['magento_version'];
+
+        $pattern = '/^(?P<version>[0-9]\.[0-9])/';
+
+        if (preg_match($pattern, $magentoVersion, $matches)){
+            return $matches['version'];
+        } else {
+            return $magentoVersion;
+        }
     }
 }
