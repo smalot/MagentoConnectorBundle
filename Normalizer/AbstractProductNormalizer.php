@@ -210,6 +210,9 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     protected function getPimLocaleForStoreView($storeViewCode, $channel)
     {
         $pimLocales = $this->getPimLocales($channel);
+
+
+
         foreach ($pimLocales as $locale) {
             if (strtolower($locale->getCode()) == $storeViewCode) {
                 return $locale;

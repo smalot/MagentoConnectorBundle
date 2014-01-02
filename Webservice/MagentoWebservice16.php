@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
 /**
- * A magento soap client to abstract interaction with the magento api
+ * A magento soap client to abstract interaction with the magento api (above 1.6 version)
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
@@ -18,17 +18,7 @@ class MagentoWebservice16 extends MagentoWebservice
     public function getStoreViewsList()
     {
         if (!$this->magentoStoreViewList) {
-            $this->magentoStoreViewList = array(
-                array(
-                    'store_id'   => '1',
-                    'code'       => 'default',
-                    'website_id' => '1',
-                    'group_id'   => '1',
-                    'name'       => 'Default Store View',
-                    'sort_order' => '0',
-                    'is_active'  => '1'
-                )
-            );
+            $this->magentoStoreViewList = array();
         }
 
         return $this->magentoStoreViewList;
