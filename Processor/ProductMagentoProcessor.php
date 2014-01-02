@@ -336,13 +336,13 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($items)
     {
-        $this->magentoSoapClient = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
 
         $processedItems = array();
 
-        $magentoProducts          = $this->magentoSoapClient->getProductsStatus($items);
-        $magentoStoreViews        = $this->magentoSoapClient->getStoreViewsList();
-        $magentoAttributesOptions = $this->magentoSoapClient->getAllAttributesOptions();
+        $magentoProducts          = $this->magentoWebservice->getProductsStatus($items);
+        $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
+        $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
 
         $context = array(
             'magentoStoreViews'        => $magentoStoreViews,
@@ -352,7 +352,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'website'                  => $this->website,
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
-            'magentoAttributes'        => $this->magentoSoapClient->getAllAttributes(),
+            'magentoAttributes'        => $this->magentoWebservice->getAllAttributes(),
             'currency'                 => $this->currency
         );
 
@@ -433,10 +433,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected function attributeSetChanged(Product $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if ($magentoProduct['sku'] == $product->getIdentifier()) {
-                if ($magentoProduct['set'] != $this->getAttributeSetId($product)) {
-                    return true;
-                }
+            if (
+                $magentoProduct['sku'] == $product->getIdentifier() &&
+                $magentoProduct['set'] != $this->getAttributeSetId($product)
+            ) {
+                return true;
             }
         }
 
@@ -470,7 +471,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected function getAttributeSetId(Product $product)
     {
         try {
-            return $this->magentoSoapClient
+            return $this->magentoWebservice
                 ->getAttributeSetId(
                     $product->getFamily()->getCode()
                 );
