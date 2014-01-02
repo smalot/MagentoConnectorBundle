@@ -14,6 +14,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
  */
 class MagentoSoapClientTest extends WebserviceTestCase
 {
+    /**
+     * Test the corresponding method
+     */
     public function testConnect()
     {
         $soapClientMock    = $this->getConnectedSoapClientMock();

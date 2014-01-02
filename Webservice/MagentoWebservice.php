@@ -44,6 +44,10 @@ class MagentoWebservice
     protected $attributeSetList    = array();
     protected $attributeOptionList = array();
 
+    /**
+     * Constructor
+     * @param MagentoSoapClient $client
+     */
     function __construct(MagentoSoapClient $client)
     {
         $this->client = $client;
@@ -186,7 +190,6 @@ class MagentoWebservice
 
     /**
      * Serialize products id in csv
-     *
      * @param  array $products The given products
      * @return string The serialization result
      */
@@ -203,7 +206,6 @@ class MagentoWebservice
 
     /**
      * Get magento attributeSets from the magento api
-     *
      * @param  string $code the attributeSet id
      * @return void
      */
@@ -222,7 +224,6 @@ class MagentoWebservice
 
     /**
      * Get magento storeview list from magento
-     *
      * @return array
      */
     public function getStoreViewsList()
@@ -231,18 +232,6 @@ class MagentoWebservice
             $this->magentoStoreViewList = $this->client->call(
                 self::SOAP_ACTION_STORE_LIST
             );
-
-            // $this->magentoStoreViewList = array(
-            //     array(
-            //         'store_id'   => '1',
-            //         'code'       => 'default',
-            //         'website_id' => '1',
-            //         'group_id'   => '1',
-            //         'name'       => 'Default Store View',
-            //         'sort_order' => '0',
-            //         'is_active'  => '1'
-            //     )
-            // );
         }
 
         return $this->magentoStoreViewList;
@@ -297,6 +286,10 @@ class MagentoWebservice
         ));
     }
 
+    /**
+     * Add the call to update the given product part
+     * @param  array $productPart
+     */
     public function updateProductPart($productPart)
     {
         $this->client->addCall(
@@ -308,6 +301,10 @@ class MagentoWebservice
         );
     }
 
+    /**
+     * Add a call for the given product part
+     * @param array $productPart
+     */
     public function sendProduct($productPart)
     {
         if (count($productPart) == self::CREATE_PRODUCT_SIZE) {

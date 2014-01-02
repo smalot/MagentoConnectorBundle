@@ -21,6 +21,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     const CHANNEL        = 'channel';
     const DEFAULT_LOCALE = 'en_US';
 
+    /**
+     * Test the corresponding method
+     */
     public function testWriteInstanciated()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
@@ -56,6 +59,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $writer->write($products);
     }
 
+    /**
+     * Test setters and getters
+     */
     public function testSettersAndGetters()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
@@ -74,6 +80,10 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($writer->getChannel(), self::CHANNEL);
     }
 
+    /**
+     * Get the channel manager mock
+     * @return ChannelManagerMock
+     */
     protected function getChannelManagerMock()
     {
         $channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
@@ -83,6 +93,12 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         return $channelManager;
     }
 
+    /**
+     * Get a all settled ProductMagentoWriter
+     * @param  ChannelManager           $channelManager
+     * @param  MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @return ProductMagentoWriter
+     */
     protected function getProductMagentoWriter(
         ChannelManager $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser
@@ -97,6 +113,10 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         return $writer;
     }
 
+    /**
+     * Get a MagentoWebserviceGuesser mock
+     * @return MagentoWebserviceGuesserMock
+     */
     protected function getMagentoWebserviceGuesserMock()
     {
         $magentoWebservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice')
@@ -121,6 +141,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         return $magentoWebserviceGuesserMock;
     }
 
+    /**
+     * Test configurable fields
+     */
     public function testGetConfigurationFields()
     {
         $channelManagerMock           = $this->getChannelManagerMock();

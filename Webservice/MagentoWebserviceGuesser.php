@@ -11,6 +11,11 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class MagentoWebserviceGuesser
 {
+    /**
+     * Get the MagentoWebservice corresponding to the given Magento parameters
+     * @param  MagentoSoapClientParameters $clientParameters
+     * @return MagentoWebservice
+     */
     public function getWebservice(MagentoSoapClientParameters $clientParameters)
     {
         $client = new MagentoSoapClient($clientParameters);
@@ -34,6 +39,11 @@ class MagentoWebserviceGuesser
         return $magentoWebservice;
     }
 
+    /**
+     * Get the Magento version for the given client
+     * @param  MagentoSoapClient $client
+     * @return float
+     */
     protected function getMagentoVersion($client)
     {
         return (float) $client->call('magento.info')['magento_version'];

@@ -114,7 +114,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
 
     /**
      * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $MagentoWebserviceGuesser
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
      * @param ProductCreateNormalizer  $productCreateNormalizer
      * @param ProductUpdateNormalizer  $productUpdateNormalizer
      * @param MetricConverter          $metricConverter

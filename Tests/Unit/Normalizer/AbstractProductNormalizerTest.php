@@ -18,6 +18,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
     const DEFAULT_LOCALE    = 'en_US';
     const CHANNEL           = 'channel';
 
+
+    /**
+     * {@inheritDoc}
+     */
     protected function setUp()
     {
         $this->channelManager = $this->getChannelManagerMock();
@@ -65,6 +69,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         $this->normalizer->normalize($product, null, $context);
     }
 
+    /**
+     * Get an unknow attribute
+     * @return array
+     */
     protected function getUnknowAttributes()
     {
         return array(
@@ -78,6 +86,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Get a attribute with an invalid scope for magento
+     * @return array
+     */
     protected function getInvalidScopeAttributes()
     {
         return array(
@@ -91,6 +103,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Get an attribute with an invalid option
+     * @return array
+     */
     protected function getAttributeWithInvalidOption()
     {
         $colors = new \Doctrine\Common\Collections\ArrayCollection();
@@ -112,6 +128,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Get a default context
+     * @return array
+     */
     protected function getContext()
     {
         return array(
@@ -222,6 +242,9 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Test the supported normalization
+     */
     public function testSupportsNormalization()
     {
         $product = $this->getProductMock($this->getSampleAttributes());
@@ -229,6 +252,11 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->normalizer->supportsNormalization($product, 'json'));
     }
 
+    /**
+     * Get a simple product mock
+     * @param  array $attributes product attributes
+     * @return ProductMock
+     */
     protected function getProductMock($attributes)
     {
         $values = $this->getSampleProductValues($attributes);
@@ -242,6 +270,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         return $product;
     }
 
+    /**
+     * Get an array of sample attributes
+     * @return array
+     */
     protected function getSampleAttributes()
     {
         $colors = new \Doctrine\Common\Collections\ArrayCollection();
@@ -371,6 +403,12 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Get sample product values
+     * @see getSampleAttributes
+     * @param  array $attributes Array of attributes
+     * @return ArrayCollection
+     */
     protected function getSampleProductValues($attributes)
     {
         $values = new \Doctrine\Common\Collections\ArrayCollection();
@@ -394,6 +432,12 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         return $values;
     }
 
+    /**
+     * Get an attribute mock based on an attribute array
+     * @see getSampleAttributes
+     * @param  array $value
+     * @return AttributeMock
+     */
     protected function getAttributeMock($value)
     {
         $attribute = $this->getMockBuilder('Pim\Bundle\FlexibleEntityBundle\Entity\Attribute')
@@ -413,6 +457,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         return $attribute;
     }
 
+    /**
+     * Get the channelManager mock
+     * @return ChannelManagerMock
+     */
     protected function getChannelManagerMock()
     {
         $channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
@@ -449,6 +497,10 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
         return $channelManager;
     }
 
+    /**
+     * Get the media manager mock
+     * @return MediaManager
+     */
     protected function getMediaManagerMock()
     {
         $mediaManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\MediaManager')

@@ -18,11 +18,19 @@ abstract class WebserviceTestCase extends \PHPUnit_Framework_TestCase
     const PASSWORD = 'password';
     const URL      = 'http://magento.dev/';
 
+    /**
+     * Get an instanciated ClientParameters
+     * @return ClientParameters
+     */
     protected function getClientParameters()
     {
         return new MagentoSoapClientParameters(self::LOGIN, self::PASSWORD, self::URL);
     }
 
+    /**
+     * Get a SoapClient mock
+     * @return \SoapClientMock
+     */
     protected function getSoapClientMock()
     {
         $soapClientMock = $this->getMockBuilder('\SoapClient')
@@ -33,6 +41,10 @@ abstract class WebserviceTestCase extends \PHPUnit_Framework_TestCase
         return $soapClientMock;
     }
 
+    /**
+     * Get a connected SoapClient
+     * @return SoapClientMock
+     */
     protected function getConnectedSoapClientMock()
     {
         $soapClientMock = $this->getSoapClientMock();
@@ -50,6 +62,11 @@ abstract class WebserviceTestCase extends \PHPUnit_Framework_TestCase
         return $soapClientMock;
     }
 
+    /**
+     * Get a connected MagentoSoapClient
+     * @param  SoapClient $soapClient
+     * @return MagentoSoapClient
+     */
     protected function getConnectedMagentoSoapClient($soapClient)
     {
         $clientParameters = $this->getClientParameters();
@@ -59,6 +76,10 @@ abstract class WebserviceTestCase extends \PHPUnit_Framework_TestCase
         return $magentoSoapClient;
     }
 
+    /**
+     * Get a connected MagentoSoapClientMock
+     * @return MagentoSoapClientMock
+     */
     protected function getConnectedMagentoSoapClientMock()
     {
         $magentoSoapClientMock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient')

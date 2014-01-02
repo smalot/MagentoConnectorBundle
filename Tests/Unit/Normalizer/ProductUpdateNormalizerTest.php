@@ -13,6 +13,9 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
  */
 class ProductUpdateNormalizerTest extends AbstractProductNormalizerTest
 {
+    /**
+     * {@inheritDoc}
+     */
     protected function setUp()
     {
         $this->channelManager = $this->getChannelManagerMock();
@@ -24,6 +27,9 @@ class ProductUpdateNormalizerTest extends AbstractProductNormalizerTest
         );
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testNormalize()
     {
         $context = $this->getContext();

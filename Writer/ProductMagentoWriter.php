@@ -65,7 +65,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     protected $clientParameters;
 
     /**
-     * @param ChannelManager $channelManager
+     * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $channelManager
      */
     public function __construct(
@@ -183,7 +183,7 @@ class ProductMagentoWriter extends AbstractConfigurableStepElement implements
     /**
      * Compute an individual product and all his parts (translations)
      *
-     * @param  array $product The product and his parts
+     * @param array $product The product and his parts
      */
     protected function computeProduct($product)
     {

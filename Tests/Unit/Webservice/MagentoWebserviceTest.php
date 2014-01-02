@@ -13,6 +13,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
  */
 class MagentoWebserviceTest extends WebserviceTestCase
 {
+    /**
+     * Test the corresponding method
+     */
     public function testGetAllAttributesOptions()
     {
         $calls = array(
@@ -30,6 +33,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $this->assertEquals($attributesOptions, $this->getAllAttributesOptions());
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testGetProductsStatus()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -63,6 +69,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->getAttributeSetId('shoe');
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testGetStoreViewsList()
     {
         $calls = array(
@@ -75,6 +84,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $this->assertEquals($storeViewsList, $this->getStoreViewsList());
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testGetImages()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -90,6 +102,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $this->assertEquals($images, array('image'));
     }
 
+    /**
+     * Test the corresponding method with an unknown sku
+     */
     public function testGetImagesUnknownSku()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -106,6 +121,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $this->assertEquals($images, array());
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testSendImages()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -119,6 +137,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->sendImages(array(array('image')));
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testUpdateProductPart()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -132,6 +153,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->updateProductPart(array('productPart'));
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testSendProductCreate()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -153,6 +177,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->sendProduct($productPart);
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testSendProductUpdate()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -172,6 +199,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->sendProduct($productPart);
     }
 
+    /**
+     * Test the corresponding method
+     */
     public function testDeleteImage()
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -188,6 +218,12 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoWebservice->deleteImage('sku-000', 'filename');
     }
 
+    /**
+     * Get a MagentoWebservice with the given call map
+     * @param  array $callsMap
+     * @param  bool $expects   specify manualy the expect count (array length otherwise)
+     * @return MagentoWebservice
+     */
     protected function getMagentoWebserviceWithCallMap($callsMap, $expects = null)
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
@@ -205,6 +241,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         return new MagentoWebservice($magentoSoapClientMock);
     }
 
+    /**
+     * Get an attribute set list sample
+     */
     protected function getAttributeSetList()
     {
         return array(
@@ -219,6 +258,9 @@ class MagentoWebserviceTest extends WebserviceTestCase
         );
     }
 
+    /**
+     * Get an attribute list
+     */
     protected function getAttributeList()
     {
         return array(
@@ -246,6 +288,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
         );
     }
 
+    /**
+     * Get options for the given attributeCode
+     * @param  string $attributeCode
+     * @return array
+     */
     protected function getOptions($attributeCode)
     {
         $options = array(
@@ -264,6 +311,10 @@ class MagentoWebserviceTest extends WebserviceTestCase
         return $options[$attributeCode];
     }
 
+    /**
+     * Get all attributes options (from Magento)
+     * @return array
+     */
     protected function getAllAttributesOptions()
     {
         return array(
@@ -280,6 +331,10 @@ class MagentoWebserviceTest extends WebserviceTestCase
         );
     }
 
+    /**
+     * Get a product filter sample
+     * @return StdClass
+     */
     protected function getProductFilters()
     {
         $condition        = new \StdClass();
@@ -298,6 +353,10 @@ class MagentoWebserviceTest extends WebserviceTestCase
         return $filters;
     }
 
+    /**
+     * Get a storeview list
+     * @return array
+     */
     protected function getStoreViewsList()
     {
         return array(

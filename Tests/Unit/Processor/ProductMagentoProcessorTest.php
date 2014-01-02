@@ -30,6 +30,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     const FAMILY               = 'shirt';
     const NEW_FAMILY           = 'mug';
 
+    /**
+     * Test the related method
+     */
     public function testProcess()
     {
         $processor = $this->getSimpleProcessor();
@@ -67,6 +70,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process($products);
     }
 
+    /**
+     * Test the product creation process
+     */
     public function testProcessProductDoesntExist()
     {
         $processor = $this->getSimpleProcessor();
@@ -230,6 +236,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process($products);
     }
 
+    /**
+     * Test all setters and getters
+     */
     public function testSettersAndGetters()
     {
         $processor = $this->getSimpleProcessor();
@@ -255,6 +264,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($processor->getWebsite(), self::WEBSITE);
     }
 
+    /**
+     * Test configuration fields
+     */
     public function testGetConfigurationFields()
     {
         $processor = $this->getSimpleProcessor();
@@ -268,6 +280,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($configurationFields['defaultLocale']));
     }
 
+    /**
+     * Get a product family mock
+     * @return FamilyMock
+     */
     protected function getFamilyMock()
     {
         $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
@@ -281,6 +297,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $family;
     }
 
+    /**
+     * Get a product family which doesn't exist on Magento side
+     * @return FamilyMock
+     */
     protected function getChangedFamilyMock()
     {
         $family = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Family')
@@ -294,6 +314,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $family;
     }
 
+    /**
+     * Get a simple processor
+     * @return ProductMagentoProcessor
+     */
     protected function getSimpleProcessor()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
@@ -313,6 +337,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $processor;
     }
 
+    /**
+     * Get a normalizer who will throw given the exception
+     * @param  Exception $exception
+     * @return ProductUpdateNormalizer
+     */
     public function getExceptionNormalizerMock(\Exception $exception)
     {
         $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
@@ -328,6 +357,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
+    /**
+     * Get a channel manager mock
+     * @return ChannelManagerMock
+     */
     protected function getChannelManagerMock()
     {
         $channelManager = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Manager\ChannelManager')
@@ -341,6 +374,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $channelManager;
     }
 
+    /**
+     * Get a channel mock
+     * @return ChannelMock
+     */
     protected function getChannelMock()
     {
         $locale = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Locale')
@@ -363,6 +400,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $channel;
     }
 
+    /**
+     * Get a MagentoWebserviceGuesser mock
+     * @return MagentoWebserviceGuesserMock
+     */
     protected function getMagentoWebserviceGuesserMock()
     {
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
@@ -381,6 +422,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $magentoWebserviceGuesserMock;
     }
 
+    /**
+     * Get a MagentoWebservice mock
+     * @return MagentoWebserviceMock
+     */
     protected function getMagentoWebserviceMock()
     {
         $magentoWebservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice')
@@ -410,6 +455,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $magentoWebservice;
     }
 
+    /**
+     * Get a MagentoWebservice mock who will throw an AttributeSetNotFound on getAttributeSetId call
+     * @return MagentoWebserviceMock
+     */
     protected function getMagentoWebserviceAttributeSetNotFoundMock()
     {
         $magentoWebservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice')
@@ -434,6 +483,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $magentoWebservice;
     }
 
+    /**
+     * Get a ProductCreateNormalizer mock
+     * @return ProductCreateNormalizerMock
+     */
     protected function getProductCreateNormalizerMock()
     {
         $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer')
@@ -484,6 +537,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
+    /**
+     * Get a ProductUpdateNormalizer mock
+     * @return ProductUpdateNormalizerMock
+     */
     protected function getProductUpdateNormalizerMock()
     {
         $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
@@ -534,6 +591,10 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
+    /**
+     * Get a metricConverter mock
+     * @return MetricConverterMock
+     */
     protected function getMetricConverterMock()
     {
         return $this->getMockBuilder('Pim\Bundle\ImportExportBundle\Converter\MetricConverter')
