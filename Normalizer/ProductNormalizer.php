@@ -20,7 +20,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-abstract class AbstractProductNormalizer implements NormalizerInterface
+class ProductNormalizer implements NormalizerInterface
 {
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
@@ -97,6 +97,29 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function normalize($object, $format = null, array $context = array())
+    {
+        $this->enabled                  = $context['enabled'];
+        $this->visibility               = $context['visibility'];
+        $this->magentoAttributesOptions = $context['magentoAttributesOptions'];
+        $this->magentoAttributes        = $context['magentoAttributes'];
+        $this->currency                 = $context['currency'];
+
+        return $this->getNormalizedProduct(
+            $object,
+            $context['magentoStoreViews'],
+            $context['attributeSetId'],
+            $context['defaultLocale'],
+            $context['channel'],
+            $context['website'],
+            $context['storeviewMapping'],
+            $context['create']
+        );
+    }
+
+    /**
      * Serialize the given product
      * @param  Product $product
      * @param  array   $magentoStoreViews List of storeviews (in magento platform)
@@ -104,7 +127,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * @param  string  $defaultLocale     Locale for the default storeview
      * @param  string  $channel
      * @param  string  $website           The website where to send data
-     * @param  array   $storeviewMapping
+     * @param  array   $magentoStoreViewMapping
      * @param  bool    $create            Is it a new product or an existing product
      * @return array The normalized product
      */
@@ -115,7 +138,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $defaultLocale,
         $channel,
         $website,
-        $storeviewMapping,
+        $magentoStoreViewMapping,
         $create
     ) {
         $processedItem = array();
@@ -131,10 +154,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
         $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
 
+        $allMagentoStoreViewCodes = $this->getAllMagentoStoreViewCodes($magentoStoreViews, $magentoStoreViewMapping);
+
         //For each storeview, we update the product only with localized attributes
-        foreach ($magentoStoreViews as $magentoStoreView) {
-            $storeViewCode = $magentoStoreView['code'];
-            $locale        = $this->getPimLocaleForStoreView($storeViewCode, $channel, $storeviewMapping);
+        foreach ($allMagentoStoreViewCodes as $storeViewCode) {
+            $locale = $this->getPimLocaleForStoreView($storeViewCode, $channel, $magentoStoreViewMapping);
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
             if ($locale) {
@@ -145,10 +169,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     $values,
                     $storeViewCode
                 );
+            } else {
+                var_dump($storeViewCode);
+                $this->localeNotFound($storeViewCode, $magentoStoreViewMapping);
             }
         }
-
-        var_dump($processedItem);
 
         return $processedItem;
     }
@@ -199,31 +224,66 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     /**
      * Get the corresponding Pim locale for a given storeview code
      *
-     * @param  string $storeViewCode The store view code
-     * @param  string $channel
-     * @param  array  $storeviewMapping
+     * @param string $storeViewCode The store view code
+     * @param string $channel
+     * @param array  $magentoStoreViewMapping
      * @return Locale The corresponding locale
      */
-    protected function getPimLocaleForStoreView($storeViewCode, $channel, $storeviewMapping)
+    protected function getPimLocaleForStoreView($storeViewCode, $channel, $magentoStoreViewMapping)
     {
-        $pimLocales = $this->getPimLocales($channel);
-
-        foreach ($storeviewMapping as $storeview) {
-            var_dump($storeViewCode);
-            var_dump($storeview[0]);
-            if ($storeview[0] == $storeViewCode) {
-                $storeViewCode = $storeview[1];
-            }
-        }
+        $pimLocales           = $this->getPimLocales($channel);
+        $matchedStoreviewCode = $this->getMatchedLocale($storeViewCode, $magentoStoreViewMapping);
 
         foreach ($pimLocales as $locale) {
-            if (strtolower($locale->getCode()) == $storeViewCode) {
-                var_dump('out : ' . $locale->getCode());
+            if (strtolower($locale->getCode()) == $matchedStoreviewCode) {
                 return $locale;
             }
         }
 
         return null;
+    }
+
+    protected function getAllMagentoStoreViewCodes($magentoStoreViews, $magentoStoreViewMapping)
+    {
+        $allStoreViews = array();
+
+        foreach ($magentoStoreViews as $magentoStoreView) {
+            $allStoreViews[] = $magentoStoreView['code'];
+        }
+
+        foreach ($magentoStoreViewMapping as $magentoStoreView) {
+            $allStoreViews[] = $magentoStoreView[0];
+        }
+
+        return array_unique($allStoreViews);
+    }
+
+    /**
+     * Get the locale based on storeviewMapping
+     * @param  string $storeViewCode
+     * @param  array $storeviewMapping
+     * @return string
+     */
+    protected function getMatchedLocale($storeViewCode, $storeviewMapping)
+    {
+        foreach ($storeviewMapping as $storeview) {
+            if ($storeview[0] == $storeViewCode) {
+                $storeViewCode = $storeview[1];
+            }
+        }
+
+        return $storeViewCode;
+    }
+
+    /**
+     * Manage not found locales
+     * @param  string $storeViewCode
+     * @throws StoreViewNotMatchedException
+     */
+    protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
+    {
+        throw new StoreViewNotMatchedException(sprintf('No locale found for "%s" storeview code. Please create a ' .
+            'storeview named "%s" on your Magento or map this store name to a PIM locale.', $storeViewCode, $storeViewCode));
     }
 
     /**

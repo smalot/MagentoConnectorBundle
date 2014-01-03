@@ -42,7 +42,7 @@ class MagentoWebserviceGuesser
      * @param  MagentoSoapClient $client
      * @return float
      */
-    protected function getMagentoVersion($client)
+    protected function getMagentoVersion(MagentoSoapClient $client)
     {
         $magentoVersion = $client->call('magento.info')['magento_version'];
 

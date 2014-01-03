@@ -1,17 +1,11 @@
 parameters:
-    pim_magento_connector.normalizer.product_create.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer
-    pim_magento_connector.normalizer.product_update.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer
+    pim_magento_connector.normalizer.product.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
 
 services:
 
     # normalizers
-    pim_magento_connector.normalizer.product_create:
-        class: %pim_magento_connector.normalizer.product_create.class%
-        arguments:
-            - '@pim_catalog.manager.channel'
-            - '@pim_catalog.manager.media'
-    pim_magento_connector.normalizer.product_update:
-        class: %pim_magento_connector.normalizer.product_update.class%
+    pim_magento_connector.normalizer.product:
+        class: %pim_magento_connector.normalizer.product.class%
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.media'

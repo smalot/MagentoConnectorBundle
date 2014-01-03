@@ -13,8 +13,7 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
@@ -51,14 +50,9 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $magentoWebservice;
 
     /**
-     * @var ProductCreateNormalizer
+     * @var ProductNormalizer
      */
-    protected $productCreateNormalizer;
-
-    /**
-     * @var ProductUpdateNormalizer
-     */
-    protected $productUpdateNormalizer;
+    protected $productNormalizer;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -120,21 +114,18 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductCreateNormalizer  $productCreateNormalizer
-     * @param ProductUpdateNormalizer  $productUpdateNormalizer
+     * @param ProductNormalizer        $productNormalizer
      * @param MetricConverter          $metricConverter
      */
     public function __construct(
         ChannelManager           $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        ProductCreateNormalizer  $productCreateNormalizer,
-        ProductUpdateNormalizer  $productUpdateNormalizer,
+        ProductNormalizer        $productNormalizer,
         MetricConverter          $metricConverter
     ) {
         $this->channelManager           = $channelManager;
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
-        $this->productCreateNormalizer  = $productCreateNormalizer;
-        $this->productUpdateNormalizer  = $productUpdateNormalizer;
+        $this->productNormalizer        = $productNormalizer;
         $this->metricConverter          = $metricConverter;
     }
 
@@ -407,10 +398,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                         'delete this product in magento and re-run this connector.', array($product));
                 }
 
-                $processedItems[] = $this->normalizeProduct($product, $context, false);
+                $context['create'] = false;
             } else {
-                $processedItems[] = $this->normalizeProduct($product, $context, true);
+                $context['create'] = true;
             }
+
+            $processedItems[] = $this->normalizeProduct($product, $context);
         }
 
         return $processedItems;
@@ -421,17 +414,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @param  Product $product [description]
      * @param  array   $context The context
-     * @param  boolean $create  Is it a product creation ?
      * @return array processed item
      */
-    protected function normalizeProduct(Product $product, $context, $create)
+    protected function normalizeProduct(Product $product, $context)
     {
         try {
-            if ($create) {
-                $processedItem = $this->productCreateNormalizer->normalize($product, 'MagentoArray', $context);
-            } else {
-                $processedItem = $this->productUpdateNormalizer->normalize($product, 'MagentoArray', $context);
-            }
+            $processedItem = $this->productNormalizer->normalize($product, 'MagentoArray', $context);
         } catch (InvalidOptionException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         } catch(InvalidScopeMatchException $e) {

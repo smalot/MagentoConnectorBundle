@@ -10,8 +10,7 @@ services:
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.webservice.magento_soap_guesser'
-            - '@pim_magento_connector.normalizer.product_create'
-            - '@pim_magento_connector.normalizer.product_update'
+            - '@pim_magento_connector.normalizer.product'
             - '@pim_import_export.converter.metric'
 
     # writers
