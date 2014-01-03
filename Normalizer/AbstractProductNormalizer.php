@@ -98,20 +98,13 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
 
     /**
      * Serialize the given product
-     *
-     * @param  Product $product           The product
-     * @param  array   $magentoStoreViews List of storeviews (in magento platform)
-     * @return array The generated product
-     */
-
-    /**
-     * Serialize the given product
      * @param  Product $product
      * @param  array   $magentoStoreViews List of storeviews (in magento platform)
      * @param  int     $attributeSetId
      * @param  string  $defaultLocale     Locale for the default storeview
      * @param  string  $channel
      * @param  string  $website           The website where to send data
+     * @param  array   $storeviewMapping
      * @param  bool    $create            Is it a new product or an existing product
      * @return array The normalized product
      */
@@ -122,6 +115,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $defaultLocale,
         $channel,
         $website,
+        $storeviewMapping,
         $create
     ) {
         $processedItem = array();
@@ -140,7 +134,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         //For each storeview, we update the product only with localized attributes
         foreach ($magentoStoreViews as $magentoStoreView) {
             $storeViewCode = $magentoStoreView['code'];
-            $locale        = $this->getPimLocaleForStoreView($storeViewCode, $channel);
+            $locale        = $this->getPimLocaleForStoreView($storeViewCode, $channel, $storeviewMapping);
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
             if ($locale) {
@@ -153,6 +147,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                 );
             }
         }
+
+        var_dump($processedItem);
 
         return $processedItem;
     }
@@ -205,16 +201,24 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      *
      * @param  string $storeViewCode The store view code
      * @param  string $channel
+     * @param  array  $storeviewMapping
      * @return Locale The corresponding locale
      */
-    protected function getPimLocaleForStoreView($storeViewCode, $channel)
+    protected function getPimLocaleForStoreView($storeViewCode, $channel, $storeviewMapping)
     {
         $pimLocales = $this->getPimLocales($channel);
 
-
+        foreach ($storeviewMapping as $storeview) {
+            var_dump($storeViewCode);
+            var_dump($storeview[0]);
+            if ($storeview[0] == $storeViewCode) {
+                $storeViewCode = $storeview[1];
+            }
+        }
 
         foreach ($pimLocales as $locale) {
             if (strtolower($locale->getCode()) == $storeViewCode) {
+                var_dump('out : ' . $locale->getCode());
                 return $locale;
             }
         }

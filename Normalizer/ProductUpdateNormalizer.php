@@ -29,6 +29,7 @@ class ProductUpdateNormalizer extends AbstractProductNormalizer
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
+            $context['storeviewMapping'],
             false
         );
     }

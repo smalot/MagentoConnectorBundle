@@ -29,6 +29,7 @@ class ProductCreateNormalizer extends AbstractProductNormalizer
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
+            $context['storeviewMapping'],
             true
         );
     }

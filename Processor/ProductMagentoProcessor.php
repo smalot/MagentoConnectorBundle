@@ -108,6 +108,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $website = 'base';
 
     /**
+     * @var string
+     */
+    protected $storeviewMapping = '';
+
+    /**
      * @var MagentoSoapClientParameters
      */
     protected $clientParameters;
@@ -332,6 +337,39 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
+     * get storeviewMapping
+     *
+     * @return string storeviewMapping
+     */
+    public function getStoreviewMapping()
+    {
+        return $this->storeviewMapping;
+    }
+
+    /**
+     * Set storeviewMapping
+     *
+     * @param string $storeviewMapping storeviewMapping
+     */
+    public function setStoreviewMapping($storeviewMapping)
+    {
+        $this->storeviewMapping = $storeviewMapping;
+
+        return $this;
+    }
+
+    protected function getComputedStoreviewMapping()
+    {
+        $computedStoreviewMapping = array();
+
+        foreach (explode(chr(10), $this->storeviewMapping) as $line) {
+            $computedStoreviewMapping[] = explode(':', $line);
+        }
+
+        return $computedStoreviewMapping;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function process($items)
@@ -353,7 +391,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
             'magentoAttributes'        => $this->magentoWebservice->getAllAttributes(),
-            'currency'                 => $this->currency
+            'currency'                 => $this->currency,
+            'storeviewMapping'         => $this->getComputedStoreviewMapping()
         );
 
         $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
@@ -541,6 +580,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 'type'    => 'text',
                 'options' => array(
                     'required' => true
+                )
+            ),
+            'storeviewMapping' => array(
+                'type'    => 'textarea',
+                'options' => array(
+                    'required' => false
                 )
             )
         );
