@@ -1,11 +1,17 @@
 parameters:
     pim_magento_connector.normalizer.product.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
+    pim_magento_connector.normalizer.product16.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16
 
 services:
 
     # normalizers
     pim_magento_connector.normalizer.product:
         class: %pim_magento_connector.normalizer.product.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_catalog.manager.media'
+    pim_magento_connector.normalizer.product16:
+        class: %pim_magento_connector.normalizer.product16.class%
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.media'

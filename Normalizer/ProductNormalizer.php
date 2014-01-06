@@ -127,7 +127,7 @@ class ProductNormalizer implements NormalizerInterface
      * @param  string  $defaultLocale     Locale for the default storeview
      * @param  string  $channel
      * @param  string  $website           The website where to send data
-     * @param  array   $magentoStoreViewMapping
+     * @param  array   $storeViewMapping
      * @param  bool    $create            Is it a new product or an existing product
      * @return array The normalized product
      */
@@ -138,7 +138,7 @@ class ProductNormalizer implements NormalizerInterface
         $defaultLocale,
         $channel,
         $website,
-        $magentoStoreViewMapping,
+        $storeViewMapping,
         $create
     ) {
         $processedItem = array();
@@ -154,14 +154,16 @@ class ProductNormalizer implements NormalizerInterface
 
         $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
 
-        $allMagentoStoreViewCodes = $this->getAllMagentoStoreViewCodes($magentoStoreViews, $magentoStoreViewMapping);
-
         //For each storeview, we update the product only with localized attributes
-        foreach ($allMagentoStoreViewCodes as $storeViewCode) {
-            $locale = $this->getPimLocaleForStoreView($storeViewCode, $channel, $magentoStoreViewMapping);
+        foreach ($this->getPimLocales($channel) as $locale) {
+            $storeViewCode = $this->getStoreViewCodeForLocale(
+                $locale->getCode(),
+                $magentoStoreViews,
+                $storeViewMapping
+            );
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($locale) {
+            if ($storeViewCode) {
                 $values = $this->getValues($product, $locale, $channel, true);
 
                 $processedItem[$storeViewCode] = array(
@@ -170,8 +172,9 @@ class ProductNormalizer implements NormalizerInterface
                     $storeViewCode
                 );
             } else {
-                var_dump($storeViewCode);
-                $this->localeNotFound($storeViewCode, $magentoStoreViewMapping);
+                if ($locale->getCode() != $defaultLocale) {
+                    $this->localeNotFound($locale, $storeViewMapping);
+                }
             }
         }
 
@@ -222,40 +225,34 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the corresponding Pim locale for a given storeview code
-     *
-     * @param string $storeViewCode The store view code
-     * @param string $channel
-     * @param array  $magentoStoreViewMapping
-     * @return Locale The corresponding locale
+     * Get the corresponding storeview code for a givent locale
+     * @param  string $locale
+     * @param  array  $magentoStoreViews
+     * @param  array  $storeViewMapping
+     * @return string
      */
-    protected function getPimLocaleForStoreView($storeViewCode, $channel, $magentoStoreViewMapping)
+    protected function getStoreViewCodeForLocale($locale, $magentoStoreViews, $storeViewMapping)
     {
-        $pimLocales           = $this->getPimLocales($channel);
-        $matchedStoreviewCode = $this->getMatchedLocale($storeViewCode, $magentoStoreViewMapping);
+        $mappedStoreView = $this->getMappedStoreView($locale, $storeViewMapping);
 
-        foreach ($pimLocales as $locale) {
-            if (strtolower($locale->getCode()) == $matchedStoreviewCode) {
-                return $locale;
-            }
-        }
+        $code = ($mappedStoreView) ? $mappedStoreView : $locale;
 
-        return null;
+        return $this->getStoreView($code, $magentoStoreViews);
     }
 
-    protected function getAllMagentoStoreViewCodes($magentoStoreViews, $magentoStoreViewMapping)
+    /**
+     * Get the storeview for the given code
+     * @param  string $code              [description]
+     * @param  array  $magentoStoreViews [description]
+     * @return null|string
+     */
+    protected function getStoreView($code, $magentoStoreViews)
     {
-        $allStoreViews = array();
-
         foreach ($magentoStoreViews as $magentoStoreView) {
-            $allStoreViews[] = $magentoStoreView['code'];
+            if ($magentoStoreView['code'] == strtolower($code)) {
+                return $magentoStoreView['code'];
+            }
         }
-
-        foreach ($magentoStoreViewMapping as $magentoStoreView) {
-            $allStoreViews[] = $magentoStoreView[0];
-        }
-
-        return array_unique($allStoreViews);
     }
 
     /**
@@ -264,26 +261,24 @@ class ProductNormalizer implements NormalizerInterface
      * @param  array $storeviewMapping
      * @return string
      */
-    protected function getMatchedLocale($storeViewCode, $storeviewMapping)
+    protected function getMappedStoreView($locale, $storeviewMapping)
     {
         foreach ($storeviewMapping as $storeview) {
-            if ($storeview[0] == $storeViewCode) {
-                $storeViewCode = $storeview[1];
+            if ($storeview[0] == strtolower($locale)) {
+                return $storeview[1];
             }
         }
-
-        return $storeViewCode;
     }
 
     /**
      * Manage not found locales
      * @param  string $storeViewCode
-     * @throws StoreViewNotMatchedException
+     * @throws LocaleNotMatchedException
      */
     protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
     {
-        throw new StoreViewNotMatchedException(sprintf('No locale found for "%s" storeview code. Please create a ' .
-            'storeview named "%s" on your Magento or map this store name to a PIM locale.', $storeViewCode, $storeViewCode));
+        throw new LocaleNotMatchedException(sprintf('No storeview found for "%s" locale. Please create a ' .
+            'storeview named "%s" on your Magento or map this locale to a storeview code.', $storeViewCode, $storeViewCode));
     }
 
     /**
@@ -320,6 +315,7 @@ class ProductNormalizer implements NormalizerInterface
             function ($value) use ($identifier, $scopeCode, $localeCode, $onlyLocalized) {
                 return (
                     ($value !== $identifier) &&
+                    ($value->getData() !== null) &&
                     (
                         ($scopeCode == null) ||
                         (!$value->getAttribute()->isScopable()) ||

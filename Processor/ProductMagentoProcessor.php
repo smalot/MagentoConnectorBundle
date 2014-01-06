@@ -12,11 +12,13 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\LocaleNotMatchedException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
 
@@ -50,9 +52,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $magentoWebservice;
 
     /**
-     * @var ProductNormalizer
+     * @var MagentoWebserviceGuesser
      */
-    protected $productNormalizer;
+    protected $magentoWebserviceGuesser;
+
+    /**
+     * @var MagentoNormalizerGuesser
+     */
+    protected $magentoNormalizerGuesser;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -114,18 +121,18 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizer        $productNormalizer
+     * @param ProductNormalizerGuesser $productNormalizerGuesser
      * @param MetricConverter          $metricConverter
      */
     public function __construct(
         ChannelManager           $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        ProductNormalizer        $productNormalizer,
+        MagentoNormalizerGuesser $magentoNormalizerGuesser,
         MetricConverter          $metricConverter
     ) {
         $this->channelManager           = $channelManager;
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
-        $this->productNormalizer        = $productNormalizer;
+        $this->magentoNormalizerGuesser = $magentoNormalizerGuesser;
         $this->metricConverter          = $metricConverter;
     }
 
@@ -366,6 +373,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     public function process($items)
     {
         $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->productNormalizer = $this->magentoNormalizerGuesser->getNormalizer($this->getClientParameters());
 
         $processedItems = array();
 
@@ -389,7 +397,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
 
         foreach ($items as $product) {
-            $context['attributeSetId']    = $this->getAttributeSetId($product);
+            $context['attributeSetId'] = $this->getAttributeSetId($product);
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
@@ -425,6 +433,8 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
         } catch(InvalidScopeMatchException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         } catch(AttributeNotFoundException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        } catch(LocaleNotMatchedException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 

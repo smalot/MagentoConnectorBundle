@@ -9,8 +9,8 @@ services:
         class: %pim_magento_connector.processor.product.class%
         arguments:
             - '@pim_catalog.manager.channel'
-            - '@pim_magento_connector.webservice.magento_soap_guesser'
-            - '@pim_magento_connector.normalizer.product'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
             - '@pim_import_export.converter.metric'
 
     # writers
@@ -18,4 +18,4 @@ services:
         class: %pim_magento_connector.writer.product.class%
         arguments:
             - '@pim_catalog.manager.channel'
-            - '@pim_magento_connector.webservice.magento_soap_guesser'
+            - '@pim_magento_connector.guesser.magento_webservice'
