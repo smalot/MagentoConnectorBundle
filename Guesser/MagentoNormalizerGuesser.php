@@ -56,10 +56,10 @@ class MagentoNormalizerGuesser extends MagentoGuesser
             case '1.8':
             case '1.7':
                 $magentoNormalizer = new ProductNormalizer($this->channelManager, $this->mediaManager);
-            break;
+                break;
             case '1.6':
                 $magentoNormalizer = new ProductNormalizer16($this->channelManager, $this->mediaManager);
-            break;
+                break;
             default:
                 throw new NotSupportedVersionException('Your Magento version is not supported yet.');
         }

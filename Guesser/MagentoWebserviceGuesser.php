@@ -31,10 +31,10 @@ class MagentoWebserviceGuesser extends MagentoGuesser
             case '1.8':
             case '1.7':
                 $magentoWebservice = new MagentoWebservice($client);
-            break;
+                break;
             case '1.6':
                 $magentoWebservice = new MagentoWebservice16($client);
-            break;
+                break;
             default:
                 throw new NotSupportedVersionException('Your Magento version is not supported yet.');
         }

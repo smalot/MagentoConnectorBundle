@@ -89,7 +89,7 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function supportsNormalization($data, $format = null)
     {
@@ -97,7 +97,7 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = array())
     {
@@ -277,8 +277,14 @@ class ProductNormalizer implements NormalizerInterface
      */
     protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
     {
-        throw new LocaleNotMatchedException(sprintf('No storeview found for "%s" locale. Please create a ' .
-            'storeview named "%s" on your Magento or map this locale to a storeview code.', $storeViewCode, $storeViewCode));
+        throw new LocaleNotMatchedException(
+            sprintf(
+                'No storeview found for "%s" locale. Please create a storeview named "%s" on your Magento or map ' .
+                'this locale to a storeview code.',
+                $storeViewCode,
+                $storeViewCode
+            )
+        );
     }
 
     /**
@@ -290,8 +296,7 @@ class ProductNormalizer implements NormalizerInterface
     {
         if (!$this->pimLocales) {
             $this->pimLocales = $this->channelManager
-                ->getChannels(array('code' => $channel))
-                [0]
+                ->getChannelByCode($channel)
                 ->getLocales();
         }
 

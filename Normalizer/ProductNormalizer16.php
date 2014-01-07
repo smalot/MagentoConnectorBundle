@@ -30,7 +30,12 @@ class ProductNormalizer16 extends ProductNormalizer
      */
     protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
     {
-        throw new LocaleNotMatchedException(sprintf('No storeview found for the locale "%s". Please map the ' .
-            'locale "%s" to a Magento storeview', $storeViewCode, $storeViewCode));
+        throw new LocaleNotMatchedException(
+            sprintf(
+                'No storeview found for the locale "%s". Please map the locale "%s" to a Magento storeview',
+                $storeViewCode,
+                $storeViewCode
+            )
+        );
     }
 }
