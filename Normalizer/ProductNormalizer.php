@@ -321,26 +321,7 @@ class ProductNormalizer implements NormalizerInterface
 
         $filteredValues = $product->getValues()->filter(
             function ($value) use ($identifier, $scopeCode, $localeCode, $onlyLocalized) {
-                return (
-                    ($value !== $identifier) &&
-                    ($value->getData() !== null) &&
-                    (
-                        ($scopeCode == null) ||
-                        (!$value->getAttribute()->isScopable()) ||
-                        ($value->getAttribute()->isScopable() && $value->getScope() === $scopeCode)
-                    ) &&
-                    (
-                        ($localeCode == null) ||
-                        (!$value->getAttribute()->isTranslatable()) ||
-                        ($value->getAttribute()->isTranslatable() && $value->getLocale() === $localeCode)
-                    ) &&
-                    (
-                        (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
-                        $value->getAttribute()->isTranslatable()
-                    ) &&
-                    !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
-                    !($value->getData() instanceof Media)
-                );
+                return $this->isValueNormalizable($value, $identifier, $scopeCode, $localeCode, $onlyLocalized);
             }
         );
 
@@ -361,6 +342,39 @@ class ProductNormalizer implements NormalizerInterface
         ksort($normalizedValues);
 
         return $normalizedValues;
+    }
+
+    /**
+     * Is the given value normalizable
+     * @param  ProductValue $value
+     * @param  string       $identifier
+     * @param  string       $scopeCode
+     * @param  string       $localeCode
+     * @param  bool         $onlyLocalized
+     * @return boolean
+     */
+    protected function isValueNormalizable($value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
+    {
+        return (
+            ($value !== $identifier) &&
+            ($value->getData() !== null) &&
+            (
+                ($scopeCode == null) ||
+                (!$value->getAttribute()->isScopable()) ||
+                ($value->getAttribute()->isScopable() && $value->getScope() === $scopeCode)
+            ) &&
+            (
+                ($localeCode == null) ||
+                (!$value->getAttribute()->isTranslatable()) ||
+                ($value->getAttribute()->isTranslatable() && $value->getLocale() === $localeCode)
+            ) &&
+            (
+                (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
+                $value->getAttribute()->isTranslatable()
+            ) &&
+            !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
+            !($value->getData() instanceof Media)
+        );
     }
 
     /**
