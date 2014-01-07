@@ -111,7 +111,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @var string
      */
-    protected $storeviewMapping = '';
+    protected $storeViewMapping = '';
 
     /**
      * @var MagentoSoapClientParameters
@@ -335,36 +335,40 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * get storeviewMapping
+     * get storeViewMapping
      *
-     * @return string storeviewMapping
+     * @return string storeViewMapping
      */
-    public function getStoreviewMapping()
+    public function getStoreViewMapping()
     {
-        return $this->storeviewMapping;
+        return $this->storeViewMapping;
     }
 
     /**
-     * Set storeviewMapping
+     * Set storeViewMapping
      *
-     * @param string $storeviewMapping storeviewMapping
+     * @param string $storeViewMapping storeViewMapping
      */
-    public function setStoreviewMapping($storeviewMapping)
+    public function setStoreViewMapping($storeViewMapping)
     {
-        $this->storeviewMapping = $storeviewMapping;
+        $this->storeViewMapping = $storeViewMapping;
 
         return $this;
     }
 
-    protected function getComputedStoreviewMapping()
+    /**
+     * Get computed storeView mapping (string to array)
+     * @return array
+     */
+    protected function getComputedStoreViewMapping()
     {
-        $computedStoreviewMapping = array();
+        $computedStoreViewMapping = array();
 
-        foreach (explode(chr(10), $this->storeviewMapping) as $line) {
-            $computedStoreviewMapping[] = explode(':', $line);
+        foreach (explode(chr(10), $this->storeViewMapping) as $line) {
+            $computedStoreViewMapping[] = explode(':', $line);
         }
 
-        return $computedStoreviewMapping;
+        return $computedStoreViewMapping;
     }
 
     /**
@@ -391,7 +395,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'visibility'               => $this->visibility,
             'magentoAttributes'        => $this->magentoWebservice->getAllAttributes(),
             'currency'                 => $this->currency,
-            'storeviewMapping'         => $this->getComputedStoreviewMapping()
+            'storeViewMapping'         => $this->getComputedStoreViewMapping()
         );
 
         $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
@@ -580,7 +584,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                     'required' => true
                 )
             ),
-            'storeviewMapping' => array(
+            'storeViewMapping' => array(
                 'type'    => 'textarea',
                 'options' => array(
                     'required' => false

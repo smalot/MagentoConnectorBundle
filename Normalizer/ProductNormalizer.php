@@ -114,7 +114,7 @@ class ProductNormalizer implements NormalizerInterface
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
-            $context['storeviewMapping'],
+            $context['storeViewMapping'],
             $context['create']
         );
     }
@@ -256,14 +256,14 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the locale based on storeviewMapping
+     * Get the locale based on storeViewMapping
      * @param  string $storeViewCode
-     * @param  array $storeviewMapping
+     * @param  array  $storeViewMapping
      * @return string
      */
-    protected function getMappedStoreView($locale, $storeviewMapping)
+    protected function getMappedStoreView($locale, $storeViewMapping)
     {
-        foreach ($storeviewMapping as $storeview) {
+        foreach ($storeViewMapping as $storeview) {
             if ($storeview[0] === strtolower($locale)) {
                 return $storeview[1];
             }

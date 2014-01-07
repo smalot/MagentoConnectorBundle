@@ -164,7 +164,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
                 array('code' => 'en_us'),
                 array('code' => 'fr_fr'),
             ),
-            'storeviewMapping' => array(array('test', 'fr_FR')),
+            'storeViewMapping' => array(array('test', 'fr_FR')),
             'magentoAttributesOptions' => array(
                 'colors' => array(
                     'blue' => 4,
@@ -515,8 +515,8 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $channelManager
             ->expects($this->any())
-            ->method('getChannels')
-            ->with(array('code' => self::CHANNEL))
+            ->method('getChannelByCode')
+            ->with(self::CHANNEL)
             ->will($this->returnValue(array($channel)));
 
         return $channelManager;
