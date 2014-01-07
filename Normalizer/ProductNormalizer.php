@@ -249,7 +249,7 @@ class ProductNormalizer implements NormalizerInterface
     protected function getStoreView($code, $magentoStoreViews)
     {
         foreach ($magentoStoreViews as $magentoStoreView) {
-            if ($magentoStoreView['code'] == strtolower($code)) {
+            if ($magentoStoreView['code'] === strtolower($code)) {
                 return $magentoStoreView['code'];
             }
         }
@@ -264,7 +264,7 @@ class ProductNormalizer implements NormalizerInterface
     protected function getMappedStoreView($locale, $storeviewMapping)
     {
         foreach ($storeviewMapping as $storeview) {
-            if ($storeview[0] == strtolower($locale)) {
+            if ($storeview[0] === strtolower($locale)) {
                 return $storeview[1];
             }
         }
@@ -324,12 +324,12 @@ class ProductNormalizer implements NormalizerInterface
                     (
                         ($scopeCode == null) ||
                         (!$value->getAttribute()->isScopable()) ||
-                        ($value->getAttribute()->isScopable() && $value->getScope() == $scopeCode)
+                        ($value->getAttribute()->isScopable() && $value->getScope() === $scopeCode)
                     ) &&
                     (
                         ($localeCode == null) ||
                         (!$value->getAttribute()->isTranslatable()) ||
-                        ($value->getAttribute()->isTranslatable() && $value->getLocale() == $localeCode)
+                        ($value->getAttribute()->isTranslatable() && $value->getLocale() === $localeCode)
                     ) &&
                     (
                         (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
@@ -369,8 +369,8 @@ class ProductNormalizer implements NormalizerInterface
      */
     protected function normalizeValue(ProductValue $value)
     {
-        $data            = $value->getData();
-        $attributeCode   = $value->getAttribute()->getCode();
+        $data          = $value->getData();
+        $attributeCode = $value->getAttribute()->getCode();
 
         if (!isset($this->magentoAttributes[$attributeCode])) {
             throw new AttributeNotFoundException(sprintf(
@@ -386,11 +386,11 @@ class ProductNormalizer implements NormalizerInterface
         if (
             in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
             (
-                $attributeScope != self::GLOBAL_SCOPE &&
+                $attributeScope !== self::GLOBAL_SCOPE &&
                 $value->getAttribute()->isTranslatable()
             ) ||
             (
-                $attributeScope == self::GLOBAL_SCOPE &&
+                $attributeScope === self::GLOBAL_SCOPE &&
                 !$value->getAttribute()->isTranslatable()
             )
         ) {
@@ -548,7 +548,7 @@ class ProductNormalizer implements NormalizerInterface
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
                 if (
                     $item->getData() !== null &&
-                    $item->getCurrency() == $this->currency
+                    $item->getCurrency() === $this->currency
                 ) {
                     return $item->getData();
                 }
