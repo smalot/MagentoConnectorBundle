@@ -25,7 +25,8 @@ class ProductNormalizer16 extends ProductNormalizer
 
     /**
      * Manage not found locales
-     * @param  string $storeViewCode
+     * @param string $storeViewCode
+     * @param array $magentoStoreViewMapping
      * @throws LocaleNotMatchedException
      */
     protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
