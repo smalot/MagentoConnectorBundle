@@ -364,41 +364,55 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Normalizes a value
+     * Get the normalized value
      *
      * @param ProductValue $value
      *
      * @return array
      */
-    protected function normalizeValue(ProductValue $value)
+    protected function getNormalizedValue(ProductValue $value)
     {
-        $data          = $value->getData();
-        $attributeCode = $value->getAttribute()->getCode();
+        $data      = $value->getData();
+        $attribute = $value->getAttribute();
 
-        if (!isset($this->magentoAttributes[$attributeCode])) {
+        if (!isset($this->magentoAttributes[$attribute->getCode()])) {
             throw new AttributeNotFoundException(sprintf(
                 'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should create ' .
                 'it first or adding it to the corresponding attributeSet',
-                $attributeCode
+                $attribute->getCode()
             ));
         }
 
         $normalizer     = $this->getNormalizer($data);
         $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
 
+        $normalizedValue = $this->normalizeData($data, $attribute, $attributeScope);
+
+        return array($attributeCode => $normalizedValue);
+    }
+
+    /**
+     * Normalize the given data
+     * @param  mixed $data
+     * @param  Attribute $attribute
+     * @param  string $attributeScope
+     * @return array
+     */
+    protected function normalizeData($data, $attribute, $attributeScope)
+    {
         if (
-            in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
+            in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
             (
                 $attributeScope !== self::GLOBAL_SCOPE &&
-                $value->getAttribute()->isTranslatable()
+                $attribute->isTranslatable()
             ) ||
             (
                 $attributeScope === self::GLOBAL_SCOPE &&
-                !$value->getAttribute()->isTranslatable()
+                !$attribute->isTranslatable()
             )
         ) {
             $normalizedValue = $normalizer($data, array(
-                'attributeCode' => $attributeCode
+                'attributeCode' => $attribute->getCode()
             ));
         } else {
             throw new InvalidScopeMatchException(sprintf(
@@ -406,14 +420,14 @@ class ProductNormalizer implements NormalizerInterface
                 'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.' .
                 "\nMagento scope : %s\n" .
                 "PIM scope : %s" ,
-                $attributeCode,
-                $attributeCode,
+                $attribute->getCode(),
+                $attribute->getCode(),
                 $attributeScope,
-                (($value->getAttribute()->isTranslatable()) ? 'translatable' : 'not translatable')
+                (($attribute->isTranslatable()) ? 'translatable' : 'not translatable')
             ));
         }
 
-        return array($attributeCode => $normalizedValue);
+        return $normalizedValue;
     }
 
     /**
