@@ -17,20 +17,6 @@ class MagentoWebservice16 extends MagentoWebservice
      */
     public function getStoreViewsList()
     {
-        if (!$this->magentoStoreViewList) {
-            $this->magentoStoreViewList = array(
-                array(
-                    'store_id'   => '1',
-                    'code'       => 'default',
-                    'website_id' => '1',
-                    'group_id'   => '1',
-                    'name'       => 'Default Store View',
-                    'sort_order' => '0',
-                    'is_active'  => '1'
-                )
-            );
-        }
-
-        return $this->magentoStoreViewList;
+        return array();
     }
 }

@@ -2,8 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Normalizer;
 
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractProductNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 
 /**
  * Test related class
@@ -12,25 +11,49 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
+class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 {
     const CURRENCY          = 'EUR';
     const DEFAULT_LOCALE    = 'en_US';
     const CHANNEL           = 'channel';
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp()
     {
         $this->channelManager = $this->getChannelManagerMock();
         $this->mediaManager   = $this->getMediaManagerMock();
 
-        $this->normalizer = new ProductCreateNormalizer(
+        $this->normalizer = new ProductNormalizer(
             $this->channelManager,
             $this->mediaManager
         );
+    }
+
+    /**
+     * Test the corresponding method
+     */
+    public function testNormalizeCreate()
+    {
+        $context = $this->getContext();
+
+        $product = $this->getProductMock($this->getSampleAttributes());
+
+        $this->normalizer->normalize($product, null, $context);
+    }
+
+    /**
+     * Test the corresponding method
+     */
+    public function testNormalizeUpdate()
+    {
+        $context = $this->getContext();
+        $context['create'] = false;
+
+        $product = $this->getProductMock($this->getSampleAttributes());
+
+        $this->normalizer->normalize($product, null, $context);
     }
 
     /**
@@ -135,11 +158,13 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
     protected function getContext()
     {
         return array(
+            'create' => false,
             'magentoStoreViews'        => array(
                 array('code' => 'admin'),
                 array('code' => 'en_us'),
                 array('code' => 'fr_fr'),
             ),
+            'storeViewMapping' => array(array('test', 'fr_FR')),
             'magentoAttributesOptions' => array(
                 'colors' => array(
                     'blue' => 4,
@@ -249,7 +274,7 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
     {
         $product = $this->getProductMock($this->getSampleAttributes());
 
-        $this->assertTrue($this->normalizer->supportsNormalization($product, 'json'));
+        $this->assertTrue($this->normalizer->supportsNormalization($product, 'MagentoArray'));
     }
 
     /**
@@ -490,8 +515,8 @@ class AbstractProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $channelManager
             ->expects($this->any())
-            ->method('getChannels')
-            ->with(array('code' => self::CHANNEL))
+            ->method('getChannelByCode')
+            ->with(self::CHANNEL)
             ->will($this->returnValue(array($channel)));
 
         return $channelManager;

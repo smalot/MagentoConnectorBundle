@@ -128,7 +128,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array(array('file' => 'filename.jpg'))));
 
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
-            'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser'
+            'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
             )
             ->disableOriginalConstructor()
             ->getMock();

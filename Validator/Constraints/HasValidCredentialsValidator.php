@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 
@@ -34,7 +34,12 @@ class HasValidCredentialsValidator extends ConstraintValidator
     }
 
     /**
-     *{@inheritDoc}
+     * Checks if the passed value is valid.
+     *
+     * @param AbstractConfigurableStepElement $value      The value that should be validated
+     * @param Constraint                      $constraint The constraint for the validation
+     *
+     * @api
      */
     public function validate($protocol, Constraint $constraint)
     {
@@ -46,7 +51,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
         if ($this->isValidWsdlUrlValidator->isValidWsdlUrl($protocol->getSoapUrl())) {
             try {
-                $client = $this->magentoWebserviceGuesser->getWebservice($clientParameters);
+                $this->magentoWebserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidCredentialException $e) {
                 $this->context->addViolation($constraint->message, array('soapUsername', 'soapApiKey'));
             }

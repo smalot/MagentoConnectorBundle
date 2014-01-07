@@ -12,12 +12,10 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
 
@@ -51,14 +49,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $magentoWebservice;
 
     /**
-     * @var ProductCreateNormalizer
+     * @var MagentoWebserviceGuesser
      */
-    protected $productCreateNormalizer;
+    protected $magentoWebserviceGuesser;
 
     /**
-     * @var ProductUpdateNormalizer
+     * @var MagentoNormalizerGuesser
      */
-    protected $productUpdateNormalizer;
+    protected $magentoNormalizerGuesser;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -108,6 +106,11 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     protected $website = 'base';
 
     /**
+     * @var string
+     */
+    protected $storeViewMapping = '';
+
+    /**
      * @var MagentoSoapClientParameters
      */
     protected $clientParameters;
@@ -115,21 +118,18 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductCreateNormalizer  $productCreateNormalizer
-     * @param ProductUpdateNormalizer  $productUpdateNormalizer
+     * @param ProductNormalizerGuesser $productNormalizerGuesser
      * @param MetricConverter          $metricConverter
      */
     public function __construct(
         ChannelManager           $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        ProductCreateNormalizer  $productCreateNormalizer,
-        ProductUpdateNormalizer  $productUpdateNormalizer,
+        MagentoNormalizerGuesser $magentoNormalizerGuesser,
         MetricConverter          $metricConverter
     ) {
         $this->channelManager           = $channelManager;
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
-        $this->productCreateNormalizer  = $productCreateNormalizer;
-        $this->productUpdateNormalizer  = $productUpdateNormalizer;
+        $this->magentoNormalizerGuesser = $magentoNormalizerGuesser;
         $this->metricConverter          = $metricConverter;
     }
 
@@ -332,11 +332,49 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
+     * get storeViewMapping
+     *
+     * @return string storeViewMapping
+     */
+    public function getStoreViewMapping()
+    {
+        return $this->storeViewMapping;
+    }
+
+    /**
+     * Set storeViewMapping
+     *
+     * @param string $storeViewMapping storeViewMapping
+     */
+    public function setStoreViewMapping($storeViewMapping)
+    {
+        $this->storeViewMapping = $storeViewMapping;
+
+        return $this;
+    }
+
+    /**
+     * Get computed storeView mapping (string to array)
+     * @return array
+     */
+    protected function getComputedStoreViewMapping()
+    {
+        $computedStoreViewMapping = array();
+
+        foreach (explode(chr(10), $this->storeViewMapping) as $line) {
+            $computedStoreViewMapping[] = explode(':', $line);
+        }
+
+        return $computedStoreViewMapping;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function process($items)
     {
         $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->productNormalizer = $this->magentoNormalizerGuesser->getNormalizer($this->getClientParameters());
 
         $processedItems = array();
 
@@ -353,13 +391,14 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
             'enabled'                  => $this->enabled,
             'visibility'               => $this->visibility,
             'magentoAttributes'        => $this->magentoWebservice->getAllAttributes(),
-            'currency'                 => $this->currency
+            'currency'                 => $this->currency,
+            'storeViewMapping'         => $this->getComputedStoreViewMapping()
         );
 
         $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
 
         foreach ($items as $product) {
-            $context['attributeSetId']    = $this->getAttributeSetId($product);
+            $context['attributeSetId'] = $this->getAttributeSetId($product);
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
@@ -368,10 +407,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                         'delete this product in magento and re-run this connector.', array($product));
                 }
 
-                $processedItems[] = $this->normalizeProduct($product, $context, false);
+                $context['create'] = false;
             } else {
-                $processedItems[] = $this->normalizeProduct($product, $context, true);
+                $context['create'] = true;
             }
+
+            $processedItems[] = $this->normalizeProduct($product, $context);
         }
 
         return $processedItems;
@@ -382,22 +423,13 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
      *
      * @param  Product $product [description]
      * @param  array   $context The context
-     * @param  boolean $create  Is it a product creation ?
      * @return array processed item
      */
-    protected function normalizeProduct(Product $product, $context, $create)
+    protected function normalizeProduct(Product $product, $context)
     {
         try {
-            if ($create) {
-                $processedItem = $this->productCreateNormalizer->normalize($product, 'MagentoArray', $context);
-            } else {
-                $processedItem = $this->productUpdateNormalizer->normalize($product, 'MagentoArray', $context);
-            }
-        } catch (InvalidOptionException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        } catch(InvalidScopeMatchException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        } catch(AttributeNotFoundException $e) {
+            $processedItem = $this->productNormalizer->normalize($product, 'MagentoArray', $context);
+        } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 
@@ -541,6 +573,12 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
                 'type'    => 'text',
                 'options' => array(
                     'required' => true
+                )
+            ),
+            'storeViewMapping' => array(
+                'type'    => 'textarea',
+                'options' => array(
+                    'required' => false
                 )
             )
         );

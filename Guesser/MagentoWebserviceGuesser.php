@@ -1,6 +1,11 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
+namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
+
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice16;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
 /**
  * A magento soap client to abstract interaction with the magento api
@@ -9,7 +14,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoWebserviceGuesser
+class MagentoWebserviceGuesser extends MagentoGuesser
 {
     /**
      * Get the MagentoWebservice corresponding to the given Magento parameters
@@ -26,32 +31,14 @@ class MagentoWebserviceGuesser
             case '1.8':
             case '1.7':
                 $magentoWebservice = new MagentoWebservice($client);
-            break;
+                break;
             case '1.6':
                 $magentoWebservice = new MagentoWebservice16($client);
-            break;
+                break;
             default:
                 throw new NotSupportedVersionException('Your Magento version is not supported yet.');
         }
 
         return $magentoWebservice;
-    }
-
-    /**
-     * Get the Magento version for the given client
-     * @param  MagentoSoapClient $client
-     * @return float
-     */
-    protected function getMagentoVersion($client)
-    {
-        $magentoVersion = $client->call('magento.info')['magento_version'];
-
-        $pattern = '/^(?P<version>[0-9]\.[0-9])/';
-
-        if (preg_match($pattern, $magentoVersion, $matches)){
-            return $matches['version'];
-        } else {
-            return $magentoVersion;
-        }
     }
 }

@@ -72,7 +72,6 @@ class MagentoWebservice
             $formatedOptions[$option['label']] = $option['value'];
         }
 
-
         return $formatedOptions;
     }
 

@@ -96,7 +96,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcessAttributeSetNotFound()
     {
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
-            'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser'
+            'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
             )
             ->disableOriginalConstructor()
             ->getMock();
@@ -109,15 +109,13 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($magentoWebservice));
 
         $channelManagerMock           = $this->getChannelManagerMock();
-        $productCreateNormalizerMock  = $this->getProductCreateNormalizerMock();
-        $productUpdateNormalizerMock  = $this->getProductUpdateNormalizerMock();
+        $magentoNormalizerGuesserMock = $this->getMagentoNormalizerGuesserMock();
         $metricConverterMock          = $this->getMetricConverterMock();
 
         $processor = new ProductMagentoProcessor(
             $channelManagerMock,
             $magentoWebserviceGuesserMock,
-            $productCreateNormalizerMock,
-            $productUpdateNormalizerMock,
+            $magentoNormalizerGuesserMock,
             $metricConverterMock
         );
 
@@ -141,8 +139,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
-        $productCreateNormalizerMock  = $this->getProductCreateNormalizerMock();
-        $productUpdateNormalizerMock  = $this->getExceptionNormalizerMock(
+        $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
@@ -150,8 +147,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductMagentoProcessor(
             $channelManagerMock,
             $magentoWebserviceGuesserMock,
-            $productCreateNormalizerMock,
-            $productUpdateNormalizerMock,
+            $productNormalizerGuesserMock,
             $metricConverterMock
         );
 
@@ -175,8 +171,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
-        $productCreateNormalizerMock  = $this->getProductCreateNormalizerMock();
-        $productUpdateNormalizerMock  = $this->getExceptionNormalizerMock(
+        $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
@@ -184,8 +179,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductMagentoProcessor(
             $channelManagerMock,
             $magentoWebserviceGuesserMock,
-            $productCreateNormalizerMock,
-            $productUpdateNormalizerMock,
+            $productNormalizerGuesserMock,
             $metricConverterMock
         );
 
@@ -209,8 +203,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
-        $productCreateNormalizerMock  = $this->getProductCreateNormalizerMock();
-        $productUpdateNormalizerMock  = $this->getExceptionNormalizerMock(
+        $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
@@ -218,8 +211,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductMagentoProcessor(
             $channelManagerMock,
             $magentoWebserviceGuesserMock,
-            $productCreateNormalizerMock,
-            $productUpdateNormalizerMock,
+            $productNormalizerGuesserMock,
             $metricConverterMock
         );
 
@@ -322,15 +314,13 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
-        $productCreateNormalizerMock  = $this->getProductCreateNormalizerMock();
-        $productUpdateNormalizerMock  = $this->getProductUpdateNormalizerMock();
+        $magentoNormalizerGuesserMock = $this->getMagentoNormalizerGuesserMock();
         $metricConverterMock          = $this->getMetricConverterMock();
 
         $processor = new ProductMagentoProcessor(
             $channelManagerMock,
             $magentoWebserviceGuesserMock,
-            $productCreateNormalizerMock,
-            $productUpdateNormalizerMock,
+            $magentoNormalizerGuesserMock,
             $metricConverterMock
         );
 
@@ -344,7 +334,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function getExceptionNormalizerMock(\Exception $exception)
     {
-        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
+        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -407,7 +397,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     protected function getMagentoWebserviceGuesserMock()
     {
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
-            'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebserviceGuesser'
+            'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
             )
             ->disableOriginalConstructor()
             ->getMock();
@@ -484,66 +474,57 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get a ProductCreateNormalizer mock
-     * @return ProductCreateNormalizerMock
+     * Get a MagentoWebserviceGuesser mock
+     * @return MagentoWebserviceGuesserMock
      */
-    protected function getProductCreateNormalizerMock()
+    protected function getMagentoNormalizerGuesserMock()
     {
-        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCreateNormalizer')
+        $productNormalizerGuesserMock = $this->getMockBuilder(
+            'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser'
+            )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mock->expects($this->any())
-            ->method('normalize')
-            ->will($this->returnValue(
-                array(
-                    'admin' => array(
-                        self::SKU,
-                        array(
-                            'name'              => 'Simple product edited',
-                            'description'       => 'long description',
-                            'short_description' => 'short description',
-                            'status'            => '0',
-                            'visibility'        => '4',
-                            'price'             => '12',
-                            'tax_class_id'      => '0',
-                            'websites'          => array(
-                                '0' => 'base',
-                            )
-                        ),
-                        'admin',
-                    ),
-                    'en_us' => array(
-                        self::SKU,
-                        array(
-                            'name'              => 'Simple product edited',
-                            'description'       => 'long description',
-                            'short_description' => 'short description',
-                        ),
-                        'en_us',
-                    ),
-                    'fr_fr' => array(
-                        self::SKU,
-                        array(
-                            'name'              => 'Exemple de produit',
-                            'description'       => 'produit long',
-                            'short_description' => 'produit',
-                        ),
-                        'fr_fr'
-                    )
-                )
-            ));
+        $magentoNormalizer = $this->getProductNormalizerMock();
 
-        return $mock;
+        $productNormalizerGuesserMock->expects($this->any())
+            ->method('getNormalizer')
+            ->with(new MagentoSoapClientParameters(null, null, null))
+            ->will($this->returnValue($magentoNormalizer));
+
+        return $productNormalizerGuesserMock;
     }
 
     /**
-     * Get a ProductUpdateNormalizer mock
-     * @return ProductUpdateNormalizerMock
+     * Get a MagentoWebserviceGuesser mock which will return a exception thrower normalizer
+     * @param  \Exception $exception
+     * @return MagentoWebserviceGuesserMock
      */
-    protected function getProductUpdateNormalizerMock()
+    protected function getExceptionNormalizerGuesserMock(\Exception $exception)
     {
-        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductUpdateNormalizer')
+        $productNormalizerGuesserMock = $this->getMockBuilder(
+            'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser'
+            )
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $magentoNormalizer = $this->getExceptionNormalizerMock($exception);
+
+        $productNormalizerGuesserMock->expects($this->any())
+            ->method('getNormalizer')
+            ->with(new MagentoSoapClientParameters(null, null, null))
+            ->will($this->returnValue($magentoNormalizer));
+
+        return $productNormalizerGuesserMock;
+    }
+
+    /**
+     * Get a ProductNormalizer mock
+     * @return ProductNormalizerMock
+     */
+    protected function getProductNormalizerMock()
+    {
+        $mock = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer')
             ->disableOriginalConstructor()
             ->getMock();
 

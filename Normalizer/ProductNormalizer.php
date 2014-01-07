@@ -10,8 +10,11 @@ use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -20,7 +23,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-abstract class AbstractProductNormalizer implements NormalizerInterface
+class ProductNormalizer implements NormalizerInterface
 {
     const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
 
@@ -89,7 +92,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function supportsNormalization($data, $format = null)
     {
@@ -97,12 +100,27 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Serialize the given product
-     *
-     * @param  Product $product           The product
-     * @param  array   $magentoStoreViews List of storeviews (in magento platform)
-     * @return array The generated product
+     * {@inheritdoc}
      */
+    public function normalize($object, $format = null, array $context = array())
+    {
+        $this->enabled                  = $context['enabled'];
+        $this->visibility               = $context['visibility'];
+        $this->magentoAttributesOptions = $context['magentoAttributesOptions'];
+        $this->magentoAttributes        = $context['magentoAttributes'];
+        $this->currency                 = $context['currency'];
+
+        return $this->getNormalizedProduct(
+            $object,
+            $context['magentoStoreViews'],
+            $context['attributeSetId'],
+            $context['defaultLocale'],
+            $context['channel'],
+            $context['website'],
+            $context['storeViewMapping'],
+            $context['create']
+        );
+    }
 
     /**
      * Serialize the given product
@@ -112,6 +130,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      * @param  string  $defaultLocale     Locale for the default storeview
      * @param  string  $channel
      * @param  string  $website           The website where to send data
+     * @param  array   $storeViewMapping
      * @param  bool    $create            Is it a new product or an existing product
      * @return array The normalized product
      */
@@ -122,6 +141,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $defaultLocale,
         $channel,
         $website,
+        $storeViewMapping,
         $create
     ) {
         $processedItem = array();
@@ -138,12 +158,15 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
 
         //For each storeview, we update the product only with localized attributes
-        foreach ($magentoStoreViews as $magentoStoreView) {
-            $storeViewCode = $magentoStoreView['code'];
-            $locale        = $this->getPimLocaleForStoreView($storeViewCode, $channel);
+        foreach ($this->getPimLocales($channel) as $locale) {
+            $storeViewCode = $this->getStoreViewCodeForLocale(
+                $locale->getCode(),
+                $magentoStoreViews,
+                $storeViewMapping
+            );
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($locale) {
+            if ($storeViewCode) {
                 $values = $this->getValues($product, $locale, $channel, true);
 
                 $processedItem[$storeViewCode] = array(
@@ -151,6 +174,10 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
                     $values,
                     $storeViewCode
                 );
+            } else {
+                if ($locale->getCode() !== $defaultLocale) {
+                    $this->localeNotFound($locale, $storeViewMapping);
+                }
             }
         }
 
@@ -201,22 +228,66 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the corresponding Pim locale for a given storeview code
-     *
-     * @param  string $storeViewCode The store view code
-     * @param  string $channel
-     * @return Locale The corresponding locale
+     * Get the corresponding storeview code for a givent locale
+     * @param  string $locale
+     * @param  array  $magentoStoreViews
+     * @param  array  $storeViewMapping
+     * @return string
      */
-    protected function getPimLocaleForStoreView($storeViewCode, $channel)
+    protected function getStoreViewCodeForLocale($locale, $magentoStoreViews, $storeViewMapping)
     {
-        $pimLocales = $this->getPimLocales($channel);
-        foreach ($pimLocales as $locale) {
-            if (strtolower($locale->getCode()) == $storeViewCode) {
-                return $locale;
+        $mappedStoreView = $this->getMappedStoreView($locale, $storeViewMapping);
+
+        $code = ($mappedStoreView) ? $mappedStoreView : $locale;
+
+        return $this->getStoreView($code, $magentoStoreViews);
+    }
+
+    /**
+     * Get the storeview for the given code
+     * @param  string $code              [description]
+     * @param  array  $magentoStoreViews [description]
+     * @return null|string
+     */
+    protected function getStoreView($code, $magentoStoreViews)
+    {
+        foreach ($magentoStoreViews as $magentoStoreView) {
+            if ($magentoStoreView['code'] === strtolower($code)) {
+                return $magentoStoreView['code'];
             }
         }
+    }
 
-        return null;
+    /**
+     * Get the locale based on storeViewMapping
+     * @param  string $storeViewCode
+     * @param  array  $storeViewMapping
+     * @return string
+     */
+    protected function getMappedStoreView($locale, $storeViewMapping)
+    {
+        foreach ($storeViewMapping as $storeview) {
+            if ($storeview[0] === strtolower($locale)) {
+                return $storeview[1];
+            }
+        }
+    }
+
+    /**
+     * Manage not found locales
+     * @param  string $storeViewCode
+     * @throws LocaleNotMatchedException
+     */
+    protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
+    {
+        throw new LocaleNotMatchedException(
+            sprintf(
+                'No storeview found for "%s" locale. Please create a storeview named "%s" on your Magento or map ' .
+                'this locale to a storeview code.',
+                $storeViewCode,
+                $storeViewCode
+            )
+        );
     }
 
     /**
@@ -228,8 +299,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
     {
         if (!$this->pimLocales) {
             $this->pimLocales = $this->channelManager
-                ->getChannels(array('code' => $channel))
-                [0]
+                ->getChannelByCode($channel)
                 ->getLocales();
         }
 
@@ -253,15 +323,16 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             function ($value) use ($identifier, $scopeCode, $localeCode, $onlyLocalized) {
                 return (
                     ($value !== $identifier) &&
+                    ($value->getData() !== null) &&
                     (
                         ($scopeCode == null) ||
                         (!$value->getAttribute()->isScopable()) ||
-                        ($value->getAttribute()->isScopable() && $value->getScope() == $scopeCode)
+                        ($value->getAttribute()->isScopable() && $value->getScope() === $scopeCode)
                     ) &&
                     (
                         ($localeCode == null) ||
                         (!$value->getAttribute()->isTranslatable()) ||
-                        ($value->getAttribute()->isTranslatable() && $value->getLocale() == $localeCode)
+                        ($value->getAttribute()->isTranslatable() && $value->getLocale() === $localeCode)
                     ) &&
                     (
                         (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
@@ -301,8 +372,8 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
      */
     protected function normalizeValue(ProductValue $value)
     {
-        $data            = $value->getData();
-        $attributeCode   = $value->getAttribute()->getCode();
+        $data          = $value->getData();
+        $attributeCode = $value->getAttribute()->getCode();
 
         if (!isset($this->magentoAttributes[$attributeCode])) {
             throw new AttributeNotFoundException(sprintf(
@@ -318,11 +389,11 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
         if (
             in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
             (
-                $attributeScope != self::GLOBAL_SCOPE &&
+                $attributeScope !== self::GLOBAL_SCOPE &&
                 $value->getAttribute()->isTranslatable()
             ) ||
             (
-                $attributeScope == self::GLOBAL_SCOPE &&
+                $attributeScope === self::GLOBAL_SCOPE &&
                 !$value->getAttribute()->isTranslatable()
             )
         ) {
@@ -480,7 +551,7 @@ abstract class AbstractProductNormalizer implements NormalizerInterface
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
                 if (
                     $item->getData() !== null &&
-                    $item->getCurrency() == $this->currency
+                    $item->getCurrency() === $this->currency
                 ) {
                     return $item->getData();
                 }
