@@ -465,7 +465,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getAttributeMock($value)
     {
-        $attribute = $this->getMockBuilder('Pim\Bundle\FlexibleEntityBundle\Entity\Attribute')
+        $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Attribute')
             ->disableOriginalConstructor()
             ->setMethods(array('getCode', 'isTranslatable', 'isScopable'))
             ->getMock();
@@ -517,7 +517,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getChannelByCode')
             ->with(self::CHANNEL)
-            ->will($this->returnValue(array($channel)));
+            ->will($this->returnValue($channel));
 
         return $channelManager;
     }

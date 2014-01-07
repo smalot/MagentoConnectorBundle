@@ -1,12 +1,22 @@
 parameters:
     pim_magento_connector.processor.product.class: Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor
+    pim_magento_connector.processor.configurable.class: Pim\Bundle\MagentoConnectorBundle\Processor\ConfigurableMagentoProcessor
     pim_magento_connector.writer.product.class:    Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter
+    pim_magento_connector.writer.configurable.class:    Pim\Bundle\MagentoConnectorBundle\Writer\ConfigurableMagentoWriter
+    pim_magento_connector.reader.configurable.class:    Pim\Bundle\MagentoConnectorBundle\Reader\ConfigurableMagentoReader
 
 services:
 
     # processors
     pim_magento_connector.processor.product:
         class: %pim_magento_connector.processor.product.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_import_export.converter.metric'
+    pim_magento_connector.processor.configurable:
+        class: %pim_magento_connector.processor.configurable.class%
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
@@ -19,3 +29,17 @@ services:
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
+    pim_magento_connector.writer.configurable:
+        class: %pim_magento_connector.writer.configurable.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+
+    # readers
+    pim_magento_connector.reader.configurable:
+        class: %pim_magento_connector.reader.configurable.class%
+        arguments:
+            - '@pim_catalog.manager.product'
+            - '@pim_catalog.manager.channel'
+            - '@pim_catalog.manager.completeness'
+            - '@pim_import_export.converter.metric'
