@@ -10,8 +10,11 @@ use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
 
 /**
  * A normalizer to transform a product entity into an array

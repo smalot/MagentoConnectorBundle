@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
+
 /**
  * A normalizer to transform a product entity into an array for Magento platform above 1.6
  *

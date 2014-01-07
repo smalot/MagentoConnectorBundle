@@ -15,10 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\LocaleNotMatchedException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
 
@@ -432,13 +429,7 @@ class ProductMagentoProcessor extends AbstractConfigurableStepElement implements
     {
         try {
             $processedItem = $this->productNormalizer->normalize($product, 'MagentoArray', $context);
-        } catch (InvalidOptionException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        } catch(InvalidScopeMatchException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        } catch(AttributeNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        } catch(LocaleNotMatchedException $e) {
+        } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 
