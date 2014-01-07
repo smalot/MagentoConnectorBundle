@@ -172,7 +172,7 @@ class ProductNormalizer implements NormalizerInterface
                     $storeViewCode
                 );
             } else {
-                if ($locale->getCode() != $defaultLocale) {
+                if ($locale->getCode() !== $defaultLocale) {
                     $this->localeNotFound($locale, $storeViewMapping);
                 }
             }
