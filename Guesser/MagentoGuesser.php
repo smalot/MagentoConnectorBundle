@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+
 /**
  * A magento guesser abstract class
  *
