@@ -18,7 +18,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     const CHANNEL           = 'channel';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp()
     {
