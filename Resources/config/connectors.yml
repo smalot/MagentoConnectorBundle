@@ -39,7 +39,7 @@ services:
     pim_magento_connector.reader.configurable:
         class: %pim_magento_connector.reader.configurable.class%
         arguments:
-            - '@pim_catalog.manager.product'
+            - '@pim_magento_connector.repository.group'
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.completeness'
             - '@pim_import_export.converter.metric'

@@ -7,9 +7,9 @@ use Pim\Bundle\ImportExportBundle\Reader\ORM\Reader;
 use Pim\Bundle\ImportExportBundle\Validator\Constraints\Channel as ChannelConstraint;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\CatalogBundle\Manager\CompletenessManager;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
+use Pim\Bundle\MagentoConnectorBundle\Repository\GroupRepository;
 
 /**
  * Product reader
@@ -28,8 +28,8 @@ class ConfigurableMagentoReader extends Reader
      */
     protected $channel;
 
-    /** @var ProductManager */
-    protected $productManager;
+    /** @var GroupRepository */
+    protected $groupRepository;
 
     /** @var ChannelManager */
     protected $channelManager;
@@ -41,18 +41,18 @@ class ConfigurableMagentoReader extends Reader
     protected $metricConverter;
 
     /**
-     * @param ProductManager      $productManager
+     * @param GroupRepository     $groupRepository
      * @param ChannelManager      $channelManager
      * @param CompletenessManager $completenessManager
      * @param MetricConverter     $metricConverter
      */
     public function __construct(
-        ProductManager $productManager,
+        GroupRepository $groupRepository,
         ChannelManager $channelManager,
         CompletenessManager $completenessManager,
         MetricConverter $metricConverter
     ) {
-        $this->productManager      = $productManager;
+        $this->groupRepository     = $groupRepository;
         $this->channelManager      = $channelManager;
         $this->completenessManager = $completenessManager;
         $this->metricConverter     = $metricConverter;
@@ -73,18 +73,28 @@ class ConfigurableMagentoReader extends Reader
 
             $this->completenessManager->generateChannelCompletenesses($channel);
 
+<<<<<<< Updated upstream
             $this->query = $this->getProductRepository()
                 ->buildByChannelAndCompleteness($channel)
                 ->getQuery();
+=======
+            var_dump($this->groupRepository->getChoices());
+
+            // $this->query = $this->getProductRepository()
+            //     ->buildByChannelAndCompleteness($channel)
+            //     ->getQuery();
+
+            // echo ($this->query->getSQL());
+>>>>>>> Stashed changes
         }
 
-        $products = parent::read();
+        // $products = parent::read();
 
-        if (is_array($products)) {
-            $this->metricConverter->convert($products, $channel);
-        }
+        // if (is_array($products)) {
+        //     $this->metricConverter->convert($products, $channel);
+        // }
 
-        return $products;
+        // return $products;
     }
 
     /**
@@ -122,15 +132,5 @@ class ConfigurableMagentoReader extends Reader
                 )
             )
         );
-    }
-
-    /**
-     * Get the product repository
-     *
-     * @return \Doctrine\ORM\EntityRepository
-     */
-    protected function getProductRepository()
-    {
-        return $this->productManager->getFlexibleRepository();
     }
 }
