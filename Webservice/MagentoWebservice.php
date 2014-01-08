@@ -160,17 +160,34 @@ class MagentoWebservice
     }
 
     /**
-     * Get product status in magento (do they exist ?)
-     * @param  Product $products the given products
+     * Get products status in magento (do they exist ?)
+     * @param  array $products the given products
      * @return array
      */
     public function getProductsStatus($products)
     {
-        $productsIds = $this->getProductsIds($products);
+        $skus = $this->getProductsIds($products);
 
+        return $this->getStatusForSkus($skus);
+    }
+
+    /**
+     * Get configurables status in magento (do they exist ?)
+     * @param  array $configurables the given configurables
+     * @return array
+     */
+    public function getConfigurablesStatus($configurables)
+    {
+        $skus = $this->getConfigurablesIds($configurables);
+
+        return $this->getStatusForSkus($skus);
+    }
+
+    protected function getStatusForSkus($skus)
+    {
         $condition        = new \StdClass();
         $condition->key   = 'in';
-        $condition->value = $productsIds;
+        $condition->value = $skus;
 
         $fieldFilter        = new \StdClass();
         $fieldFilter->key   = 'sku';
@@ -198,6 +215,22 @@ class MagentoWebservice
 
         foreach ($products as $product) {
             $ids[] = $product->getIdentifier();
+        }
+
+        return implode(',', $ids);
+    }
+
+    /**
+     * Serialize configurables id in csv
+     * @param  array $configurables The given configurables
+     * @return string The serialization result
+     */
+    protected function getConfigurablesIds($configurables)
+    {
+        $ids = array();
+
+        foreach ($configurables as $configurable) {
+            $ids[] = 'conf-' . $configurable['group']->getCode();
         }
 
         return implode(',', $ids);

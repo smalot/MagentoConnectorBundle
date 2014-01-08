@@ -26,6 +26,11 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
         );
 
         $processedItems = array();
+
+        $magentoProducts   = $this->magentoWebservice->getConfigurablesStatus($items);
+        $magentoStoreViews = $this->magentoWebservice->getStoreViewsList();
+
+
     }
 }
 
