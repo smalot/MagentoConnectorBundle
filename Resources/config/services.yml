@@ -5,7 +5,7 @@ parameters:
     pim_magento_connector.validator.is_valid_wsdl_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrlValidator
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Repository\GroupRepository
 
-
+    pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
 
 services:
     # guesser
@@ -29,3 +29,10 @@ services:
         class: %pim_magento_connector.validator.is_valid_wsdl_url.class%
         tags:
             - { name: validator.constraint_validator, alias: is_valid_wsdl_url }
+
+    pim_magento_connector.manager.group:
+        class: %pim_magento_connector.manager.group.class%
+        arguments:
+            - '@doctrine'
+            - %pim_catalog.entity.product.class%
+            - %pim_catalog.entity.attribute.class%

@@ -24,15 +24,11 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedExcep
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductNormalizer implements NormalizerInterface
+class ProductNormalizer extends AbstractNormalizer
 {
-    const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
-
     const GLOBAL_SCOPE = 'global';
     const VISIBILITY   = 'visibility';
     const ENABLED      = 'status';
-
-    const DATE_FORMAT  = 'Y-m-d H:i:s';
 
     /**
      * @var boolean
@@ -60,16 +56,6 @@ class ProductNormalizer implements NormalizerInterface
     protected $currency;
 
     /**
-     * @var array
-     */
-    protected $supportedFormats = array('MagentoArray');
-
-    /**
-     * @var ChannelManager
-     */
-    protected $channelManager;
-
-    /**
      * @var MediaManager
      */
     protected $mediaManager;
@@ -88,16 +74,9 @@ class ProductNormalizer implements NormalizerInterface
         ChannelManager $channelManager,
         MediaManager   $mediaManager
     ) {
-        $this->channelManager = $channelManager;
-        $this->mediaManager   = $mediaManager;
-    }
+        super::__construct($channelManager);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof ProductInterface && in_array($format, $this->supportedFormats);
+        $this->mediaManager = $mediaManager;
     }
 
     /**

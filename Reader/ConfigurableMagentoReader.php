@@ -9,7 +9,8 @@ use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\CompletenessManager;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
-use Pim\Bundle\MagentoConnectorBundle\Repository\GroupRepository;
+use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
+use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 
 /**
  * Product reader
@@ -28,8 +29,11 @@ class ConfigurableMagentoReader extends Reader
      */
     protected $channel;
 
-    /** @var GroupRepository */
-    protected $groupRepository;
+    /** @var GroupManager */
+    protected $groupManager;
+
+    /** @var ProductManager */
+    protected $productManager;
 
     /** @var ChannelManager */
     protected $channelManager;
@@ -41,18 +45,20 @@ class ConfigurableMagentoReader extends Reader
     protected $metricConverter;
 
     /**
-     * @param GroupRepository     $groupRepository
+     * @param GroupManager        $groupManager
      * @param ChannelManager      $channelManager
      * @param CompletenessManager $completenessManager
      * @param MetricConverter     $metricConverter
      */
     public function __construct(
-        GroupRepository $groupRepository,
-        ChannelManager $channelManager,
+        GroupManager        $groupManager,
+        ProductManager      $productManager,
+        ChannelManager      $channelManager,
         CompletenessManager $completenessManager,
-        MetricConverter $metricConverter
+        MetricConverter     $metricConverter
     ) {
-        $this->groupRepository     = $groupRepository;
+        $this->groupManager        = $groupManager;
+        $this->productManager      = $productManager;
         $this->channelManager      = $channelManager;
         $this->completenessManager = $completenessManager;
         $this->metricConverter     = $metricConverter;
@@ -73,28 +79,50 @@ class ConfigurableMagentoReader extends Reader
 
             $this->completenessManager->generateChannelCompletenesses($channel);
 
-<<<<<<< Updated upstream
             $this->query = $this->getProductRepository()
                 ->buildByChannelAndCompleteness($channel)
                 ->getQuery();
-=======
-            var_dump($this->groupRepository->getChoices());
-
-            // $this->query = $this->getProductRepository()
-            //     ->buildByChannelAndCompleteness($channel)
-            //     ->getQuery();
-
-            // echo ($this->query->getSQL());
->>>>>>> Stashed changes
         }
 
-        // $products = parent::read();
+        $groupsIds = $this->getGroupRepository()->getVariantGroupIds();
 
-        // if (is_array($products)) {
-        //     $this->metricConverter->convert($products, $channel);
-        // }
+        $products = parent::read();
 
-        // return $products;
+        if (is_array($products)) {
+            $groups = $this->getProductsForGroups($products, $groupsIds);
+        } else {
+            $groups = null;
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Get products association for each groups
+     * @param  array $products
+     * @param  array $groupsIds
+     * @return array
+     */
+    protected function getProductsForGroups($products, $groupsIds)
+    {
+        $groups = array();
+
+        foreach ($products as $product) {
+            foreach ($product->getGroups() as $group) {
+                if (in_array($group->getId(), $groupsIds)) {
+                    if (!isset($groups[$group->getId()])) {
+                        $groups[$group->getId()] = array(
+                            'group'    => $group,
+                            'products' => array()
+                        );
+                    }
+
+                    $groups[$group->getId()]['products'][] = $product;
+                }
+            }
+        }
+
+        return $groups;
     }
 
     /**
@@ -132,5 +160,25 @@ class ConfigurableMagentoReader extends Reader
                 )
             )
         );
+    }
+
+    /**
+     * Get the group repository
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getGroupRepository()
+    {
+        return $this->groupManager->getRepository();
+    }
+
+    /**
+     * Get the product repository
+     *
+     * @return \Doctrine\ORM\EntityFlexibleRepository
+     */
+    protected function getProductRepository()
+    {
+        return $this->productManager->getFlexibleRepository();
     }
 }

@@ -27,7 +27,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     public function process($items)
     {
         $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
-        $this->productNormalizer = $this->magentoNormalizerGuesser->getNormalizer($this->getClientParameters());
+        $this->productNormalizer = $this->magentoNormalizerGuesser->getProductNormalizer($this->getClientParameters());
 
         $processedItems = array();
 

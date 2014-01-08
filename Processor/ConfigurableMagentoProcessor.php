@@ -20,7 +20,12 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
      */
     public function process($items)
     {
+        $this->magentoWebservice      = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->configurableNormalizer = $this->magentoNormalizerGuesser->getConfigurableNormalizer(
+            $this->getClientParameters()
+        );
 
+        $processedItems = array();
     }
 }
 
