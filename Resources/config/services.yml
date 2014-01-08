@@ -28,5 +28,3 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: is_valid_wsdl_url }
 
-    pim_magento_connector.repository.group:
-        class:

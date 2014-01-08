@@ -76,8 +76,6 @@ class ConfigurableMagentoReader extends Reader
             $this->query = $this->getProductRepository()
                 ->buildByChannelAndCompleteness($channel)
                 ->getQuery();
-
-            echo ($this->query->getSQL());
         }
 
         $products = parent::read();
