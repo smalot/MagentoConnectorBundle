@@ -330,7 +330,7 @@ class ProductNormalizer implements NormalizerInterface
         foreach ($filteredValues as $value) {
             $normalizedValues = array_merge(
                 $normalizedValues,
-                $this->normalizeValue($value)
+                $this->$this->getNormalizedValue($value)
             );
         }
 
