@@ -10,6 +10,7 @@ use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
@@ -330,7 +331,7 @@ class ProductNormalizer implements NormalizerInterface
         foreach ($filteredValues as $value) {
             $normalizedValues = array_merge(
                 $normalizedValues,
-                $this->$this->getNormalizedValue($value)
+                $this->getNormalizedValue($value)
             );
         }
 
@@ -398,21 +399,22 @@ class ProductNormalizer implements NormalizerInterface
         }
 
         $normalizer     = $this->getNormalizer($data);
-        $attributeScope = $this->magentoAttributes[$attributeCode]['scope'];
+        $attributeScope = $this->magentoAttributes[$attribute->getCode()]['scope'];
 
-        $normalizedValue = $this->normalizeData($data, $attribute, $attributeScope);
+        $normalizedValue = $this->normalizeData($data, $normalizer, $attribute, $attributeScope);
 
-        return array($attributeCode => $normalizedValue);
+        return array($attribute->getCode() => $normalizedValue);
     }
 
     /**
      * Normalize the given data
-     * @param  mixed $data
+     * @param  mixed     $data
+     * @param  callable  $normalizer
      * @param  Attribute $attribute
-     * @param  string $attributeScope
+     * @param  string    $attributeScope
      * @return array
      */
-    protected function normalizeData($data, $attribute, $attributeScope)
+    protected function normalizeData($data, $normalizer, Attribute $attribute, $attributeScope)
     {
         if (
             in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||

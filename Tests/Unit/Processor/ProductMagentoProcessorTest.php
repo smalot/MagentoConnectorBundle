@@ -140,7 +140,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
-            new \Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException()
+            new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
 
@@ -172,7 +172,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
-            new \Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException()
+            new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
 
@@ -204,7 +204,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
-            new \Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException()
+            new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
 

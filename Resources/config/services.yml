@@ -3,6 +3,8 @@ parameters:
     pim_magento_connector.guesser.magento_normalizer.class: Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
     pim_magento_connector.validator.is_valid_wsdl_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrlValidator
+    pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrlValidator
+
 services:
     # guesser
     pim_magento_connector.guesser.magento_webservice:
@@ -25,3 +27,4 @@ services:
         class: %pim_magento_connector.validator.is_valid_wsdl_url.class%
         tags:
             - { name: validator.constraint_validator, alias: is_valid_wsdl_url }
+

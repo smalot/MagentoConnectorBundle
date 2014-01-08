@@ -5,8 +5,8 @@ connector:
             title: pim_magento_connector.jobs.product_export.title
             type:  export
             steps:
-                export:
-                    title:     pim_magento_connector.jobs.product_export.export.title
+                export_simple_products:
+                    title:     pim_magento_connector.jobs.simple_product_export.export.title
                     services:
                         reader:    pim_import_export.reader.orm.product
                         processor: pim_magento_connector.processor.product
