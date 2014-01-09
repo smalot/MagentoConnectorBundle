@@ -382,6 +382,25 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     }
 
     /**
+     * Get the attribute set id for the given family code
+     *
+     * @param  string $familyCode
+     * @param  mixed $relatedItem
+     * @return integer
+     */
+    protected function getAttributeSetId($familyCode, $relatedItem)
+    {
+        try {
+            return $this->magentoWebservice
+                ->getAttributeSetId(
+                    $familyCode
+                );
+        } catch (AttributeSetNotFoundException $e) {
+            throw new InvalidItemException($e->getMessage(), array($relatedItem));
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()

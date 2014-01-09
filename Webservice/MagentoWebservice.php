@@ -30,8 +30,11 @@ class MagentoWebservice
     const SELECT                                    = 'select';
     const MULTI_SELECT                              = 'multiselect';
 
-    const MAXIMUM_CALLS       = 1;
-    const CREATE_PRODUCT_SIZE = 5;
+    const MAXIMUM_CALLS            = 1;
+    const CREATE_PRODUCT_SIZE      = 5;
+    const CREATE_CONFIGURABLE_SIZE = 4;
+
+    const CONFIGURABLE_IDENTIFIER_PATTERN = 'conf-%s';
 
     protected $client;
 
@@ -230,7 +233,9 @@ class MagentoWebservice
         $ids = array();
 
         foreach ($configurables as $configurable) {
-            $ids[] = 'conf-' . $configurable['group']->getCode();
+            $ids[] = sprintf(
+                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN, $configurable['group']->getCode()
+            );
         }
 
         return implode(',', $ids);
@@ -339,7 +344,10 @@ class MagentoWebservice
      */
     public function sendProduct($productPart)
     {
-        if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
+        if (
+            count($productPart) == self::CREATE_PRODUCT_SIZE ||
+            count($productPart) == self::CREATE_CONFIGURABLE_SIZE
+        ) {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
         } else {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;

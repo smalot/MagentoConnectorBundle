@@ -16,4 +16,4 @@ connector:
                     services:
                         reader:    pim_magento_connector.reader.configurable
                         processor: pim_magento_connector.processor.configurable
-                        writer:    pim_magento_connector.writer.configurable
+                        writer:    pim_magento_connector.writer.product

@@ -127,6 +127,8 @@ class MagentoSoapClient
                     $this->calls
                 );
 
+                var_dump($this->calls);
+
                 foreach ($responses as $response) {
                     $this->processSoapResponse($response);
                 }
@@ -145,6 +147,8 @@ class MagentoSoapClient
      */
     public function processSoapResponse($response)
     {
+        var_dump($response);
+
         if (is_array($response)) {
             if (isset($response['isFault']) && $response['isFault'] == 1) {
 
