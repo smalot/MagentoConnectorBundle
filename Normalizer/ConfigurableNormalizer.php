@@ -43,8 +43,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $group          = $object['group'];
-        $products       = $object['products'];
+        $group    = $object['group'];
+        $products = $object['products'];
 
         $sku = sprintf(MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN, $group->getCode());
 
@@ -98,8 +98,23 @@ class ConfigurableNormalizer extends AbstractNormalizer
         return $processedItem;
     }
 
+    /**
+     * Get default configurable
+     * @param  Group  $group
+     * @param  string $sku
+     * @param  int    $attributeSetId
+     * @param  array  $products
+     * @param  array  $magentoAttributes
+     * @param  array  $magentoAttributesOptions
+     * @param  string $locale
+     * @param  string $currency
+     * @param  string $website
+     * @param  string $channel
+     * @param  bool   $create
+     * @return array
+     */
     protected function getDefaultConfigurable(
-        $group,
+        Group $group,
         $sku,
         $attributeSetId,
         $products,
@@ -111,15 +126,26 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $channel,
         $create
     ) {
-        $defaultConfigurableValues = $this->getConfigurableValues(
-            $group,
-            $products,
+        $priceChanges   = $this->getPriceMapping($group, $products, $locale, $currency);
+        $associatedSkus = $this->getProductsSkus($products);
+
+        $defaultProduct = $products[0];
+
+        $defaultProductValues = $this->productNormalizer->getValues(
+            $defaultProduct,
             $magentoAttributes,
             $magentoAttributesOptions,
             $locale,
-            $currency,
             $channel,
             false
+        );
+
+        $defaultConfigurableValues = array_merge(
+            $defaultProductValues,
+            array(
+                self::PRICE_CHANGES   => $priceChanges,
+                self::ASSOCIATED_SKUS => $associatedSkus
+            )
         );
 
         $defaultConfigurableValues['websites'] = array($website);
@@ -133,6 +159,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
         return $defaultConfigurable;
     }
 
+    /**
+     * Get the configurable for a new call
+     * @param  array $configurableValues
+     * @param  string $sku
+     * @param  int $attributeSetId
+     * @return array
+     */
     protected function getNewConfigurable($configurableValues, $sku, $attributeSetId)
     {
         return array(
@@ -143,6 +176,12 @@ class ConfigurableNormalizer extends AbstractNormalizer
         );
     }
 
+    /**
+     * Get the configurable for an update call
+     * @param  array $configurableValues
+     * @param  string $sku
+     * @return array
+     */
     protected function getUpdatedConfigurable($configurableValues, $sku)
     {
         return array(
@@ -151,38 +190,6 @@ class ConfigurableNormalizer extends AbstractNormalizer
         );
     }
 
-    protected function getConfigurableValues(
-        $group,
-        $products,
-        $magentoAttributes,
-        $magentoAttributesOptions,
-        $locale,
-        $currency,
-        $channel,
-        $onlyLocalisable
-    ) {
-        $priceChanges   = $this->getPriceMapping($group, $products, $locale, $currency);
-        $associatedSkus = $this->getProductsSkus($products);
-
-        $defaultProduct = $products[0];
-
-        $defaultProductValues = $this->productNormalizer->getValues(
-            $defaultProduct,
-            $magentoAttributes,
-            $magentoAttributesOptions,
-            $locale,
-            $channel,
-            $onlyLocalisable
-        );
-
-        return array_merge(
-            $defaultProductValues,
-            array(
-                self::PRICE_CHANGES   => $priceChanges,
-                self::ASSOCIATED_SKUS => $associatedSkus
-            )
-        );
-    }
 
     protected function getPriceMapping(Group $group, $products, $locale, $currency)
     {

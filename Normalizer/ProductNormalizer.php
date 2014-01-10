@@ -281,7 +281,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
                 $value->getAttribute()->isTranslatable()
             ) &&
-            ($value->getAttribute()->getCode() == 'price' && !$onlyLocalized) &&
+            (
+                in_array(
+                    $value->getAttribute()->getCode(),
+                    $this->getIgnoredAttributesForLocalization()
+                ) &&
+                !$onlyLocalized
+            ) &&
             !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
             !($value->getData() instanceof Media)
         );
@@ -452,6 +458,18 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     protected function getIgnoredAttributes()
     {
         return array();
+    }
+
+    /**
+     * Get all ignored attribute
+     *
+     * @return array
+     */
+    protected function getIgnoredAttributesForLocalization()
+    {
+        return array(
+            'price'
+        );
     }
 
     /**
