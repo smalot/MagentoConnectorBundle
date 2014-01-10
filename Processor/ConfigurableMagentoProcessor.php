@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 
 /**
  * Magento configurable processor
@@ -29,9 +30,12 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
             $this->visibility,
             $this->currency
         );
+
+        $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency);
         $this->configurableNormalizer = $this->magentoNormalizerGuesser->getConfigurableNormalizer(
             $this->getClientParameters(),
-            $productNormalizer
+            $productNormalizer,
+            $priceMappingManager
         );
 
         $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
@@ -46,7 +50,6 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
             'channel'                  => $this->channel,
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'currency'                 => $this->currency,
             'storeViewMapping'         => $this->getComputedStoreViewMapping(),
             'website'                  => $this->website
         );

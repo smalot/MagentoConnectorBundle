@@ -9,6 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
 
 /**
@@ -91,11 +92,13 @@ class MagentoNormalizerGuesser extends MagentoGuesser
      * Get the MagentoWebservice corresponding to the given Magento parameters
      * @param  MagentoSoapClientParameters $clientParameters
      * @param  ProductNormalizerInterface  $productNormalizer
+     * @param  PriceMappingManager         $priceMappingManager
      * @return MagentoWebservice
      */
     public function getConfigurableNormalizer(
         MagentoSoapClientParameters $clientParameters,
-        ProductNormalizerInterface $productNormalizer
+        ProductNormalizerInterface $productNormalizer,
+        PriceMappingManager $priceMappingManager
     ) {
         $client = new MagentoSoapClient($clientParameters);
 
@@ -105,7 +108,11 @@ class MagentoNormalizerGuesser extends MagentoGuesser
             case '1.8':
             case '1.7':
             case '1.6':
-                $magentoNormalizer = new ConfigurableNormalizer($this->channelManager, $productNormalizer);
+                $magentoNormalizer = new ConfigurableNormalizer(
+                    $this->channelManager,
+                    $productNormalizer,
+                    $priceMappingManager
+                );
                 break;
             default:
                 throw new NotSupportedVersionException('Your Magento version is not supported yet.');

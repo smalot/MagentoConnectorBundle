@@ -4,11 +4,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Entity\Group;
-use Pim\Bundle\CatalogBundle\Model\Product;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 
 /**
  * A normalizer to transform a group entity into an array
@@ -29,16 +27,19 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Constructor
-     * @param ChannelManager    $channelManager
-     * @param ProductNormalizer $productNormalizer
+     * @param ChannelManager      $channelManager
+     * @param ProductNormalizer   $productNormalizer
+     * @param PriceMappingManager $priceMappingManager
      */
     public function __construct(
         ChannelManager $channelManager,
-        ProductNormalizer $productNormalizer
+        ProductNormalizer $productNormalizer,
+        PriceMappingManager $priceMappingManager
     ) {
         parent::__construct($channelManager);
 
-        $this->productNormalizer = $productNormalizer;
+        $this->productNormalizer   = $productNormalizer;
+        $this->priceMappingManager = $priceMappingManager;
     }
 
     /**
@@ -59,7 +60,6 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['magentoAttributes'],
             $context['magentoAttributesOptions'],
             $context['defaultLocale'],
-            $context['currency'],
             $context['website'],
             $context['channel'],
             $context['create']
@@ -110,7 +110,6 @@ class ConfigurableNormalizer extends AbstractNormalizer
      * @param  array  $magentoAttributes
      * @param  array  $magentoAttributesOptions
      * @param  string $locale
-     * @param  string $currency
      * @param  string $website
      * @param  string $channel
      * @param  bool   $create
@@ -124,12 +123,11 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $magentoAttributes,
         $magentoAttributesOptions,
         $locale,
-        $currency,
         $website,
         $channel,
         $create
     ) {
-        $priceChanges   = $this->getPriceMapping($group, $products, $locale, $currency);
+        $priceChanges   = $this->priceMappingManager->getPriceMapping($group, $products);
         $associatedSkus = $this->getProductsSkus($products);
 
         $defaultProduct = $products[0];
@@ -191,111 +189,6 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $sku,
             $configurableValues
         );
-    }
-
-    /**
-     * Get price mapping for the given group and products
-     * @param  Group  $group
-     * @param  array  $products
-     * @param  string $locale
-     * @param  string $currency
-     * @return array
-     */
-    protected function getPriceMapping(Group $group, $products, $locale, $currency)
-    {
-        $attributes = $group->getAttributes();
-
-        $lowerPrice = $this->getLowerPrice($products, $locale, $currency);
-
-        $priceMapping = array();
-
-        foreach ($attributes as $attribute) {
-            $attributeMapping = $this->getAttributeMapping($attribute, $lowerPrice, $products, $locale, $currency);
-
-            $priceMapping[$attribute->getCode()] = $attributeMapping;
-        }
-
-        return $priceMapping;
-    }
-
-    /**
-     * Get the lower price of given products
-     * @param  array  $products
-     * @param  string $locale
-     * @param  string $currency
-     * @return
-     */
-    protected function getLowerPrice($products, $locale, $currency)
-    {
-        $lowerPrice = $this->getProductPrice($products[0], $locale, $currency);
-
-        foreach ($products as $product) {
-            $productPrice = $this->getProductPrice($product, $locale, $currency);
-
-            $lowerPrice = ($productPrice < $lowerPrice) ? $productPrice : $lowerPrice;
-        }
-
-        return $lowerPrice;
-    }
-
-    /**
-     * Get the price of the given product
-     * @param  Product $product
-     * @param  string  $locale
-     * @param  string  $currency
-     * @return int
-     */
-    protected function getProductPrice(Product $product, $locale, $currency)
-    {
-        return $product->getValue('price', $locale)->getPrice($currency)->getData();
-    }
-
-    /**
-     * Get price mapping for an attribute
-     * @param  ProductAttribute $attribute
-     * @param  int              $basePrice
-     * @param  array            $products
-     * @param  string           $locale
-     * @param  string           $currency
-     * @return array
-     */
-    protected function getAttributeMapping($attribute, $basePrice, $products, $locale, $currency)
-    {
-        $attributeMapping = array();
-
-        foreach ($attribute->getOptions() as $option) {
-            $productsWithOption = $this->getProductsWithOption($products, $option, $locale);
-
-            if (count($productsWithOption) > 0) {
-                $lowerPrice = $this->getLowerPrice($productsWithOption, $locale, $currency);
-                $attributeMapping[$option->getCode()] = $lowerPrice- $basePrice;
-            }
-        }
-
-        return $attributeMapping;
-    }
-
-    /**
-     * Get all products with the given option value
-     * @param  array           $products
-     * @param  AttributeOption $option
-     * @param  string          $locale
-     * @return array
-     */
-    protected function getProductsWithOption($products, $option, $locale)
-    {
-        $productsWithOption = array();
-        $attributeCode      = $option->getAttribute()->getCode();
-
-        foreach ($products as $product) {
-            if ($product->getValue($attributeCode, $locale) !== null &&
-                $product->getValue($attributeCode, $locale)->getData()->getCode() === $option->getCode()
-            ) {
-                $productsWithOption[] = $product;
-            }
-        }
-
-        return $productsWithOption;
     }
 
     /**
