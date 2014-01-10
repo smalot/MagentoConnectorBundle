@@ -76,8 +76,6 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
             $processedItems[] = $this->normalizeConfigurable($configurable, $context);
         }
 
-        print_r($processedItems);
-
         return $processedItems;
     }
 

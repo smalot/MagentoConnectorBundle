@@ -126,7 +126,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     {
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier() &&
-                $magentoProduct['set'] != $this->getAttributeSetId($product)
+                $magentoProduct['set'] != $this->getAttributeSetId($product->getFamily()->getCode(), $product)
             ) {
                 return true;
             }

@@ -32,4 +32,12 @@ interface ProductNormalizerInterface
         $scopeCode,
         $onlyLocalized = false
     );
+
+    /**
+     * Get all images of a product normalized
+     *
+     * @param  Product $product
+     * @return array
+     */
+    public function getNormalizedImages(Product $product);
 }

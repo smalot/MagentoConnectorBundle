@@ -62,6 +62,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['create']
         );
 
+        $processedItem[MagentoWebservice::IMAGES] = $this->productNormalizer->getNormalizedImages($products[0]);
+
         //For each storeview, we update the group only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {
             $storeViewCode = $this->getStoreViewCodeForLocale(
@@ -72,14 +74,11 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
             //If a locale for this storeview exist in PIM, we create a translated group in this locale
             if ($storeViewCode) {
-                $values = $this->getConfigurableValues(
-                    $group,
-                    $products,
+                $values = $this->productNormalizer->getValues(
+                    $products[0],
                     $context['magentoAttributes'],
                     $context['magentoAttributesOptions'],
                     $locale->getCode(),
-                    $context['currency'],
-                    $context['website'],
                     $context['channel'],
                     true
                 );

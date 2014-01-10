@@ -92,7 +92,11 @@ class MagentoSoapClient
     public function call($resource, $params = null)
     {
         if ($this->isConnected()) {
-            return $this->client->call($this->session, $resource, $params);
+            $response = $this->client->call($this->session, $resource, $params);
+
+            $this->processSoapResponse($response, array($resource, $params));
+
+            return $response;
         } else {
             throw new NotConnectedException();
         }
@@ -127,10 +131,10 @@ class MagentoSoapClient
                     $this->calls
                 );
 
-                var_dump($this->calls);
-
-                foreach ($responses as $response) {
-                    $this->processSoapResponse($response);
+                $cpt = 0;
+                while($cpt < count($responses)) {
+                    $this->processSoapResponse($responses[$cpt], $this->calls[$cpt]);
+                    $cpt++;
                 }
             } else {
                 throw new NotConnectedException();
@@ -143,15 +147,15 @@ class MagentoSoapClient
     /**
      * Process the soap response
      *
-     * @param  mixed $response The soap response-
+     * @param  mixed $response The soap response
+     * @param  array $call     The soap call
      */
-    public function processSoapResponse($response)
+    public function processSoapResponse($response, $call)
     {
-        var_dump($response);
-
         if (is_array($response)) {
             if (isset($response['isFault']) && $response['isFault'] == 1) {
-
+                var_dump($call);
+                var_dump($response);
             }
         } else {
             if ($response == 1) {

@@ -77,18 +77,53 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return $this->getNormalizedProduct(
+        $processedItem = array();
+
+        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
             $object,
-            $context['magentoStoreViews'],
+            $context['magentoAttributes'],
+            $context['magentoAttributesOptions'],
             $context['attributeSetId'],
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
-            $context['storeViewMapping'],
-            $context['magentoAttributes'],
-            $context['magentoAttributesOptions'],
             $context['create']
         );
+
+        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($object);
+
+        //For each storeview, we update the product only with localized attributes
+        foreach ($this->getPimLocales($context['channel']) as $locale) {
+            $storeViewCode = $this->getStoreViewCodeForLocale(
+                $locale->getCode(),
+                $context['magentoStoreViews'],
+                $context['storeViewMapping']
+            );
+
+            //If a locale for this storeview exist in PIM, we create a translated product in this locale
+            if ($storeViewCode) {
+                $values = $this->getValues(
+                    $object,
+                    $context['magentoAttributes'],
+                    $context['magentoAttributesOptions'],
+                    $locale,
+                    $context['channel'],
+                    true
+                );
+
+                $processedItem[$storeViewCode] = array(
+                    (string) $object->getIdentifier(),
+                    $values,
+                    $storeViewCode
+                );
+            } else {
+                if ($locale->getCode() !== $context['defaultLocale']) {
+                    $this->localeNotFound($locale, $context['storeViewMapping']);
+                }
+            }
+        }
+
+        return $processedItem;
     }
 
     /**
@@ -115,53 +150,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $magentoAttributes,
         $create
     ) {
-        $processedItem = array();
 
-        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
-            $product,
-            $magentoAttributes,
-            $magentoAttributesOptions,
-            $attributeSetId,
-            $defaultLocale,
-            $channel,
-            $website,
-            $create
-        );
-
-        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
-
-        //For each storeview, we update the product only with localized attributes
-        foreach ($this->getPimLocales($channel) as $locale) {
-            $storeViewCode = $this->getStoreViewCodeForLocale(
-                $locale->getCode(),
-                $magentoStoreViews,
-                $storeViewMapping
-            );
-
-            //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($storeViewCode) {
-                $values = $this->getValues(
-                    $product,
-                    $magentoAttributes,
-                    $magentoAttributesOptions,
-                    $locale,
-                    $channel,
-                    true
-                );
-
-                $processedItem[$storeViewCode] = array(
-                    (string) $product->getIdentifier(),
-                    $values,
-                    $storeViewCode
-                );
-            } else {
-                if ($locale->getCode() !== $defaultLocale) {
-                    $this->localeNotFound($locale, $storeViewMapping);
-                }
-            }
-        }
-
-        return $processedItem;
     }
 
     /**
@@ -292,6 +281,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
                 $value->getAttribute()->isTranslatable()
             ) &&
+            ($value->getAttribute()->getCode() == 'price' && !$onlyLocalized) &&
             !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
             !($value->getData() instanceof Media)
         );
@@ -586,7 +576,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param  Product $product
      * @return array
      */
-    protected function getNormalizedImages(Product $product)
+    public function getNormalizedImages(Product $product)
     {
         $imagesValue = $product->getValues()->filter(
             function ($value) {
