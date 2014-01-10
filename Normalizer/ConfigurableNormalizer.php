@@ -58,6 +58,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['defaultLocale'],
             $context['currency'],
             $context['website'],
+            $context['channel'],
             $context['create']
         );
 
@@ -78,6 +79,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
                     $context['magentoAttributesOptions'],
                     $locale->getCode(),
                     $context['currency'],
+                    $context['website'],
+                    $context['channel'],
                     true
                 );
 
@@ -106,6 +109,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $locale,
         $currency,
         $website,
+        $channel,
         $create
     ) {
         $defaultConfigurableValues = $this->getConfigurableValues(
@@ -115,6 +119,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $magentoAttributesOptions,
             $locale,
             $currency,
+            $channel,
             false
         );
 
@@ -154,6 +159,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $magentoAttributesOptions,
         $locale,
         $currency,
+        $channel,
         $onlyLocalisable
     ) {
         $priceChanges   = $this->getPriceMapping($group, $products, $locale, $currency);
@@ -166,7 +172,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $magentoAttributes,
             $magentoAttributesOptions,
             $locale,
-            $currency,
+            $channel,
             $onlyLocalisable
         );
 

@@ -476,7 +476,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     {
         return array(
             self::VISIBILITY   => $this->visibility,
-            self::ENABLED      => $this->enabled,
+            self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
             'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
             'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT)
         );
