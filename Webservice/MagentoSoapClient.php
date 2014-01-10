@@ -26,7 +26,7 @@ class MagentoSoapClient
      *
      * @param MagentoSoapClientParameters $clientParameters
      */
-    function __construct(MagentoSoapClientParameters $clientParameters, $soapClient = null)
+    public function __construct(MagentoSoapClientParameters $clientParameters, $soapClient = null)
     {
         $this->clientParameters = $clientParameters;
 

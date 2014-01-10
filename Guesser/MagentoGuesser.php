@@ -34,7 +34,7 @@ class MagentoGuesser
 
             $pattern = '/^(?P<version>[0-9]\.[0-9])/';
 
-            if (preg_match($pattern, $magentoVersion, $matches)){
+            if (preg_match($pattern, $magentoVersion, $matches)) {
                 $this->version = $matches['version'];
             } else {
                 $this->version = $magentoVersion;

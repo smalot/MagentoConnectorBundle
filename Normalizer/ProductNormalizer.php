@@ -59,7 +59,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     public function __construct(
         ChannelManager $channelManager,
-        MediaManager   $mediaManager,
+        MediaManager $mediaManager,
         $enabled,
         $visibility,
         $currency
@@ -312,11 +312,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $attribute = $value->getAttribute();
 
         if (!isset($magentoAttributes[$attribute->getCode()])) {
-            throw new AttributeNotFoundException(sprintf(
-                'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should create ' .
-                'it first or adding it to the corresponding attributeSet',
-                $attribute->getCode()
-            ));
+            throw new AttributeNotFoundException(
+                sprintf(
+                    'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should ' .
+                    'create it first or adding it to the corresponding attributeSet',
+                    $attribute->getCode()
+                )
+            );
         }
 
         $normalizer     = $this->getNormalizer($data);
@@ -365,16 +367,18 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 'magentoAttributesOptions' => $magentoAttributesOptions
             ));
         } else {
-            throw new InvalidScopeMatchException(sprintf(
-                'The scope for the PIM attribute "%s" is not matching the scope of his corresponding Magento ' .
-                'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.' .
-                "\nMagento scope : %s\n" .
-                "PIM scope : %s" ,
-                $attribute->getCode(),
-                $attribute->getCode(),
-                $attributeScope,
-                (($attribute->isTranslatable()) ? 'translatable' : 'not translatable')
-            ));
+            throw new InvalidScopeMatchException(
+                sprintf(
+                    'The scope for the PIM attribute "%s" is not matching the scope of his corresponding Magento ' .
+                    'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.'.
+                    "\nMagento scope : %s\n" .
+                    "PIM scope : %s",
+                    $attribute->getCode(),
+                    $attribute->getCode(),
+                    $attributeScope,
+                    (($attribute->isTranslatable()) ? 'translatable' : 'not translatable')
+                )
+            );
         }
 
         return $normalizedValue;
@@ -389,18 +393,26 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     {
         return array(
             array(
-                'filter'     => function($data) { return is_bool($data); },
-                'normalizer' => function($data, $parameters) { return ($data) ? 1 : 0; }
+                'filter'     => function ($data) {
+                    return is_bool($data);
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return ($data) ? 1 : 0;
+                }
             ),
             array(
-                'filter'     => function($data) { return $data instanceof \DateTime; },
-                'normalizer' => function($data, $parameters) { return $data->format(self::DATE_FORMAT); }
+                'filter'     => function ($data) {
+                    return $data instanceof \DateTime;
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return $data->format(self::DATE_FORMAT);
+                }
             ),
             array(
-                'filter'     => function($data) {
+                'filter'     => function ($data) {
                     return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
                 },
-                'normalizer' => function($data, $parameters) {
+                'normalizer' => function ($data, $parameters) {
                     if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
                         return $data->getCode();
                     }
@@ -413,8 +425,10 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 }
             ),
             array(
-                'filter'     => function($data) { return $data instanceof \Doctrine\Common\Collections\Collection; },
-                'normalizer' => function($data, $parameters) {
+                'filter'     => function ($data) {
+                    return $data instanceof \Doctrine\Common\Collections\Collection;
+                },
+                'normalizer' => function ($data, $parameters) {
                     return $this->normalizeCollectionData(
                         $data,
                         $parameters['attributeCode'],
@@ -423,14 +437,20 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 }
             ),
             array(
-                'filter'     => function($data) { return $data instanceof Metric; },
-                'normalizer' => function($data, $parameters) {
+                'filter'     => function ($data) {
+                    return $data instanceof Metric;
+                },
+                'normalizer' => function ($data, $parameters) {
                     return (string) $data->getData();
                 }
             ),
             array(
-                'filter'     => function($data) { return true; },
-                'normalizer' => function($data, $parameters) { return $data; }
+                'filter'     => function ($data) {
+                    return true;
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return $data;
+                }
             )
         );
     }
@@ -547,9 +567,16 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $attributeCode = strtolower($attributeCode);
 
         if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {
-            throw new InvalidOptionException(sprintf('The attribute "%s" doesn\'t have any option named "%s" on ' .
-                'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
-                'options using this Magento connector.', $attributeCode, $optionCode, $attributeCode));
+            throw new InvalidOptionException(
+                sprintf(
+                    'The attribute "%s" doesn\'t have any option named "%s" on ' .
+                    'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
+                    'options using this Magento connector.',
+                    $attributeCode,
+                    $optionCode,
+                    $attributeCode
+                )
+            );
         }
 
         return $magentoAttributesOptions[$attributeCode][$optionCode];

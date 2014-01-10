@@ -37,7 +37,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
      */
     public function __construct(
         ChannelManager $channelManager,
-        MediaManager   $mediaManager
+        MediaManager $mediaManager
     ) {
         $this->channelManager = $channelManager;
         $this->mediaManager   = $mediaManager;
@@ -95,7 +95,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
      */
     public function getConfigurableNormalizer(
         MagentoSoapClientParameters $clientParameters,
-        ProductNormalizerInterface  $productNormalizer
+        ProductNormalizerInterface $productNormalizer
     ) {
         $client = new MagentoSoapClient($clientParameters);
 

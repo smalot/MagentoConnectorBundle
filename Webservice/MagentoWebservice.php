@@ -6,7 +6,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  * A magento soap client to abstract interaction with the magento api
  *
  * @author    Julien Sanchez <julien@akeneo.com>
- * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class MagentoWebservice
@@ -51,7 +51,7 @@ class MagentoWebservice
      * Constructor
      * @param MagentoSoapClient $client
      */
-    function __construct(MagentoSoapClient $client)
+    public function __construct(MagentoSoapClient $client)
     {
         $this->client = $client;
     }
@@ -234,7 +234,8 @@ class MagentoWebservice
 
         foreach ($configurables as $configurable) {
             $ids[] = sprintf(
-                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN, $configurable['group']->getCode()
+                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                $configurable['group']->getCode()
             );
         }
 
@@ -317,10 +318,13 @@ class MagentoWebservice
      */
     public function deleteImage($sku, $imageFilename)
     {
-        return $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
-            'product' => $sku,
-            'file'    => $imageFilename
-        ));
+        return $this->client->call(
+            self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE,
+            array(
+                'product' => $sku,
+                'file'    => $imageFilename
+            )
+        );
     }
 
     /**

@@ -30,9 +30,12 @@ class GroupRepository extends BaseGroupRepository
             ->getQuery()
             ->getResult();
 
-        array_walk($result, function(&$value, $key) {
-            $value = $value['id'];
-        });
+        array_walk(
+            $result,
+            function (&$value, $key) {
+                $value = $value['id'];
+            }
+        );
 
         return $result;
     }

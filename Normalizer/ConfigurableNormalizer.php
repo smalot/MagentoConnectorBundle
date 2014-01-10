@@ -30,7 +30,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
      * @param ProductNormalizer $productNormalizer
      */
     public function __construct(
-        ChannelManager    $channelManager,
+        ChannelManager $channelManager,
         ProductNormalizer $productNormalizer
     ) {
         parent::__construct($channelManager);
@@ -255,9 +255,12 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     protected function getProductsSkus($products)
     {
-        array_walk($products, function(&$value, $key) {
-            $value = (string) $value->getIdentifier();
-        });
+        array_walk(
+            $products,
+            function (&$value, $key) {
+                $value = (string) $value->getIdentifier();
+            }
+        );
 
         return $products;
     }

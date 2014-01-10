@@ -59,9 +59,12 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
-                    throw new InvalidItemException('The product family has changed of this product. This modification '.
-                        'cannot be applied to magento. In order to change the family of this product, please manualy ' .
-                        'delete this product in magento and re-run this connector.', array($product));
+                    throw new InvalidItemException(
+                        'The product family has changed of this product. This modification cannot be applied to ' .
+                        'magento. In order to change the family of this product, please manualy delete this product ' .
+                        'in magento and re-run this connector.',
+                        array($product)
+                    );
                 }
 
                 $context['create'] = false;

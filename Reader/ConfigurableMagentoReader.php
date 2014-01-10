@@ -51,11 +51,11 @@ class ConfigurableMagentoReader extends Reader
      * @param MetricConverter     $metricConverter
      */
     public function __construct(
-        GroupManager        $groupManager,
-        ProductManager      $productManager,
-        ChannelManager      $channelManager,
+        GroupManager $groupManager,
+        ProductManager $productManager,
+        ChannelManager $channelManager,
         CompletenessManager $completenessManager,
-        MetricConverter     $metricConverter
+        MetricConverter $metricConverter
     ) {
         $this->groupManager        = $groupManager;
         $this->productManager      = $productManager;

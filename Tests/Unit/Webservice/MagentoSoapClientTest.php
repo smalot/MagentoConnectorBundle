@@ -39,9 +39,11 @@ class MagentoSoapClientTest extends WebserviceTestCase
                 self::LOGIN,
                 self::PASSWORD
             )
-            ->will($this->throwException(
-                new \Exception()
-            ));
+            ->will(
+                $this->throwException(
+                    new \Exception()
+                )
+            );
 
         $magentoSoapClient = new MagentoSoapClient($clientParameters, $soapClientMock);
     }

@@ -112,7 +112,8 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 
             if (
                 $magentoConfigurable['sku'] == sprintf(
-                    MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN, $configurable['group']->getCode()
+                    MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                    $configurable['group']->getCode()
                 )
             ) {
                 return true;
@@ -128,8 +129,10 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 
         foreach ($configurable['products'] as $product) {
             if ($groupFamily != $product->getFamily()) {
-                throw new InvalidItemException('Your variant group contains products from different ' .
-                    'families. Magento cannot handle configurable products with heterogen attribute sets');
+                throw new InvalidItemException(
+                    'Your variant group contains products from different families. Magento cannot handle ' .
+                    'configurable products with heterogen attribute sets'
+                );
             }
         }
 

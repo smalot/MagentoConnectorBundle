@@ -55,9 +55,11 @@ abstract class WebserviceTestCase extends \PHPUnit_Framework_TestCase
                 self::LOGIN,
                 self::PASSWORD
             )
-            ->will($this->returnValue(
-                true
-            ));
+            ->will(
+                $this->returnValue(
+                    true
+                )
+            );
 
         return $soapClientMock;
     }
