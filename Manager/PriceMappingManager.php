@@ -62,7 +62,7 @@ class PriceMappingManager
     /**
      * Get the lower price of given products
      * @param  array $products
-     * @return
+     * @return int
      */
     protected function getLowerPrice($products)
     {

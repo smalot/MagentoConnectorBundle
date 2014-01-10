@@ -132,7 +132,7 @@ class MagentoSoapClient
                 );
 
                 $cpt = 0;
-                while($cpt < count($responses)) {
+                while ($cpt < count($responses)) {
                     $this->processSoapResponse($responses[$cpt], $this->calls[$cpt]);
                     $cpt++;
                 }
