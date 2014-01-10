@@ -46,7 +46,6 @@ class PriceMappingManager
     public function getPriceMapping(Group $group, $products)
     {
         $attributes = $group->getAttributes();
-
         $lowerPrice = $this->getLowerPrice($products);
 
         $priceMapping = array();
