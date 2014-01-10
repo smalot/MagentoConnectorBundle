@@ -245,6 +245,7 @@ class MagentoWebservice
     /**
      * Get magento attributeSets from the magento api
      * @param  string $code the attributeSet id
+     * @throws AttributeSetNotFoundException If If the attribute doesn't exist on Magento side
      * @return void
      */
     public function getAttributeSetId($code)

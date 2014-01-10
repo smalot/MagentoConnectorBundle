@@ -87,6 +87,7 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param  array $configurable
      * @param  array $context The context
+     * @throws InvalidItemException If a normalization error occured
      * @return array processed item
      */
     protected function normalizeConfigurable($configurable, $context)
@@ -122,6 +123,12 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
         return false;
     }
 
+    /**
+     * Get the family of the given configurable
+     * @param  array $configurable
+     * @throws InvalidItemException If there are two products with different families
+     * @return Family
+     */
     protected function getGroupFamily($configurable)
     {
         $groupFamily = $configurable['products'][0]->getFamily();

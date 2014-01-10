@@ -83,6 +83,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param  Product $product [description]
      * @param  array   $context The context
+     * @throws InvalidItemException If a normalization error occure
      * @return array processed item
      */
     protected function normalizeProduct(Product $product, $context)

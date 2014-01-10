@@ -299,7 +299,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param ProductValue $value
      * @param array        $magentoAttributes
      * @param array        $magentoAttributesOptions
-     *
+     * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
      * @return array
      */
     protected function getNormalizedValue(ProductValue $value, $magentoAttributes, $magentoAttributesOptions)
@@ -338,6 +338,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param  Attribute $attribute
      * @param  string    $attributeScope
      * @param  array     $magentoAttributesOptions
+     * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array
      */
     protected function normalizeData(
@@ -566,6 +567,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param  string $attributeCode            The product attribute code
      * @param  string $optionCode               The option label
      * @param  array  $magentoAttributesOptions
+     * @throws InvalidOptionException If the given option doesn't exist on Magento
      * @return integer
      */
     protected function getOptionId($attributeCode, $optionCode, $magentoAttributesOptions)

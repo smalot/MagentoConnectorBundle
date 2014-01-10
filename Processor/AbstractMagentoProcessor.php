@@ -385,6 +385,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param  string $familyCode
      * @param  mixed $relatedItem
+     * @throws InvalidItemException If The attribute set doesn't exist on Mangento
      * @return integer
      */
     protected function getAttributeSetId($familyCode, $relatedItem)

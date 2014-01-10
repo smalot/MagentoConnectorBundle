@@ -50,6 +50,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
      * @param  bool                        $enabled
      * @param  bool                        $visibility
      * @param  string                      $currency
+     * @throws NotSupportedVersionException If the magento version is not supported
      * @return MagentoWebservice
      */
     public function getProductNormalizer(
