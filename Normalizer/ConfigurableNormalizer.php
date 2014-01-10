@@ -4,6 +4,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Entity\Group;
+use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
@@ -190,7 +193,14 @@ class ConfigurableNormalizer extends AbstractNormalizer
         );
     }
 
-
+    /**
+     * Get price mapping for the given group and products
+     * @param  Group  $group
+     * @param  array  $products
+     * @param  string $locale
+     * @param  string $currency
+     * @return array
+     */
     protected function getPriceMapping(Group $group, $products, $locale, $currency)
     {
         $attributes = $group->getAttributes();
@@ -208,6 +218,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
         return $priceMapping;
     }
 
+    /**
+     * Get the lower price of given products
+     * @param  array  $products
+     * @param  string $locale
+     * @param  string $currency
+     * @return
+     */
     protected function getLowerPrice($products, $locale, $currency)
     {
         $lowerPrice = $this->getProductPrice($products[0], $locale, $currency);
@@ -221,11 +238,27 @@ class ConfigurableNormalizer extends AbstractNormalizer
         return $lowerPrice;
     }
 
-    protected function getProductPrice($product, $locale, $currency)
+    /**
+     * Get the price of the given product
+     * @param  Product $product
+     * @param  string  $locale
+     * @param  string  $currency
+     * @return int
+     */
+    protected function getProductPrice(Product $product, $locale, $currency)
     {
         return $product->getValue('price', $locale)->getPrice($currency)->getData();
     }
 
+    /**
+     * Get price mapping for an attribute
+     * @param  ProductAttribute $attribute
+     * @param  int              $basePrice
+     * @param  array            $products
+     * @param  string           $locale
+     * @param  string           $currency
+     * @return array
+     */
     protected function getAttributeMapping($attribute, $basePrice, $products, $locale, $currency)
     {
         $attributeMapping = array();
@@ -242,6 +275,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
         return $attributeMapping;
     }
 
+    /**
+     * Get all products with the given option value
+     * @param  array           $products
+     * @param  AttributeOption $option
+     * @param  string          $locale
+     * @return array
+     */
     protected function getProductsWithOption($products, $option, $locale)
     {
         $productsWithOption = array();
@@ -258,6 +298,11 @@ class ConfigurableNormalizer extends AbstractNormalizer
         return $productsWithOption;
     }
 
+    /**
+     * Get all products skus
+     * @param  array $products
+     * @return array
+     */
     protected function getProductsSkus($products)
     {
         array_walk(
