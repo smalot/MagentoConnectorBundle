@@ -39,8 +39,8 @@ class PriceMappingManager
 
     /**
      * Get price mapping for the given group and products
-     * @param  Group  $group
-     * @param  array  $products
+     * @param  Group $group
+     * @param  array $products
      * @return array
      */
     public function getPriceMapping(Group $group, $products)
@@ -62,7 +62,7 @@ class PriceMappingManager
 
     /**
      * Get the lower price of given products
-     * @param  array  $products
+     * @param  array $products
      * @return
      */
     protected function getLowerPrice($products)
