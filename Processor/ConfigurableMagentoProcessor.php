@@ -110,12 +110,10 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     {
         foreach ($magentoConfigurables as $magentoConfigurable) {
 
-            if (
-                $magentoConfigurable['sku'] == sprintf(
-                    MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
-                    $configurable['group']->getCode()
-                )
-            ) {
+            if ($magentoConfigurable['sku'] == sprintf(
+                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                $configurable['group']->getCode()
+            )) {
                 return true;
             }
         }

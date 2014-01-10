@@ -78,9 +78,7 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     {
         $defaultStoreviewProduct = $product[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW];
 
-        if (
-            count($defaultStoreviewProduct) == MagentoWebservice::CREATE_PRODUCT_SIZE
-        ) {
+        if (count($defaultStoreviewProduct) == MagentoWebservice::CREATE_PRODUCT_SIZE) {
             return (string) $defaultStoreviewProduct[2];
         } else {
             return (string) $defaultStoreviewProduct[0];

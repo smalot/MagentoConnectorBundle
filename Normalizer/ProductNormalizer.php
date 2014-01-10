@@ -351,8 +351,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $attributeScope,
         $magentoAttributesOptions
     ) {
-        if (
-            in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
+        if (in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
             (
                 $attributeScope !== self::GLOBAL_SCOPE &&
                 $attribute->isTranslatable()
@@ -540,8 +539,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
                 $result[] = $this->getOptionId($attributeCode, $optionCode, $magentoAttributesOptions);
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
-                if (
-                    $item->getData() !== null &&
+                if ($item->getData() !== null &&
                     $item->getCurrency() === $this->currency
                 ) {
                     return $item->getData();

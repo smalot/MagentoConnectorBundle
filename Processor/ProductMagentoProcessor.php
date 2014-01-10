@@ -125,8 +125,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     protected function attributeSetChanged(Product $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if (
-                $magentoProduct['sku'] == $product->getIdentifier() &&
+            if ($magentoProduct['sku'] == $product->getIdentifier() &&
                 $magentoProduct['set'] != $this->getAttributeSetId($product)
             ) {
                 return true;

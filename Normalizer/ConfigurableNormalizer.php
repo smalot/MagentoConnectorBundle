@@ -242,8 +242,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $attributeCode      = $option->getAttribute()->getCode();
 
         foreach ($products as $product) {
-            if (
-                $product->getValue($attributeCode, $locale) !== null &&
+            if ($product->getValue($attributeCode, $locale) !== null &&
                 $product->getValue($attributeCode, $locale)->getData()->getCode() === $option->getCode()
             ) {
                 $productsWithOption[] = $product;
