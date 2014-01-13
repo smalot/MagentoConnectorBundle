@@ -26,9 +26,9 @@ Then you just have to add the ConnectorBundle to you `AppKernel.php` :
 
 In order to export products to Magento you need to create a soap user on Magento and give him all rights.
 
-After that you can go to `spread > export profiles` and create your first Magento export job.
+After that you can go to `spread > export profiles` on Akeneo PIM and create your first Magento export job.
 
-*Magento connector configuration example* :
+*configuration example* :
 
 ![Magento connector configuration example](http://i.imgur.com/thNNxtO.png)
 
