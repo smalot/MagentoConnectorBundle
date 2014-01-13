@@ -2,10 +2,16 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
+
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 
 /**
  * Magento configurable processor
@@ -22,6 +28,24 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
      * @var ConfigurableNormalizer
      */
     protected $configurableNormalizer;
+
+    /**
+     * @param ChannelManager           $channelManager
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param ProductNormalizerGuesser $productNormalizerGuesser
+     * @param MetricConverter          $metricConverter
+     */
+    public function __construct(
+        ChannelManager $channelManager,
+        MagentoWebserviceGuesser $magentoWebserviceGuesser,
+        MagentoNormalizerGuesser $magentoNormalizerGuesser,
+        MetricConverter $metricConverter,
+        GroupManager $groupManager
+    ) {
+        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser, $metricConverter);
+
+        $this->groupManager = $groupManager;
+    }
 
     /**
      * Function called before all process
@@ -47,9 +71,11 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 
         $this->beforeProcess();
 
-        $magentoConfigurables = $this->magentoWebservice->getConfigurablesStatus($items);
+        $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
+        $configurables        = $this->getProductsForGroups($items, $groupsIds);
+        $magentoConfigurables = $this->magentoWebservice->getConfigurablesStatus($configurables);
 
-        foreach ($items as $configurable) {
+        foreach ($configurables as $configurable) {
             if (count($configurable['products']) == 0) {
                 throw new InvalidItemException(
                     'The variant group is not associated to any products',
@@ -140,5 +166,45 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
         }
 
         return $groupFamily;
+    }
+
+    /**
+     * Get products association for each groups
+     * @param  array $products
+     * @param  array $groupsIds
+     * @return array
+     */
+    protected function getProductsForGroups(array $products, array $groupsIds)
+    {
+        $groups = array();
+
+        foreach ($products as $product) {
+            foreach ($product->getGroups() as $group) {
+                $groupId = $group->getId();
+
+                if (in_array($groupId, $groupsIds)) {
+                    if (!isset($groups[$groupId])) {
+                        $groups[$groupId] = array(
+                            'group'    => $group,
+                            'products' => array()
+                        );
+                    }
+
+                    $groups[$groupId]['products'][] = $product;
+                }
+            }
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Get the group repository
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getGroupRepository()
+    {
+        return $this->groupManager->getRepository();
     }
 }

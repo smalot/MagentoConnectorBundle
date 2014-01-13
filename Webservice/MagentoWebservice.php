@@ -179,7 +179,7 @@ class MagentoWebservice
      * @param  array $configurables the given configurables
      * @return array
      */
-    public function getConfigurablesStatus($configurables)
+    public function getConfigurablesStatus(array $configurables)
     {
         $skus = $this->getConfigurablesIds($configurables);
 
@@ -212,7 +212,7 @@ class MagentoWebservice
      * @param  array  $products The given products
      * @return string The serialization result
      */
-    protected function getProductsIds($products)
+    protected function getProductsIds(array $products)
     {
         $ids = array();
 
@@ -228,7 +228,7 @@ class MagentoWebservice
      * @param  array  $configurables The given configurables
      * @return string The serialization result
      */
-    protected function getConfigurablesIds($configurables)
+    protected function getConfigurablesIds(array $configurables)
     {
         $ids = array();
 
