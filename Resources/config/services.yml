@@ -36,3 +36,4 @@ services:
             - '@doctrine'
             - %pim_catalog.entity.product.class%
             - %pim_catalog.entity.attribute.class%
+            - %pim_catalog.entity.group.class%
