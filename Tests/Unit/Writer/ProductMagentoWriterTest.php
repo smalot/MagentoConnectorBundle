@@ -95,8 +95,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a all settled ProductMagentoWriter
-     * @param  ChannelManager           $channelManager
-     * @param  MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param ChannelManager           $channelManager
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     *
      * @return ProductMagentoWriter
      */
     protected function getProductMagentoWriter(

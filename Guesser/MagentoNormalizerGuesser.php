@@ -46,10 +46,11 @@ class MagentoNormalizerGuesser extends MagentoGuesser
 
     /**
      * Get the MagentoWebservice corresponding to the given Magento parameters
-     * @param  MagentoSoapClientParameters  $clientParameters
-     * @param  bool                         $enabled
-     * @param  bool                         $visibility
-     * @param  string                       $currency
+     * @param MagentoSoapClientParameters $clientParameters
+     * @param bool                        $enabled
+     * @param bool                        $visibility
+     * @param string                      $currency
+     *
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return MagentoWebservice
      */
@@ -87,9 +88,10 @@ class MagentoNormalizerGuesser extends MagentoGuesser
 
     /**
      * Get the MagentoWebservice corresponding to the given Magento parameters
-     * @param  MagentoSoapClientParameters $clientParameters
-     * @param  ProductNormalizerInterface  $productNormalizer
-     * @param  PriceMappingManager         $priceMappingManager
+     * @param MagentoSoapClientParameters $clientParameters
+     * @param ProductNormalizerInterface  $productNormalizer
+     * @param PriceMappingManager         $priceMappingManager
+     *
      * @return MagentoWebservice
      */
     public function getConfigurableNormalizer(

@@ -284,7 +284,8 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a simple product mock
-     * @param  array       $attributes product attributes
+     * @param array $attributes product attributes
+     *
      * @return ProductMock
      */
     protected function getProductMock($attributes)
@@ -435,8 +436,9 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get sample product values
+     * @param array $attributes Array of attributes
+     *
      * @see getSampleAttributes
-     * @param  array           $attributes Array of attributes
      * @return ArrayCollection
      */
     protected function getSampleProductValues($attributes)
@@ -464,8 +466,9 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get an attribute mock based on an attribute array
+     * @param array $value
+     *
      * @see getSampleAttributes
-     * @param  array         $value
      * @return AttributeMock
      */
     protected function getAttributeMock($value)

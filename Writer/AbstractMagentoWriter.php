@@ -63,6 +63,8 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
     protected $clientParameters;
 
     /**
+     * Constructor
+     *
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $channelManager
      */

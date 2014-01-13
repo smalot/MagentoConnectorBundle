@@ -329,7 +329,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a normalizer who will throw given the exception
-     * @param  Exception $exception
+     * @param Exception $exception
+     *
      * @return ProductUpdateNormalizer
      */
     public function getExceptionNormalizerMock(\Exception $exception)
@@ -511,7 +512,8 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a MagentoWebserviceGuesser mock which will return a exception thrower normalizer
-     * @param  \Exception $exception
+     * @param \Exception $exception
+     *
      * @return MagentoWebserviceGuesserMock
      */
     protected function getExceptionNormalizerGuesserMock(\Exception $exception)

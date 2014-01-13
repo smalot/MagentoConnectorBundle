@@ -39,8 +39,9 @@ class PriceMappingManager
 
     /**
      * Get price mapping for the given group and products
-     * @param  Group $group
-     * @param  array $products
+     * @param Group $group
+     * @param array $products
+     *
      * @return array
      */
     public function getPriceMapping(Group $group, $products)
@@ -61,7 +62,8 @@ class PriceMappingManager
 
     /**
      * Get the lower price of given products
-     * @param  array $products
+     * @param array $products
+     *
      * @return int
      */
     protected function getLowerPrice($products)
@@ -79,7 +81,8 @@ class PriceMappingManager
 
     /**
      * Get the price of the given product
-     * @param  Product $product
+     * @param Product $product
+     *
      * @return int
      */
     protected function getProductPrice(Product $product)
@@ -89,9 +92,10 @@ class PriceMappingManager
 
     /**
      * Get price mapping for an attribute
-     * @param  ProductAttribute $attribute
-     * @param  int              $basePrice
-     * @param  array            $products
+     * @param ProductAttribute $attribute
+     * @param int              $basePrice
+     * @param array            $products
+     *
      * @return array
      */
     protected function getAttributeMapping($attribute, $basePrice, $products)
@@ -112,8 +116,9 @@ class PriceMappingManager
 
     /**
      * Get all products with the given option value
-     * @param  array           $products
-     * @param  AttributeOption $option
+     * @param array           $products
+     * @param AttributeOption $option
+     *
      * @return array
      */
     protected function getProductsWithOption($products, $option)

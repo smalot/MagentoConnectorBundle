@@ -224,11 +224,12 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
     /**
      * Get a MagentoWebservice with the given call map
-     * @param  array $callsMap
-     * @param  bool $expects   specify manualy the expect count (array length otherwise)
+     * @param array $callsMap Calls map
+     * @param bool  $expects  specify manualy the expect count (array length otherwise)
+     *
      * @return MagentoWebservice
      */
-    protected function getMagentoWebserviceWithCallMap($callsMap, $expects = null)
+    protected function getMagentoWebserviceWithCallMap(array $callsMap, $expects = null)
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
 
@@ -249,6 +250,8 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
     /**
      * Get an attribute set list sample
+     *
+     * @return array
      */
     protected function getAttributeSetList()
     {
@@ -266,6 +269,8 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
     /**
      * Get an attribute list
+     *
+     * @return array
      */
     protected function getAttributeList()
     {
@@ -296,7 +301,8 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
     /**
      * Get options for the given attributeCode
-     * @param  string $attributeCode
+     * @param string $attributeCode
+     *
      * @return array
      */
     protected function getOptions($attributeCode)

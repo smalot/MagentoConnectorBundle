@@ -24,7 +24,8 @@ class MagentoGuesser
 
     /**
      * Get the Magento version for the given client
-     * @param  MagentoSoapClient $client
+     * @param MagentoSoapClient $client
+     *
      * @return float
      */
     protected function getMagentoVersion(MagentoSoapClient $client)

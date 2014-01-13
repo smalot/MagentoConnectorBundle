@@ -66,7 +66,8 @@ abstract class WebserviceTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a connected MagentoSoapClient
-     * @param  SoapClient $soapClient
+     * @param SoapClient $soapClient
+     *
      * @return MagentoSoapClient
      */
     protected function getConnectedMagentoSoapClient($soapClient)

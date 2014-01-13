@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Webservice;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
  * Test related class
@@ -58,6 +57,9 @@ class MagentoSoapClientTest extends WebserviceTestCase
         $magentoSoapClient = new MagentoSoapClient($clientParameters);
     }
 
+    /**
+     * Test corresponding method
+     */
     public function testCall()
     {
         $soapClientMock    = $this->getConnectedSoapClientMock();
@@ -66,6 +68,9 @@ class MagentoSoapClientTest extends WebserviceTestCase
         $magentoSoapClient->call('test');
     }
 
+    /**
+     * Test corresponding method
+     */
     public function testAddCall()
     {
         $soapClientMock    = $this->getConnectedSoapClientMock();
@@ -77,6 +82,9 @@ class MagentoSoapClientTest extends WebserviceTestCase
         $magentoSoapClient->addCall(array(), 1);
     }
 
+    /**
+     * Test corresponding method
+     */
     public function testSendCalls()
     {
         $soapClientMock    = $this->getConnectedSoapClientMock();
