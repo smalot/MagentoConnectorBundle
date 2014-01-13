@@ -29,6 +29,7 @@ In order to export products to Magento you need to create a soap user on Magento
 After that you can go to `spread > export profiles` and create your first Magento export job.
 
 *Magento connector configuration example* :
+
 ![Magento connector configuration example](http://i.imgur.com/thNNxtO.png)
 
 # Notes
