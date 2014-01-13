@@ -28,7 +28,7 @@ In order to export products to Magento you need to create a soap user on Magento
 
 After that you can go to `spread > export profiles` on Akeneo PIM and create your first Magento export job.
 
-*configuration example* :
+*Configuration example* :
 
 ![Magento connector configuration example](http://i.imgur.com/thNNxtO.png)
 
