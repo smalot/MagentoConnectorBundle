@@ -21,8 +21,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
  *
  * @HasValidCredentials()
  */
-abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement implements
-    ItemWriterInterface
+abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement implements ItemWriterInterface
 {
     /**
      * @var ChannelManager
@@ -68,10 +67,9 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      * @param MagentoWebserviceGuesser $channelManager
      */
     public function __construct(
-        ChannelManager           $channelManager,
+        ChannelManager $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser
-    )
-    {
+    ) {
         $this->channelManager           = $channelManager;
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
     }

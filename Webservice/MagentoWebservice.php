@@ -6,7 +6,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  * A magento soap client to abstract interaction with the magento api
  *
  * @author    Julien Sanchez <julien@akeneo.com>
- * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class MagentoWebservice
@@ -30,8 +30,11 @@ class MagentoWebservice
     const SELECT                                    = 'select';
     const MULTI_SELECT                              = 'multiselect';
 
-    const MAXIMUM_CALLS       = 1;
-    const CREATE_PRODUCT_SIZE = 5;
+    const MAXIMUM_CALLS            = 1;
+    const CREATE_PRODUCT_SIZE      = 5;
+    const CREATE_CONFIGURABLE_SIZE = 4;
+
+    const CONFIGURABLE_IDENTIFIER_PATTERN = 'conf-%s';
 
     protected $client;
 
@@ -48,7 +51,7 @@ class MagentoWebservice
      * Constructor
      * @param MagentoSoapClient $client
      */
-    function __construct(MagentoSoapClient $client)
+    public function __construct(MagentoSoapClient $client)
     {
         $this->client = $client;
     }
@@ -160,17 +163,34 @@ class MagentoWebservice
     }
 
     /**
-     * Get product status in magento (do they exist ?)
-     * @param  Product $products the given products
+     * Get products status in magento (do they exist ?)
+     * @param  array $products the given products
      * @return array
      */
     public function getProductsStatus($products)
     {
-        $productsIds = $this->getProductsIds($products);
+        $skus = $this->getProductsIds($products);
 
+        return $this->getStatusForSkus($skus);
+    }
+
+    /**
+     * Get configurables status in magento (do they exist ?)
+     * @param  array $configurables the given configurables
+     * @return array
+     */
+    public function getConfigurablesStatus($configurables)
+    {
+        $skus = $this->getConfigurablesIds($configurables);
+
+        return $this->getStatusForSkus($skus);
+    }
+
+    protected function getStatusForSkus($skus)
+    {
         $condition        = new \StdClass();
         $condition->key   = 'in';
-        $condition->value = $productsIds;
+        $condition->value = $skus;
 
         $fieldFilter        = new \StdClass();
         $fieldFilter->key   = 'sku';
@@ -204,8 +224,28 @@ class MagentoWebservice
     }
 
     /**
+     * Serialize configurables id in csv
+     * @param  array $configurables The given configurables
+     * @return string The serialization result
+     */
+    protected function getConfigurablesIds($configurables)
+    {
+        $ids = array();
+
+        foreach ($configurables as $configurable) {
+            $ids[] = sprintf(
+                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                $configurable['group']->getCode()
+            );
+        }
+
+        return implode(',', $ids);
+    }
+
+    /**
      * Get magento attributeSets from the magento api
      * @param  string $code the attributeSet id
+     * @throws AttributeSetNotFoundException If If the attribute doesn't exist on Magento side
      * @return void
      */
     public function getAttributeSetId($code)
@@ -279,10 +319,13 @@ class MagentoWebservice
      */
     public function deleteImage($sku, $imageFilename)
     {
-        return $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
-            'product' => $sku,
-            'file'    => $imageFilename
-        ));
+        return $this->client->call(
+            self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE,
+            array(
+                'product' => $sku,
+                'file'    => $imageFilename
+            )
+        );
     }
 
     /**
@@ -306,7 +349,9 @@ class MagentoWebservice
      */
     public function sendProduct($productPart)
     {
-        if (count($productPart) == self::CREATE_PRODUCT_SIZE) {
+        if (count($productPart) == self::CREATE_PRODUCT_SIZE ||
+            count($productPart) == self::CREATE_CONFIGURABLE_SIZE
+        ) {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
         } else {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;

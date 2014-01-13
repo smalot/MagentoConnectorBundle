@@ -23,8 +23,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
  *
  * @HasValidCredentials()
  */
-abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement implements
-    ItemProcessorInterface
+abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement implements ItemProcessorInterface
 {
     const MAGENTO_VISIBILITY_CATALOG_SEARCH = 4;
 
@@ -117,10 +116,10 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * @param MetricConverter          $metricConverter
      */
     public function __construct(
-        ChannelManager           $channelManager,
+        ChannelManager $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
         MagentoNormalizerGuesser $magentoNormalizerGuesser,
-        MetricConverter          $metricConverter
+        MetricConverter $metricConverter
     ) {
         $this->channelManager           = $channelManager;
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
@@ -379,6 +378,26 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
         }
 
         return $this->clientParameters;
+    }
+
+    /**
+     * Get the attribute set id for the given family code
+     *
+     * @param  string $familyCode
+     * @param  mixed $relatedItem
+     * @throws InvalidItemException If The attribute set doesn't exist on Mangento
+     * @return integer
+     */
+    protected function getAttributeSetId($familyCode, $relatedItem)
+    {
+        try {
+            return $this->magentoWebservice
+                ->getAttributeSetId(
+                    $familyCode
+                );
+        } catch (AttributeSetNotFoundException $e) {
+            throw new InvalidItemException($e->getMessage(), array($relatedItem));
+        }
     }
 
     /**

@@ -22,7 +22,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
             array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST, null, $this->getAttributeSetList()),
             array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '4',  $this->getAttributeList()),
             array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '9',  $this->getAttributeList()),
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('colors'), $this->getOptions('colors')),
+            array(
+                MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+                array('colors'),
+                $this->getOptions('colors')
+            ),
             array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('size'), $this->getOptions('size')),
         );
 
@@ -234,9 +238,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
         $magentoSoapClientMock->expects($this->exactly($expects))
             ->method('call')
-            ->will($this->returnValueMap(
-                $callsMap
-            ));
+            ->will(
+                $this->returnValueMap(
+                    $callsMap
+                )
+            );
 
         return new MagentoWebservice($magentoSoapClientMock);
     }

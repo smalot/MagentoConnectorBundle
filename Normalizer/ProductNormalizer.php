@@ -15,7 +15,6 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -24,15 +23,11 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedExcep
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductNormalizer implements NormalizerInterface
+class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerInterface
 {
-    const MAGENTO_SIMPLE_PRODUCT_KEY = 'simple';
-
     const GLOBAL_SCOPE = 'global';
     const VISIBILITY   = 'visibility';
     const ENABLED      = 'status';
-
-    const DATE_FORMAT  = 'Y-m-d H:i:s';
 
     /**
      * @var boolean
@@ -45,29 +40,9 @@ class ProductNormalizer implements NormalizerInterface
     protected $visibility;
 
     /**
-     * @var array
-     */
-    protected $magentoAttributesOptions;
-
-    /**
-     * @var array
-     */
-    protected $magentoAttributes;
-
-    /**
      * @var string
      */
     protected $currency;
-
-    /**
-     * @var array
-     */
-    protected $supportedFormats = array('MagentoArray');
-
-    /**
-     * @var ChannelManager
-     */
-    protected $channelManager;
 
     /**
      * @var MediaManager
@@ -75,29 +50,26 @@ class ProductNormalizer implements NormalizerInterface
     protected $mediaManager;
 
     /**
-     * @var array
-     */
-    protected $pimLocales;
-
-    /**
      * Constructor
      * @param ChannelManager $channelManager
      * @param MediaManager   $mediaManager
+     * @param bool           $enabled
+     * @param bool           $visibility
+     * @param string         $currency
      */
     public function __construct(
         ChannelManager $channelManager,
-        MediaManager   $mediaManager
+        MediaManager $mediaManager,
+        $enabled,
+        $visibility,
+        $currency
     ) {
-        $this->channelManager = $channelManager;
-        $this->mediaManager   = $mediaManager;
-    }
+        parent::__construct($channelManager);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof ProductInterface && in_array($format, $this->supportedFormats);
+        $this->mediaManager = $mediaManager;
+        $this->enabled      = $enabled;
+        $this->visibility   = $visibility;
+        $this->currency     = $currency;
     }
 
     /**
@@ -105,22 +77,53 @@ class ProductNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $this->enabled                  = $context['enabled'];
-        $this->visibility               = $context['visibility'];
-        $this->magentoAttributesOptions = $context['magentoAttributesOptions'];
-        $this->magentoAttributes        = $context['magentoAttributes'];
-        $this->currency                 = $context['currency'];
+        $processedItem = array();
 
-        return $this->getNormalizedProduct(
+        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
             $object,
-            $context['magentoStoreViews'],
+            $context['magentoAttributes'],
+            $context['magentoAttributesOptions'],
             $context['attributeSetId'],
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
-            $context['storeViewMapping'],
             $context['create']
         );
+
+        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($object);
+
+        //For each storeview, we update the product only with localized attributes
+        foreach ($this->getPimLocales($context['channel']) as $locale) {
+            $storeViewCode = $this->getStoreViewCodeForLocale(
+                $locale->getCode(),
+                $context['magentoStoreViews'],
+                $context['storeViewMapping']
+            );
+
+            //If a locale for this storeview exist in PIM, we create a translated product in this locale
+            if ($storeViewCode) {
+                $values = $this->getValues(
+                    $object,
+                    $context['magentoAttributes'],
+                    $context['magentoAttributesOptions'],
+                    $locale,
+                    $context['channel'],
+                    true
+                );
+
+                $processedItem[$storeViewCode] = array(
+                    (string) $object->getIdentifier(),
+                    $values,
+                    $storeViewCode
+                );
+            } else {
+                if ($locale->getCode() !== $context['defaultLocale']) {
+                    $this->localeNotFound($locale, $context['storeViewMapping']);
+                }
+            }
+        }
+
+        return $processedItem;
     }
 
     /**
@@ -132,6 +135,7 @@ class ProductNormalizer implements NormalizerInterface
      * @param  string  $channel
      * @param  string  $website           The website where to send data
      * @param  array   $storeViewMapping
+     * @param  array   $magentoAttributes
      * @param  bool    $create            Is it a new product or an existing product
      * @return array The normalized product
      */
@@ -143,61 +147,29 @@ class ProductNormalizer implements NormalizerInterface
         $channel,
         $website,
         $storeViewMapping,
+        $magentoAttributes,
         $create
     ) {
-        $processedItem = array();
 
-        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
-            $product,
-            $attributeSetId,
-            $defaultLocale,
-            $channel,
-            $website,
-            $create
-        );
-
-        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($product);
-
-        //For each storeview, we update the product only with localized attributes
-        foreach ($this->getPimLocales($channel) as $locale) {
-            $storeViewCode = $this->getStoreViewCodeForLocale(
-                $locale->getCode(),
-                $magentoStoreViews,
-                $storeViewMapping
-            );
-
-            //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($storeViewCode) {
-                $values = $this->getValues($product, $locale, $channel, true);
-
-                $processedItem[$storeViewCode] = array(
-                    (string) $product->getIdentifier(),
-                    $values,
-                    $storeViewCode
-                );
-            } else {
-                if ($locale->getCode() !== $defaultLocale) {
-                    $this->localeNotFound($locale, $storeViewMapping);
-                }
-            }
-        }
-
-        return $processedItem;
     }
 
     /**
      * Get the default product with all attributes (ie : event the non localizables ones)
      *
-     * @param  Product $product           The given product
-     * @param  integer $attributeSetId    Attribute set id
-     * @param  string  $defaultLocale     Default locale
-     * @param  string  $channel           Channel
-     * @param  string  $website           Website name
-     * @param  bool    $create            Is it a creation ?
+     * @param  Product $product                 The given product
+     * @param  array   $magentoAttributes
+     * @param  array   $magentoAttributesOptions
+     * @param  integer $attributeSetId           Attribute set id
+     * @param  string  $defaultLocale            Default locale
+     * @param  string  $channel                  Channel
+     * @param  string  $website                  Website name
+     * @param  bool    $create                   Is it a creation ?
      * @return array The default product data
      */
     protected function getDefaultProduct(
         Product $product,
+        $magentoAttributes,
+        $magentoAttributesOptions,
         $attributeSetId,
         $defaultLocale,
         $channel,
@@ -205,7 +177,14 @@ class ProductNormalizer implements NormalizerInterface
         $create
     ) {
         $sku                       = (string) $product->getIdentifier();
-        $defaultValues             = $this->getValues($product, $defaultLocale, $channel, false);
+        $defaultValues             = $this->getValues(
+            $product,
+            $magentoAttributes,
+            $magentoAttributesOptions,
+            $defaultLocale,
+            $channel,
+            false
+        );
         $defaultValues['websites'] = array($website);
 
         if ($create) {
@@ -229,95 +208,24 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the corresponding storeview code for a givent locale
-     * @param  string $locale
-     * @param  array  $magentoStoreViews
-     * @param  array  $storeViewMapping
-     * @return string
-     */
-    protected function getStoreViewCodeForLocale($locale, $magentoStoreViews, $storeViewMapping)
-    {
-        $mappedStoreView = $this->getMappedStoreView($locale, $storeViewMapping);
-
-        $code = ($mappedStoreView) ? $mappedStoreView : $locale;
-
-        return $this->getStoreView($code, $magentoStoreViews);
-    }
-
-    /**
-     * Get the storeview for the given code
-     * @param  string $code              [description]
-     * @param  array  $magentoStoreViews [description]
-     * @return null|string
-     */
-    protected function getStoreView($code, $magentoStoreViews)
-    {
-        foreach ($magentoStoreViews as $magentoStoreView) {
-            if ($magentoStoreView['code'] === strtolower($code)) {
-                return $magentoStoreView['code'];
-            }
-        }
-    }
-
-    /**
-     * Get the locale based on storeViewMapping
-     * @param  string $storeViewCode
-     * @param  array  $storeViewMapping
-     * @return string
-     */
-    protected function getMappedStoreView($locale, $storeViewMapping)
-    {
-        foreach ($storeViewMapping as $storeview) {
-            if ($storeview[0] === strtolower($locale)) {
-                return $storeview[1];
-            }
-        }
-    }
-
-    /**
-     * Manage not found locales
-     * @param  string $storeViewCode
-     * @throws LocaleNotMatchedException
-     */
-    protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
-    {
-        throw new LocaleNotMatchedException(
-            sprintf(
-                'No storeview found for "%s" locale. Please create a storeview named "%s" on your Magento or map ' .
-                'this locale to a storeview code.',
-                $storeViewCode,
-                $storeViewCode
-            )
-        );
-    }
-
-    /**
-     * Get all Pim locales for the given channel
-     * @param  string $channel
-     * @return array The locales
-     */
-    protected function getPimLocales($channel)
-    {
-        if (!$this->pimLocales) {
-            $this->pimLocales = $this->channelManager
-                ->getChannelByCode($channel)
-                ->getLocales();
-        }
-
-        return $this->pimLocales;
-    }
-
-    /**
      * Get values array for a given product
      *
-     * @param  Product $product       The given product
-     * @param  string  $localeCode    The locale to apply
-     * @param  string  $scopeCode     The akeno scope
-     * @param  boolean $onlyLocalized If true, only get translatable attributes
+     * @param  Product $product                  The given product
+     * @param  array   $magentoAttributes
+     * @param  array   $magentoAttributesOptions
+     * @param  string  $localeCode               The locale to apply
+     * @param  string  $scopeCode                The akeno scope
+     * @param  boolean $onlyLocalized            If true, only get translatable attributes
      * @return array Computed data
      */
-    protected function getValues(Product $product, $localeCode, $scopeCode, $onlyLocalized = false)
-    {
+    public function getValues(
+        Product $product,
+        $magentoAttributes,
+        $magentoAttributesOptions,
+        $localeCode,
+        $scopeCode,
+        $onlyLocalized = false
+    ) {
         $identifier = $product->getIdentifier();
 
         $filteredValues = $product->getValues()->filter(
@@ -331,7 +239,7 @@ class ProductNormalizer implements NormalizerInterface
         foreach ($filteredValues as $value) {
             $normalizedValues = array_merge(
                 $normalizedValues,
-                $this->getNormalizedValue($value)
+                $this->getNormalizedValue($value, $magentoAttributes, $magentoAttributesOptions)
             );
         }
 
@@ -373,6 +281,13 @@ class ProductNormalizer implements NormalizerInterface
                 (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
                 $value->getAttribute()->isTranslatable()
             ) &&
+            (
+                in_array(
+                    $value->getAttribute()->getCode(),
+                    $this->getIgnoredAttributesForLocalization()
+                ) &&
+                !$onlyLocalized
+            ) &&
             !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
             !($value->getData() instanceof Media)
         );
@@ -382,26 +297,36 @@ class ProductNormalizer implements NormalizerInterface
      * Get the normalized value
      *
      * @param ProductValue $value
-     *
+     * @param array        $magentoAttributes
+     * @param array        $magentoAttributesOptions
+     * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
      * @return array
      */
-    protected function getNormalizedValue(ProductValue $value)
+    protected function getNormalizedValue(ProductValue $value, $magentoAttributes, $magentoAttributesOptions)
     {
         $data      = $value->getData();
         $attribute = $value->getAttribute();
 
-        if (!isset($this->magentoAttributes[$attribute->getCode()])) {
-            throw new AttributeNotFoundException(sprintf(
-                'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should create ' .
-                'it first or adding it to the corresponding attributeSet',
-                $attribute->getCode()
-            ));
+        if (!isset($magentoAttributes[$attribute->getCode()])) {
+            throw new AttributeNotFoundException(
+                sprintf(
+                    'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should ' .
+                    'create it first or adding it to the corresponding attributeSet',
+                    $attribute->getCode()
+                )
+            );
         }
 
         $normalizer     = $this->getNormalizer($data);
-        $attributeScope = $this->magentoAttributes[$attribute->getCode()]['scope'];
+        $attributeScope = $magentoAttributes[$attribute->getCode()]['scope'];
 
-        $normalizedValue = $this->normalizeData($data, $normalizer, $attribute, $attributeScope);
+        $normalizedValue = $this->normalizeData(
+            $data,
+            $normalizer,
+            $attribute,
+            $attributeScope,
+            $magentoAttributesOptions
+        );
 
         return array($attribute->getCode() => $normalizedValue);
     }
@@ -412,12 +337,18 @@ class ProductNormalizer implements NormalizerInterface
      * @param  callable  $normalizer
      * @param  Attribute $attribute
      * @param  string    $attributeScope
+     * @param  array     $magentoAttributesOptions
+     * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array
      */
-    protected function normalizeData($data, $normalizer, Attribute $attribute, $attributeScope)
-    {
-        if (
-            in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
+    protected function normalizeData(
+        $data,
+        $normalizer,
+        Attribute $attribute,
+        $attributeScope,
+        $magentoAttributesOptions
+    ) {
+        if (in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
             (
                 $attributeScope !== self::GLOBAL_SCOPE &&
                 $attribute->isTranslatable()
@@ -428,19 +359,22 @@ class ProductNormalizer implements NormalizerInterface
             )
         ) {
             $normalizedValue = $normalizer($data, array(
-                'attributeCode' => $attribute->getCode()
+                'attributeCode'            => $attribute->getCode(),
+                'magentoAttributesOptions' => $magentoAttributesOptions
             ));
         } else {
-            throw new InvalidScopeMatchException(sprintf(
-                'The scope for the PIM attribute "%s" is not matching the scope of his corresponding Magento ' .
-                'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.' .
-                "\nMagento scope : %s\n" .
-                "PIM scope : %s" ,
-                $attribute->getCode(),
-                $attribute->getCode(),
-                $attributeScope,
-                (($attribute->isTranslatable()) ? 'translatable' : 'not translatable')
-            ));
+            throw new InvalidScopeMatchException(
+                sprintf(
+                    'The scope for the PIM attribute "%s" is not matching the scope of his corresponding Magento ' .
+                    'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.'.
+                    "\nMagento scope : %s\n" .
+                    "PIM scope : %s",
+                    $attribute->getCode(),
+                    $attribute->getCode(),
+                    $attributeScope,
+                    (($attribute->isTranslatable()) ? 'translatable' : 'not translatable')
+                )
+            );
         }
 
         return $normalizedValue;
@@ -455,43 +389,64 @@ class ProductNormalizer implements NormalizerInterface
     {
         return array(
             array(
-                'filter'     => function($data) { return is_bool($data); },
-                'normalizer' => function($data, $parameters) { return ($data) ? 1 : 0; }
+                'filter'     => function ($data) {
+                    return is_bool($data);
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return ($data) ? 1 : 0;
+                }
             ),
             array(
-                'filter'     => function($data) { return $data instanceof \DateTime; },
-                'normalizer' => function($data, $parameters) { return $data->format(self::DATE_FORMAT); }
+                'filter'     => function ($data) {
+                    return $data instanceof \DateTime;
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return $data->format(self::DATE_FORMAT);
+                }
             ),
             array(
-                'filter'     => function($data) {
+                'filter'     => function ($data) {
                     return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
                 },
-                'normalizer' => function($data, $parameters) {
+                'normalizer' => function ($data, $parameters) {
                     if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
                         return $data->getCode();
                     }
 
-                    return $this->getOptionId($parameters['attributeCode'], $data->getCode());
-                }
-            ),
-            array(
-                'filter'     => function($data) { return $data instanceof \Doctrine\Common\Collections\Collection; },
-                'normalizer' => function($data, $parameters) {
-                    return $this->normalizeCollectionData(
-                        $data,
-                        $parameters['attributeCode']
+                    return $this->getOptionId(
+                        $parameters['attributeCode'],
+                        $data->getCode(),
+                        $parameters['magentoAttributesOptions']
                     );
                 }
             ),
             array(
-                'filter'     => function($data) { return $data instanceof Metric; },
-                'normalizer' => function($data, $parameters) {
+                'filter'     => function ($data) {
+                    return $data instanceof \Doctrine\Common\Collections\Collection;
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return $this->normalizeCollectionData(
+                        $data,
+                        $parameters['attributeCode'],
+                        $parameters['magentoAttributesOptions']
+                    );
+                }
+            ),
+            array(
+                'filter'     => function ($data) {
+                    return $data instanceof Metric;
+                },
+                'normalizer' => function ($data, $parameters) {
                     return (string) $data->getData();
                 }
             ),
             array(
-                'filter'     => function($data) { return true; },
-                'normalizer' => function($data, $parameters) { return $data; }
+                'filter'     => function ($data) {
+                    return true;
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return $data;
+                }
             )
         );
     }
@@ -504,6 +459,18 @@ class ProductNormalizer implements NormalizerInterface
     protected function getIgnoredAttributes()
     {
         return array();
+    }
+
+    /**
+     * Get all ignored attribute
+     *
+     * @return array
+     */
+    protected function getIgnoredAttributesForLocalization()
+    {
+        return array(
+            'price'
+        );
     }
 
     /**
@@ -537,7 +504,7 @@ class ProductNormalizer implements NormalizerInterface
     {
         return array(
             self::VISIBILITY   => $this->visibility,
-            self::ENABLED      => $this->enabled,
+            self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
             'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
             'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT)
         );
@@ -566,21 +533,22 @@ class ProductNormalizer implements NormalizerInterface
     /**
      * Normalize the value collection data
      *
-     * @param array $data
+     * @param array  $data
+     * @param string $attributeCode
+     * @param array  $magentoAttributesOptions
      *
      * @return string
      */
-    protected function normalizeCollectionData($data, $attributeCode)
+    protected function normalizeCollectionData($data, $attributeCode, $magentoAttributesOptions)
     {
         $result = array();
         foreach ($data as $item) {
             if ($item instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
                 $optionCode = $item->getCode();
 
-                $result[] = $this->getOptionId($attributeCode, $optionCode);
+                $result[] = $this->getOptionId($attributeCode, $optionCode, $magentoAttributesOptions);
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
-                if (
-                    $item->getData() !== null &&
+                if ($item->getData() !== null &&
                     $item->getCurrency() === $this->currency
                 ) {
                     return $item->getData();
@@ -596,21 +564,30 @@ class ProductNormalizer implements NormalizerInterface
     /**
      * Get the id of the given magento option code
      *
-     * @param  string $attributeCode The product attribute code
-     * @param  string $optionCode    The option label
+     * @param  string $attributeCode            The product attribute code
+     * @param  string $optionCode               The option label
+     * @param  array  $magentoAttributesOptions
+     * @throws InvalidOptionException If the given option doesn't exist on Magento
      * @return integer
      */
-    protected function getOptionId($attributeCode, $optionCode)
+    protected function getOptionId($attributeCode, $optionCode, $magentoAttributesOptions)
     {
         $attributeCode = strtolower($attributeCode);
 
-        if (!isset($this->magentoAttributesOptions[$attributeCode][$optionCode])) {
-            throw new InvalidOptionException(sprintf('The attribute "%s" doesn\'t have any option named "%s" on ' .
-                'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
-                'options using this Magento connector.', $attributeCode, $optionCode, $attributeCode));
+        if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {
+            throw new InvalidOptionException(
+                sprintf(
+                    'The attribute "%s" doesn\'t have any option named "%s" on ' .
+                    'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
+                    'options using this Magento connector.',
+                    $attributeCode,
+                    $optionCode,
+                    $attributeCode
+                )
+            );
         }
 
-        return $this->magentoAttributesOptions[$attributeCode][$optionCode];
+        return $magentoAttributesOptions[$attributeCode][$optionCode];
     }
 
     /**
@@ -619,7 +596,7 @@ class ProductNormalizer implements NormalizerInterface
      * @param  Product $product
      * @return array
      */
-    protected function getNormalizedImages(Product $product)
+    public function getNormalizedImages(Product $product)
     {
         $imagesValue = $product->getValues()->filter(
             function ($value) {

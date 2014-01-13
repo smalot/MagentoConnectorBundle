@@ -19,6 +19,7 @@ class MagentoWebserviceGuesser extends MagentoGuesser
     /**
      * Get the MagentoWebservice corresponding to the given Magento parameters
      * @param  MagentoSoapClientParameters $clientParameters
+     * @throws NotSupportedVersionException If the magento version is not supported
      * @return MagentoWebservice
      */
     public function getWebservice(MagentoSoapClientParameters $clientParameters)

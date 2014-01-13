@@ -97,7 +97,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
             'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
-            )
+        )
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -340,9 +340,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $mock->expects($this->once())
             ->method('normalize')
-            ->will($this->throwException(
-                $exception
-            ));
+            ->will(
+                $this->throwException(
+                    $exception
+                )
+            );
 
         return $mock;
     }
@@ -398,7 +400,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
             'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
-            )
+        )
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -424,12 +426,16 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $magentoWebservice->expects($this->any())
             ->method('getProductsStatus')
-            ->will($this->returnValue(array(
-                array(
-                    'sku' => self::SKU,
-                    'set' => self::ATTRIBUTE_SET_ID
+            ->will(
+                $this->returnValue(
+                    array(
+                        array(
+                            'sku' => self::SKU,
+                            'set' => self::ATTRIBUTE_SET_ID
+                        )
+                    )
                 )
-            )));
+            );
 
         $map = array(
             array(self::FAMILY,     self::ATTRIBUTE_SET_ID),
@@ -438,9 +444,11 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $magentoWebservice->expects($this->any())
             ->method('getAttributeSetId')
-            ->will($this->returnValueMap(
-                $map
-            ));
+            ->will(
+                $this->returnValueMap(
+                    $map
+                )
+            );
 
         return $magentoWebservice;
     }
@@ -457,18 +465,24 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $magentoWebservice->expects($this->any())
             ->method('getProductsStatus')
-            ->will($this->returnValue(array(
-                array(
-                    'sku' => self::SKU,
-                    'set' => self::ATTRIBUTE_SET_ID
+            ->will(
+                $this->returnValue(
+                    array(
+                        array(
+                            'sku' => self::SKU,
+                            'set' => self::ATTRIBUTE_SET_ID
+                        )
+                    )
                 )
-            )));
+            );
 
         $magentoWebservice->expects($this->any())
             ->method('getAttributeSetId')
-            ->will($this->throwException(
-                new \Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException()
-            ));
+            ->will(
+                $this->throwException(
+                    new \Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException()
+                )
+            );
 
         return $magentoWebservice;
     }
@@ -481,9 +495,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $productNormalizerGuesserMock = $this->getMockBuilder(
             'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser'
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
         $magentoNormalizer = $this->getProductNormalizerMock();
 
@@ -504,9 +518,9 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $productNormalizerGuesserMock = $this->getMockBuilder(
             'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser'
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
         $magentoNormalizer = $this->getExceptionNormalizerMock($exception);
 
@@ -530,44 +544,46 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
         $mock->expects($this->any())
             ->method('normalize')
-            ->will($this->returnValue(
-                array(
-                    'admin' => array(
-                        self::SKU,
-                        array(
-                            'name'              => 'Simple product edited',
-                            'description'       => 'long description',
-                            'short_description' => 'short description',
-                            'status'            => '0',
-                            'visibility'        => '4',
-                            'price'             => '12',
-                            'tax_class_id'      => '0',
-                            'websites'          => array(
-                                '0' => 'base',
-                            )
+            ->will(
+                $this->returnValue(
+                    array(
+                        'admin' => array(
+                            self::SKU,
+                            array(
+                                'name'              => 'Simple product edited',
+                                'description'       => 'long description',
+                                'short_description' => 'short description',
+                                'status'            => '0',
+                                'visibility'        => '4',
+                                'price'             => '12',
+                                'tax_class_id'      => '0',
+                                'websites'          => array(
+                                    '0' => 'base',
+                                )
+                            ),
+                            'admin',
                         ),
-                        'admin',
-                    ),
-                    'en_us' => array(
-                        self::SKU,
-                        array(
-                            'name'              => 'Simple product edited',
-                            'description'       => 'long description',
-                            'short_description' => 'short description',
+                        'en_us' => array(
+                            self::SKU,
+                            array(
+                                'name'              => 'Simple product edited',
+                                'description'       => 'long description',
+                                'short_description' => 'short description',
+                            ),
+                            'en_us',
                         ),
-                        'en_us',
-                    ),
-                    'fr_fr' => array(
-                        self::SKU,
-                        array(
-                            'name'              => 'Exemple de produit',
-                            'description'       => 'produit long',
-                            'short_description' => 'produit',
-                        ),
-                        'fr_fr'
+                        'fr_fr' => array(
+                            self::SKU,
+                            array(
+                                'name'              => 'Exemple de produit',
+                                'description'       => 'produit long',
+                                'short_description' => 'produit',
+                            ),
+                            'fr_fr'
+                        )
                     )
                 )
-            ));
+            );
 
         return $mock;
     }

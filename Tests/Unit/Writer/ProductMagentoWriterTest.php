@@ -129,9 +129,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
 
         $magentoWebserviceGuesserMock = $this->getMockBuilder(
             'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
         $magentoWebserviceGuesserMock->expects($this->any())
             ->method('getWebservice')

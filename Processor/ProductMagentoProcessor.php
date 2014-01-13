@@ -27,37 +27,44 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     public function process($items)
     {
         $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
-        $this->productNormalizer = $this->magentoNormalizerGuesser->getNormalizer($this->getClientParameters());
+        $this->productNormalizer = $this->magentoNormalizerGuesser->getProductNormalizer(
+            $this->getClientParameters(),
+            $this->enabled,
+            $this->visibility,
+            $this->currency
+        );
 
         $processedItems = array();
 
         $magentoProducts          = $this->magentoWebservice->getProductsStatus($items);
         $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
+        $magentoAttributes        = $this->magentoWebservice->getAllAttributes();
         $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
 
         $context = array(
             'magentoStoreViews'        => $magentoStoreViews,
-            'magentoAttributesOptions' => $magentoAttributesOptions,
             'defaultLocale'            => $this->defaultLocale,
             'channel'                  => $this->channel,
-            'website'                  => $this->website,
-            'enabled'                  => $this->enabled,
-            'visibility'               => $this->visibility,
-            'magentoAttributes'        => $this->magentoWebservice->getAllAttributes(),
+            'magentoAttributes'        => $magentoAttributes,
+            'magentoAttributesOptions' => $magentoAttributesOptions,
             'currency'                 => $this->currency,
-            'storeViewMapping'         => $this->getComputedStoreViewMapping()
+            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
+            'website'                  => $this->website
         );
 
         $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
 
         foreach ($items as $product) {
-            $context['attributeSetId'] = $this->getAttributeSetId($product);
+            $context['attributeSetId'] = $this->getAttributeSetId($product->getFamily()->getCode(), $product);
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
-                    throw new InvalidItemException('The product family has changed of this product. This modification '.
-                        'cannot be applied to magento. In order to change the family of this product, please manualy ' .
-                        'delete this product in magento and re-run this connector.', array($product));
+                    throw new InvalidItemException(
+                        'The product family has changed of this product. This modification cannot be applied to ' .
+                        'magento. In order to change the family of this product, please manualy delete this product ' .
+                        'in magento and re-run this connector.',
+                        array($product)
+                    );
                 }
 
                 $context['create'] = false;
@@ -76,6 +83,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param  Product $product [description]
      * @param  array   $context The context
+     * @throws InvalidItemException If a normalization error occure
      * @return array processed item
      */
     protected function normalizeProduct(Product $product, $context)
@@ -118,32 +126,13 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     protected function attributeSetChanged(Product $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if (
-                $magentoProduct['sku'] == $product->getIdentifier() &&
-                $magentoProduct['set'] != $this->getAttributeSetId($product)
+            if ($magentoProduct['sku'] == $product->getIdentifier() &&
+                $magentoProduct['set'] != $this->getAttributeSetId($product->getFamily()->getCode(), $product)
             ) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    /**
-     * Get the attribute set id for the given product
-     *
-     * @param  Product $product The product
-     * @return integer
-     */
-    protected function getAttributeSetId(Product $product)
-    {
-        try {
-            return $this->magentoWebservice
-                ->getAttributeSetId(
-                    $product->getFamily()->getCode()
-                );
-        } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
-        }
     }
 }

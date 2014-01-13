@@ -7,9 +7,10 @@ use Pim\Bundle\ImportExportBundle\Reader\ORM\Reader;
 use Pim\Bundle\ImportExportBundle\Validator\Constraints\Channel as ChannelConstraint;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\CatalogBundle\Manager\CompletenessManager;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
+use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
+use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 
 /**
  * Product reader
@@ -28,6 +29,9 @@ class ConfigurableMagentoReader extends Reader
      */
     protected $channel;
 
+    /** @var GroupManager */
+    protected $groupManager;
+
     /** @var ProductManager */
     protected $productManager;
 
@@ -41,17 +45,19 @@ class ConfigurableMagentoReader extends Reader
     protected $metricConverter;
 
     /**
-     * @param ProductManager      $productManager
+     * @param GroupManager        $groupManager
      * @param ChannelManager      $channelManager
      * @param CompletenessManager $completenessManager
      * @param MetricConverter     $metricConverter
      */
     public function __construct(
+        GroupManager $groupManager,
         ProductManager $productManager,
         ChannelManager $channelManager,
         CompletenessManager $completenessManager,
         MetricConverter $metricConverter
     ) {
+        $this->groupManager        = $groupManager;
         $this->productManager      = $productManager;
         $this->channelManager      = $channelManager;
         $this->completenessManager = $completenessManager;
@@ -78,13 +84,45 @@ class ConfigurableMagentoReader extends Reader
                 ->getQuery();
         }
 
+        $groupsIds = $this->getGroupRepository()->getVariantGroupIds();
+
         $products = parent::read();
 
         if (is_array($products)) {
-            $this->metricConverter->convert($products, $channel);
+            $groups = $this->getProductsForGroups($products, $groupsIds);
+        } else {
+            $groups = null;
         }
 
-        return $products;
+        return $groups;
+    }
+
+    /**
+     * Get products association for each groups
+     * @param  array $products
+     * @param  array $groupsIds
+     * @return array
+     */
+    protected function getProductsForGroups($products, $groupsIds)
+    {
+        $groups = array();
+
+        foreach ($products as $product) {
+            foreach ($product->getGroups() as $group) {
+                if (in_array($group->getId(), $groupsIds)) {
+                    if (!isset($groups[$group->getId()])) {
+                        $groups[$group->getId()] = array(
+                            'group'    => $group,
+                            'products' => array()
+                        );
+                    }
+
+                    $groups[$group->getId()]['products'][] = $product;
+                }
+            }
+        }
+
+        return $groups;
     }
 
     /**
@@ -125,9 +163,19 @@ class ConfigurableMagentoReader extends Reader
     }
 
     /**
-     * Get the product repository
+     * Get the group repository
      *
      * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getGroupRepository()
+    {
+        return $this->groupManager->getRepository();
+    }
+
+    /**
+     * Get the product repository
+     *
+     * @return \Doctrine\ORM\EntityFlexibleRepository
      */
     protected function getProductRepository()
     {

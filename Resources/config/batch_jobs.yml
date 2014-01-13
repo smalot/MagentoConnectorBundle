@@ -11,3 +11,9 @@ connector:
                         reader:    pim_import_export.reader.orm.product
                         processor: pim_magento_connector.processor.product
                         writer:    pim_magento_connector.writer.product
+                export_configurable_product:
+                    title:     pim_magento_connector.jobs.configurable_product_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.configurable
+                        processor: pim_magento_connector.processor.configurable
+                        writer:    pim_magento_connector.writer.product

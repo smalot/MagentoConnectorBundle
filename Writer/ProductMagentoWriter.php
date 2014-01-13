@@ -27,7 +27,7 @@ class ProductMagentoWriter extends AbstractMagentoWriter
         $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
 
         //creation for each product in the admin storeView (with default locale)
-        foreach($products as $batch) {
+        foreach ($products as $batch) {
             foreach ($batch as $product) {
                 $this->computeProduct($product);
             }
@@ -43,7 +43,7 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     {
         $this->pruneImages($product);
 
-        foreach(array_keys($product) as $storeViewCode) {
+        foreach (array_keys($product) as $storeViewCode) {
             $this->createCall($product[$storeViewCode], $storeViewCode);
         }
     }
@@ -59,10 +59,10 @@ class ProductMagentoWriter extends AbstractMagentoWriter
         switch ($storeViewCode) {
             case MagentoWebservice::SOAP_DEFAULT_STORE_VIEW:
                 $this->magentoWebservice->sendProduct($productPart);
-            break;
+                break;
             case MagentoWebservice::IMAGES:
                 $this->magentoWebservice->sendImages($productPart);
-            break;
+                break;
             default:
                 $this->magentoWebservice->updateProductPart($productPart);
         }
