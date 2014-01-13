@@ -60,7 +60,7 @@ class MagentoWebservice
      * Get options for the given attribute
      *
      * @param  string $attributeCode Attribute code
-     * @return array the formated options for the given attribute
+     * @return array  the formated options for the given attribute
      */
     protected function getAttributeOptions($attributeCode)
     {
@@ -209,7 +209,7 @@ class MagentoWebservice
 
     /**
      * Serialize products id in csv
-     * @param  array $products The given products
+     * @param  array  $products The given products
      * @return string The serialization result
      */
     protected function getProductsIds($products)
@@ -225,7 +225,7 @@ class MagentoWebservice
 
     /**
      * Serialize configurables id in csv
-     * @param  array $configurables The given configurables
+     * @param  array  $configurables The given configurables
      * @return string The serialization result
      */
     protected function getConfigurablesIds($configurables)
@@ -244,7 +244,7 @@ class MagentoWebservice
 
     /**
      * Get magento attributeSets from the magento api
-     * @param  string $code the attributeSet id
+     * @param  string                        $code the attributeSet id
      * @throws AttributeSetNotFoundException If If the attribute doesn't exist on Magento side
      * @return void
      */
@@ -296,7 +296,7 @@ class MagentoWebservice
     /**
      * Send all product images
      *
-     * @param  array $images All images to send
+     * @param array $images All images to send
      */
     public function sendImages($images)
     {
@@ -330,7 +330,7 @@ class MagentoWebservice
 
     /**
      * Add the call to update the given product part
-     * @param  array $productPart
+     * @param array $productPart
      */
     public function updateProductPart($productPart)
     {

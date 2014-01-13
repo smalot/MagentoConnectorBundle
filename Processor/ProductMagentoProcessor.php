@@ -2,11 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 
@@ -26,36 +24,18 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
      */
     public function process($items)
     {
-        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
-        $this->productNormalizer = $this->magentoNormalizerGuesser->getProductNormalizer(
-            $this->getClientParameters(),
-            $this->enabled,
-            $this->visibility,
-            $this->currency
-        );
-
         $processedItems = array();
 
-        $magentoProducts          = $this->magentoWebservice->getProductsStatus($items);
-        $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
-        $magentoAttributes        = $this->magentoWebservice->getAllAttributes();
-        $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
+        $this->beforeProcess();
+        $magentoProducts = $this->magentoWebservice->getProductsStatus($items);
 
-        $context = array(
-            'magentoStoreViews'        => $magentoStoreViews,
-            'defaultLocale'            => $this->defaultLocale,
-            'channel'                  => $this->channel,
-            'magentoAttributes'        => $magentoAttributes,
-            'magentoAttributesOptions' => $magentoAttributesOptions,
-            'currency'                 => $this->currency,
-            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
-            'website'                  => $this->website
-        );
-
-        $this->metricConverter->convert($items, $this->channelManager->getChannelByCode($this->channel));
+        $channel = $this->channelManager->getChannelByCode($this->channel);
 
         foreach ($items as $product) {
-            $context['attributeSetId'] = $this->getAttributeSetId($product->getFamily()->getCode(), $product);
+            $context = array_merge(
+                $this->globalContext,
+                array('attributeSetId' => $this->getAttributeSetId($product->getFamily()->getCode(), $product))
+            );
 
             if ($this->magentoProductExist($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
@@ -72,6 +52,8 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
                 $context['create'] = true;
             }
 
+            $this->metricConverter->convert($product, $channel);
+
             $processedItems[] = $this->normalizeProduct($product, $context);
         }
 
@@ -81,10 +63,10 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Normalize the given product
      *
-     * @param  Product $product [description]
-     * @param  array   $context The context
+     * @param  Product              $product [description]
+     * @param  array                $context The context
      * @throws InvalidItemException If a normalization error occure
-     * @return array processed item
+     * @return array                processed item
      */
     protected function normalizeProduct(Product $product, $context)
     {
@@ -107,7 +89,6 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     protected function magentoProductExist(Product $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-
             if ($magentoProduct['sku'] == $product->getIdentifier()) {
                 return true;
             }

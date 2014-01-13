@@ -11,7 +11,7 @@ use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
@@ -65,7 +65,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     /**
      * @Assert\NotBlank(groups={"Execution"})
      * @Assert\Url(groups={"Execution"})
-     * @IsValidWsdlUrl(groups={"Execution"})
+     * @MagentoUrl(groups={"Execution"})
      */
     protected $soapUrl;
 
@@ -108,6 +108,16 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * @var MagentoSoapClientParameters
      */
     protected $clientParameters;
+
+    /**
+     * @var array
+     */
+    protected $globalContext;
+
+    /**
+     * @var ProductNormalizer
+     */
+    protected $productNormalizer;
 
     /**
      * @param ChannelManager           $channelManager
@@ -383,8 +393,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     /**
      * Get the attribute set id for the given family code
      *
-     * @param  string $familyCode
-     * @param  mixed $relatedItem
+     * @param  string               $familyCode
+     * @param  mixed                $relatedItem
      * @throws InvalidItemException If The attribute set doesn't exist on Mangento
      * @return integer
      */
@@ -398,6 +408,37 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
         } catch (AttributeSetNotFoundException $e) {
             throw new InvalidItemException($e->getMessage(), array($relatedItem));
         }
+    }
+
+    /**
+     * Function called before all process
+     */
+    protected function beforeProcess()
+    {
+        $this->productNormalizer = $this->magentoNormalizerGuesser->getProductNormalizer(
+            $this->getClientParameters(),
+            $this->enabled,
+            $this->visibility,
+            $this->currency
+        );
+
+        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+
+
+        $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
+        $magentoAttributes        = $this->magentoWebservice->getAllAttributes();
+        $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
+
+        $this->globalContext = array(
+            'defaultLocale'            => $this->defaultLocale,
+            'channel'                  => $this->channel,
+            'currency'                 => $this->currency,
+            'website'                  => $this->website,
+            'magentoStoreViews'        => $magentoStoreViews,
+            'magentoAttributes'        => $magentoAttributes,
+            'magentoAttributesOptions' => $magentoAttributesOptions,
+            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
+        );
     }
 
     /**

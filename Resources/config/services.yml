@@ -2,7 +2,7 @@ parameters:
     pim_magento_connector.guesser.magento_webservice.class: Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser
     pim_magento_connector.guesser.magento_normalizer.class: Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
-    pim_magento_connector.validator.is_valid_wsdl_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrlValidator
+    pim_magento_connector.validator.magento_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Repository\GroupRepository
 
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
@@ -22,13 +22,13 @@ services:
         class: %pim_magento_connector.validator.has_valid_credentials.class%
         arguments:
             - "@pim_magento_connector.guesser.magento_webservice"
-            - "@pim_magento_connector.validator.is_valid_wsdl_url"
+            - "@pim_magento_connector.validator.magento_url"
         tags:
             - { name: validator.constraint_validator, alias: has_valid_magento_credentials }
-    pim_magento_connector.validator.is_valid_wsdl_url:
-        class: %pim_magento_connector.validator.is_valid_wsdl_url.class%
+    pim_magento_connector.validator.magento_url:
+        class: %pim_magento_connector.validator.magento_url.class%
         tags:
-            - { name: validator.constraint_validator, alias: is_valid_wsdl_url }
+            - { name: validator.constraint_validator, alias: magento_url }
 
     pim_magento_connector.manager.group:
         class: %pim_magento_connector.manager.group.class%

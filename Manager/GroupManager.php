@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Manager\GroupManager as BaseGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Repository\GroupRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * Custom group manager
@@ -17,7 +18,7 @@ class GroupManager extends BaseGroupManager
     /**
      * @var string
      */
-    protected $groupName;
+    protected $groupClass;
 
     /**
      * Constructor
@@ -27,11 +28,11 @@ class GroupManager extends BaseGroupManager
      * @param string            $attributeClass
      * @param string            $groupClass
      */
-    public function __construct(RegistryInterface $doctrine, $productClass, $attributeClass, $groupName)
+    public function __construct(RegistryInterface $doctrine, $productClass, $attributeClass, $groupClass)
     {
-        super::__construct($doctrine, $productClass, $attributeClass);
+        parent::__construct($doctrine, $productClass, $attributeClass);
 
-        $this->groupName = $groupName;
+        $this->groupClass = $groupClass;
     }
 
     /**
@@ -42,7 +43,7 @@ class GroupManager extends BaseGroupManager
     public function getRepository()
     {
         $em = $this->doctrine->getEntityManager();
-        $classMetadata = $em->getMetadataFactory()->getMetadataFor($this->groupName);
+        $classMetadata = $em->getMetadataFactory()->getMetadataFor($this->groupClass);
 
         return new GroupRepository($em, $classMetadata);
     }

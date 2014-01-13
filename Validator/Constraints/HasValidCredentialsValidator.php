@@ -17,20 +17,20 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $magentoWebserviceGuesser;
 
     /**
-     * @var IsValidWsdlUrlValidator
+     * @var MagentoUrlValidator
      */
-    protected $isValidWsdlUrlValidator;
+    protected $magentoUrlValidator;
 
     /**
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param IsValidWsdlUrlValidator  $isValidWsdlUrlValidator
+     * @param MagentoUrlValidator      $magentoUrlValidator
      */
     public function __construct(
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        IsValidWsdlUrlValidator $isValidWsdlUrlValidator
+        MagentoUrlValidator $magentoUrlValidator
     ) {
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
-        $this->isValidWsdlUrlValidator  = $isValidWsdlUrlValidator;
+        $this->magentoUrlValidator      = $magentoUrlValidator;
     }
 
     /**
@@ -49,7 +49,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getSoapUrl()
         );
 
-        if ($this->isValidWsdlUrlValidator->isValidWsdlUrl($protocol->getSoapUrl())) {
+        if ($this->magentoUrlValidator->isValidMagentoUrl($protocol->getSoapUrl())) {
             try {
                 $this->magentoWebserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidCredentialException $e) {

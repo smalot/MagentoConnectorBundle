@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Reader;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Pim\Bundle\ImportExportBundle\Reader\ORM\Reader;
+use Pim\Bundle\ImportExportBundle\Reader\ORM\BulkProductReader;
 use Pim\Bundle\ImportExportBundle\Validator\Constraints\Channel as ChannelConstraint;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
@@ -19,7 +19,7 @@ use Pim\Bundle\CatalogBundle\Manager\ProductManager;
   * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
   * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
   */
-class ConfigurableMagentoReader extends Reader
+class ConfigurableMagentoReader extends BulkProductReader
 {
     /**
      * @var string
@@ -70,17 +70,18 @@ class ConfigurableMagentoReader extends Reader
     public function read()
     {
         if (!$this->query) {
-            $channel = current($this->channelManager->getChannels(array('code' => $this->channel)));
-            if (!$channel) {
+            $code = $this->channel;
+            $this->channel = $this->channelManager->getChannelByCode($code);
+            if (!$this->channel) {
                 throw new \InvalidArgumentException(
                     sprintf('Could not find the channel %s', $this->channel)
                 );
             }
 
-            $this->completenessManager->generateChannelCompletenesses($channel);
+            $this->completenessManager->generateChannelCompletenesses($this->channel);
 
             $this->query = $this->getProductRepository()
-                ->buildByChannelAndCompleteness($channel)
+                ->buildByChannelAndCompleteness($this->channel)
                 ->getQuery();
         }
 
@@ -103,21 +104,23 @@ class ConfigurableMagentoReader extends Reader
      * @param  array $groupsIds
      * @return array
      */
-    protected function getProductsForGroups($products, $groupsIds)
+    protected function getProductsForGroups(array $products, array $groupsIds)
     {
         $groups = array();
 
         foreach ($products as $product) {
             foreach ($product->getGroups() as $group) {
-                if (in_array($group->getId(), $groupsIds)) {
-                    if (!isset($groups[$group->getId()])) {
-                        $groups[$group->getId()] = array(
+                $groupId = $group->getId();
+
+                if (in_array($groupId, $groupsIds)) {
+                    if (!isset($groups[$groupId])) {
+                        $groups[$groupId] = array(
                             'group'    => $group,
                             'products' => array()
                         );
                     }
 
-                    $groups[$group->getId()]['products'][] = $product;
+                    $groups[$groupId]['products'][] = $product;
                 }
             }
         }

@@ -18,7 +18,7 @@ class MagentoWebserviceGuesser extends MagentoGuesser
 {
     /**
      * Get the MagentoWebservice corresponding to the given Magento parameters
-     * @param  MagentoSoapClientParameters $clientParameters
+     * @param  MagentoSoapClientParameters  $clientParameters
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return MagentoWebservice
      */
@@ -29,11 +29,11 @@ class MagentoWebserviceGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case '1.8':
-            case '1.7':
+            case MagentoGuesser::MAGENTO_VERSION_1_8:
+            case MagentoGuesser::MAGENTO_VERSION_1_7:
                 $magentoWebservice = new MagentoWebservice($client);
                 break;
-            case '1.6':
+            case MagentoGuesser::MAGENTO_VERSION_1_6:
                 $magentoWebservice = new MagentoWebservice16($client);
                 break;
             default:

@@ -19,44 +19,35 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 {
     /**
-     * {@inheritdoc}
+     * @var ConfigurableNormalizer
      */
-    public function process($items)
+    protected $configurableNormalizer;
+
+    /**
+     * Function called before all process
+     */
+    protected function beforeProcess()
     {
-        $this->magentoWebservice      = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
-        $productNormalizer            = $this->magentoNormalizerGuesser->getProductNormalizer(
-            $this->getClientParameters(),
-            $this->enabled,
-            $this->visibility,
-            $this->currency
-        );
+        parent::beforeProcess();
 
         $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency);
         $this->configurableNormalizer = $this->magentoNormalizerGuesser->getConfigurableNormalizer(
             $this->getClientParameters(),
-            $productNormalizer,
+            $this->productNormalizer,
             $priceMappingManager
         );
+    }
 
-        $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
-        $magentoAttributes        = $this->magentoWebservice->getAllAttributes();
-        $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
-
+    /**
+     * {@inheritdoc}
+     */
+    public function process($items)
+    {
         $processedItems = array();
 
-        $context = array(
-            'magentoStoreViews'        => $magentoStoreViews,
-            'defaultLocale'            => $this->defaultLocale,
-            'channel'                  => $this->channel,
-            'magentoAttributes'        => $magentoAttributes,
-            'magentoAttributesOptions' => $magentoAttributesOptions,
-            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
-            'website'                  => $this->website
-        );
-
+        $this->beforeProcess();
 
         $magentoConfigurables = $this->magentoWebservice->getConfigurablesStatus($items);
-        $magentoStoreViews    = $this->magentoWebservice->getStoreViewsList();
 
         foreach ($items as $configurable) {
             if (count($configurable['products']) == 0) {
@@ -67,13 +58,19 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
             }
 
             if ($this->magentoConfigurableExist($configurable, $magentoConfigurables)) {
-                $context['create']         = false;
-                $context['attributeSetId'] = 0;
+                $context = array_merge(
+                    $this->globalContext,
+                    array('attributeSetId' => 0, 'create' => false)
+                );
             } else {
-                $context['create'] = true;
-                $groupFamily       = $this->getGroupFamily($configurable);
-
-                $context['attributeSetId'] = $this->getAttributeSetId($groupFamily->getCode(), $configurable);
+                $groupFamily = $this->getGroupFamily($configurable);
+                $context     = array_merge(
+                    $this->globalContext,
+                    array(
+                        'attributeSetId' => $this->getAttributeSetId($groupFamily->getCode(), $configurable),
+                        'create'         => true
+                    )
+                );
             }
 
             $processedItems[] = $this->normalizeConfigurable($configurable, $context);
@@ -85,10 +82,10 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Normalize the given configurable
      *
-     * @param  array $configurable
-     * @param  array $context The context
+     * @param  array                $configurable
+     * @param  array                $context      The context
      * @throws InvalidItemException If a normalization error occured
-     * @return array processed item
+     * @return array                processed item
      */
     protected function normalizeConfigurable($configurable, $context)
     {
@@ -104,8 +101,8 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Test if a configurable allready exist on magento platform
      *
-     * @param  array   $configurable         The configurable
-     * @param  array   $magentoConfigurables Magento configurables
+     * @param  array $configurable         The configurable
+     * @param  array $magentoConfigurables Magento configurables
      * @return bool
      */
     protected function magentoConfigurableExist($configurable, $magentoConfigurables)
@@ -125,7 +122,7 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 
     /**
      * Get the family of the given configurable
-     * @param  array $configurable
+     * @param  array                $configurable
      * @throws InvalidItemException If there are two products with different families
      * @return Family
      */

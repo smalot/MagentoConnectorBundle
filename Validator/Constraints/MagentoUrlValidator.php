@@ -7,14 +7,14 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
-class IsValidWsdlUrlValidator extends ConstraintValidator
+class MagentoUrlValidator extends ConstraintValidator
 {
     /**
      *{@inheritDoc}
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$this->isValidWsdlUrl($value)) {
+        if (!$this->isValidMagentoUrl($value)) {
             $this->context->addViolation($constraint->message, array('%string%' => $value));
         }
     }
@@ -25,7 +25,7 @@ class IsValidWsdlUrlValidator extends ConstraintValidator
      * @param  string  $url The given url
      * @return boolean
      */
-    public function isValidWsdlUrl($url)
+    public function isValidMagentoUrl($url)
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url . MagentoSoapClient::SOAP_WSDL_URL);

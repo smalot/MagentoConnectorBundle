@@ -2,14 +2,12 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Metric;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\Product;
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
@@ -127,36 +125,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     }
 
     /**
-     * Serialize the given product
-     * @param  Product $product
-     * @param  array   $magentoStoreViews List of storeviews (in magento platform)
-     * @param  int     $attributeSetId
-     * @param  string  $defaultLocale     Locale for the default storeview
-     * @param  string  $channel
-     * @param  string  $website           The website where to send data
-     * @param  array   $storeViewMapping
-     * @param  array   $magentoAttributes
-     * @param  bool    $create            Is it a new product or an existing product
-     * @return array The normalized product
-     */
-    protected function getNormalizedProduct(
-        Product $product,
-        $magentoStoreViews,
-        $attributeSetId,
-        $defaultLocale,
-        $channel,
-        $website,
-        $storeViewMapping,
-        $magentoAttributes,
-        $create
-    ) {
-
-    }
-
-    /**
      * Get the default product with all attributes (ie : event the non localizables ones)
      *
-     * @param  Product $product                 The given product
+     * @param  Product $product                  The given product
      * @param  array   $magentoAttributes
      * @param  array   $magentoAttributesOptions
      * @param  integer $attributeSetId           Attribute set id
@@ -164,7 +135,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param  string  $channel                  Channel
      * @param  string  $website                  Website name
      * @param  bool    $create                   Is it a creation ?
-     * @return array The default product data
+     * @return array   The default product data
      */
     protected function getDefaultProduct(
         Product $product,
@@ -176,8 +147,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $website,
         $create
     ) {
-        $sku                       = (string) $product->getIdentifier();
-        $defaultValues             = $this->getValues(
+        $sku           = (string) $product->getIdentifier();
+        $defaultValues = $this->getValues(
             $product,
             $magentoAttributes,
             $magentoAttributesOptions,
@@ -216,7 +187,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param  string  $localeCode               The locale to apply
      * @param  string  $scopeCode                The akeno scope
      * @param  boolean $onlyLocalized            If true, only get translatable attributes
-     * @return array Computed data
+     * @return array   Computed data
      */
     public function getValues(
         Product $product,
@@ -282,11 +253,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $value->getAttribute()->isTranslatable()
             ) &&
             (
-                in_array(
-                    $value->getAttribute()->getCode(),
-                    $this->getIgnoredAttributesForLocalization()
-                ) &&
-                !$onlyLocalized
+                !(
+                    $onlyLocalized &&
+                    in_array(
+                        $value->getAttribute()->getCode(),
+                        $this->getIgnoredAttributesForLocalization()
+                    )
+                )
             ) &&
             !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
             !($value->getData() instanceof Media)
@@ -296,9 +269,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get the normalized value
      *
-     * @param ProductValue $value
-     * @param array        $magentoAttributes
-     * @param array        $magentoAttributesOptions
+     * @param  ProductValue               $value
+     * @param  array                      $magentoAttributes
+     * @param  array                      $magentoAttributesOptions
      * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
      * @return array
      */
@@ -333,11 +306,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Normalize the given data
-     * @param  mixed     $data
-     * @param  callable  $normalizer
-     * @param  Attribute $attribute
-     * @param  string    $attributeScope
-     * @param  array     $magentoAttributesOptions
+     * @param  mixed                      $data
+     * @param  callable                   $normalizer
+     * @param  Attribute                  $attribute
+     * @param  string                     $attributeScope
+     * @param  array                      $magentoAttributesOptions
      * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array
      */
@@ -513,7 +486,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get normalizer closure matching the corresponding filter with $data
      *
-     * @param  mixed $data
+     * @param  mixed   $data
      * @return closure
      */
     protected function getNormalizer($data)
@@ -564,9 +537,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get the id of the given magento option code
      *
-     * @param  string $attributeCode            The product attribute code
-     * @param  string $optionCode               The option label
-     * @param  array  $magentoAttributesOptions
+     * @param  string                 $attributeCode            The product attribute code
+     * @param  string                 $optionCode               The option label
+     * @param  array                  $magentoAttributesOptions
      * @throws InvalidOptionException If the given option doesn't exist on Magento
      * @return integer
      */

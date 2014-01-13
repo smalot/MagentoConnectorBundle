@@ -16,6 +16,8 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     const CURRENCY          = 'EUR';
     const DEFAULT_LOCALE    = 'en_US';
     const CHANNEL           = 'channel';
+    const ENABLED           = true;
+    const VISIBILITY        = 4;
 
     /**
      * {@inheritdoc}
@@ -27,7 +29,10 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $this->normalizer = new ProductNormalizer(
             $this->channelManager,
-            $this->mediaManager
+            $this->mediaManager,
+            self::ENABLED,
+            self::VISIBILITY,
+            self::CURRENCY
         );
     }
 
@@ -279,7 +284,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a simple product mock
-     * @param  array $attributes product attributes
+     * @param  array       $attributes product attributes
      * @return ProductMock
      */
     protected function getProductMock($attributes)
@@ -431,7 +436,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     /**
      * Get sample product values
      * @see getSampleAttributes
-     * @param  array $attributes Array of attributes
+     * @param  array           $attributes Array of attributes
      * @return ArrayCollection
      */
     protected function getSampleProductValues($attributes)
@@ -460,7 +465,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     /**
      * Get an attribute mock based on an attribute array
      * @see getSampleAttributes
-     * @param  array $value
+     * @param  array         $value
      * @return AttributeMock
      */
     protected function getAttributeMock($value)

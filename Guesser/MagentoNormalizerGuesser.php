@@ -46,10 +46,10 @@ class MagentoNormalizerGuesser extends MagentoGuesser
 
     /**
      * Get the MagentoWebservice corresponding to the given Magento parameters
-     * @param  MagentoSoapClientParameters $clientParameters
-     * @param  bool                        $enabled
-     * @param  bool                        $visibility
-     * @param  string                      $currency
+     * @param  MagentoSoapClientParameters  $clientParameters
+     * @param  bool                         $enabled
+     * @param  bool                         $visibility
+     * @param  string                       $currency
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return MagentoWebservice
      */
@@ -63,30 +63,26 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case '1.8':
-            case '1.7':
-                $magentoNormalizer = new ProductNormalizer(
+            case MagentoGuesser::MAGENTO_VERSION_1_8:
+            case MagentoGuesser::MAGENTO_VERSION_1_7:
+                return new ProductNormalizer(
                     $this->channelManager,
                     $this->mediaManager,
                     $enabled,
                     $visibility,
                     $currency
                 );
-                break;
-            case '1.6':
-                $magentoNormalizer = new ProductNormalizer16(
+            case MagentoGuesser::MAGENTO_VERSION_1_6:
+                return ProductNormalizer16(
                     $this->channelManager,
                     $this->mediaManager,
                     $enabled,
                     $visibility,
                     $currency
                 );
-                break;
             default:
                 throw new NotSupportedVersionException('Your Magento version is not supported yet.');
         }
-
-        return $magentoNormalizer;
     }
 
     /**
@@ -106,19 +102,16 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case '1.8':
-            case '1.7':
-            case '1.6':
-                $magentoNormalizer = new ConfigurableNormalizer(
+            case MagentoGuesser::MAGENTO_VERSION_1_8:
+            case MagentoGuesser::MAGENTO_VERSION_1_7:
+            case MagentoGuesser::MAGENTO_VERSION_1_6:
+                return new ConfigurableNormalizer(
                     $this->channelManager,
                     $productNormalizer,
                     $priceMappingManager
                 );
-                break;
             default:
                 throw new NotSupportedVersionException('Your Magento version is not supported yet.');
         }
-
-        return $magentoNormalizer;
     }
 }

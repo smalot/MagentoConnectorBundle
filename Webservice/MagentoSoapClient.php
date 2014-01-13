@@ -26,13 +26,13 @@ class MagentoSoapClient
      *
      * @param MagentoSoapClientParameters $clientParameters
      */
-    public function __construct(MagentoSoapClientParameters $clientParameters, $soapClient = null)
+    public function __construct(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
     {
         $this->clientParameters = $clientParameters;
 
         if (!$soapClient) {
-            $wsdlUrl                = $this->clientParameters->getSoapUrl() . self::SOAP_WSDL_URL;
-            $soapOptions            = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
+            $wsdlUrl     = $this->clientParameters->getSoapUrl() . self::SOAP_WSDL_URL;
+            $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
 
             try {
                 $this->client = new \SoapClient($wsdlUrl, $soapOptions);
@@ -147,13 +147,14 @@ class MagentoSoapClient
     /**
      * Process the soap response
      *
-     * @param  mixed $response The soap response
-     * @param  array $call     The soap call
+     * @param mixed $response The soap response
+     * @param array $call     The soap call
      */
     public function processSoapResponse($response, $call)
     {
         if (is_array($response)) {
             if (isset($response['isFault']) && $response['isFault'] == 1) {
+
             }
         } else {
             if ($response == 1) {

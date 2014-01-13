@@ -10,7 +10,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\IsValidWsdlUrl;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 
 /**
  * Magento product writer
@@ -51,7 +51,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
     /**
      * @Assert\NotBlank(groups={"Execution"})
      * @Assert\Url(groups={"Execution"})
-     * @IsValidWsdlUrl(groups={"Execution"})
+     * @MagentoUrl(groups={"Execution"})
      */
     protected $soapUrl;
 

@@ -13,6 +13,10 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
  */
 class MagentoGuesser
 {
+    const MAGENTO_VERSION_1_8 = '1.8';
+    const MAGENTO_VERSION_1_7 = '1.7';
+    const MAGENTO_VERSION_1_6 = '1.6';
+
     /**
      * @var string
      */
