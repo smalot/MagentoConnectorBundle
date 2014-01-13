@@ -154,8 +154,6 @@ class MagentoSoapClient
     {
         if (is_array($response)) {
             if (isset($response['isFault']) && $response['isFault'] == 1) {
-                var_dump($call);
-                var_dump($response);
             }
         } else {
             if ($response == 1) {
