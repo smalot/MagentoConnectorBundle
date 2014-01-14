@@ -16,6 +16,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
  */
 class ConfigurableNormalizer extends AbstractNormalizer
 {
+    const PRICE           = 'price';
     const PRICE_CHANGES   = 'price_changes';
     const ASSOCIATED_SKUS = 'associated_skus';
 
@@ -127,6 +128,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $channel,
         $create
     ) {
+        $basePrice      = $this->priceMappingManager->getLowerPrice($products);
         $priceChanges   = $this->priceMappingManager->getPriceMapping($group, $products);
         $associatedSkus = $this->getProductsSkus($products);
 
@@ -144,6 +146,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,
             array(
+                self::PRICE           => $basePrice,
                 self::PRICE_CHANGES   => $priceChanges,
                 self::ASSOCIATED_SKUS => $associatedSkus
             )
