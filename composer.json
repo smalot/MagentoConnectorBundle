@@ -1,0 +1,29 @@
+{
+    "name": "akeneo/magento-connector-bundle",
+    "type": "symfony-bundle",
+    "description": "Akeneo PIM bundle to export to Magento platform",
+    "keywords": ["pim", "akeneo", "ecommerce", "e-commerce", "magento", "connector"],
+    "homepage": "http://akeneo.com",
+    "license": "OSL 3.0",
+    "authors": [
+        {
+            "name":     "Julien Sanchez",
+            "homepage": "http://akeneo.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+
+        "akeneo/pim-community-dev": "v1.0.0-BETA4"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-0": { "Pim\\Bundle\\MagentoConnectorBundle\\": "" }
+    },
+    "target-dir": "Pim/Bundle/MagentoConnectorBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "master"
+        }
+    }
+}
