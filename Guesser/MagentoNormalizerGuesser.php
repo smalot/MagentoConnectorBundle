@@ -48,8 +48,8 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer
     ) {
-        $this->channelManager  = $channelManager;
-        $this->mediaManager    = $mediaManager;
+        $this->channelManager         = $channelManager;
+        $this->mediaManager           = $mediaManager;
         $this->productValueNormalizer = $productValueNormalizer;
     }
 

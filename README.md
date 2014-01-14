@@ -1,10 +1,10 @@
-# MagentoConnectorBundle
+# MagentoConnectorBundle for Akeneo
 
 Welcome on the Akeneo PIM Magento connector bundle.
 
 This repository is issued to develop the Magento Connector for Akeneo PIM.
 
-Warning : this connector is still under development and not suitable for production environments.
+Warning : this connector is not production ready and is intended for evaluation and development purposes only!
 
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/akeneo/MagentoConnectorBundle/badges/quality-score.png?s=f2f90f8746e80dc5a1e422156672bd3b0bb6658f)](https://scrutinizer-ci.com/g/akeneo/MagentoConnectorBundle/)
 
@@ -42,7 +42,7 @@ To test the connector with the minimum data requirements you can load the demo f
 
 A standard Magento's installation require some fields to create a products. In order to be as generic as possible, you need to manage them in Akeneo PIM.
 
-The following Magento's attributes ar mandatory and need to be created in Akeneo :
+The following Magento's attributes are mandatory and need to be created in Akeneo :
 
 - name
 - price
