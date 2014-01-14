@@ -11,6 +11,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ValueNormalizer;
 
 /**
  * A magento guesser to get the proper normalizer
@@ -32,16 +33,24 @@ class MagentoNormalizerGuesser extends MagentoGuesser
     protected $mediaManager;
 
     /**
+     * @var ValueNormalizer
+     */
+    protected $valueNormalizer;
+
+    /**
      * Constructor
-     * @param ChannelManager $channelManager
-     * @param MediaManager   $mediaManager
+     * @param ChannelManager  $channelManager
+     * @param MediaManager    $mediaManager
+     * @param ValueNormalizer $valueNormalizer
      */
     public function __construct(
         ChannelManager $channelManager,
-        MediaManager $mediaManager
+        MediaManager $mediaManager,
+        ValueNormalizer $valueNormalizer
     ) {
-        $this->channelManager = $channelManager;
-        $this->mediaManager   = $mediaManager;
+        $this->channelManager  = $channelManager;
+        $this->mediaManager    = $mediaManager;
+        $this->valueNormalizer = $valueNormalizer;
     }
 
     /**
@@ -69,6 +78,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                 return new ProductNormalizer(
                     $this->channelManager,
                     $this->mediaManager,
+                    $this->valueNormalizer,
                     $enabled,
                     $visibility,
                     $currency
@@ -77,6 +87,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                 return ProductNormalizer16(
                     $this->channelManager,
                     $this->mediaManager,
+                    $this->valueNormalizer,
                     $enabled,
                     $visibility,
                     $currency

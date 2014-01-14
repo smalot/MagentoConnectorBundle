@@ -270,7 +270,7 @@ class MagentoWebservice
             return $this->magentoAttributeSets[$code];
         } else {
             throw new AttributeSetNotFoundException(
-                'The attribute set for code "' . $code . '" was not found'
+                'The attribute set for code "' . $code . '" was not found on Magento. Please create it before proceed.'
             );
         }
     }

@@ -31,7 +31,7 @@ products:
         size-fr_FR: XS
         tax_class_id-en_US: 4
         tax_class_id-fr_FR: 4
-    sku-002:
+    sku-001:
         sku: sku-002
         family: Shirt
         groups: oro_shirt

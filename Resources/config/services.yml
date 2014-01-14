@@ -16,6 +16,7 @@ services:
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.media'
+            - '@pim_magento_connector.normalizer.value'
 
     # validator
     pim_magento_connector.validator.has_valid_credentials:
