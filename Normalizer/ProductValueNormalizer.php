@@ -49,7 +49,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $object,
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
-                $context['currency']
+                $context['currencyCode']
             );
         } else {
             return null;
@@ -62,7 +62,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * @param mixed  $data   Data to normalize.
      * @param string $format The format being (de-)serialized from or into.
      *
-     * @return Boolean
+     * @return boolean
      */
     public function supportsNormalization($data, $format = null)
     {
@@ -118,7 +118,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * @param ProductValueInterface $value
      * @param array                 $magentoAttributes
      * @param array                 $magentoAttributesOptions
-     * @param string                $currency
+     * @param string                $currencyCode
      *
      * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
      * @return array
@@ -127,7 +127,7 @@ class ProductValueNormalizer implements NormalizerInterface
         ProductValueInterface $value,
         array $magentoAttributes,
         array $magentoAttributesOptions,
-        $currency
+        $currencyCode
     ) {
         $data      = $value->getData();
         $attribute = $value->getAttribute();
@@ -151,7 +151,7 @@ class ProductValueNormalizer implements NormalizerInterface
             $attribute,
             $attributeScope,
             $magentoAttributesOptions,
-            $currency
+            $currencyCode
         );
 
         return array($attribute->getCode() => $normalizedValue);
@@ -159,12 +159,12 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Normalize the given data
-     * @param mixed     $data
-     * @param callable  $normalizer
-     * @param Attribute $attribute
-     * @param string    $attributeScope
-     * @param array     $magentoAttributesOptions
-     * @param string    $currency
+     * @param mixed              $data
+     * @param callable           $normalizer
+     * @param AttributeInterface $attribute
+     * @param string             $attributeScope
+     * @param array              $magentoAttributesOptions
+     * @param string             $currencyCode
      *
      * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array
@@ -175,7 +175,7 @@ class ProductValueNormalizer implements NormalizerInterface
         AttributeInterface $attribute,
         $attributeScope,
         $magentoAttributesOptions,
-        $currency
+        $currencyCode
     ) {
         if (in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
             (
@@ -190,7 +190,7 @@ class ProductValueNormalizer implements NormalizerInterface
             $normalizedValue = $normalizer($data, array(
                 'attributeCode'            => $attribute->getCode(),
                 'magentoAttributesOptions' => $magentoAttributesOptions,
-                'currency'                 => $currency
+                'currencyCode'                 => $currencyCode
             ));
         } else {
             throw new InvalidScopeMatchException(
@@ -259,7 +259,7 @@ class ProductValueNormalizer implements NormalizerInterface
                         $data,
                         $parameters['attributeCode'],
                         $parameters['magentoAttributesOptions'],
-                        $parameters['currency']
+                        $parameters['currencyCode']
                     );
                 }
             ),
@@ -353,11 +353,11 @@ class ProductValueNormalizer implements NormalizerInterface
      * @param array  $data
      * @param string $attributeCode
      * @param array  $magentoAttributesOptions
-     * @param string $currency
+     * @param string $currencyCode
      *
      * @return string
      */
-    protected function normalizeCollectionData($data, $attributeCode, array $magentoAttributesOptions, $currency)
+    protected function normalizeCollectionData($data, $attributeCode, array $magentoAttributesOptions, $currencyCode)
     {
         $result = array();
         foreach ($data as $item) {
@@ -367,7 +367,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $result[] = $this->getOptionId($attributeCode, $optionCode, $magentoAttributesOptions);
             } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
                 if ($item->getData() !== null &&
-                    $item->getCurrency() === $currency
+                    $item->getCurrency() === $currencyCode
                 ) {
                     return $item->getData();
                 }

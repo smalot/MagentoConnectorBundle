@@ -224,12 +224,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get values array for a given product
      *
-     * @param Product $product                  The given product
-     * @param array   $magentoAttributes        Attribute list from Magento
-     * @param array   $magentoAttributesOptions Attribute options list from Magento
-     * @param string  $localeCode               The locale to apply
-     * @param string  $scopeCode                The akeno scope
-     * @param boolean $onlyLocalized            If true, only get translatable attributes
+     * @param ProductInterface $product                  The given product
+     * @param array            $magentoAttributes        Attribute list from Magento
+     * @param array            $magentoAttributesOptions Attribute options list from Magento
+     * @param string           $localeCode               The locale to apply
+     * @param string           $scopeCode                The akeno scope
+     * @param boolean          $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
      */
@@ -250,7 +250,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'onlyLocalized'            => $onlyLocalized,
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'currency'                 => $this->currency
+            'currencyCode'             => $this->currency
         );
 
         foreach ($product->getValues() as $value) {
