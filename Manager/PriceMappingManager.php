@@ -47,7 +47,7 @@ class PriceMappingManager
     public function getPriceMapping(Group $group, $products)
     {
         $attributes = $group->getAttributes();
-        $lowerPrice = $this->getLowerPrice($products);
+        $lowerPrice = $this->getLowestPrice($products);
 
         $priceMapping = array();
 
@@ -66,7 +66,7 @@ class PriceMappingManager
      *
      * @return int
      */
-    public function getLowerPrice($products)
+    public function getLowestPrice($products)
     {
         $lowerPrice = $this->getProductPrice($products[0]);
 
@@ -106,7 +106,7 @@ class PriceMappingManager
             $productsWithOption = $this->getProductsWithOption($products, $option);
 
             if (count($productsWithOption) > 0) {
-                $lowerPrice = $this->getLowerPrice($productsWithOption);
+                $lowerPrice = $this->getLowestPrice($productsWithOption);
                 $attributeMapping[$option->getCode()] = $lowerPrice - $basePrice;
             }
         }

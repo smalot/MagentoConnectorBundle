@@ -128,7 +128,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $channel,
         $create
     ) {
-        $basePrice      = $this->priceMappingManager->getLowerPrice($products);
+        $basePrice      = $this->priceMappingManager->getLowestPrice($products);
         $priceChanges   = $this->priceMappingManager->getPriceMapping($group, $products);
         $associatedSkus = $this->getProductsSkus($products);
 
