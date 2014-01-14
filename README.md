@@ -55,4 +55,3 @@ The following Magento's attributes are mandatory and need to be created in Akene
 # Bug and issues
 
 This bundle is still under active development. So you could encounter bugs and instabilities. Feel free to report them on this repository's [issue section](https://github.com/akeneo/MagentoConnectorBundle/issues).
-
