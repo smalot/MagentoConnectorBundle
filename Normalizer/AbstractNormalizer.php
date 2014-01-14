@@ -53,7 +53,8 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get all Pim locales for the given channel
-     * @param  string $channel
+     * @param string $channel
+     *
      * @return array The locales
      */
     protected function getPimLocales($channel)
@@ -69,9 +70,10 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get the corresponding storeview code for a givent locale
-     * @param  string $locale
-     * @param  array  $magentoStoreViews
-     * @param  array  $storeViewMapping
+     * @param string $locale
+     * @param array  $magentoStoreViews
+     * @param array  $storeViewMapping
+     *
      * @return string
      */
     protected function getStoreViewCodeForLocale($locale, $magentoStoreViews, $storeViewMapping)
@@ -85,8 +87,9 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get the locale based on storeViewMapping
-     * @param  string $storeViewCode
-     * @param  array  $storeViewMapping
+     * @param string $locale
+     * @param array  $storeViewMapping
+     *
      * @return string
      */
     protected function getMappedStoreView($locale, $storeViewMapping)
@@ -100,8 +103,9 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get the storeview for the given code
-     * @param  string $code              [description]
-     * @param  array  $magentoStoreViews [description]
+     * @param string $code
+     * @param array  $magentoStoreViews
+     *
      * @return null|string
      */
     protected function getStoreView($code, $magentoStoreViews)
@@ -115,10 +119,12 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Manage not found locales
-     * @param  string $storeViewCode
+     * @param string $storeViewCode
+     * @param array  $magentoStoreViewMapping
+     *
      * @throws LocaleNotMatchedException
      */
-    protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
+    protected function localeNotFound($storeViewCode, array $magentoStoreViewMapping)
     {
         throw new LocaleNotMatchedException(
             sprintf(

@@ -2,7 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
@@ -103,16 +102,17 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get default configurable
-     * @param  Group  $group
-     * @param  string $sku
-     * @param  int    $attributeSetId
-     * @param  array  $products
-     * @param  array  $magentoAttributes
-     * @param  array  $magentoAttributesOptions
-     * @param  string $locale
-     * @param  string $website
-     * @param  string $channel
-     * @param  bool   $create
+     * @param Group  $group
+     * @param string $sku
+     * @param int    $attributeSetId
+     * @param array  $products
+     * @param array  $magentoAttributes
+     * @param array  $magentoAttributesOptions
+     * @param string $locale
+     * @param string $website
+     * @param string $channel
+     * @param bool   $create
+     *
      * @return array
      */
     protected function getDefaultConfigurable(
@@ -162,9 +162,10 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get the configurable for a new call
-     * @param  array $configurableValues
-     * @param  string $sku
-     * @param  int $attributeSetId
+     * @param array  $configurableValues
+     * @param string $sku
+     * @param int    $attributeSetId
+     *
      * @return array
      */
     protected function getNewConfigurable($configurableValues, $sku, $attributeSetId)
@@ -179,8 +180,9 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get the configurable for an update call
-     * @param  array $configurableValues
-     * @param  string $sku
+     * @param array  $configurableValues
+     * @param string $sku
+     *
      * @return array
      */
     protected function getUpdatedConfigurable($configurableValues, $sku)
@@ -193,7 +195,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get all products skus
-     * @param  array $products
+     * @param array $products
+     *
      * @return array
      */
     protected function getProductsSkus($products)

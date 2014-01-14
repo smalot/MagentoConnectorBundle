@@ -66,7 +66,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      * Constructor
      *
      * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $channelManager
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
      */
     public function __construct(
         ChannelManager $channelManager,
@@ -90,6 +90,8 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      * Set soapUsername
      *
      * @param string $soapUsername Soap mangeto soapUsername
+     *
+     * @return AbstractMagentoWriter
      */
     public function setSoapUsername($soapUsername)
     {
@@ -112,6 +114,8 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      * Set soapApiKey
      *
      * @param string $soapApiKey Soap mangeto soapApiKey
+     *
+     * @return AbstractMagentoWriter
      */
     public function setSoapApiKey($soapApiKey)
     {
@@ -134,6 +138,8 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      * Set soapUrl
      *
      * @param string $soapUrl mangeto soap url
+     *
+     * @return AbstractMagentoWriter
      */
     public function setSoapUrl($soapUrl)
     {
@@ -156,6 +162,8 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      * Set channel
      *
      * @param string $channel channel
+     *
+     * @return AbstractMagentoWriter
      */
     public function setChannel($channel)
     {

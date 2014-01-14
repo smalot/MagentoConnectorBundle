@@ -25,6 +25,7 @@ class MagentoSoapClient
      * Create and init the soap client
      *
      * @param MagentoSoapClientParameters $clientParameters
+     * @param SoapClient                  $soapClient
      */
     public function __construct(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
     {
@@ -85,8 +86,9 @@ class MagentoSoapClient
     /**
      * Call soap api
      *
-     * @param  string $resource
-     * @param  array  $params
+     * @param string $resource
+     * @param array  $params
+     *
      * @return mixed
      */
     public function call($resource, $params = null)

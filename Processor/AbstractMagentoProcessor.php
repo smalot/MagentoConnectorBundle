@@ -122,7 +122,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizerGuesser $productNormalizerGuesser
+     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
      * @param MetricConverter          $metricConverter
      */
     public function __construct(
@@ -151,6 +151,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set soapUsername
      *
      * @param string $soapUsername Soap mangeto soapUsername
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setSoapUsername($soapUsername)
     {
@@ -173,6 +175,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set soapApiKey
      *
      * @param string $soapApiKey Soap mangeto soapApiKey
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setSoapApiKey($soapApiKey)
     {
@@ -195,6 +199,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set soapUrl
      *
      * @param string $soapUrl mangeto soap url
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setSoapUrl($soapUrl)
     {
@@ -217,6 +223,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set channel
      *
      * @param string $channel channel
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setChannel($channel)
     {
@@ -239,6 +247,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set currency
      *
      * @param string $currency currency
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setCurrency($currency)
     {
@@ -261,6 +271,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set enabled
      *
      * @param string $enabled enabled
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setEnabled($enabled)
     {
@@ -283,6 +295,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set visibility
      *
      * @param string $visibility visibility
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setVisibility($visibility)
     {
@@ -305,6 +319,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set defaultLocale
      *
      * @param string $defaultLocale defaultLocale
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setDefaultLocale($defaultLocale)
     {
@@ -327,6 +343,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set website
      *
      * @param string $website website
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setWebsite($website)
     {
@@ -349,6 +367,8 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      * Set storeViewMapping
      *
      * @param string $storeViewMapping storeViewMapping
+     *
+     * @return AbstractMagentoProcessor
      */
     public function setStoreViewMapping($storeViewMapping)
     {
@@ -393,8 +413,9 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     /**
      * Get the attribute set id for the given family code
      *
-     * @param  string               $familyCode
-     * @param  mixed                $relatedItem
+     * @param string $familyCode
+     * @param mixed  $relatedItem
+     *
      * @throws InvalidItemException If The attribute set doesn't exist on Mangento
      * @return integer
      */

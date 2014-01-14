@@ -32,8 +32,9 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizerGuesser $productNormalizerGuesser
+     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
      * @param MetricConverter          $metricConverter
+     * @param GroupManager             $groupManager
      */
     public function __construct(
         ChannelManager $channelManager,
@@ -108,8 +109,9 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Normalize the given configurable
      *
-     * @param  array                $configurable
-     * @param  array                $context      The context
+     * @param array $configurable The given configurable
+     * @param array $context      The context
+     *
      * @throws InvalidItemException If a normalization error occured
      * @return array                processed item
      */
@@ -127,8 +129,9 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Test if a configurable allready exist on magento platform
      *
-     * @param  array $configurable         The configurable
-     * @param  array $magentoConfigurables Magento configurables
+     * @param array $configurable         The configurable
+     * @param array $magentoConfigurables Magento configurables
+     *
      * @return bool
      */
     protected function magentoConfigurableExist($configurable, $magentoConfigurables)
@@ -148,7 +151,8 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 
     /**
      * Get the family of the given configurable
-     * @param  array                $configurable
+     * @param array $configurable
+     *
      * @throws InvalidItemException If there are two products with different families
      * @return Family
      */
@@ -170,8 +174,9 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
 
     /**
      * Get products association for each groups
-     * @param  array $products
-     * @param  array $groupsIds
+     * @param array $products
+     * @param array $groupsIds
+     *
      * @return array
      */
     protected function getProductsForGroups(array $products, array $groupsIds)

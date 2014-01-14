@@ -34,7 +34,7 @@ class MagentoGuesser
             try {
                 $magentoVersion = $client->call('core_magento.info')['magento_version'];
             } catch (\SoapFault $e) {
-                return '1.6';
+                return self::MAGENTO_VERSION_1_6;
             }
 
             $pattern = '/^(?P<version>[0-9]\.[0-9])/';

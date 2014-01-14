@@ -16,12 +16,13 @@ interface ProductNormalizerInterface
     /**
      * Get values array for a given product
      *
-     * @param  Product $product                  The given product
-     * @param  array   $magentoAttributes
-     * @param  array   $magentoAttributesOptions
-     * @param  string  $localeCode               The locale to apply
-     * @param  string  $scopeCode                The akeno scope
-     * @param  boolean $onlyLocalized            If true, only get translatable attributes
+     * @param Product $product                  The given product
+     * @param array   $magentoAttributes        Attribute list from Magento
+     * @param array   $magentoAttributesOptions Attribute options list from Magento
+     * @param string  $localeCode               The locale to apply
+     * @param string  $scopeCode                The akeno scope
+     * @param boolean $onlyLocalized            If true, only get translatable attributes
+     *
      * @return array Computed data
      */
     public function getValues(
@@ -36,7 +37,8 @@ interface ProductNormalizerInterface
     /**
      * Get all images of a product normalized
      *
-     * @param  Product $product
+     * @param Product $product
+     *
      * @return array
      */
     public function getNormalizedImages(Product $product);

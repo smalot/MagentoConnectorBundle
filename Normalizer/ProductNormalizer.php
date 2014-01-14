@@ -127,15 +127,16 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get the default product with all attributes (ie : event the non localizables ones)
      *
-     * @param  Product $product                  The given product
-     * @param  array   $magentoAttributes
-     * @param  array   $magentoAttributesOptions
-     * @param  integer $attributeSetId           Attribute set id
-     * @param  string  $defaultLocale            Default locale
-     * @param  string  $channel                  Channel
-     * @param  string  $website                  Website name
-     * @param  bool    $create                   Is it a creation ?
-     * @return array   The default product data
+     * @param Product $product                  The given product
+     * @param array   $magentoAttributes        Attribute list from Magento
+     * @param array   $magentoAttributesOptions Attribute options list from Magento
+     * @param integer $attributeSetId           Attribute set id
+     * @param string  $defaultLocale            Default locale
+     * @param string  $channel                  Channel
+     * @param string  $website                  Website name
+     * @param bool    $create                   Is it a creation ?
+     *
+     * @return array The default product data
      */
     protected function getDefaultProduct(
         Product $product,
@@ -181,13 +182,14 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get values array for a given product
      *
-     * @param  Product $product                  The given product
-     * @param  array   $magentoAttributes
-     * @param  array   $magentoAttributesOptions
-     * @param  string  $localeCode               The locale to apply
-     * @param  string  $scopeCode                The akeno scope
-     * @param  boolean $onlyLocalized            If true, only get translatable attributes
-     * @return array   Computed data
+     * @param Product $product                  The given product
+     * @param array   $magentoAttributes        Attribute list from Magento
+     * @param array   $magentoAttributesOptions Attribute options list from Magento
+     * @param string  $localeCode               The locale to apply
+     * @param string  $scopeCode                The akeno scope
+     * @param boolean $onlyLocalized            If true, only get translatable attributes
+     *
+     * @return array Computed data
      */
     public function getValues(
         Product $product,
@@ -226,11 +228,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Is the given value normalizable
-     * @param  ProductValue $value
-     * @param  string       $identifier
-     * @param  string       $scopeCode
-     * @param  string       $localeCode
-     * @param  bool         $onlyLocalized
+     * @param ProductValue $value
+     * @param string       $identifier
+     * @param string       $scopeCode
+     * @param string       $localeCode
+     * @param bool         $onlyLocalized
+     *
      * @return boolean
      */
     protected function isValueNormalizable($value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
@@ -269,9 +272,10 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get the normalized value
      *
-     * @param  ProductValue               $value
-     * @param  array                      $magentoAttributes
-     * @param  array                      $magentoAttributesOptions
+     * @param ProductValue $value
+     * @param array        $magentoAttributes
+     * @param array        $magentoAttributesOptions
+     *
      * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
      * @return array
      */
@@ -306,11 +310,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Normalize the given data
-     * @param  mixed                      $data
-     * @param  callable                   $normalizer
-     * @param  Attribute                  $attribute
-     * @param  string                     $attributeScope
-     * @param  array                      $magentoAttributesOptions
+     * @param mixed     $data
+     * @param callable  $normalizer
+     * @param Attribute $attribute
+     * @param string    $attributeScope
+     * @param array     $magentoAttributesOptions
+     *
      * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array
      */
@@ -486,7 +491,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get normalizer closure matching the corresponding filter with $data
      *
-     * @param  mixed   $data
+     * @param mixed $data
+     *
      * @return closure
      */
     protected function getNormalizer($data)
@@ -537,9 +543,10 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get the id of the given magento option code
      *
-     * @param  string                 $attributeCode            The product attribute code
-     * @param  string                 $optionCode               The option label
-     * @param  array                  $magentoAttributesOptions
+     * @param string $attributeCode            The product attribute code
+     * @param string $optionCode               The option label
+     * @param array  $magentoAttributesOptions Attribute options list from Magento
+     *
      * @throws InvalidOptionException If the given option doesn't exist on Magento
      * @return integer
      */
@@ -566,7 +573,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get all images of a product normalized
      *
-     * @param  Product $product
+     * @param Product $product
+     *
      * @return array
      */
     public function getNormalizedImages(Product $product)

@@ -59,8 +59,9 @@ class MagentoWebservice
     /**
      * Get options for the given attribute
      *
-     * @param  string $attributeCode Attribute code
-     * @return array  the formated options for the given attribute
+     * @param string $attributeCode Attribute code
+     *
+     * @return array the formated options for the given attribute
      */
     protected function getAttributeOptions($attributeCode)
     {
@@ -146,7 +147,9 @@ class MagentoWebservice
     /**
      * Get attribute list for a given attribute set code
      *
-     * @param string $attributeSetId the attribute set id
+     * @param string $attributeSetCode the attribute set code
+     *
+     * @return array
      */
     public function getAttributeList($attributeSetCode)
     {
@@ -164,7 +167,8 @@ class MagentoWebservice
 
     /**
      * Get products status in magento (do they exist ?)
-     * @param  array $products the given products
+     * @param array $products the given products
+     *
      * @return array
      */
     public function getProductsStatus($products)
@@ -176,7 +180,8 @@ class MagentoWebservice
 
     /**
      * Get configurables status in magento (do they exist ?)
-     * @param  array $configurables the given configurables
+     * @param array $configurables the given configurables
+     *
      * @return array
      */
     public function getConfigurablesStatus(array $configurables)
@@ -186,6 +191,12 @@ class MagentoWebservice
         return $this->getStatusForSkus($skus);
     }
 
+    /**
+     * Get the products status for the given skus
+     * @param array $skus
+     *
+     * @return array
+     */
     protected function getStatusForSkus($skus)
     {
         $condition        = new \StdClass();
@@ -209,7 +220,8 @@ class MagentoWebservice
 
     /**
      * Serialize products id in csv
-     * @param  array  $products The given products
+     * @param array $products The given products
+     *
      * @return string The serialization result
      */
     protected function getProductsIds(array $products)
@@ -225,7 +237,8 @@ class MagentoWebservice
 
     /**
      * Serialize configurables id in csv
-     * @param  array  $configurables The given configurables
+     * @param array $configurables The given configurables
+     *
      * @return string The serialization result
      */
     protected function getConfigurablesIds(array $configurables)
@@ -244,7 +257,8 @@ class MagentoWebservice
 
     /**
      * Get magento attributeSets from the magento api
-     * @param  string                        $code the attributeSet id
+     * @param string $code the attributeSet id
+     *
      * @throws AttributeSetNotFoundException If If the attribute doesn't exist on Magento side
      * @return void
      */
@@ -279,7 +293,8 @@ class MagentoWebservice
     /**
      * Get all images attached to a product
      *
-     * @param  string $sku The product sku
+     * @param string $sku The product sku
+     *
      * @return array
      */
     public function getImages($sku)
@@ -313,8 +328,9 @@ class MagentoWebservice
 
     /**
      * Delete image for a given sku and a given filename
-     * @param  string $sku
-     * @param  string $imageFilename
+     * @param string $sku
+     * @param string $imageFilename
+     *
      * @return string
      */
     public function deleteImage($sku, $imageFilename)

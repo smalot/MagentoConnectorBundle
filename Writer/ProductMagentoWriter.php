@@ -2,8 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
@@ -51,8 +49,8 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     /**
      * Create a call for the given product part
      *
-     * @param  array  $productPart      A product part
-     * @param  string $storeViewCode The storeview code
+     * @param array  $productPart   A product part
+     * @param string $storeViewCode The storeview code
      */
     protected function createCall($productPart, $storeViewCode)
     {
@@ -71,7 +69,8 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     /**
      * Get the sku of the given normalized product
      *
-     * @param  array $product
+     * @param array $product
+     *
      * @return string
      */
     protected function getProductSku($product)
@@ -88,7 +87,7 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     /**
      * Clean old images on magento product
      *
-     * @param  array $product
+     * @param array $product
      */
     protected function pruneImages($product)
     {

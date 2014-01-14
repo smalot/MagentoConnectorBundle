@@ -63,8 +63,9 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Normalize the given product
      *
-     * @param  Product              $product [description]
-     * @param  array                $context The context
+     * @param Product $product [description]
+     * @param array   $context The context
+     *
      * @throws InvalidItemException If a normalization error occure
      * @return array                processed item
      */
@@ -82,8 +83,9 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Test if a product allready exist on magento platform
      *
-     * @param  Product $product         The product
-     * @param  array   $magentoProducts Magento products
+     * @param Product $product         The product
+     * @param array   $magentoProducts Magento products
+     *
      * @return bool
      */
     protected function magentoProductExist(Product $product, $magentoProducts)
@@ -100,8 +102,9 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     /**
      * Test if the product attribute set changed
      *
-     * @param  Product $product         The product
-     * @param  array   $magentoProducts Magento products
+     * @param Product $product         The product
+     * @param array   $magentoProducts Magento products
+     *
      * @return bool
      */
     protected function attributeSetChanged(Product $product, $magentoProducts)
