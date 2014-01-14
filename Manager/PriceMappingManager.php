@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
-use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 
@@ -81,11 +81,11 @@ class PriceMappingManager
 
     /**
      * Get the price of the given product
-     * @param Product $product
+     * @param ProductInterface $product
      *
      * @return int
      */
-    protected function getProductPrice(Product $product)
+    protected function getProductPrice(ProductInterface $product)
     {
         return $product->getValue('price', $this->locale)->getPrice($this->currency)->getData();
     }
