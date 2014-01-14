@@ -19,10 +19,5 @@
     "autoload": {
         "psr-0": { "Pim\\Bundle\\MagentoConnectorBundle\\": "" }
     },
-    "target-dir": "Pim/Bundle/MagentoConnectorBundle",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "master"
-        }
-    }
+    "target-dir": "Pim/Bundle/MagentoConnectorBundle"
 }
