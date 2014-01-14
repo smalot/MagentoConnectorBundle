@@ -66,7 +66,7 @@ class PriceMappingManager
      *
      * @return int
      */
-    protected function getLowerPrice($products)
+    public function getLowerPrice($products)
     {
         $lowerPrice = $this->getProductPrice($products[0]);
 
