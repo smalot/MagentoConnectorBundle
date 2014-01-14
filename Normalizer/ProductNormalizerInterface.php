@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
 /**
  * Defines the interface of a product normalizers.
@@ -16,17 +16,17 @@ interface ProductNormalizerInterface
     /**
      * Get values array for a given product
      *
-     * @param Product $product                  The given product
-     * @param array   $magentoAttributes        Attribute list from Magento
-     * @param array   $magentoAttributesOptions Attribute options list from Magento
-     * @param string  $localeCode               The locale to apply
-     * @param string  $scopeCode                The akeno scope
-     * @param boolean $onlyLocalized            If true, only get translatable attributes
+     * @param ProductInterface $product                  The given product
+     * @param array            $magentoAttributes        Attribute list from Magento
+     * @param array            $magentoAttributesOptions Attribute options list from Magento
+     * @param string           $localeCode               The locale to apply
+     * @param string           $scopeCode                The akeno scope
+     * @param boolean          $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
      */
     public function getValues(
-        Product $product,
+        ProductInterface $product,
         $magentoAttributes,
         $magentoAttributesOptions,
         $localeCode,
@@ -37,9 +37,9 @@ interface ProductNormalizerInterface
     /**
      * Get all images of a product normalized
      *
-     * @param Product $product
+     * @param ProductInterface $product
      *
      * @return array
      */
-    public function getNormalizedImages(Product $product);
+    public function getNormalizedImages(ProductInterface $product);
 }

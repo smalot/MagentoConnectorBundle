@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
@@ -69,7 +69,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
      * @throws InvalidItemException If a normalization error occure
      * @return array                processed item
      */
-    protected function normalizeProduct(Product $product, $context)
+    protected function normalizeProduct(ProductInterface $product, $context)
     {
         try {
             $processedItem = $this->productNormalizer->normalize($product, 'MagentoArray', $context);
@@ -88,7 +88,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @return bool
      */
-    protected function magentoProductExist(Product $product, $magentoProducts)
+    protected function magentoProductExist(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier()) {
@@ -107,7 +107,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @return bool
      */
-    protected function attributeSetChanged(Product $product, $magentoProducts)
+    protected function attributeSetChanged(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier() &&

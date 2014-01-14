@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
-use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 
 /**
@@ -126,21 +126,62 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     }
 
     /**
+     * Get all images of a product normalized
+     *
+     * @param ProductInterface $product
+     *
+     * @return array
+     */
+    public function getNormalizedImages(ProductInterface $product)
+    {
+        $imagesValue = $product->getValues()->filter(
+            function ($value) {
+                return $value->getData() instanceof Media;
+            }
+        );
+
+        $images = array();
+
+        foreach ($imagesValue as $imageValue) {
+            $data = $imageValue->getData();
+
+            if ($imageData = $this->mediaManager->getBase64($data)) {
+                $images[] = array(
+                    (string) $product->getIdentifier(),
+                    array(
+                        'file' => array(
+                            'name'    => $data->getFilename(),
+                            'content' => $imageData,
+                            'mime'    => $data->getMimeType()
+                        ),
+                        'label'    => $data->getFilename(),
+                        'position' => 0,
+                        'types'    => array(MagentoWebservice::SMALL_IMAGE),
+                        'exclude'  => 0
+                    )
+                );
+            }
+        }
+
+        return $images;
+    }
+
+    /**
      * Get the default product with all attributes (ie : event the non localizables ones)
      *
-     * @param Product $product                  The given product
-     * @param array   $magentoAttributes        Attribute list from Magento
-     * @param array   $magentoAttributesOptions Attribute options list from Magento
-     * @param integer $attributeSetId           Attribute set id
-     * @param string  $defaultLocale            Default locale
-     * @param string  $channel                  Channel
-     * @param string  $website                  Website name
-     * @param bool    $create                   Is it a creation ?
+     * @param ProductInterface $product                  The given product
+     * @param array            $magentoAttributes        Attribute list from Magento
+     * @param array            $magentoAttributesOptions Attribute options list from Magento
+     * @param integer          $attributeSetId           Attribute set id
+     * @param string           $defaultLocale            Default locale
+     * @param string           $channel                  Channel
+     * @param string           $website                  Website name
+     * @param bool             $create                   Is it a creation ?
      *
      * @return array The default product data
      */
     protected function getDefaultProduct(
-        Product $product,
+        ProductInterface $product,
         $magentoAttributes,
         $magentoAttributesOptions,
         $attributeSetId,
@@ -193,7 +234,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @return array Computed data
      */
     public function getValues(
-        Product $product,
+        ProductInterface $product,
         $magentoAttributes,
         $magentoAttributesOptions,
         $localeCode,
@@ -245,46 +286,5 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
             'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT)
         );
-    }
-
-    /**
-     * Get all images of a product normalized
-     *
-     * @param Product $product
-     *
-     * @return array
-     */
-    public function getNormalizedImages(Product $product)
-    {
-        $imagesValue = $product->getValues()->filter(
-            function ($value) {
-                return $value->getData() instanceof Media;
-            }
-        );
-
-        $images = array();
-
-        foreach ($imagesValue as $imageValue) {
-            $data = $imageValue->getData();
-
-            if ($imageData = $this->mediaManager->getBase64($data)) {
-                $images[] = array(
-                    (string) $product->getIdentifier(),
-                    array(
-                        'file' => array(
-                            'name'    => $data->getFilename(),
-                            'content' => $imageData,
-                            'mime'    => $data->getMimeType()
-                        ),
-                        'label'    => $data->getFilename(),
-                        'position' => 0,
-                        'types'    => array(MagentoWebservice::SMALL_IMAGE),
-                        'exclude'  => 0
-                    )
-                );
-            }
-        }
-
-        return $images;
     }
 }

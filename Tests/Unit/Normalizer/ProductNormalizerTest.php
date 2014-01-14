@@ -24,12 +24,14 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->channelManager = $this->getChannelManagerMock();
-        $this->mediaManager   = $this->getMediaManagerMock();
+        $this->channelManager  = $this->getChannelManagerMock();
+        $this->mediaManager    = $this->getMediaManagerMock();
+        $this->valueNormalizer = $this->getValueNormalizerMock();
 
         $this->normalizer = new ProductNormalizer(
             $this->channelManager,
             $this->mediaManager,
+            $this->valueNormalizer,
             self::ENABLED,
             self::VISIBILITY,
             self::CURRENCY
@@ -57,42 +59,6 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
         $context['create'] = false;
 
         $product = $this->getProductMock($this->getSampleAttributes());
-
-        $this->normalizer->normalize($product, null, $context);
-    }
-
-    /**
-     * @expectedException Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNotFoundException
-     */
-    public function testNormalizeAttributeNotFound()
-    {
-        $context = $this->getContext();
-
-        $product = $this->getProductMock($this->getUnknowAttributes());
-
-        $this->normalizer->normalize($product, null, $context);
-    }
-
-    /**
-     * @expectedException Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidScopeMatchException
-     */
-    public function testNormalizeInvalidScope()
-    {
-        $context = $this->getContext();
-
-        $product = $this->getProductMock($this->getInvalidScopeAttributes());
-
-        $this->normalizer->normalize($product, null, $context);
-    }
-
-    /**
-     * @expectedException Pim\Bundle\MagentoConnectorBundle\Normalizer\InvalidOptionException
-     */
-    public function testNormalizeInvalidOption()
-    {
-        $context = $this->getContext();
-
-        $product = $this->getProductMock($this->getAttributeWithInvalidOption());
 
         $this->normalizer->normalize($product, null, $context);
     }
@@ -545,5 +511,22 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('imageBase64Encoded'));
 
         return $mediaManager;
+    }
+
+    /**
+     * Get the value normalizer mock
+     * @return ValueNormalizer
+     */
+    protected function getValueNormalizerMock()
+    {
+        $valueNormalizer = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ValueNormalizer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $valueNormalizer->expects($this->any())
+            ->method('normalize')
+            ->will($this->returnValue(array('attribute' => '12')));
+
+        return $valueNormalizer;
     }
 }
