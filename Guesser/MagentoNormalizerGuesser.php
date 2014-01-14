@@ -11,7 +11,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ValueNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 
 /**
  * A magento guesser to get the proper normalizer
@@ -33,24 +33,24 @@ class MagentoNormalizerGuesser extends MagentoGuesser
     protected $mediaManager;
 
     /**
-     * @var ValueNormalizer
+     * @var ProductValueNormalizer
      */
-    protected $valueNormalizer;
+    protected $productValueNormalizer;
 
     /**
      * Constructor
-     * @param ChannelManager  $channelManager
-     * @param MediaManager    $mediaManager
-     * @param ValueNormalizer $valueNormalizer
+     * @param ChannelManager         $channelManager
+     * @param MediaManager           $mediaManager
+     * @param ProductValueNormalizer $productValueNormalizer
      */
     public function __construct(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
-        ValueNormalizer $valueNormalizer
+        ProductValueNormalizer $productValueNormalizer
     ) {
         $this->channelManager  = $channelManager;
         $this->mediaManager    = $mediaManager;
-        $this->valueNormalizer = $valueNormalizer;
+        $this->productValueNormalizer = $productValueNormalizer;
     }
 
     /**
@@ -78,7 +78,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                 return new ProductNormalizer(
                     $this->channelManager,
                     $this->mediaManager,
-                    $this->valueNormalizer,
+                    $this->productValueNormalizer,
                     $enabled,
                     $visibility,
                     $currency
@@ -87,7 +87,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                 return ProductNormalizer16(
                     $this->channelManager,
                     $this->mediaManager,
-                    $this->valueNormalizer,
+                    $this->productValueNormalizer,
                     $enabled,
                     $visibility,
                     $currency

@@ -26,12 +26,12 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     {
         $this->channelManager  = $this->getChannelManagerMock();
         $this->mediaManager    = $this->getMediaManagerMock();
-        $this->valueNormalizer = $this->getValueNormalizerMock();
+        $this->productValueNormalizer = $this->getProductValueNormalizerMock();
 
         $this->normalizer = new ProductNormalizer(
             $this->channelManager,
             $this->mediaManager,
-            $this->valueNormalizer,
+            $this->productValueNormalizer,
             self::ENABLED,
             self::VISIBILITY,
             self::CURRENCY
@@ -515,18 +515,18 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get the value normalizer mock
-     * @return ValueNormalizer
+     * @return ProductValueNormalizer
      */
-    protected function getValueNormalizerMock()
+    protected function getProductValueNormalizerMock()
     {
-        $valueNormalizer = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ValueNormalizer')
+        $productValueNormalizer = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $valueNormalizer->expects($this->any())
+        $productValueNormalizer->expects($this->any())
             ->method('normalize')
             ->will($this->returnValue(array('attribute' => '12')));
 
-        return $valueNormalizer;
+        return $productValueNormalizer;
     }
 }

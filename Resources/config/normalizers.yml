@@ -1,5 +1,5 @@
 parameters:
-    pim_magento_connector.normalizer.value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ValueNormalizer
+    pim_magento_connector.normalizer.value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer
 
 services:
 

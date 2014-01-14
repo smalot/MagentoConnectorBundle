@@ -41,23 +41,23 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     protected $mediaManager;
 
     /**
-     * @var ValueNormalizer
+     * @var ProductValueNormalizer
      */
-    protected $valueNormalizer;
+    protected $productValueNormalizer;
 
     /**
      * Constructor
-     * @param ChannelManager  $channelManager
-     * @param MediaManager    $mediaManager
-     * @param ValueNormalizer $valueNormalizer
-     * @param bool            $enabled
-     * @param bool            $visibility
-     * @param string          $currency
+     * @param ChannelManager         $channelManager
+     * @param MediaManager           $mediaManager
+     * @param ProductValueNormalizer $productValueNormalizer
+     * @param bool                   $enabled
+     * @param bool                   $visibility
+     * @param string                 $currency
      */
     public function __construct(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
-        ValueNormalizer $valueNormalizer,
+        ProductValueNormalizer $productValueNormalizer,
         $enabled,
         $visibility,
         $currency
@@ -65,7 +65,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         parent::__construct($channelManager);
 
         $this->mediaManager    = $mediaManager;
-        $this->valueNormalizer = $valueNormalizer;
+        $this->productValueNormalizer = $productValueNormalizer;
         $this->enabled         = $enabled;
         $this->visibility      = $visibility;
         $this->currency        = $currency;
@@ -254,7 +254,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         );
 
         foreach ($product->getValues() as $value) {
-            if (($normalizedValue = $this->valueNormalizer->normalize($value, 'MagentoArray', $context)) !== null) {
+            if (($normalizedValue = $this->productValueNormalizer->normalize($value, 'MagentoArray', $context)) !== null) {
                 $normalizedValues = array_merge(
                     $normalizedValues,
                     $normalizedValue

@@ -18,7 +18,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundExce
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ValueNormalizer implements NormalizerInterface
+class ProductValueNormalizer implements NormalizerInterface
 {
     const GLOBAL_SCOPE = 'global';
 
@@ -215,7 +215,7 @@ class ValueNormalizer implements NormalizerInterface
      *
      * @return array
      */
-    protected function getValueNormalizers()
+    protected function getProductValueNormalizers()
     {
         return array(
             array(
@@ -335,16 +335,16 @@ class ValueNormalizer implements NormalizerInterface
      */
     protected function getNormalizer($data)
     {
-        $valueNormalizers = $this->getValueNormalizers();
+        $productValueNormalizers = $this->getProductValueNormalizers();
 
         $cpt = 0;
-        $end = count($valueNormalizers);
+        $end = count($productValueNormalizers);
 
-        while ($cpt < $end && !$valueNormalizers[$cpt]['filter']($data)) {
+        while ($cpt < $end && !$productValueNormalizers[$cpt]['filter']($data)) {
             $cpt++;
         }
 
-        return $valueNormalizers[$cpt]['normalizer'];
+        return $productValueNormalizers[$cpt]['normalizer'];
     }
 
     /**
