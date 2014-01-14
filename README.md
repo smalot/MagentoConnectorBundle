@@ -16,7 +16,9 @@ Warning : this connector is not production ready and is intended for evaluation 
 
 # Installation instruction
 
-For now the best way to install the Magento Connector is to clone it on your file system and create a symbolic link to your Akeneo installation's `src` folder.
+Just run the following composer command :
+
+    php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA1
 
 Then you just have to add the ConnectorBundle to you `AppKernel.php` :
 
