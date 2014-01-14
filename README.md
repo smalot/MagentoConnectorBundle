@@ -16,6 +16,8 @@ Warning : this connector is not production ready and is intended for evaluation 
 
 # Installation instructions
 
+*PACKAGING OF ALPHA1 IN PROGRESS, FOLLOWING COMMANDS WILL BE SOON AVAILABLE*
+
 Just run the following composer command :
 
     php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA1
