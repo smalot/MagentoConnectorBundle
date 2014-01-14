@@ -14,7 +14,7 @@ Warning : this connector is not production ready and is intended for evaluation 
  - php5-soap
  - Akeneo PIM beta 4 or above
 
-# Installation instruction
+# Installation instructions
 
 Just run the following composer command :
 
