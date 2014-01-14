@@ -1,15 +1,8 @@
-# groups:
-#     akeneo_tshirt:
-#         type: VARIANT
-#         labels:
-#             en_US: Akeneo T-Shirt
-#             fr_FR: T-Shirt Akeneo
-#         attributes:
-#             # - size
-#     oro_tshirt:
-#         type: VARIANT
-#         labels:
-#             en_US: Oro T-Shirt
-#             fr_FR: T-Shirt Oro
-#         attributes:
-#             # - size
+groups:
+    oro_shirt:
+        type: VARIANT
+        labels:
+            en_US: Oro Shirt
+            fr_FR: Shirt Oro
+        attributes:
+            - size

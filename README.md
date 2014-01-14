@@ -32,6 +32,12 @@ After that you can go to `spread > export profiles` on Akeneo PIM and create you
 
 ![Magento connector configuration example](http://i.imgur.com/thNNxtO.png)
 
+# Demo fixtures
+
+To test the connector with the minimum data requirements you can load the demo fictures. Just add this line to your `parameters.yml`
+
+    installer_data: 'PimMagentoConnectorBundle:demo_magento'
+
 # Notes
 
 A standard Magento's installation require some fields to create a products. In order to be as generic as possible, you need to manage them in Akeneo PIM.

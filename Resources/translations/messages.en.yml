@@ -1,7 +1,7 @@
 pim_magento_connector:
     jobs:
-        magento_product_export:
-            title: Export products for Magento
+        product_export:
+            title: Export products to Magento
             export.title: Configuration
 
 pim_import_export:
@@ -71,3 +71,6 @@ pim_import_export:
         currency:
             label: Currency
             help: The currency to send to Magento
+        storeViewMapping:
+            label: Storeview mapping
+            help:  You can map storeviews to locales in PIM

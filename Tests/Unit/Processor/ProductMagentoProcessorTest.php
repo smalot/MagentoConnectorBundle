@@ -503,8 +503,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $magentoNormalizer = $this->getProductNormalizerMock();
 
         $productNormalizerGuesserMock->expects($this->any())
-            ->method('getNormalizer')
-            ->with(new MagentoSoapClientParameters(null, null, null))
+            ->method('getProductNormalizer')
             ->will($this->returnValue($magentoNormalizer));
 
         return $productNormalizerGuesserMock;
@@ -527,8 +526,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $magentoNormalizer = $this->getExceptionNormalizerMock($exception);
 
         $productNormalizerGuesserMock->expects($this->any())
-            ->method('getNormalizer')
-            ->with(new MagentoSoapClientParameters(null, null, null))
+            ->method('getProductNormalizer')
             ->will($this->returnValue($magentoNormalizer));
 
         return $productNormalizerGuesserMock;

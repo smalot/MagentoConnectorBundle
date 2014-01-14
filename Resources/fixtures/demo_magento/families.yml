@@ -1,6 +1,27 @@
 families:
     Default:
         labels:
+            en_US: Default
+            fr_FR: Défaut
+        attributes:
+            - sku
+            - name
+            - short_description
+            - description
+            - price
+            - weight
+            - tax_class_id
+        attributeAsLabel: name
+        requirements:
+            magento:
+                - name
+                - short_description
+                - description
+                - price
+                - weight
+                - tax_class_id
+    Shirt:
+        labels:
             en_US: Shirt
             fr_FR: Chemise
         attributes:
@@ -10,6 +31,8 @@ families:
             - description
             - price
             - weight
+            - size
+            - tax_class_id
         attributeAsLabel: name
         requirements:
             magento:
@@ -18,3 +41,5 @@ families:
                 - description
                 - price
                 - weight
+                - size
+                - tax_class_id
