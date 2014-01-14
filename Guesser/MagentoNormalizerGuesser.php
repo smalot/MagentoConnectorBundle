@@ -69,10 +69,6 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         $visibility,
         $currency
     ) {
-        var_dump($clientParameters);
-        var_dump($enabled);
-        var_dump($visibility);
-        var_dump($currency);
         $client         = new MagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
