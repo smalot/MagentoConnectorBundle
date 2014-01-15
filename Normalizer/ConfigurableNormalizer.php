@@ -3,9 +3,11 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException;
 
 /**
  * A normalizer to transform a group entity into an array
@@ -128,8 +130,21 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $channel,
         $create
     ) {
-        $basePrice      = $this->priceMappingManager->getLowestPrice($products);
-        $priceChanges   = $this->priceMappingManager->getPriceMapping($group, $products);
+        $basePrice    = $this->priceMappingManager->getLowestPrice($products);
+        $priceChanges = $this->priceMappingManager->getPriceMapping($group, $products);
+
+        try {
+            $this->priceMappingManager->validatePriceMapping($products, $priceChanges, $basePrice);
+        } catch (ComputedPriceNotMatchedException $e) {
+            throw new InvalidPriceMappingException(
+                sprintf(
+                    'Price mapping cannot be automatically computed. This might be because an associated product has ' .
+                    'an inconsistant price regarding the other products of the variant group. %s',
+                    $e->getMessage()
+                )
+            );
+        }
+
         $associatedSkus = $this->getProductsSkus($products);
 
         $defaultProduct = $products[0];

@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 
 /**
@@ -44,15 +44,17 @@ class PriceMappingManager
      *
      * @return array
      */
-    public function getPriceMapping(Group $group, $products)
+    public function getPriceMapping(Group $group, array $products)
     {
         $attributes = $group->getAttributes();
-        $lowerPrice = $this->getLowestPrice($products);
+        $lowestPrice = $this->getLowestPrice($products);
+
+        $sortedAttributes = $this->getSortedAttributes($attributes, $products, $lowestPrice);
 
         $priceMapping = array();
 
-        foreach ($attributes as $attribute) {
-            $attributeMapping = $this->getAttributeMapping($attribute, $lowerPrice, $products);
+        foreach ($sortedAttributes as $attribute) {
+            $attributeMapping = $this->getAttributeMapping($attribute, $lowestPrice, $products, $priceMapping);
 
             $priceMapping[$attribute->getCode()] = $attributeMapping;
         }
@@ -61,53 +63,102 @@ class PriceMappingManager
     }
 
     /**
-     * Get the lower price of given products
+     * Get the lowest price of given products
      * @param array $products
+     * @param array $priceMapping
      *
      * @return int
      */
-    public function getLowestPrice($products)
+    public function getLowestPrice(array $products, array $priceMapping = array())
     {
-        $lowerPrice = $this->getProductPrice($products[0]);
+        $lowestPrice = $this->getProductPrice($products[0], $priceMapping);
 
         foreach ($products as $product) {
-            $productPrice = $this->getProductPrice($product);
+            $productPrice = $this->getProductPrice($product, $priceMapping);
 
-            $lowerPrice = ($productPrice < $lowerPrice) ? $productPrice : $lowerPrice;
+            $lowestPrice = ($productPrice < $lowestPrice) ? $productPrice : $lowestPrice;
         }
 
-        return $lowerPrice;
+        return $lowestPrice;
+    }
+
+    /**
+     * Get sorted attributes for mapping
+     * @param ArrayCollection $attributes
+     * @param array           $products
+     * @param float           $basePrice
+     *
+     * @return array
+     */
+    protected function getSortedAttributes($attributes, array $products, $basePrice)
+    {
+        $attributeDelta = array();
+        $attributeMap   = array();
+
+        foreach ($attributes as $attribute) {
+            $absoluteAttributeMapping = $this->getAttributeMapping($attribute, $basePrice, $products, array());
+
+            $attributeDelta[$attribute->getCode()] = max($absoluteAttributeMapping);
+            $attributeMap[$attribute->getCode()]   = $attribute;
+        }
+
+        asort($attributeDelta);
+
+        array_walk($attributeDelta, function (&$value, $key) use ($attributeMap) {
+            $value = $attributeMap[$key];
+        });
+
+        return $attributeDelta;
     }
 
     /**
      * Get the price of the given product
      * @param ProductInterface $product
+     * @param array            $priceMapping
      *
      * @return int
      */
-    protected function getProductPrice(ProductInterface $product)
+    protected function getProductPrice(ProductInterface $product, array $priceMapping = array())
     {
-        return $product->getValue('price', $this->locale)->getPrice($this->currency)->getData();
+        $toSubstract = 0;
+
+        foreach ($priceMapping as $attributeCode => $attributeMapping) {
+            foreach ($attributeMapping as $optionCode => $optionPrice) {
+                if ($product->getValue($attributeCode, $this->locale) !== null &&
+                    $product->getValue($attributeCode, $this->locale)->getData()->getCode() === $optionCode
+                ) {
+                    $toSubstract += $optionPrice;
+                }
+            }
+        }
+
+        return $product->getValue('price', $this->locale)->getPrice($this->currency)->getData() - $toSubstract;
     }
 
     /**
      * Get price mapping for an attribute
-     * @param ProductAttribute $attribute
-     * @param int              $basePrice
-     * @param array            $products
+     * @param AttributeInterface $attribute
+     * @param int                $basePrice
+     * @param array              $products
+     * @param array              $priceMapping
      *
      * @return array
      */
-    protected function getAttributeMapping($attribute, $basePrice, $products)
-    {
+    protected function getAttributeMapping(
+        AttributeInterface $attribute,
+        $basePrice,
+        array $products,
+        array $priceMapping
+    ) {
         $attributeMapping = array();
 
         foreach ($attribute->getOptions() as $option) {
             $productsWithOption = $this->getProductsWithOption($products, $option);
 
             if (count($productsWithOption) > 0) {
-                $lowerPrice = $this->getLowestPrice($productsWithOption);
-                $attributeMapping[$option->getCode()] = $lowerPrice - $basePrice;
+                $priceDiff = $this->getLowestPrice($productsWithOption, $priceMapping) - $basePrice;
+
+                $attributeMapping[$option->getCode()] = $priceDiff;
             }
         }
 
@@ -121,7 +172,7 @@ class PriceMappingManager
      *
      * @return array
      */
-    protected function getProductsWithOption($products, $option)
+    protected function getProductsWithOption(array $products, $option)
     {
         $productsWithOption = array();
         $attributeCode      = $option->getAttribute()->getCode();
@@ -135,5 +186,81 @@ class PriceMappingManager
         }
 
         return $productsWithOption;
+    }
+
+    /**
+     * Validate generated price mapping
+     * @param array $products
+     * @param array $priceMapping
+     * @param float $basePrice
+     *
+     * @return boolean
+     */
+    public function validatePriceMapping(array $products, array $priceMapping, $basePrice)
+    {
+        foreach ($products as $product) {
+            $productPrice            = $this->getProductPrice($product);
+            $productPriceFromMapping = $this->getProductPriceFromMapping($product, $priceMapping, $basePrice);
+
+            if ($productPrice != $productPriceFromMapping) {
+                throw new ComputedPriceNotMatchedException(
+                    sprintf(
+                        "Computed price mapping : %s. \n" .
+                        "Base price : %s %s. \n" .
+                        "Item causing the problem : %s. \n" .
+                        "Actual product price : %s %s. \n" .
+                        "Computed product price from mapping : %s %s.",
+                        json_encode($priceMapping),
+                        $basePrice,
+                        $this->currency,
+                        $product->getIdentifier(),
+                        $productPrice,
+                        $this->currency,
+                        $productPriceFromMapping,
+                        $this->currency
+                    )
+                );
+            }
+        }
+    }
+
+    /**
+     * Get product price from generated mapping
+     * @param ProductInterface $product
+     * @param array            $priceMapping
+     * @param float            $basePrice
+     *
+     * @return float
+     */
+    protected function getProductPriceFromMapping(ProductInterface $product, array $priceMapping, $basePrice)
+    {
+        $priceFromMapping = $basePrice;
+
+        foreach ($priceMapping as $attributeCode => $attributeMapping) {
+            $priceFromMapping += $this->getAttributePriceFromMapping($product, $attributeCode, $attributeMapping);
+        }
+
+        return $priceFromMapping;
+    }
+
+    /**
+     * Get the attribute price from generated mapping
+     * @param ProductInterface $product
+     * @param string           $attributeCode
+     * @param array            $attributeMapping
+     *
+     * @return float
+     */
+    protected function getAttributePriceFromMapping(ProductInterface $product, $attributeCode, array $attributeMapping)
+    {
+        if ($product->getValue($attributeCode, $this->locale) !== null) {
+            foreach ($attributeMapping as $optionCode => $optionPrice) {
+                if ($product->getValue($attributeCode, $this->locale)->getData()->getCode() === $optionCode) {
+                    return $optionPrice;
+                }
+            }
+        }
+
+        return 0;
     }
 }
