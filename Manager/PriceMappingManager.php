@@ -49,9 +49,11 @@ class PriceMappingManager
         $attributes = $group->getAttributes();
         $lowestPrice = $this->getLowestPrice($products);
 
+        $sortedAttributes = $this->getSortedAttributes($attributes, $products, $lowestPrice);
+
         $priceMapping = array();
 
-        foreach ($attributes as $attribute) {
+        foreach ($sortedAttributes as $attribute) {
             $attributeMapping = $this->getAttributeMapping($attribute, $lowestPrice, $products, $priceMapping);
 
             $priceMapping[$attribute->getCode()] = $attributeMapping;
@@ -78,6 +80,35 @@ class PriceMappingManager
         }
 
         return $lowestPrice;
+    }
+
+    /**
+     * Get sorted attributes for mapping
+     * @param ArrayCollection $attributes
+     * @param array           $products
+     * @param float           $basePrice
+     *
+     * @return array
+     */
+    protected function getSortedAttributes($attributes, array $products, $basePrice)
+    {
+        $attributeDelta = array();
+        $attributeMap   = array();
+
+        foreach ($attributes as $attribute) {
+            $absoluteAttributeMapping = $this->getAttributeMapping($attribute, $basePrice, $products, array());
+
+            $attributeDelta[$attribute->getCode()] = max($absoluteAttributeMapping);
+            $attributeMap[$attribute->getCode()]   = $attribute;
+        }
+
+        asort($attributeDelta);
+
+        array_walk($attributeDelta, function (&$value, $key) use ($attributeMap) {
+            $value = $attributeMap[$key];
+        });
+
+        return $attributeDelta;
     }
 
     /**
@@ -113,8 +144,12 @@ class PriceMappingManager
      *
      * @return array
      */
-    protected function getAttributeMapping(AttributeInterface $attribute, $basePrice, array $products, array $priceMapping)
-    {
+    protected function getAttributeMapping(
+        AttributeInterface $attribute,
+        $basePrice,
+        array $products,
+        array $priceMapping
+    ) {
         $attributeMapping = array();
 
         foreach ($attribute->getOptions() as $option) {
@@ -161,18 +196,32 @@ class PriceMappingManager
      *
      * @return boolean
      */
-    public function isPriceMappingValid(array $products, array $priceMapping, $basePrice)
+    public function validatePriceMapping(array $products, array $priceMapping, $basePrice)
     {
         foreach ($products as $product) {
             $productPrice            = $this->getProductPrice($product);
             $productPriceFromMapping = $this->getProductPriceFromMapping($product, $priceMapping, $basePrice);
 
             if ($productPrice != $productPriceFromMapping) {
-                return false;
+                throw new ComputedPriceNotMatchedException(
+                    sprintf(
+                        "Computed price mapping : %s. \n" .
+                        "Base price : %s %s. \n" .
+                        "Item causing the problem : %s. \n" .
+                        "Actual product price : %s %s. \n" .
+                        "Computed product price from mapping : %s %s.",
+                        json_encode($priceMapping),
+                        $basePrice,
+                        $this->currency,
+                        $product->getIdentifier(),
+                        $productPrice,
+                        $this->currency,
+                        $productPriceFromMapping,
+                        $this->currency
+                    )
+                );
             }
         }
-
-        return true;
     }
 
     /**

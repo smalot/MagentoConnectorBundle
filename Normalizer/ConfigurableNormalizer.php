@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException;
 
 /**
@@ -133,8 +134,16 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $basePrice    = $this->priceMappingManager->getLowestPrice($products);
         $priceChanges = $this->priceMappingManager->getPriceMapping($group, $products);
 
-        if (!$this->priceMappingManager->isPriceMappingValid($products, $priceChanges, $basePrice)) {
-            throw new InvalidPriceMappingException('Invalid price mapping');
+        try {
+            $this->priceMappingManager->validatePriceMapping($products, $priceChanges, $basePrice);
+        } catch (ComputedPriceNotMatchedException $e) {
+            throw new InvalidPriceMappingException(
+                sprintf(
+                    'Price mapping cannot be automatically computed. This might be because an associated product has ' .
+                    'an inconsistant price regarding the other products of the variant group. %s',
+                    $e->getMessage()
+                )
+            );
         }
 
         $associatedSkus = $this->getProductsSkus($products);
