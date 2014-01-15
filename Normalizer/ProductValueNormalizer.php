@@ -10,6 +10,7 @@ use Pim\Bundle\CatalogBundle\Model\Metric;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
 
 /**
  * A normalizer to transform a product value into an array
