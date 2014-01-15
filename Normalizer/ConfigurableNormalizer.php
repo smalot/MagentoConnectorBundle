@@ -3,9 +3,11 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException;
 
 /**
  * A normalizer to transform a group entity into an array
@@ -128,8 +130,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $channel,
         $create
     ) {
-        $basePrice      = $this->priceMappingManager->getLowestPrice($products);
-        $priceChanges   = $this->priceMappingManager->getPriceMapping($group, $products);
+        $basePrice    = $this->priceMappingManager->getLowestPrice($products);
+        $priceChanges = $this->priceMappingManager->getPriceMapping($group, $products);
+
+        if (!$this->priceMappingManager->isPriceMappingValid($products, $priceChanges, $basePrice)) {
+            throw new InvalidPriceMappingException('Invalid price mapping');
+        }
+
         $associatedSkus = $this->getProductsSkus($products);
 
         $defaultProduct = $products[0];
