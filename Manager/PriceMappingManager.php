@@ -172,7 +172,7 @@ class PriceMappingManager
      *
      * @return array
      */
-    protected function getProductsWithOption(array $products, $option)
+    protected function getProductsWithOption(array $products, AttributeOption $option)
     {
         $productsWithOption = array();
         $attributeCode      = $option->getAttribute()->getCode();
