@@ -84,7 +84,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                     $currency
                 );
             case MagentoGuesser::MAGENTO_VERSION_1_6:
-                return ProductNormalizer16(
+                return new ProductNormalizer16(
                     $this->channelManager,
                     $this->mediaManager,
                     $this->productValueNormalizer,

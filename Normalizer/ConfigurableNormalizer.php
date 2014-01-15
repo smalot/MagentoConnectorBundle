@@ -221,7 +221,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
     {
         array_walk(
             $products,
-            function (&$value, $key) {
+            function (&$value) {
                 $value = (string) $value->getIdentifier();
             }
         );
