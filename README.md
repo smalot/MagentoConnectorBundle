@@ -16,13 +16,23 @@ Warning : this connector is not production ready and is intended for evaluation 
 
 # Installation instructions
 
-*PACKAGING OF ALPHA1 IN PROGRESS, FOLLOWING COMMANDS WILL BE SOON AVAILABLE*
+## Inside a community standard installation
 
-Run the following composer command :
+Install the Akeneo PIM standard edition following [this documentation](https://github.com/akeneo/pim-community-standard).
+
+In your Akeneo PIM standard edition, run the following composer command :
 
     php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA1
 
 Then you have to add the ConnectorBundle to you `AppKernel.php` :
+
+    $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
+
+## Inside a Akeneo PIM developpement environnement
+
+To install the magento connector for developpement purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
+
+After that, add the PimMagentoConnectorBundle to your `AppKernel.php` :
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 
