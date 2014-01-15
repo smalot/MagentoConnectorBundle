@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException;
