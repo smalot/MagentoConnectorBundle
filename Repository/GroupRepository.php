@@ -32,7 +32,7 @@ class GroupRepository extends BaseGroupRepository
 
         array_walk(
             $result,
-            function (&$value, $key) {
+            function (&$value) {
                 $value = $value['id'];
             }
         );
