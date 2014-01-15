@@ -16,11 +16,13 @@ Warning : this connector is not production ready and is intended for evaluation 
 
 # Installation instructions
 
-Just run the following composer command :
+*PACKAGING OF ALPHA1 IN PROGRESS, FOLLOWING COMMANDS WILL BE SOON AVAILABLE*
+
+Run the following composer command :
 
     php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA1
 
-Then you just have to add the ConnectorBundle to you `AppKernel.php` :
+Then you have to add the ConnectorBundle to you `AppKernel.php` :
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 

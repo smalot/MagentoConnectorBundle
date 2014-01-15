@@ -4,14 +4,15 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 
 /**
  * Magento configurable processor
@@ -120,7 +121,7 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
         try {
             $processedItem = $this->configurableNormalizer->normalize($configurable, 'MagentoArray', $context);
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($configurable));
+            throw new InvalidItemException($e->getMessage(), array($configurable['group']));
         }
 
         return $processedItem;
