@@ -1,0 +1,22 @@
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
+    type: entity
+    table: pim_magento_category_mapping
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        magentoUrl:
+            type: text
+            length: 255
+            column: magento_url
+        magentoCategoryId:
+            type: integer
+            column: magento_category_id
+    manyToOne:
+        category:
+            targetEntity: Pim\Bundle\CatalogBundle\Entity\Category
+            inversedBy: magentoCategoryMappings
+            joinColumn:
+                name: category_id
+                referencedColumnName: id

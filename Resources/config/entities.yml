@@ -1,0 +1,2 @@
+parameters:
+    pim_magento_connector.entity.category_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping

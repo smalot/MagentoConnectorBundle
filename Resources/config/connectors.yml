@@ -1,10 +1,11 @@
 parameters:
     pim_magento_connector.processor.product.class: Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor
     pim_magento_connector.processor.configurable.class: Pim\Bundle\MagentoConnectorBundle\Processor\ConfigurableMagentoProcessor
-    pim_magento_connector.writer.product.class:    Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter
-
+    pim_magento_connector.writer.product.class: Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter
+    pim_magento_connector.writer.category.class: Pim\Bundle\MagentoConnectorBundle\Writer\CategoryMagentoWriter
+    pim_magento_connector.processor.category.class: Pim\Bundle\MagentoConnectorBundle\Processor\CategoryMagentoProcessor
+    pim_magento_connector.reader.orm.bulk_entity.class: Pim\Bundle\MagentoConnectorBundle\Reader\ORM\BulkEntityReader
 services:
-
     # processors
     pim_magento_connector.processor.product:
         class: %pim_magento_connector.processor.product.class%
@@ -19,8 +20,14 @@ services:
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_magento_connector.guesser.magento_normalizer'
-            - '@pim_import_export.converter.metric'
             - '@pim_magento_connector.manager.group'
+    pim_magento_connector.processor.category:
+        class: %pim_magento_connector.processor.category.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_magento_connector.manager.category_mapping'
 
     # writers
     pim_magento_connector.writer.product:
@@ -28,8 +35,20 @@ services:
         arguments:
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
+    pim_magento_connector.writer.category:
+        class: %pim_magento_connector.writer.category.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.manager.category_mapping'
 
     # readers
     pim_magento_connector.reader.orm.bulk_product:
         parent: pim_import_export.reader.orm.product
         class: %pim_import_export.reader.orm.bulk_product.class%
+
+    pim_magento_connector.reader.orm.bulk_category:
+        class: %pim_magento_connector.reader.orm.bulk_entity.class%
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - %pim_catalog.entity.category.class%

@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
@@ -23,7 +22,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
  *
  * @HasValidCredentials()
  */
-class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
+class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
 {
     /**
      * @var ConfigurableNormalizer
@@ -31,20 +30,23 @@ class ConfigurableMagentoProcessor extends AbstractMagentoProcessor
     protected $configurableNormalizer;
 
     /**
+     * @var GroupManager
+     */
+    protected $groupManager;
+
+    /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
      * @param ProductNormalizerGuesser $magentoNormalizerGuesser
-     * @param MetricConverter          $metricConverter
      * @param GroupManager             $groupManager
      */
     public function __construct(
         ChannelManager $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
         MagentoNormalizerGuesser $magentoNormalizerGuesser,
-        MetricConverter $metricConverter,
         GroupManager $groupManager
     ) {
-        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser, $metricConverter);
+        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser);
 
         $this->groupManager = $groupManager;
     }

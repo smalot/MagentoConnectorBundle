@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Repository;
+namespace Pim\Bundle\MagentoConnectorBundle\Entity\Repository;
 
 use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository as BaseGroupRepository;
 

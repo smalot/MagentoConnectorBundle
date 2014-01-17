@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
@@ -27,17 +26,10 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
  */
 abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement implements ItemProcessorInterface
 {
-    const MAGENTO_VISIBILITY_CATALOG_SEARCH = 4;
-
     /**
      * @var ChannelManager
      */
     protected $channelManager;
-
-    /**
-     * @var metricConverter
-     */
-    protected $metricConverter;
 
     /**
      * @var MagentoWebservice
@@ -79,21 +71,6 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
-    protected $currency;
-
-    /**
-     * @var boolean
-     */
-    protected $enabled;
-
-    /**
-     * @var integer
-     */
-    protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
-
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     */
     protected $defaultLocale;
 
     /**
@@ -117,26 +94,18 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     protected $globalContext;
 
     /**
-     * @var ProductNormalizer
-     */
-    protected $productNormalizer;
-
-    /**
      * @param ChannelManager           $channelManager
      * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
      * @param ProductNormalizerGuesser $magentoNormalizerGuesser
-     * @param MetricConverter          $metricConverter
      */
     public function __construct(
         ChannelManager $channelManager,
         MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        MagentoNormalizerGuesser $magentoNormalizerGuesser,
-        MetricConverter $metricConverter
+        MagentoNormalizerGuesser $magentoNormalizerGuesser
     ) {
         $this->channelManager           = $channelManager;
         $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
         $this->magentoNormalizerGuesser = $magentoNormalizerGuesser;
-        $this->metricConverter          = $metricConverter;
     }
 
     /**
@@ -236,78 +205,6 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     }
 
     /**
-     * get currency
-     *
-     * @return string currency
-     */
-    public function getCurrency()
-    {
-        return $this->currency;
-    }
-
-    /**
-     * Set currency
-     *
-     * @param string $currency currency
-     *
-     * @return AbstractMagentoProcessor
-     */
-    public function setCurrency($currency)
-    {
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-    /**
-     * get enabled
-     *
-     * @return string enabled
-     */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * Set enabled
-     *
-     * @param string $enabled enabled
-     *
-     * @return AbstractMagentoProcessor
-     */
-    public function setEnabled($enabled)
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    /**
-     * get visibility
-     *
-     * @return string visibility
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
-    }
-
-    /**
-     * Set visibility
-     *
-     * @param string $visibility visibility
-     *
-     * @return AbstractMagentoProcessor
-     */
-    public function setVisibility($visibility)
-    {
-        $this->visibility = $visibility;
-
-        return $this;
-    }
-
-    /**
      * get defaultLocale
      *
      * @return string defaultLocale
@@ -385,13 +282,25 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      */
     protected function getComputedStoreViewMapping()
     {
-        $computedStoreViewMapping = array();
+        return $this->getComputedMapping($this->storeViewMapping);
+    }
 
-        foreach (explode(chr(10), $this->storeViewMapping) as $line) {
-            $computedStoreViewMapping[] = explode(':', $line);
+    /**
+     * Get computed mapping
+     * @param string $mapping
+     *
+     * @return array
+     */
+    protected function getComputedMapping($mapping)
+    {
+        $computedMapping = array();
+
+        foreach (explode(chr(10), $mapping) as $line) {
+            $computedLine = explode(':', $line);
+            $computedMapping[$computedLine[0]] = $computedLine[1];
         }
 
-        return $computedStoreViewMapping;
+        return $computedMapping;
     }
 
     /**
@@ -438,15 +347,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      */
     protected function beforeProcess()
     {
-        $this->productNormalizer = $this->magentoNormalizerGuesser->getProductNormalizer(
-            $this->getClientParameters(),
-            $this->enabled,
-            $this->visibility,
-            $this->currency
-        );
-
         $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
-
 
         $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
         $magentoAttributes        = $this->magentoWebservice->getAllAttributes();
@@ -504,24 +405,6 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
                 )
             ),
             'website' => array(
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'enabled' => array(
-                'type'    => 'switch',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'visibility' => array(
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'currency' => array(
                 'type'    => 'text',
                 'options' => array(
                     'required' => true

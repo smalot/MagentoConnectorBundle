@@ -4,9 +4,13 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 
 /**
  * Magento product processor
@@ -17,8 +21,30 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
  *
  * @HasValidCredentials()
  */
-class ProductMagentoProcessor extends AbstractMagentoProcessor
+class ProductMagentoProcessor extends AbstractProductMagentoProcessor
 {
+    /**
+     * @var metricConverter
+     */
+    protected $metricConverter;
+
+    /**
+     * @param ChannelManager           $channelManager
+     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
+     * @param MetricConverter          $metricConverter
+     */
+    public function __construct(
+        ChannelManager $channelManager,
+        MagentoWebserviceGuesser $magentoWebserviceGuesser,
+        MagentoNormalizerGuesser $magentoNormalizerGuesser,
+        MetricConverter $metricConverter
+    ) {
+        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser);
+
+        $this->metricConverter = $metricConverter;
+    }
+
     /**
      * {@inheritdoc}
      */

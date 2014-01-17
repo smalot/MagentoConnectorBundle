@@ -190,6 +190,11 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
         return $this->clientParameters;
     }
 
+    protected function beforeProcess()
+    {
+        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+    }
+
     /**
      * {@inheritdoc}
      */

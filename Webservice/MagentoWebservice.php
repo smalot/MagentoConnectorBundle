@@ -22,6 +22,10 @@ class MagentoWebservice
     const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'catalog_product_attribute_media.create';
     const SOAP_ACTION_PRODUCT_MEDIA_LIST            = 'catalog_product_attribute_media.list';
     const SOAP_ACTION_PRODUCT_MEDIA_REMOVE          = 'catalog_product_attribute_media.remove';
+    const SOAP_ACTION_CATEGORY_TREE                 = 'catalog_category.tree';
+    const SOAP_ACTION_CATEGORY_CREATE               = 'catalog_category.create';
+    const SOAP_ACTION_CATEGORY_UPDATE               = 'catalog_category.update';
+    const SOAP_ACTION_CATEGORY_MOVE                 = 'catalog_category.move';
 
     const SOAP_DEFAULT_STORE_VIEW                   = 'default';
     const IMAGES                                    = 'images';
@@ -54,29 +58,6 @@ class MagentoWebservice
     public function __construct(MagentoSoapClient $client)
     {
         $this->client = $client;
-    }
-
-    /**
-     * Get options for the given attribute
-     *
-     * @param string $attributeCode Attribute code
-     *
-     * @return array the formated options for the given attribute
-     */
-    protected function getAttributeOptions($attributeCode)
-    {
-        $options = $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
-            array($attributeCode)
-        );
-
-        $formatedOptions = array();
-
-        foreach ($options as $option) {
-            $formatedOptions[$option['label']] = $option['value'];
-        }
-
-        return $formatedOptions;
     }
 
     /**
@@ -119,29 +100,6 @@ class MagentoWebservice
         }
 
         return $this->attributeList;
-    }
-
-    /**
-     * Get the magento attributeSet list from the magento platform
-     *
-     * @return void
-     */
-    protected function getAttributeSetList()
-    {
-        // On first call we get the magento attribute set list
-        // (to bind them with our proctut's families)
-        if (!$this->magentoAttributeSets) {
-            $attributeSets = $this->client->call(
-                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
-            );
-
-            foreach ($attributeSets as $attributeSet) {
-                $this->magentoAttributeSets[$attributeSet['name']] =
-                    $attributeSet['set_id'];
-            }
-        }
-
-        return $this->magentoAttributeSets;
     }
 
     /**
@@ -189,70 +147,6 @@ class MagentoWebservice
         $skus = $this->getConfigurablesIds($configurables);
 
         return $this->getStatusForSkus($skus);
-    }
-
-    /**
-     * Get the products status for the given skus
-     * @param array $skus
-     *
-     * @return array
-     */
-    protected function getStatusForSkus($skus)
-    {
-        $condition        = new \StdClass();
-        $condition->key   = 'in';
-        $condition->value = $skus;
-
-        $fieldFilter        = new \StdClass();
-        $fieldFilter->key   = 'sku';
-        $fieldFilter->value = $condition;
-
-        $filters = new \StdClass();
-        $filters->complex_filter = array(
-            $fieldFilter
-        );
-
-        return $this->client->call(
-            self::SOAP_ACTION_CATALOG_PRODUCT_LIST,
-            $filters
-        );
-    }
-
-    /**
-     * Serialize products id in csv
-     * @param array $products The given products
-     *
-     * @return string The serialization result
-     */
-    protected function getProductsIds(array $products)
-    {
-        $ids = array();
-
-        foreach ($products as $product) {
-            $ids[] = $product->getIdentifier();
-        }
-
-        return implode(',', $ids);
-    }
-
-    /**
-     * Serialize configurables id in csv
-     * @param array $configurables The given configurables
-     *
-     * @return string The serialization result
-     */
-    protected function getConfigurablesIds(array $configurables)
-    {
-        $ids = array();
-
-        foreach ($configurables as $configurable) {
-            $ids[] = sprintf(
-                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
-                $configurable['group']->getCode()
-            );
-        }
-
-        return implode(',', $ids);
     }
 
     /**
@@ -380,5 +274,187 @@ class MagentoWebservice
             ),
             self::MAXIMUM_CALLS
         );
+    }
+
+    /**
+     * Get categories status from Magento
+     * @return array
+     */
+    public function getCategoriesStatus()
+    {
+        $tree = $this->client->call(
+            self::SOAP_ACTION_CATEGORY_TREE
+        );
+
+        return $this->flattenCategoryTree($tree);
+    }
+
+    /**
+     * Send new category
+     * @param array $category
+     *
+     * @return int
+     */
+    public function sendNewCategory(array $category)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_CREATE,
+            $category
+        );
+    }
+
+    /**
+     * Send update category
+     * @param array $category
+     *
+     * @return int
+     */
+    public function sendUpdateCategory(array $category)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_UPDATE,
+            $category
+        );
+    }
+
+    /**
+     * Send move category
+     * @param array $category
+     *
+     * @return int
+     */
+    public function sendMoveCategory(array $category)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_MOVE,
+            $category
+        );
+    }
+
+    /**
+     * Flatten the category tree from magento
+     * @param array $tree
+     *
+     * @return array
+     */
+    protected function flattenCategoryTree(array $tree)
+    {
+        $result = array($tree['category_id'] => $tree);
+
+        foreach ($tree['children'] as $key => $children) {
+            $result = $result + $this->flattenCategoryTree($children);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get the magento attributeSet list from the magento platform
+     *
+     * @return void
+     */
+    protected function getAttributeSetList()
+    {
+        // On first call we get the magento attribute set list
+        // (to bind them with our proctut's families)
+        if (!$this->magentoAttributeSets) {
+            $attributeSets = $this->client->call(
+                self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
+            );
+
+            foreach ($attributeSets as $attributeSet) {
+                $this->magentoAttributeSets[$attributeSet['name']] =
+                    $attributeSet['set_id'];
+            }
+        }
+
+        return $this->magentoAttributeSets;
+    }
+
+    /**
+     * Get options for the given attribute
+     *
+     * @param string $attributeCode Attribute code
+     *
+     * @return array the formated options for the given attribute
+     */
+    protected function getAttributeOptions($attributeCode)
+    {
+        $options = $this->client->call(
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+            array($attributeCode)
+        );
+
+        $formatedOptions = array();
+
+        foreach ($options as $option) {
+            $formatedOptions[$option['label']] = $option['value'];
+        }
+
+        return $formatedOptions;
+    }
+
+    /**
+     * Get the products status for the given skus
+     * @param array $skus
+     *
+     * @return array
+     */
+    protected function getStatusForSkus($skus)
+    {
+        $condition        = new \StdClass();
+        $condition->key   = 'in';
+        $condition->value = $skus;
+
+        $fieldFilter        = new \StdClass();
+        $fieldFilter->key   = 'sku';
+        $fieldFilter->value = $condition;
+
+        $filters = new \StdClass();
+        $filters->complex_filter = array(
+            $fieldFilter
+        );
+
+        return $this->client->call(
+            self::SOAP_ACTION_CATALOG_PRODUCT_LIST,
+            $filters
+        );
+    }
+
+    /**
+     * Serialize products id in csv
+     * @param array $products The given products
+     *
+     * @return string The serialization result
+     */
+    protected function getProductsIds(array $products)
+    {
+        $ids = array();
+
+        foreach ($products as $product) {
+            $ids[] = $product->getIdentifier();
+        }
+
+        return implode(',', $ids);
+    }
+
+    /**
+     * Serialize configurables id in csv
+     * @param array $configurables The given configurables
+     *
+     * @return string The serialization result
+     */
+    protected function getConfigurablesIds(array $configurables)
+    {
+        $ids = array();
+
+        foreach ($configurables as $configurable) {
+            $ids[] = sprintf(
+                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                $configurable['group']->getCode()
+            );
+        }
+
+        return implode(',', $ids);
     }
 }
