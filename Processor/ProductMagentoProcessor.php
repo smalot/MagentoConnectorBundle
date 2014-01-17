@@ -5,8 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
@@ -98,7 +98,11 @@ class ProductMagentoProcessor extends AbstractProductMagentoProcessor
     protected function normalizeProduct(ProductInterface $product, $context)
     {
         try {
-            $processedItem = $this->productNormalizer->normalize($product, 'MagentoArray', $context);
+            $processedItem = $this->productNormalizer->normalize(
+                $product,
+                AbstractNormalizer::MAGENTO_FORMAT,
+                $context
+            );
         } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }

@@ -77,6 +77,12 @@ class CategoryMappingManager
         return ($magentoCategoryMapping !== null) ? $magentoCategoryMapping->getMagentoCategoryId() : null;
     }
 
+    /**
+     * Register a new category mapping
+     * @param Category $pimCategory
+     * @param int      $magentoCategoryId
+     * @param string   $magentoUrl
+     */
     public function registerCategoryMapping(
         Category $pimCategory,
         $magentoCategoryId,

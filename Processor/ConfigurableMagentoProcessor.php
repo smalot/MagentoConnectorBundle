@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
-
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
@@ -12,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 
 /**
  * Magento configurable processor
@@ -121,7 +121,11 @@ class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
     protected function normalizeConfigurable($configurable, $context)
     {
         try {
-            $processedItem = $this->configurableNormalizer->normalize($configurable, 'MagentoArray', $context);
+            $processedItem = $this->configurableNormalizer->normalize(
+                $configurable,
+                AbstractNormalizer::MAGENTO_FORMAT,
+                $context
+            );
         } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($configurable['group']));
         }

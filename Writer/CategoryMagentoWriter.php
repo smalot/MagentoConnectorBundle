@@ -50,7 +50,6 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
         //creation for each product in the admin storeView (with default locale)
         foreach ($categories as $batch) {
             foreach ($batch['create'] as $newCategory) {
-                var_dump($newCategory['magentoCategory']);
                 $pimCategory       = $newCategory['pimCategory'];
                 $magentoCategoryId = $this->magentoWebservice->sendNewCategory($newCategory['magentoCategory']);
                 $magentoUrl        = $this->soapUrl;
@@ -63,15 +62,20 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
             }
 
             foreach ($batch['update'] as $updateCategory) {
-                var_dump('update');
-                var_dump($updateCategory);
                 $this->magentoWebservice->sendUpdateCategory($updateCategory);
             }
 
             foreach ($batch['move'] as $moveCategory) {
-                var_dump('move');
-                var_dump($moveCategory);
                 $this->magentoWebservice->sendMoveCategory($moveCategory);
+            }
+
+            foreach ($batch['variation'] as $variationCategory) {
+                $pimCategory        = $variationCategory['pimCategory'];
+                $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->soapUrl);
+                $magentoCategory    = $variationCategory['magentoCategory'];
+                $magentoCategory[0] = $magentoCategoryId;
+
+                $this->magentoWebservice->sendUpdateCategory($magentoCategory);
             }
         }
     }

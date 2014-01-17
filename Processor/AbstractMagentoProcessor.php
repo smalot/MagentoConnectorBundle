@@ -297,7 +297,10 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
 
         foreach (explode(chr(10), $mapping) as $line) {
             $computedLine = explode(':', $line);
-            $computedMapping[$computedLine[0]] = $computedLine[1];
+
+            if (isset($computedLine[0]) && isset($computedLine[1])) {
+                $computedMapping[$computedLine[0]] = $computedLine[1];
+            }
         }
 
         return $computedMapping;

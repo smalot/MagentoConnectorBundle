@@ -24,7 +24,7 @@ connector:
                 export_categories:
                     title:     pim_magento_connector.jobs.category_export.export.title
                     services:
-                        reader:    pim_import_export.reader.orm.category
+                        reader:    pim_magento_connector.reader.orm.category
                         processor: pim_magento_connector.processor.category
                         writer:    pim_magento_connector.writer.category
                     parameters:

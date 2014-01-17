@@ -12,6 +12,8 @@ use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 
 /**
  * A magento guesser to get the proper normalizer
@@ -61,7 +63,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
      * @param string                      $currency
      *
      * @throws NotSupportedVersionException If the magento version is not supported
-     * @return MagentoWebservice
+     * @return AbstractNormalizer
      */
     public function getProductNormalizer(
         MagentoSoapClientParameters $clientParameters,
@@ -93,7 +95,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                     $currency
                 );
             default:
-                throw new NotSupportedVersionException('Your Magento version is not supported yet.');
+                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
     }
 
@@ -103,7 +105,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
      * @param ProductNormalizerInterface  $productNormalizer
      * @param PriceMappingManager         $priceMappingManager
      *
-     * @return MagentoWebservice
+     * @return AbstractNormalizer
      */
     public function getConfigurableNormalizer(
         MagentoSoapClientParameters $clientParameters,
@@ -124,7 +126,36 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                     $priceMappingManager
                 );
             default:
-                throw new NotSupportedVersionException('Your Magento version is not supported yet.');
+                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+        }
+    }
+
+    /**
+     * Get the MagentoWebservice corresponding to the given Magento parameters
+     * @param MagentoSoapClientParameters $clientParameters
+     * @param ProductNormalizerInterface  $productNormalizer
+     * @param PriceMappingManager         $priceMappingManager
+     *
+     * @return AbstractNormalizer
+     */
+    public function getCategoryNormalizer(
+        MagentoSoapClientParameters $clientParameters,
+        CategoryMappingManager $categoryMappingManager
+    ) {
+        $client = new MagentoSoapClient($clientParameters);
+
+        $magentoVersion = $this->getMagentoVersion($client);
+
+        switch ($magentoVersion) {
+            case MagentoGuesser::MAGENTO_VERSION_1_8:
+            case MagentoGuesser::MAGENTO_VERSION_1_7:
+            case MagentoGuesser::MAGENTO_VERSION_1_6:
+                return new CategoryNormalizer(
+                    $this->channelManager,
+                    $categoryMappingManager
+                );
+            default:
+                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
     }
 }

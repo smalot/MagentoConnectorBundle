@@ -38,7 +38,7 @@ class MagentoWebserviceGuesser extends MagentoGuesser
                 $magentoWebservice = new MagentoWebservice16($client);
                 break;
             default:
-                throw new NotSupportedVersionException('Your Magento version is not supported yet.');
+                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
 
         return $magentoWebservice;

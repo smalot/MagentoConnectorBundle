@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 
 /**
  * Magento category processor
@@ -81,12 +82,23 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
      */
     protected function beforeProcess()
     {
-        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->magentoWebservice  = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->categoryNormalizer = $this->magentoNormalizerGuesser->getCategoryNormalizer(
+            $this->getClientParameters(),
+            $this->categoryMappingManager
+        );
 
         $magentoCategories = $this->magentoWebservice->getCategoriesStatus();
+        $magentoStoreViews = $this->magentoWebservice->getStoreViewsList();
 
         $this->globalContext = array(
-            'magentoCategories' => $magentoCategories,
+            'magentoCategories'   => $magentoCategories,
+            'magentoUrl'          => $this->soapUrl,
+            'defaultLocale'       => $this->defaultLocale,
+            'channel'             => $this->channel,
+            'rootCategoryMapping' => $this->getComputedRootCategoryMapping(),
+            'magentoStoreViews'   => $magentoStoreViews,
+            'storeViewMapping'    => $this->getComputedStoreViewMapping(),
         );
     }
 
@@ -97,128 +109,28 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
     {
         $this->beforeProcess();
 
-        $normalizedCategories = array('create' => array(), 'update' => array(), 'move' => array());
+        $normalizedCategories = array(
+            'create' => array(),
+            'update' => array(),
+            'move' => array(),
+            'variation' => array()
+        );
 
         $categories = is_array($categories) ? $categories : array($categories);
 
         foreach ($categories as $category) {
             if ($category->getParent()) {
-                $context = $this->globalContext;
+                $normalizedCategory = $this->categoryNormalizer->normalize(
+                    $category,
+                    AbstractNormalizer::MAGENTO_FORMAT,
+                    $this->globalContext
+                );
 
-                if ($this->magentoCategoryExist($category, $this->globalContext['magentoCategories'])) {
-                    $normalizedCategories['update'][] = $this->getNormalizedUpdateCategory($category, $context);
-
-                    if ($this->categoryHasMoved($category, $this->globalContext['magentoCategories'])) {
-                        $normalizedCategories['move'][] = $this->getNormalizedMoveCategory($category, $context);
-                    }
-                } else {
-                    $normalizedCategories['create'][] = $this->getNormalizedNewCategory($category, $context);
-                }
-
+                $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
             }
         }
 
         return $normalizedCategories;
-    }
-
-    /**
-     * Get new normalized categories
-     * @param Category $category
-     * @param array    $context
-     *
-     * @return array
-     */
-    protected function getNormalizedNewCategory(Category $category, array $context)
-    {
-        return array(
-            'magentoCategory' => array(
-                (string) $this->getParentId($category),
-                array(
-                    'name'              => $category->getCode(),
-                    'is_active'         => 1,
-                    'include_in_menu'   => 1,
-                    'available_sort_by' => 1,
-                    'default_sort_by'   => 1
-                ),
-                'default'
-            ),
-            'pimCategory' => $category
-        );
-    }
-
-    /**
-     * Get update normalized categories
-     * @param Category $category
-     * @param array    $context
-     *
-     * @return array
-     */
-    protected function getNormalizedUpdateCategory(Category $category, array $context)
-    {
-        return array(
-            $this->getMagentoCategoryId($category),
-            array(
-                'name'              => $category->getCode() . 'test',
-                'is_active'         => 1,
-                'include_in_menu'   => 1,
-                'available_sort_by' => 1,
-                'default_sort_by'   => 1
-            )
-        );
-    }
-
-    /**
-     * Get move normalized categories
-     * @param Category $category
-     * @param array    $context
-     *
-     * @return array
-     */
-    protected function getNormalizedMoveCategory(Category $category, array $context)
-    {
-        return array(
-            $this->getMagentoCategoryId($category),
-            $this->getParentId($category)
-        );
-    }
-
-    protected function getParentId(Category $category)
-    {
-        $rootCategoryMapping = $this->getComputedRootCategoryMapping();
-
-        if (isset($rootCategoryMapping[$category->getParent()->getCode()])) {
-            return $rootCategoryMapping[$category->getParent()->getCode()];
-        } else {
-            return $this->getMagentoCategoryId($category->getParent());
-        }
-    }
-
-    protected function magentoCategoryExist(Category $category, $magentoCategories)
-    {
-        if (($magentoCategoryId = $this->getMagentoCategoryId($category)) !== null &&
-            isset($magentoCategories[$magentoCategoryId])
-        ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected function getMagentoCategoryId(Category $category)
-    {
-        return $this->categoryMappingManager->getIdFromCategory($category, $this->soapUrl);
-    }
-
-    protected function categoryHasMoved(Category $category, $magentoCategories)
-    {
-        $currentCategoryId = $this->getMagentoCategoryId($category);
-        $currentParentId   = $this->getMagentoCategoryId($category->getParent());
-
-        if ($magentoCategories[$currentCategoryId] !== $currentParentId) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
