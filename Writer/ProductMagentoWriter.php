@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 
@@ -55,14 +55,14 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     protected function createCall($productPart, $storeViewCode)
     {
         switch ($storeViewCode) {
-            case MagentoWebservice::SOAP_DEFAULT_STORE_VIEW:
-                $this->magentoWebservice->sendProduct($productPart);
+            case Webservice::SOAP_DEFAULT_STORE_VIEW:
+                $this->webservice->sendProduct($productPart);
                 break;
-            case MagentoWebservice::IMAGES:
-                $this->magentoWebservice->sendImages($productPart);
+            case Webservice::IMAGES:
+                $this->webservice->sendImages($productPart);
                 break;
             default:
-                $this->magentoWebservice->updateProductPart($productPart);
+                $this->webservice->updateProductPart($productPart);
         }
     }
 
@@ -75,9 +75,9 @@ class ProductMagentoWriter extends AbstractMagentoWriter
      */
     protected function getProductSku($product)
     {
-        $defaultStoreviewProduct = $product[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW];
+        $defaultStoreviewProduct = $product[Webservice::SOAP_DEFAULT_STORE_VIEW];
 
-        if (count($defaultStoreviewProduct) == MagentoWebservice::CREATE_PRODUCT_SIZE) {
+        if (count($defaultStoreviewProduct) == Webservice::CREATE_PRODUCT_SIZE) {
             return (string) $defaultStoreviewProduct[2];
         } else {
             return (string) $defaultStoreviewProduct[0];
@@ -92,10 +92,10 @@ class ProductMagentoWriter extends AbstractMagentoWriter
     protected function pruneImages($product)
     {
         $sku = $this->getProductSku($product);
-        $images = $this->magentoWebservice->getImages($sku);
+        $images = $this->webservice->getImages($sku);
 
         foreach ($images as $image) {
-            $this->magentoWebservice->deleteImage($sku, $image['file']);
+            $this->webservice->deleteImage($sku, $image['file']);
         }
     }
 

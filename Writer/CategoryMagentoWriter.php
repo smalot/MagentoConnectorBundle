@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 
 /**
@@ -26,16 +26,16 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     /**
      * Constructor
      *
-     * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param CategoryMappingManager   $categoryMappingManager
+     * @param ChannelManager         $channelManager
+     * @param WebserviceGuesser      $webserviceGuesser
+     * @param CategoryMappingManager $categoryMappingManager
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser,
+        WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager
     ) {
-        parent::__construct($channelManager, $magentoWebserviceGuesser);
+        parent::__construct($channelManager, $webserviceGuesser);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }
@@ -65,7 +65,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
         if (isset($batch['create'])) {
             foreach ($batch['create'] as $newCategory) {
                 $pimCategory       = $newCategory['pimCategory'];
-                $magentoCategoryId = $this->magentoWebservice->sendNewCategory($newCategory['magentoCategory']);
+                $magentoCategoryId = $this->webservice->sendNewCategory($newCategory['magentoCategory']);
                 $magentoUrl        = $this->soapUrl;
 
                 $this->categoryMappingManager->registerCategoryMapping(
@@ -85,7 +85,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     {
         if (isset($batch['update'])) {
             foreach ($batch['update'] as $updateCategory) {
-                $this->magentoWebservice->sendUpdateCategory($updateCategory);
+                $this->webservice->sendUpdateCategory($updateCategory);
             }
         }
     }
@@ -98,7 +98,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     {
         if (isset($batch['move'])) {
             foreach ($batch['move'] as $moveCategory) {
-                $this->magentoWebservice->sendMoveCategory($moveCategory);
+                $this->webservice->sendMoveCategory($moveCategory);
             }
         }
     }
@@ -116,7 +116,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
                 $magentoCategory    = $variationCategory['magentoCategory'];
                 $magentoCategory[0] = $magentoCategoryId;
 
-                $this->magentoWebservice->sendUpdateCategory($magentoCategory);
+                $this->webservice->sendUpdateCategory($magentoCategory);
             }
         }
     }

@@ -9,7 +9,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoWebservice
+class Webservice
 {
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
@@ -450,7 +450,7 @@ class MagentoWebservice
 
         foreach ($configurables as $configurable) {
             $ids[] = sprintf(
-                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                Webservice::CONFIGURABLE_IDENTIFIER_PATTERN,
                 $configurable['group']->getCode()
             );
         }

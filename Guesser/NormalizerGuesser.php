@@ -22,7 +22,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoNormalizerGuesser extends MagentoGuesser
+class NormalizerGuesser extends Guesser
 {
     /**
      * @var ChannelManager
@@ -56,7 +56,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
     }
 
     /**
-     * Get the MagentoWebservice corresponding to the given Magento parameters
+     * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      * @param bool                        $enabled
      * @param bool                        $visibility
@@ -75,8 +75,8 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case MagentoGuesser::MAGENTO_VERSION_1_8:
-            case MagentoGuesser::MAGENTO_VERSION_1_7:
+            case Guesser::MAGENTO_VERSION_1_8:
+            case Guesser::MAGENTO_VERSION_1_7:
                 return new ProductNormalizer(
                     $this->channelManager,
                     $this->mediaManager,
@@ -85,7 +85,7 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                     $visibility,
                     $currency
                 );
-            case MagentoGuesser::MAGENTO_VERSION_1_6:
+            case Guesser::MAGENTO_VERSION_1_6:
                 return new ProductNormalizer16(
                     $this->channelManager,
                     $this->mediaManager,
@@ -95,12 +95,12 @@ class MagentoNormalizerGuesser extends MagentoGuesser
                     $currency
                 );
             default:
-                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+                throw new NotSupportedVersionException(Guesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
     }
 
     /**
-     * Get the MagentoWebservice corresponding to the given Magento parameters
+     * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      * @param ProductNormalizerInterface  $productNormalizer
      * @param PriceMappingManager         $priceMappingManager
@@ -117,21 +117,21 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case MagentoGuesser::MAGENTO_VERSION_1_8:
-            case MagentoGuesser::MAGENTO_VERSION_1_7:
-            case MagentoGuesser::MAGENTO_VERSION_1_6:
+            case Guesser::MAGENTO_VERSION_1_8:
+            case Guesser::MAGENTO_VERSION_1_7:
+            case Guesser::MAGENTO_VERSION_1_6:
                 return new ConfigurableNormalizer(
                     $this->channelManager,
                     $productNormalizer,
                     $priceMappingManager
                 );
             default:
-                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+                throw new NotSupportedVersionException(Guesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
     }
 
     /**
-     * Get the MagentoWebservice corresponding to the given Magento parameters
+     * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      * @param ProductNormalizerInterface  $productNormalizer
      * @param PriceMappingManager         $priceMappingManager
@@ -147,15 +147,15 @@ class MagentoNormalizerGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case MagentoGuesser::MAGENTO_VERSION_1_8:
-            case MagentoGuesser::MAGENTO_VERSION_1_7:
-            case MagentoGuesser::MAGENTO_VERSION_1_6:
+            case Guesser::MAGENTO_VERSION_1_8:
+            case Guesser::MAGENTO_VERSION_1_7:
+            case Guesser::MAGENTO_VERSION_1_6:
                 return new CategoryNormalizer(
                     $this->channelManager,
                     $categoryMappingManager
                 );
             default:
-                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+                throw new NotSupportedVersionException(Guesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 
@@ -19,9 +19,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 class HasValidCredentialsValidator extends ConstraintValidator
 {
     /**
-     * @var MagentoWebserviceGuesser
+     * @var WebserviceGuesser
      */
-    protected $magentoWebserviceGuesser;
+    protected $webserviceGuesser;
 
     /**
      * @var MagentoUrlValidator
@@ -29,14 +29,14 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $magentoUrlValidator;
 
     /**
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param MagentoUrlValidator      $magentoUrlValidator
+     * @param WebserviceGuesser   $webserviceGuesser
+     * @param MagentoUrlValidator $magentoUrlValidator
      */
     public function __construct(
-        MagentoWebserviceGuesser $magentoWebserviceGuesser,
+        WebserviceGuesser $webserviceGuesser,
         MagentoUrlValidator $magentoUrlValidator
     ) {
-        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
+        $this->webserviceGuesser = $webserviceGuesser;
         $this->magentoUrlValidator      = $magentoUrlValidator;
     }
 
@@ -58,7 +58,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
         if ($this->magentoUrlValidator->isValidMagentoUrl($protocol->getSoapUrl())) {
             try {
-                $this->magentoWebserviceGuesser->getWebservice($clientParameters);
+                $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidCredentialException $e) {
                 $this->context->addViolation($constraint->message, array('soapUsername', 'soapApiKey'));
             }

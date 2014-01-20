@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Abstract magento product processor
  *
@@ -110,7 +112,7 @@ abstract class AbstractProductMagentoProcessor extends AbstractMagentoProcessor
      */
     protected function beforeProcess()
     {
-        $this->productNormalizer = $this->magentoNormalizerGuesser->getProductNormalizer(
+        $this->productNormalizer = $this->normalizerGuesser->getProductNormalizer(
             $this->getClientParameters(),
             $this->enabled,
             $this->visibility,

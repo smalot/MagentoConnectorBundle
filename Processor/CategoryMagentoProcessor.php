@@ -4,9 +4,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 
 /**
@@ -63,16 +63,16 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
 
     /**
      * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        MagentoNormalizerGuesser $magentoNormalizerGuesser,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
         CategoryMappingManager $categoryMappingManager
     ) {
-        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser);
+        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }
@@ -82,14 +82,14 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
      */
     protected function beforeProcess()
     {
-        $this->magentoWebservice  = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
-        $this->categoryNormalizer = $this->magentoNormalizerGuesser->getCategoryNormalizer(
+        $this->webservice  = $this->webserviceGuesser->getWebservice($this->getClientParameters());
+        $this->categoryNormalizer = $this->normalizerGuesser->getCategoryNormalizer(
             $this->getClientParameters(),
             $this->categoryMappingManager
         );
 
-        $magentoCategories = $this->magentoWebservice->getCategoriesStatus();
-        $magentoStoreViews = $this->magentoWebservice->getStoreViewsList();
+        $magentoCategories = $this->webservice->getCategoriesStatus();
+        $magentoStoreViews = $this->webservice->getStoreViewsList();
 
         $this->globalContext = array(
             'magentoCategories'   => $magentoCategories,

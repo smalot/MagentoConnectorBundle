@@ -8,8 +8,8 @@ use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
@@ -32,19 +32,19 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     protected $channelManager;
 
     /**
-     * @var MagentoWebservice
+     * @var Webservice
      */
-    protected $magentoWebservice;
+    protected $webservice;
 
     /**
-     * @var MagentoWebserviceGuesser
+     * @var WebserviceGuesser
      */
-    protected $magentoWebserviceGuesser;
+    protected $webserviceGuesser;
 
     /**
-     * @var MagentoNormalizerGuesser
+     * @var NormalizerGuesser
      */
-    protected $magentoNormalizerGuesser;
+    protected $normalizerGuesser;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -95,17 +95,17 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
 
     /**
      * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        MagentoNormalizerGuesser $magentoNormalizerGuesser
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser
     ) {
         $this->channelManager           = $channelManager;
-        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
-        $this->magentoNormalizerGuesser = $magentoNormalizerGuesser;
+        $this->webserviceGuesser = $webserviceGuesser;
+        $this->normalizerGuesser = $normalizerGuesser;
     }
 
     /**
@@ -336,7 +336,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
     protected function getAttributeSetId($familyCode, $relatedItem)
     {
         try {
-            return $this->magentoWebservice
+            return $this->webservice
                 ->getAttributeSetId(
                     $familyCode
                 );
@@ -350,11 +350,11 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      */
     protected function beforeProcess()
     {
-        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
 
-        $magentoStoreViews        = $this->magentoWebservice->getStoreViewsList();
-        $magentoAttributes        = $this->magentoWebservice->getAllAttributes();
-        $magentoAttributesOptions = $this->magentoWebservice->getAllAttributesOptions();
+        $magentoStoreViews        = $this->webservice->getStoreViewsList();
+        $magentoAttributes        = $this->webservice->getAllAttributes();
+        $magentoAttributesOptions = $this->webservice->getAllAttributesOptions();
 
         $this->globalContext = array(
             'defaultLocale'            => $this->defaultLocale,

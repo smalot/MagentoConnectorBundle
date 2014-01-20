@@ -2,8 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice16;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 
@@ -14,14 +14,14 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoWebserviceGuesser extends MagentoGuesser
+class WebserviceGuesser extends Guesser
 {
     /**
-     * Get the MagentoWebservice corresponding to the given Magento parameters
+     * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      *
      * @throws NotSupportedVersionException If the magento version is not supported
-     * @return MagentoWebservice
+     * @return Webservice
      */
     public function getWebservice(MagentoSoapClientParameters $clientParameters)
     {
@@ -30,17 +30,17 @@ class MagentoWebserviceGuesser extends MagentoGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case MagentoGuesser::MAGENTO_VERSION_1_8:
-            case MagentoGuesser::MAGENTO_VERSION_1_7:
-                $magentoWebservice = new MagentoWebservice($client);
+            case Guesser::MAGENTO_VERSION_1_8:
+            case Guesser::MAGENTO_VERSION_1_7:
+                $webservice = new Webservice($client);
                 break;
-            case MagentoGuesser::MAGENTO_VERSION_1_6:
-                $magentoWebservice = new MagentoWebservice16($client);
+            case Guesser::MAGENTO_VERSION_1_6:
+                $webservice = new Webservice16($client);
                 break;
             default:
-                throw new NotSupportedVersionException(MagentoGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+                throw new NotSupportedVersionException(Guesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
 
-        return $magentoWebservice;
+        return $webservice;
     }
 }

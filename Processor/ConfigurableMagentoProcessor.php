@@ -5,10 +5,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
@@ -36,17 +36,17 @@ class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
 
     /**
      * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
      * @param GroupManager             $groupManager
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        MagentoNormalizerGuesser $magentoNormalizerGuesser,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
         GroupManager $groupManager
     ) {
-        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser);
+        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
 
         $this->groupManager = $groupManager;
     }
@@ -59,7 +59,7 @@ class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
         parent::beforeProcess();
 
         $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency);
-        $this->configurableNormalizer = $this->magentoNormalizerGuesser->getConfigurableNormalizer(
+        $this->configurableNormalizer = $this->normalizerGuesser->getConfigurableNormalizer(
             $this->getClientParameters(),
             $this->productNormalizer,
             $priceMappingManager
@@ -77,7 +77,7 @@ class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
 
         $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
         $configurables        = $this->getProductsForGroups($items, $groupsIds);
-        $magentoConfigurables = $this->magentoWebservice->getConfigurablesStatus($configurables);
+        $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
 
         foreach ($configurables as $configurable) {
             if (count($configurable['products']) == 0) {
@@ -146,7 +146,7 @@ class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
         foreach ($magentoConfigurables as $magentoConfigurable) {
 
             if ($magentoConfigurable['sku'] == sprintf(
-                MagentoWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                Webservice::CONFIGURABLE_IDENTIFIER_PATTERN,
                 $configurable['group']->getCode()
             )) {
                 return true;

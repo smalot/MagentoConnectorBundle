@@ -7,7 +7,7 @@ use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
@@ -29,14 +29,14 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
     protected $channelManager;
 
     /**
-     * @var MagentoWebserviceGuesser
+     * @var WebserviceGuesser
      */
-    protected $magentoWebserviceGuesser;
+    protected $webserviceGuesser;
 
     /**
-     * @var MagentoWebservice
+     * @var Webservice
      */
-    protected $magentoWebservice;
+    protected $webservice;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -65,15 +65,15 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
     /**
      * Constructor
      *
-     * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param ChannelManager    $channelManager
+     * @param WebserviceGuesser $webserviceGuesser
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser
+        WebserviceGuesser $webserviceGuesser
     ) {
         $this->channelManager           = $channelManager;
-        $this->magentoWebserviceGuesser = $magentoWebserviceGuesser;
+        $this->webserviceGuesser = $webserviceGuesser;
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
 
     protected function beforeWrite()
     {
-        $this->magentoWebservice = $this->magentoWebserviceGuesser->getWebservice($this->getClientParameters());
+        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
     }
 
     /**

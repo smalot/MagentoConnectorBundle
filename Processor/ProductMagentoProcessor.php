@@ -8,8 +8,8 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoNormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 
 /**
@@ -30,17 +30,17 @@ class ProductMagentoProcessor extends AbstractProductMagentoProcessor
 
     /**
      * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
-     * @param ProductNormalizerGuesser $magentoNormalizerGuesser
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
      * @param MetricConverter          $metricConverter
      */
     public function __construct(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser,
-        MagentoNormalizerGuesser $magentoNormalizerGuesser,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
         MetricConverter $metricConverter
     ) {
-        parent::__construct($channelManager, $magentoWebserviceGuesser, $magentoNormalizerGuesser);
+        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
 
         $this->metricConverter = $metricConverter;
     }
@@ -53,7 +53,7 @@ class ProductMagentoProcessor extends AbstractProductMagentoProcessor
         $processedItems = array();
 
         $this->beforeProcess();
-        $magentoProducts = $this->magentoWebservice->getProductsStatus($items);
+        $magentoProducts = $this->webservice->getProductsStatus($items);
 
         $channel = $this->channelManager->getChannelByCode($this->channel);
 

@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 /**
  * Test related class
@@ -27,13 +27,13 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     public function testWriteInstanciated()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
-        $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
+        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductMagentoWriter($channelManagerMock, $magentoWebserviceGuesserMock);
+        $writer = new ProductMagentoWriter($channelManagerMock, $webserviceGuesserMock);
 
         $products = array(array(
             array(
-                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW => array(
+                Webservice::SOAP_DEFAULT_STORE_VIEW => array(
                     '1',
                     '1',
                     '1',
@@ -43,12 +43,12 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
                 self::DEFAULT_LOCALE                       => array(
 
                 ),
-                MagentoWebservice::IMAGES                  => array(
+                Webservice::IMAGES                  => array(
 
                 )
             ),
             array(
-                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW => array(
+                Webservice::SOAP_DEFAULT_STORE_VIEW => array(
                     '1',
                     '1',
                     '1'
@@ -65,9 +65,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     public function testSettersAndGetters()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
-        $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
+        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductMagentoWriter($channelManagerMock, $magentoWebserviceGuesserMock);
+        $writer = new ProductMagentoWriter($channelManagerMock, $webserviceGuesserMock);
 
         $writer->setSoapUsername(self::LOGIN);
         $writer->setSoapApiKey(self::PASSWORD);
@@ -95,16 +95,16 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a all settled ProductMagentoWriter
-     * @param ChannelManager           $channelManager
-     * @param MagentoWebserviceGuesser $magentoWebserviceGuesser
+     * @param ChannelManager    $channelManager
+     * @param WebserviceGuesser $webserviceGuesser
      *
      * @return ProductMagentoWriter
      */
     protected function getProductMagentoWriter(
         ChannelManager $channelManager,
-        MagentoWebserviceGuesser $magentoWebserviceGuesser
+        WebserviceGuesser $webserviceGuesser
     ) {
-        $writer = new ProductMagentoWriter($channelManager, $magentoWebserviceGuesser);
+        $writer = new ProductMagentoWriter($channelManager, $webserviceGuesser);
 
         $writer->setSoapUsername(self::LOGIN);
         $writer->setSoapApiKey(self::PASSWORD);
@@ -115,31 +115,31 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get a MagentoWebserviceGuesser mock
-     * @return MagentoWebserviceGuesserMock
+     * Get a WebserviceGuesser mock
+     * @return WebserviceGuesserMock
      */
-    protected function getMagentoWebserviceGuesserMock()
+    protected function getWebserviceGuesserMock()
     {
-        $magentoWebservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice')
+        $webservice = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $magentoWebservice->expects($this->any())
+        $webservice->expects($this->any())
             ->method('getImages')
             ->will($this->returnValue(array(array('file' => 'filename.jpg'))));
 
-        $magentoWebserviceGuesserMock = $this->getMockBuilder(
-            'Pim\Bundle\MagentoConnectorBundle\Guesser\MagentoWebserviceGuesser'
+        $webserviceGuesserMock = $this->getMockBuilder(
+            'Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser'
         )
         ->disableOriginalConstructor()
         ->getMock();
 
-        $magentoWebserviceGuesserMock->expects($this->any())
+        $webserviceGuesserMock->expects($this->any())
             ->method('getWebservice')
             ->with(new MagentoSoapClientParameters(null, null, null))
-            ->will($this->returnValue($magentoWebservice));
+            ->will($this->returnValue($webservice));
 
-        return $magentoWebserviceGuesserMock;
+        return $webserviceGuesserMock;
     }
 
     /**
@@ -148,9 +148,9 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     public function testGetConfigurationFields()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
-        $magentoWebserviceGuesserMock = $this->getMagentoWebserviceGuesserMock();
+        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductMagentoWriter($channelManagerMock, $magentoWebserviceGuesserMock);
+        $writer = new ProductMagentoWriter($channelManagerMock, $webserviceGuesserMock);
 
         $configurationFields = $writer->getConfigurationFields();
 
