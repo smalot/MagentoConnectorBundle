@@ -43,12 +43,26 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     /**
      * {@inheritdoc}
      */
-    public function write(array $categories)
+    public function write(array $batches)
     {
-        $this->beforeProcess();
+        $this->beforeWrite();
 
         //creation for each product in the admin storeView (with default locale)
-        foreach ($categories as $batch) {
+        foreach ($batches as $batch) {
+            $this->handleNewCategory($batch);
+            $this->handleUpdateCategory($batch);
+            $this->handleMoveCategory($batch);
+            $this->handleVariationCategory($batch);
+        }
+    }
+
+    /**
+     * Handle category creation
+     * @param array $batch
+     */
+    protected function handleNewCategory(array $batch)
+    {
+        if (isset($batch['create'])) {
             foreach ($batch['create'] as $newCategory) {
                 $pimCategory       = $newCategory['pimCategory'];
                 $magentoCategoryId = $this->magentoWebservice->sendNewCategory($newCategory['magentoCategory']);
@@ -60,15 +74,42 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
                     $magentoUrl
                 );
             }
+        }
+    }
 
+    /**
+     * handle category update
+     * @param array $batch
+     */
+    protected function handleUpdateCategory(array $batch)
+    {
+        if (isset($batch['update'])) {
             foreach ($batch['update'] as $updateCategory) {
                 $this->magentoWebservice->sendUpdateCategory($updateCategory);
             }
+        }
+    }
 
+    /**
+     * handle category move
+     * @param array $batch
+     */
+    protected function handleMoveCategory(array $batch)
+    {
+        if (isset($batch['move'])) {
             foreach ($batch['move'] as $moveCategory) {
                 $this->magentoWebservice->sendMoveCategory($moveCategory);
             }
+        }
+    }
 
+    /**
+     * handle category variation update
+     * @param array $batch
+     */
+    protected function handleVariationCategory(array $batch)
+    {
+        if (isset($batch['variation'])) {
             foreach ($batch['variation'] as $variationCategory) {
                 $pimCategory        = $variationCategory['pimCategory'];
                 $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->soapUrl);

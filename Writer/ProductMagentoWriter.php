@@ -22,7 +22,7 @@ class ProductMagentoWriter extends AbstractMagentoWriter
      */
     public function write(array $products)
     {
-        $this->beforeProcess();
+        $this->beforeWrite();
 
         //creation for each product in the admin storeView (with default locale)
         foreach ($products as $batch) {

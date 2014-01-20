@@ -17,10 +17,14 @@
             "type": "vcs",
             "url": "https://github.com/akeneo/pim-community-dev.git",
             "branch": "master"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/akeneo/platform.git"
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "v1.0.0-BETA4@dev"
+        "akeneo/pim-community-dev": "v1.0.0-BETA4"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev"
@@ -31,5 +35,6 @@
     "config": {
         "bin-dir": "bin"
     },
+    "minimum-stability": "dev",
     "target-dir": "Pim/Bundle/MagentoConnectorBundle"
 }

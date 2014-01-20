@@ -110,9 +110,9 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
         $this->beforeProcess();
 
         $normalizedCategories = array(
-            'create' => array(),
-            'update' => array(),
-            'move' => array(),
+            'create'    => array(),
+            'update'    => array(),
+            'move'      => array(),
             'variation' => array()
         );
 
