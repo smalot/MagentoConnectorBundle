@@ -78,7 +78,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     }
 
     /**
-     * handle category update
+     * Handle category update
      * @param array $batch
      */
     protected function handleUpdateCategory(array $batch)
@@ -91,7 +91,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     }
 
     /**
-     * handle category move
+     * Handle category move
      * @param array $batch
      */
     protected function handleMoveCategory(array $batch)
@@ -104,7 +104,7 @@ class CategoryMagentoWriter extends AbstractMagentoWriter
     }
 
     /**
-     * handle category variation update
+     * Handle category variation update
      * @param array $batch
      */
     protected function handleVariationCategory(array $batch)

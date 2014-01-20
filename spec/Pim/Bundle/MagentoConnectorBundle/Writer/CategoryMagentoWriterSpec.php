@@ -29,7 +29,7 @@ class CategoryMagentoWriterSpec extends ObjectBehavior
         $webservice,
         $categoryMappingManager
     ) {
-        $categories = array(
+        $batches = array(
             array(
                 'create' => array(
                     array(
@@ -40,10 +40,65 @@ class CategoryMagentoWriterSpec extends ObjectBehavior
             )
         );
 
-        $webservice->sendNewCategory(array('foo'))->shouldBeCalled()->willReturn(12);
+        $webservice->sendNewCategory(array('foo'))->willReturn(12);
         $categoryMappingManager->registerCategoryMapping($category, 12, 'bar')->shouldBeCalled();
 
         $this->setSoapUrl('bar');
-        $this->write($categories);
+
+        $this->write($batches);
+    }
+
+    public function it_sends_categories_to_update_on_magento_webservice(
+        Category $category,
+        $webservice
+    ) {
+        $batches = array(
+            array(
+                'update' => array(
+                    array('foo')
+                )
+            )
+        );
+
+        $webservice->sendUpdateCategory(array('foo'))->shouldBeCalled();
+
+        $this->write($batches);
+    }
+
+    public function it_sends_categories_to_move_on_magento_webservice(
+        Category $category,
+        $webservice
+    ) {
+        $batches = array(
+            array(
+                'move' => array(
+                    array('foo')
+                )
+            )
+        );
+
+        $webservice->sendMoveCategory(array('foo'))->shouldBeCalled();
+
+        $this->write($batches);
+    }
+
+    public function it_sends_categories_to_update_variation_on_magento_webservice(
+        Category $category,
+        $webservice
+    ) {
+        $batches = array(
+            array(
+                'variation' => array(
+                    array(
+                        'pimCategory'     => $category,
+                        'magentoCategory' => array('foo')
+                    )
+                )
+            )
+        );
+
+        $webservice->sendUpdateCategory(array('foo'))->shouldBeCalled();
+
+        $this->write($batches);
     }
 }

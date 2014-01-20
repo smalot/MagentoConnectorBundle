@@ -72,7 +72,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser
     ) {
-        $this->channelManager           = $channelManager;
+        $this->channelManager    = $channelManager;
         $this->webserviceGuesser = $webserviceGuesser;
     }
 
