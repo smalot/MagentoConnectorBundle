@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Manager\GroupManager as BaseGroupManager;
-use Pim\Bundle\MagentoConnectorBundle\Repository\GroupRepository;
+use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**

@@ -20,6 +20,8 @@ abstract class AbstractNormalizer implements NormalizerInterface
     const MAGENTO_CONFIGURABLE_PRODUCT_KEY = 'configurable';
     const DATE_FORMAT                      = 'Y-m-d H:i:s';
 
+    const MAGENTO_FORMAT = 'MagentoArray';
+
     /**
      * @var array
      */
@@ -28,7 +30,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * @var array
      */
-    protected $supportedFormats = array('MagentoArray');
+    protected $supportedFormats = array(self::MAGENTO_FORMAT);
 
     /**
      * @var ChannelManager
@@ -88,18 +90,14 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get the locale based on storeViewMapping
-     * @param string $locale
+     * @param string $localeCode
      * @param array  $storeViewMapping
      *
      * @return string
      */
-    protected function getMappedStoreView($locale, $storeViewMapping)
+    protected function getMappedStoreView($localeCode, $storeViewMapping)
     {
-        foreach ($storeViewMapping as $storeview) {
-            if ($storeview[0] === strtolower($locale)) {
-                return $storeview[1];
-            }
-        }
+        return isset($storeViewMapping[strtolower($localeCode)]) ? $storeViewMapping[strlower($localeCode)] : null;
     }
 
     /**

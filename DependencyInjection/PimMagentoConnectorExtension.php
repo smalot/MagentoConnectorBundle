@@ -25,7 +25,9 @@ class PimMagentoConnectorExtension extends Extension
         $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('entities.yml');
         $loader->load('services.yml');
+        $loader->load('managers.yml');
         $loader->load('normalizers.yml');
         $loader->load('connectors.yml');
     }

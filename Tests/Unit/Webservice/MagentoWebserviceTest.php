@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Webservice;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 /**
  * Test related class
@@ -11,7 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoWebserviceTest extends WebserviceTestCase
+class WebserviceTest extends WebserviceTestCase
 {
     /**
      * Test the corresponding method
@@ -19,20 +19,20 @@ class MagentoWebserviceTest extends WebserviceTestCase
     public function testGetAllAttributesOptions()
     {
         $calls = array(
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST, null, $this->getAttributeSetList()),
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '4',  $this->getAttributeList()),
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '9',  $this->getAttributeList()),
+            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST, null, $this->getAttributeSetList()),
+            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '4',  $this->getAttributeList()),
+            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '9',  $this->getAttributeList()),
             array(
-                MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+                Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
                 array('colors'),
                 $this->getOptions('colors')
             ),
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('size'), $this->getOptions('size')),
+            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('size'), $this->getOptions('size')),
         );
 
-        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
+        $webservice = $this->getWebserviceWithCallMap($calls);
 
-        $attributesOptions = $magentoWebservice->getAllAttributesOptions();
+        $attributesOptions = $webservice->getAllAttributesOptions();
 
         $this->assertEquals($attributesOptions, $this->getAllAttributesOptions());
     }
@@ -45,10 +45,10 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
 
         $calls = array(
-            array(MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_LIST, null, $this->getProductFilters()),
+            array(Webservice::SOAP_ACTION_CATALOG_PRODUCT_LIST, null, $this->getProductFilters()),
         );
 
-        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
+        $webservice = $this->getWebserviceWithCallMap($calls);
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
 
@@ -56,7 +56,7 @@ class MagentoWebserviceTest extends WebserviceTestCase
             ->method('getIdentifier')
             ->will($this->returnValue('sku-000'));
 
-        $result = $magentoWebservice->getProductsStatus(array($product));
+        $result = $webservice->getProductsStatus(array($product));
     }
 
     /**
@@ -65,12 +65,12 @@ class MagentoWebserviceTest extends WebserviceTestCase
     public function testGetAttributeSetId()
     {
         $calls = array(
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST, null, $this->getAttributeSetList()),
+            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST, null, $this->getAttributeSetList()),
         );
 
-        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
+        $webservice = $this->getWebserviceWithCallMap($calls);
 
-        $magentoWebservice->getAttributeSetId('shoe');
+        $webservice->getAttributeSetId('shoe');
     }
 
     /**
@@ -79,11 +79,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
     public function testGetStoreViewsList()
     {
         $calls = array(
-            array(MagentoWebservice::SOAP_ACTION_STORE_LIST, null, $this->getStoreViewsList()),
+            array(Webservice::SOAP_ACTION_STORE_LIST, null, $this->getStoreViewsList()),
         );
 
-        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
-        $storeViewsList    = $magentoWebservice->getStoreViewsList();
+        $webservice = $this->getWebserviceWithCallMap($calls);
+        $storeViewsList    = $webservice->getStoreViewsList();
 
         $this->assertEquals($storeViewsList, $this->getStoreViewsList());
     }
@@ -96,12 +96,12 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
 
         $calls = array(
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_MEDIA_LIST, 'sku-000', array('image')),
+            array(Webservice::SOAP_ACTION_PRODUCT_MEDIA_LIST, 'sku-000', array('image')),
         );
 
-        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
+        $webservice = $this->getWebserviceWithCallMap($calls);
 
-        $images = $magentoWebservice->getImages('sku-000');
+        $images = $webservice->getImages('sku-000');
 
         $this->assertEquals($images, array('image'));
     }
@@ -115,12 +115,12 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
         $magentoSoapClientMock->expects($this->once())
             ->method('call')
-            ->with(MagentoWebservice::SOAP_ACTION_PRODUCT_MEDIA_LIST, 'sku-000')
+            ->with(Webservice::SOAP_ACTION_PRODUCT_MEDIA_LIST, 'sku-000')
             ->will($this->throwException(new \SoapFault('100', 'Product not found')));
 
-        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+        $webservice = new Webservice($magentoSoapClientMock);
 
-        $images = $magentoWebservice->getImages('sku-000');
+        $images = $webservice->getImages('sku-000');
 
         $this->assertEquals($images, array());
     }
@@ -134,11 +134,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
         $magentoSoapClientMock->expects($this->once())
             ->method('addCall')
-            ->with(array(MagentoWebservice::SOAP_ACTION_PRODUCT_MEDIA_CREATE, array('image')), 1);
+            ->with(array(Webservice::SOAP_ACTION_PRODUCT_MEDIA_CREATE, array('image')), 1);
 
-        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+        $webservice = new Webservice($magentoSoapClientMock);
 
-        $magentoWebservice->sendImages(array(array('image')));
+        $webservice->sendImages(array(array('image')));
     }
 
     /**
@@ -150,11 +150,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
         $magentoSoapClientMock->expects($this->once())
             ->method('addCall')
-            ->with(array(MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, array('productPart')), 1);
+            ->with(array(Webservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, array('productPart')), 1);
 
-        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+        $webservice = new Webservice($magentoSoapClientMock);
 
-        $magentoWebservice->updateProductPart(array('productPart'));
+        $webservice->updateProductPart(array('productPart'));
     }
 
     /**
@@ -174,11 +174,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
         $magentoSoapClientMock->expects($this->once())
             ->method('addCall')
-            ->with(array(MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_CREATE, $productPart), 1);
+            ->with(array(Webservice::SOAP_ACTION_CATALOG_PRODUCT_CREATE, $productPart), 1);
 
-        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+        $webservice = new Webservice($magentoSoapClientMock);
 
-        $magentoWebservice->sendProduct($productPart);
+        $webservice->sendProduct($productPart);
     }
 
     /**
@@ -196,11 +196,11 @@ class MagentoWebserviceTest extends WebserviceTestCase
 
         $magentoSoapClientMock->expects($this->once())
             ->method('addCall')
-            ->with(array(MagentoWebservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart), 1);
+            ->with(array(Webservice::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart), 1);
 
-        $magentoWebservice = new MagentoWebservice($magentoSoapClientMock);
+        $webservice = new Webservice($magentoSoapClientMock);
 
-        $magentoWebservice->sendProduct($productPart);
+        $webservice->sendProduct($productPart);
     }
 
     /**
@@ -211,25 +211,25 @@ class MagentoWebserviceTest extends WebserviceTestCase
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
 
         $calls = array(
-            array(MagentoWebservice::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
+            array(Webservice::SOAP_ACTION_PRODUCT_MEDIA_REMOVE, array(
                 'product' => 'sku-000',
                 'file'    => 'filename'
             ), true),
         );
 
-        $magentoWebservice = $this->getMagentoWebserviceWithCallMap($calls);
+        $webservice = $this->getWebserviceWithCallMap($calls);
 
-        $magentoWebservice->deleteImage('sku-000', 'filename');
+        $webservice->deleteImage('sku-000', 'filename');
     }
 
     /**
-     * Get a MagentoWebservice with the given call map
+     * Get a Webservice with the given call map
      * @param array $callsMap Calls map
      * @param bool  $expects  specify manualy the expect count (array length otherwise)
      *
-     * @return MagentoWebservice
+     * @return Webservice
      */
-    protected function getMagentoWebserviceWithCallMap(array $callsMap, $expects = null)
+    protected function getWebserviceWithCallMap(array $callsMap, $expects = null)
     {
         $magentoSoapClientMock = $this->getConnectedMagentoSoapClientMock();
 
@@ -245,7 +245,7 @@ class MagentoWebserviceTest extends WebserviceTestCase
                 )
             );
 
-        return new MagentoWebservice($magentoSoapClientMock);
+        return new Webservice($magentoSoapClientMock);
     }
 
     /**
@@ -285,14 +285,14 @@ class MagentoWebserviceTest extends WebserviceTestCase
             array(
                 'attribute_id' => '90',
                 'code'         => 'colors',
-                'type'         => MagentoWebservice::MULTI_SELECT,
+                'type'         => Webservice::MULTI_SELECT,
                 'required'     => '1',
                 'scope'        => 'store',
             ),
             array(
                 'attribute_id' => '91',
                 'code'         => 'size',
-                'type'         => MagentoWebservice::SELECT,
+                'type'         => Webservice::SELECT,
                 'required'     => '1',
                 'scope'        => 'store',
             )

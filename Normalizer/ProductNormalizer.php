@@ -6,7 +6,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -78,7 +78,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     {
         $processedItem = array();
 
-        $processedItem[MagentoWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+        $processedItem[Webservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
             $object,
             $context['magentoAttributes'],
             $context['magentoAttributesOptions'],
@@ -89,7 +89,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['create']
         );
 
-        $processedItem[MagentoWebservice::IMAGES] = $this->getNormalizedImages($object);
+        $processedItem[Webservice::IMAGES] = $this->getNormalizedImages($object);
 
         //For each storeview, we update the product only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {
@@ -156,7 +156,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(MagentoWebservice::SMALL_IMAGE),
+                        'types'    => array(Webservice::SMALL_IMAGE),
                         'exclude'  => 0
                     )
                 );
@@ -208,13 +208,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $attributeSetId,
                 $sku,
                 $defaultValues,
-                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW
+                Webservice::SOAP_DEFAULT_STORE_VIEW
             );
         } else {
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                MagentoWebservice::SOAP_DEFAULT_STORE_VIEW
+                Webservice::SOAP_DEFAULT_STORE_VIEW
             );
         }
 

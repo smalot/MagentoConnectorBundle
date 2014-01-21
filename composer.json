@@ -12,11 +12,30 @@
             "homepage": "http://akeneo.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/akeneo/pim-community-dev.git",
+            "branch": "master"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/akeneo/platform.git"
+        }
+    ],
     "require": {
-        "akeneo/pim-community-dev": "v1.0.0-BETA4"
+        "akeneo/pim-community-dev": "v1.0.0-BETA4",
+        "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "2.0.*@dev"
     },
     "autoload": {
         "psr-0": { "Pim\\Bundle\\MagentoConnectorBundle\\": "" }
     },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "dev",
     "target-dir": "Pim/Bundle/MagentoConnectorBundle"
 }

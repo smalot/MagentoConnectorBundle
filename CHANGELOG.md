@@ -2,6 +2,8 @@
 
 ## Features
 
+- Added possibility to create, update and move categories
+
 ## Improvements
 
 - Price mapping validation for configurable products

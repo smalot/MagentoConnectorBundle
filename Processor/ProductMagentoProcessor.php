@@ -4,9 +4,13 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
-
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 
 /**
  * Magento product processor
@@ -17,8 +21,30 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
  *
  * @HasValidCredentials()
  */
-class ProductMagentoProcessor extends AbstractMagentoProcessor
+class ProductMagentoProcessor extends AbstractProductMagentoProcessor
 {
+    /**
+     * @var metricConverter
+     */
+    protected $metricConverter;
+
+    /**
+     * @param ChannelManager           $channelManager
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param MetricConverter          $metricConverter
+     */
+    public function __construct(
+        ChannelManager $channelManager,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        MetricConverter $metricConverter
+    ) {
+        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
+
+        $this->metricConverter = $metricConverter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,7 +53,7 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
         $processedItems = array();
 
         $this->beforeProcess();
-        $magentoProducts = $this->magentoWebservice->getProductsStatus($items);
+        $magentoProducts = $this->webservice->getProductsStatus($items);
 
         $channel = $this->channelManager->getChannelByCode($this->channel);
 
@@ -72,7 +98,11 @@ class ProductMagentoProcessor extends AbstractMagentoProcessor
     protected function normalizeProduct(ProductInterface $product, $context)
     {
         try {
-            $processedItem = $this->productNormalizer->normalize($product, 'MagentoArray', $context);
+            $processedItem = $this->productNormalizer->normalize(
+                $product,
+                AbstractNormalizer::MAGENTO_FORMAT,
+                $context
+            );
         } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
