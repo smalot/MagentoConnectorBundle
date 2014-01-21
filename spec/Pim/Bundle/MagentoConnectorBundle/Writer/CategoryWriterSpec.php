@@ -11,7 +11,7 @@ use Pim\Bundle\CatalogBundle\Entity\Category;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class CategoryMagentoWriterSpec extends ObjectBehavior
+class CategoryWriterSpec extends ObjectBehavior
 {
     public function let(
         ChannelManager $channelManager,

@@ -74,6 +74,8 @@ class ProductAssociationProcessor extends AbstractProductProcessor
     /**
      * Set pimUpSell
      * @param string $pimUpSell
+     *
+     * @return ProductAssociationProcessor
      */
     public function setPimUpSell($pimUpSell)
     {
@@ -94,6 +96,8 @@ class ProductAssociationProcessor extends AbstractProductProcessor
     /**
      * Set pimCrossSell
      * @param string $pimCrossSell
+     *
+     * @return ProductAssociationProcessor
      */
     public function setPimCrossSell($pimCrossSell)
     {
@@ -114,6 +118,8 @@ class ProductAssociationProcessor extends AbstractProductProcessor
     /**
      * Set pimRelated
      * @param string $pimRelated
+     *
+     * @return ProductAssociationProcessor
      */
     public function setPimRelated($pimRelated)
     {
@@ -141,11 +147,15 @@ class ProductAssociationProcessor extends AbstractProductProcessor
             $productAssociationCalls['create'] += $this->getCreateCallsForProduct($product);
         }
 
-        var_dump($productAssociationCalls);
-
         return $productAssociationCalls;
     }
 
+    /**
+     * Get create calls for a given product
+     * @param ProductInterface $product
+     *
+     * @return array
+     */
     protected function getCreateCallsForProduct(ProductInterface $product)
     {
         $createAssociationCalls = array();
@@ -157,6 +167,13 @@ class ProductAssociationProcessor extends AbstractProductProcessor
         return $createAssociationCalls;
     }
 
+    /**
+     * Get create calls
+     * @param ProductInterface $product
+     * @param Association      $productAssociation
+     *
+     * @return array
+     */
     protected function getCreateCalls(ProductInterface $product, Association $productAssociation)
     {
         $createAssociationCalls = array();
@@ -176,6 +193,13 @@ class ProductAssociationProcessor extends AbstractProductProcessor
         return $createAssociationCalls;
     }
 
+    /**
+     * Get remove association calls for a given product
+     * @param ProductInterface $product
+     * @param array            $associationStatus
+     *
+     * @return return array
+     */
     protected function getRemoveCallsForProduct(ProductInterface $product, array $associationStatus)
     {
         $removeAssociationCalls = array();
@@ -193,6 +217,10 @@ class ProductAssociationProcessor extends AbstractProductProcessor
         return $removeAssociationCalls;
     }
 
+    /**
+     * Get association code mapping
+     * @return array
+     */
     protected function getAssociationCodeMapping()
     {
         $associationCodeMapping = array();

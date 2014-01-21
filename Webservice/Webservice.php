@@ -355,7 +355,8 @@ class Webservice
 
     /**
      * Get associations status
-     * @param  ProductInterface $product
+     * @param ProductInterface $product
+     *
      * @return array
      */
     public function getAssociationsStatus(ProductInterface $product)
