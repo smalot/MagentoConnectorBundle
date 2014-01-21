@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Entity\Repository;
 use Pim\Bundle\CatalogBundle\Entity\Repository\CategoryRepository as BaseCategoryRepository;
 
 /**
- * Custom group repository
+ * Custom category repository
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)

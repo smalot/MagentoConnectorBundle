@@ -5,29 +5,33 @@ namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 
 /**
- * MagentoCategoryMapping
+ * Magento category mapping
+ *
+ * @author    Julien Sanchez <julien@akeneo.com>
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class MagentoCategoryMapping
 {
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $magentoUrl;
+    protected $magentoUrl;
 
     /**
      * @var integer
      */
-    private $magentoCategoryId;
+    protected $magentoCategoryId;
 
     /**
      * @var Category
      */
-    private $category;
+    protected $category;
 
     /**
      * Get id

@@ -64,12 +64,12 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get the default category
-     * @param Category $category
-     * @param array    $context
+     * @param CategoryInterface $category
+     * @param array             $context
      *
      * @return array
      */
-    protected function getDefaultCategory(Category $category, array $context)
+    protected function getDefaultCategory(CategoryInterface $category, array $context)
     {
         $normalizedCategory = array(
             'create'    => array(),
@@ -96,13 +96,13 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Test if the given category exist on Magento side
-     * @param Category $category
-     * @param array    $magentoCategories
-     * @param string   $magentoUrl
+     * @param CategoryInterface $category
+     * @param array             $magentoCategories
+     * @param string            $magentoUrl
      *
      * @return boolean
      */
-    protected function magentoCategoryExist(Category $category, array $magentoCategories, $magentoUrl)
+    protected function magentoCategoryExist(CategoryInterface $category, array $magentoCategories, $magentoUrl)
     {
         if (($magentoCategoryId = $this->getMagentoCategoryId($category, $magentoUrl)) !== null &&
             isset($magentoCategories[$magentoCategoryId])
@@ -115,24 +115,24 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get category id on Magento side for the given category
-     * @param Category $category
-     * @param string   $magentoUrl
+     * @param CategoryInterface $category
+     * @param string            $magentoUrl
      *
      * @return int
      */
-    protected function getMagentoCategoryId(Category $category, $magentoUrl)
+    protected function getMagentoCategoryId(CategoryInterface $category, $magentoUrl)
     {
         return $this->categoryMappingManager->getIdFromCategory($category, $magentoUrl);
     }
 
     /**
      * Get new normalized categories
-     * @param Category $category
-     * @param array    $context
+     * @param CategoryInterface $category
+     * @param array             $context
      *
      * @return array
      */
-    protected function getNormalizedNewCategory(Category $category, array $context)
+    protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
     {
         return array(
             'magentoCategory' => array(
@@ -152,12 +152,12 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get update normalized categories
-     * @param Category $category
-     * @param array    $context
+     * @param CategoryInterface $category
+     * @param array             $context
      *
      * @return array
      */
-    protected function getNormalizedUpdateCategory(Category $category, array $context)
+    protected function getNormalizedUpdateCategory(CategoryInterface $category, array $context)
     {
         return array(
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
@@ -172,13 +172,13 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get normalized variation category
-     * @param Category $category
-     * @param string   $localeCode
-     * @param string   $storeViewCode
+     * @param CategoryInterface $category
+     * @param string            $localeCode
+     * @param string            $storeViewCode
      *
      * @return array
      */
-    protected function getNormalizedVariationCategory(Category $category, $localeCode, $storeViewCode)
+    protected function getNormalizedVariationCategory(CategoryInterface $category, $localeCode, $storeViewCode)
     {
         return array(
             'magentoCategory' => array(
@@ -196,12 +196,12 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get move normalized categories
-     * @param Category $category
-     * @param array    $context
+     * @param CategoryInterface $category
+     * @param array             $context
      *
      * @return array
      */
-    protected function getNormalizedMoveCategory(Category $category, array $context)
+    protected function getNormalizedMoveCategory(CategoryInterface $category, array $context)
     {
         return array(
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
@@ -211,12 +211,12 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get category label
-     * @param Category $category
-     * @param string   $localeCode
+     * @param CategoryInterface $category
+     * @param string            $localeCode
      *
      * @return string
      */
-    protected function getCategoryLabel(Category $category, $localeCode)
+    protected function getCategoryLabel(CategoryInterface $category, $localeCode)
     {
         $category->setLocale($localeCode);
 
@@ -225,13 +225,13 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get Magento parent id
-     * @param Category $category
-     * @param array    $rootCategoryMapping
-     * @param string   $magentoUrl
+     * @param CategoryInterface $category
+     * @param array             $rootCategoryMapping
+     * @param string            $magentoUrl
      *
      * @return int
      */
-    protected function getMagentoParentId(Category $category, array $rootCategoryMapping, $magentoUrl)
+    protected function getMagentoParentId(CategoryInterface $category, array $rootCategoryMapping, $magentoUrl)
     {
         if (isset($rootCategoryMapping[$category->getParent()->getCode()])) {
             return $rootCategoryMapping[$category->getParent()->getCode()];
@@ -242,13 +242,13 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Test if the category has moved on magento side
-     * @param Category $category
-     * @param array    $magentoCategories
-     * @param string   $magentoUrl
+     * @param CategoryInterface $category
+     * @param array             $magentoCategories
+     * @param string            $magentoUrl
      *
      * @return boolean
      */
-    protected function categoryHasMoved(Category $category, array $magentoCategories, $magentoUrl)
+    protected function categoryHasMoved(CategoryInterface $category, array $magentoCategories, $magentoUrl)
     {
         $currentCategoryId = $this->getMagentoCategoryId($category, $magentoUrl);
         $currentParentId   = $this->getMagentoCategoryId($category->getParent(), $magentoUrl);

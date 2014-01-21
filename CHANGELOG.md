@@ -2,9 +2,7 @@
 
 ## Features
 
-- Create categories
-- Update categories
-- Move categories
+- Added possibility to create, update and move categories
 
 ## Improvements
 
