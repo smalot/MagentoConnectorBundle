@@ -133,8 +133,7 @@ class NormalizerGuesser extends Guesser
     /**
      * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
-     * @param ProductNormalizerInterface  $productNormalizer
-     * @param PriceMappingManager         $priceMappingManager
+     * @param CategoryMappingManager      $categoryMappingManager
      *
      * @return AbstractNormalizer
      */

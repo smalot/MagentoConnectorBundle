@@ -62,9 +62,10 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
     }
 
     /**
-     * @param ChannelManager           $channelManager
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param ChannelManager         $channelManager
+     * @param WebserviceGuesser      $webserviceGuesser
+     * @param NormalizerGuesser      $normalizerGuesser
+     * @param CategoryMappingManager $categoryMappingManager
      */
     public function __construct(
         ChannelManager $channelManager,

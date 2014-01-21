@@ -22,9 +22,8 @@ class CategoryNormalizer extends AbstractNormalizer
     protected $categoryMappingManager;
 
     /**
-     * @param ChannelManager           $channelManager
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param ChannelManager         $channelManager
+     * @param CategoryMappingManager $categoryMappingManager
      */
     public function __construct(
         ChannelManager $channelManager,
@@ -63,6 +62,13 @@ class CategoryNormalizer extends AbstractNormalizer
         return $normalizedCategory;
     }
 
+    /**
+     * Get the default category
+     * @param Category $category
+     * @param array    $context
+     *
+     * @return array
+     */
     protected function getDefaultCategory(Category $category, array $context)
     {
         $normalizedCategory = array(
@@ -92,6 +98,7 @@ class CategoryNormalizer extends AbstractNormalizer
      * Test if the given category exist on Magento side
      * @param Category $category
      * @param array    $magentoCategories
+     * @param string   $magentoUrl
      *
      * @return boolean
      */
@@ -163,13 +170,21 @@ class CategoryNormalizer extends AbstractNormalizer
         );
     }
 
-    protected function getNormalizedVariationCategory(Category $category, $locale, $storeViewCode)
+    /**
+     * Get normalized variation category
+     * @param Category $category
+     * @param string   $localeCode
+     * @param string   $storeViewCode
+     *
+     * @return array
+     */
+    protected function getNormalizedVariationCategory(Category $category, $localeCode, $storeViewCode)
     {
         return array(
             'magentoCategory' => array(
                 null,
                 array(
-                    'name'              => $this->getCategoryLabel($category, $locale),
+                    'name'              => $this->getCategoryLabel($category, $localeCode),
                     'available_sort_by' => 1,
                     'default_sort_by'   => 1
                 ),
@@ -194,9 +209,16 @@ class CategoryNormalizer extends AbstractNormalizer
         );
     }
 
-    protected function getCategoryLabel(Category $category, $locale)
+    /**
+     * Get category label
+     * @param Category $category
+     * @param string   $localeCode
+     *
+     * @return string
+     */
+    protected function getCategoryLabel(Category $category, $localeCode)
     {
-        $category->setLocale($locale);
+        $category->setLocale($localeCode);
 
         return $category->getLabel();
     }
@@ -204,10 +226,12 @@ class CategoryNormalizer extends AbstractNormalizer
     /**
      * Get Magento parent id
      * @param Category $category
+     * @param array    $rootCategoryMapping
+     * @param string   $magentoUrl
      *
      * @return int
      */
-    protected function getMagentoParentId(Category $category, $rootCategoryMapping, $magentoUrl)
+    protected function getMagentoParentId(Category $category, array $rootCategoryMapping, $magentoUrl)
     {
         if (isset($rootCategoryMapping[$category->getParent()->getCode()])) {
             return $rootCategoryMapping[$category->getParent()->getCode()];
@@ -218,11 +242,13 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Test if the category has moved on magento side
-     * @param  Category $category
-     * @param  array    $magentoCategories
-     * @return [type]
+     * @param Category $category
+     * @param array    $magentoCategories
+     * @param string   $magentoUrl
+     *
+     * @return boolean
      */
-    protected function categoryHasMoved(Category $category, $magentoCategories, $magentoUrl)
+    protected function categoryHasMoved(Category $category, array $magentoCategories, $magentoUrl)
     {
         $currentCategoryId = $this->getMagentoCategoryId($category, $magentoUrl);
         $currentParentId   = $this->getMagentoCategoryId($category->getParent(), $magentoUrl);

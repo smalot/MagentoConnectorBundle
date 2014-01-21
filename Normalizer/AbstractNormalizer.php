@@ -90,7 +90,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get the locale based on storeViewMapping
-     * @param string $locale
+     * @param string $localeCode
      * @param array  $storeViewMapping
      *
      * @return string

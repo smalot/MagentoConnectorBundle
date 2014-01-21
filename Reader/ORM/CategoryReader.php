@@ -21,8 +21,9 @@ class CategoryReader extends EntityReader
     protected $repository;
 
     /**
-     * @param EntityManager $em        The entity manager
-     * @param string        $className The entity class name used
+     * @param EntityManager      $em         The entity manager
+     * @param string             $className  The entity class name used
+     * @param CategoryRepository $repository The entity repository
      */
     public function __construct(EntityManager $em, $className, CategoryRepository $repository)
     {
