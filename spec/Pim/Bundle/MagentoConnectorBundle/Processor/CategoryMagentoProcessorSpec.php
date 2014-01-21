@@ -32,13 +32,12 @@ class CategoryMagentoProcessorSpec extends ObjectBehavior
 
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
-        $normalizerGuesser->getCategoryNormalizer(Argument::any(), Argument::any())
-            ->willReturn($categoryNormalizer);
+        $normalizerGuesser->getCategoryNormalizer(Argument::any(), Argument::any())->willReturn($categoryNormalizer);
 
         $this->setRootCategoryMapping("test:4\n");
     }
 
-    public function it_normalize_categories(
+    public function it_normalizes_categories(
         Category $category,
         Category $parentCategory,
         $webservice,
@@ -62,15 +61,7 @@ class CategoryMagentoProcessorSpec extends ObjectBehavior
         $categoryNormalizer->normalize(
             $category,
             AbstractNormalizer::MAGENTO_FORMAT,
-            array(
-                'magentoCategories'   => array(1 => array(1)),
-                'magentoUrl'          => null,
-                'defaultLocale'       => null,
-                'channel'             => null,
-                'rootCategoryMapping' => array('4'),
-                'magentoStoreViews'   => array(array('store_id' => 10, 'code' => 'fr_fr')),
-                'storeViewMapping'    => array()
-            )
+            Argument::any()
         )->willReturn(array(
             'create'    => array(),
             'update'    => array(),
@@ -78,6 +69,11 @@ class CategoryMagentoProcessorSpec extends ObjectBehavior
             'variation' => array()
         ));
 
-        $this->process($category);
+        $this->process($category)->shouldReturn(array(
+            'create'    => array(),
+            'update'    => array(),
+            'move'      => array(),
+            'variation' => array()
+        ));
     }
 }
