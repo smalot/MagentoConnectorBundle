@@ -3,8 +3,13 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\CatalogBundle\Model\Association;
+use Pim\Bundle\CatalogBundle\Entity\AssociationType;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 
 /**
  * Magento product processor
@@ -17,10 +22,105 @@ use Pim\Bundle\CatalogBundle\Model\Association;
  */
 class ProductAssociationProcessor extends AbstractProductProcessor
 {
-    const MAGENTO_UP_SELL = 'up_sell';
-    const PIM_UP_SELL     = 'UPSELL';
-    const MAGENTO_CROSS_SELL = 'up_sell';
-    const PIM_X_SELL     = 'UPSELL';
+    const MAGENTO_UP_SELL    = 'up_sell';
+    const MAGENTO_CROSS_SELL = 'cross_sell';
+
+    /**
+     * @var AssociationTypeManager
+     */
+    protected $associationTypeManager;
+
+    /**
+     * @var string
+     */
+    protected $pimUpSell;
+
+    /**
+     * @var string
+     */
+    protected $pimCrossSell;
+
+    /**
+     * @var string
+     */
+    protected $pimRelated;
+
+    /**
+     * @param ChannelManager           $channelManager
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param AssociationTypeManager   $associationTypeManager
+     */
+    public function __construct(
+        ChannelManager $channelManager,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        AssociationTypeManager $associationTypeManager
+    ) {
+        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
+
+        $this->associationTypeManager = $associationTypeManager;
+    }
+
+    /**
+     * Get pimUpSell
+     * @return string
+     */
+    public function getPimUpSell()
+    {
+        return $this->pimUpSell;
+    }
+
+    /**
+     * Set pimUpSell
+     * @param string $pimUpSell
+     */
+    public function setPimUpSell($pimUpSell)
+    {
+        $this->pimUpSell = $pimUpSell;
+
+        return $this;
+    }
+
+    /**
+     * Get pimCrossSell
+     * @return string
+     */
+    public function getPimCrossSell()
+    {
+        return $this->pimCrossSell;
+    }
+
+    /**
+     * Set pimCrossSell
+     * @param string $pimCrossSell
+     */
+    public function setPimCrossSell($pimCrossSell)
+    {
+        $this->pimCrossSell = $pimCrossSell;
+
+        return $this;
+    }
+
+    /**
+     * Get pimRelated
+     * @return string
+     */
+    public function getPimRelated()
+    {
+        return $this->pimRelated;
+    }
+
+    /**
+     * Set pimRelated
+     * @param string $pimRelated
+     */
+    public function setPimRelated($pimRelated)
+    {
+        $this->pimRelated = $pimRelated;
+
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
@@ -95,9 +195,50 @@ class ProductAssociationProcessor extends AbstractProductProcessor
 
     protected function getAssociationCodeMapping()
     {
-        return array(
-            self::PIM_UP_SELL => self::MAGENTO_UP_SELL,
-            self::PIM_X_SELL  => self::MAGENTO_CROSS_SELL
+        $associationCodeMapping = array();
+
+        if ($this->getPimUpSell()) {
+            $associationCodeMapping[$this->getPimUpSell()] = self::MAGENTO_UP_SELL;
+        }
+
+        if ($this->getPimCrossSell()) {
+            $associationCodeMapping[$this->getPimCrossSell()] = self::MAGENTO_CROSS_SELL;
+        }
+
+        if ($this->getPimRelated()) {
+            $associationCodeMapping[$this->getPimRelated()] = self::MAGENTO_RELATED;
+        }
+
+        return $associationCodeMapping;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            array(
+                'pimUpSell' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices' => $this->associationTypeManager->getAssociationTypeChoices()
+                    )
+                ),
+                'pimCrossSell' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices' => $this->associationTypeManager->getAssociationTypeChoices()
+                    )
+                ),
+                'pimRelated' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices' => $this->associationTypeManager->getAssociationTypeChoices()
+                    )
+                )
+            )
         );
     }
 }

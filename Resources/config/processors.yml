@@ -33,3 +33,4 @@ services:
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_magento_connector.manager.association_type'
