@@ -84,7 +84,8 @@ class CategoryMagentoWriterSpec extends ObjectBehavior
 
     public function it_sends_categories_to_update_variation_on_magento_webservice(
         Category $category,
-        $webservice
+        $webservice,
+        $categoryMappingManager
     ) {
         $batches = array(
             array(
@@ -97,8 +98,11 @@ class CategoryMagentoWriterSpec extends ObjectBehavior
             )
         );
 
-        $webservice->sendUpdateCategory(array('foo'))->shouldBeCalled();
+        $categoryMappingManager->getIdFromCategory($category, 'bar')->willReturn(12);
 
+        $webservice->sendUpdateCategory(array(12))->shouldBeCalled();
+
+        $this->setSoapUrl('bar');
         $this->write($batches);
     }
 }

@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
 use Pim\Bundle\ImportExportBundle\Reader\ORM\EntityReader;
 use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository;
+use Doctrine\ORM\EntityManager;
 
 /**
  * ORM reader for categories
@@ -14,6 +15,22 @@ use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository;
  */
 class CategoryReader extends EntityReader
 {
+    /**
+     * @var CategoryRepository
+     */
+    protected $repository;
+
+    /**
+     * @param EntityManager $em        The entity manager
+     * @param string        $className The entity class name used
+     */
+    public function __construct(EntityManager $em, $className, CategoryRepository $repository)
+    {
+        parent::__construct($em, $className);
+
+        $this->repository = $repository;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -32,8 +49,6 @@ class CategoryReader extends EntityReader
      */
     protected function getRepository()
     {
-        $classMetadata = $this->em->getMetadataFactory()->getMetadataFor($this->className);
-
-        return new CategoryRepository($this->em, $classMetadata);
+        return $this->repository;
     }
 }

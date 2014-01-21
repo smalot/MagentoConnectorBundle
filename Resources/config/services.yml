@@ -30,3 +30,15 @@ services:
         class: %pim_magento_connector.validator.magento_url.class%
         tags:
             - { name: validator.constraint_validator, alias: magento_url }
+
+    pim_magento_connector.repository.category:
+        class: 'Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@pim_magento_connector.metadata.category'
+
+    pim_magento_connector.metadata.category:
+        public: false
+        class: Doctrine\ORM\Mapping\ClassMetaData
+        arguments:
+            name: %pim_catalog.entity.category.class%

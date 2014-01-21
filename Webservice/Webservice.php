@@ -341,7 +341,7 @@ class Webservice
     {
         $result = array($tree['category_id'] => $tree);
 
-        foreach ($tree['children'] as $key => $children) {
+        foreach ($tree['children'] as $children) {
             $result = $result + $this->flattenCategoryTree($children);
         }
 
