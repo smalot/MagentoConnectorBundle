@@ -94,7 +94,7 @@ class MagentoCategoryMapping
     /**
      * Set category
      *
-     * @param string $category
+     * @param Category $category
      *
      * @return MagentoCategoryMapping
      */
@@ -108,7 +108,7 @@ class MagentoCategoryMapping
     /**
      * Get category
      *
-     * @return string
+     * @return Category
      */
     public function getCategory()
     {
