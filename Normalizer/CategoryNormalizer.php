@@ -104,13 +104,8 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function magentoCategoryExist(CategoryInterface $category, array $magentoCategories, $magentoUrl)
     {
-        if (($magentoCategoryId = $this->getMagentoCategoryId($category, $magentoUrl)) !== null &&
-            isset($magentoCategories[$magentoCategoryId])
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($magentoCategoryId = $this->getMagentoCategoryId($category, $magentoUrl)) !== null &&
+            isset($magentoCategories[$magentoCategoryId]);
     }
 
     /**
