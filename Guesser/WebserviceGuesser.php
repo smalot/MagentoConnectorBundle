@@ -30,15 +30,15 @@ class WebserviceGuesser extends AbstractGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
-            case Guesser::MAGENTO_VERSION_1_8:
-            case Guesser::MAGENTO_VERSION_1_7:
+            case AbstractGuesser::MAGENTO_VERSION_1_8:
+            case AbstractGuesser::MAGENTO_VERSION_1_7:
                 $webservice = new Webservice($client);
                 break;
-            case Guesser::MAGENTO_VERSION_1_6:
+            case AbstractGuesser::MAGENTO_VERSION_1_6:
                 $webservice = new Webservice16($client);
                 break;
             default:
-                throw new NotSupportedVersionException(Guesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+                throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
 
         return $webservice;

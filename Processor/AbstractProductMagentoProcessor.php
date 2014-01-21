@@ -21,6 +21,7 @@ abstract class AbstractProductMagentoProcessor extends AbstractMagentoProcessor
     protected $productNormalizer;
 
     /**
+     * @var string
      * @Assert\NotBlank(groups={"Execution"})
      */
     protected $currency;

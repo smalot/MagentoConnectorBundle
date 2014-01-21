@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
-use Pim\Bundle\CatalogBundle\Entity\Category;
+use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 
 /**
  * Magento category mapping
@@ -29,7 +29,7 @@ class MagentoCategoryMapping
     protected $magentoCategoryId;
 
     /**
-     * @var Category
+     * @var CategoryInterface
      */
     protected $category;
 
@@ -94,11 +94,11 @@ class MagentoCategoryMapping
     /**
      * Set category
      *
-     * @param Category $category
+     * @param CategoryInterface $category
      *
      * @return MagentoCategoryMapping
      */
-    public function setCategory(Category $category)
+    public function setCategory(CategoryInterface $category)
     {
         $this->category = $category;
 
@@ -108,7 +108,7 @@ class MagentoCategoryMapping
     /**
      * Get category
      *
-     * @return Category
+     * @return CategoryInterface
      */
     public function getCategory()
     {

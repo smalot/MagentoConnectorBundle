@@ -402,18 +402,14 @@ class Webservice
      */
     protected function getStatusForSkus($skus)
     {
-        $condition        = new \StdClass();
-        $condition->key   = 'in';
-        $condition->value = $skus;
-
-        $fieldFilter        = new \StdClass();
-        $fieldFilter->key   = 'sku';
-        $fieldFilter->value = $condition;
-
-        $filters = new \StdClass();
-        $filters->complex_filter = array(
-            $fieldFilter
-        );
+        $filters = json_decode(json_encode(array(
+            'complex_filter' => array(
+                array(
+                    'key' => 'sku',
+                    'value' => array('key' => 'in', 'value' => $skus)
+                )
+            )
+        )), false);;
 
         return $this->client->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_LIST,

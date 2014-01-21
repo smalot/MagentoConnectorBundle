@@ -249,10 +249,6 @@ class CategoryNormalizer extends AbstractNormalizer
         $currentCategoryId = $this->getMagentoCategoryId($category, $magentoUrl);
         $currentParentId   = $this->getMagentoCategoryId($category->getParent(), $magentoUrl);
 
-        if ($magentoCategories[$currentCategoryId] !== $currentParentId) {
-            return true;
-        } else {
-            return false;
-        }
+        return $magentoCategories[$currentCategoryId] !== $currentParentId;
     }
 }
