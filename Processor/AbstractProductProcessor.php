@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-abstract class AbstractProductMagentoProcessor extends AbstractMagentoProcessor
+abstract class AbstractProductProcessor extends AbstractProcessor
 {
     const MAGENTO_VISIBILITY_CATALOG_SEARCH = 4;
 
@@ -51,7 +51,7 @@ abstract class AbstractProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param string $currency currency
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setCurrency($currency)
     {
@@ -75,7 +75,7 @@ abstract class AbstractProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param string $enabled enabled
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setEnabled($enabled)
     {
@@ -99,7 +99,7 @@ abstract class AbstractProductMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param string $visibility visibility
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setVisibility($visibility)
     {

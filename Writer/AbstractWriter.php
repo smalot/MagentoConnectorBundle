@@ -21,7 +21,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
  *
  * @HasValidCredentials()
  */
-abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement implements ItemWriterInterface
+abstract class AbstractWriter extends AbstractConfigurableStepElement implements ItemWriterInterface
 {
     /**
      * @var ChannelManager
@@ -91,7 +91,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      *
      * @param string $soapUsername Soap mangeto soapUsername
      *
-     * @return AbstractMagentoWriter
+     * @return AbstractWriter
      */
     public function setSoapUsername($soapUsername)
     {
@@ -115,7 +115,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      *
      * @param string $soapApiKey Soap mangeto soapApiKey
      *
-     * @return AbstractMagentoWriter
+     * @return AbstractWriter
      */
     public function setSoapApiKey($soapApiKey)
     {
@@ -139,7 +139,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      *
      * @param string $soapUrl mangeto soap url
      *
-     * @return AbstractMagentoWriter
+     * @return AbstractWriter
      */
     public function setSoapUrl($soapUrl)
     {
@@ -163,7 +163,7 @@ abstract class AbstractMagentoWriter extends AbstractConfigurableStepElement imp
      *
      * @param string $channel channel
      *
-     * @return AbstractMagentoWriter
+     * @return AbstractWriter
      */
     public function setChannel($channel)
     {

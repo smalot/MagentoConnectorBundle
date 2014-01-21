@@ -16,7 +16,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
  *
  * @HasValidCredentials()
  */
-class CategoryMagentoWriter extends AbstractMagentoWriter
+class CategoryWriter extends AbstractWriter
 {
     /**
      * @var CategoryMappingManager

@@ -16,7 +16,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class CategoryMagentoProcessor extends AbstractMagentoProcessor
+class CategoryProcessor extends AbstractProcessor
 {
     /**
      * @var CategoryMappingManager
@@ -43,7 +43,7 @@ class CategoryMagentoProcessor extends AbstractMagentoProcessor
      *
      * @param string $rootCategoryMapping rootCategoryMapping
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setRootCategoryMapping($rootCategoryMapping)
     {

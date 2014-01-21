@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Writer\ProductMagentoWriter;
+use Pim\Bundle\MagentoConnectorBundle\Writer\ProductWriter;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
@@ -13,7 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
+class ProductWriterTest extends \PHPUnit_Framework_TestCase
 {
     const LOGIN          = 'login';
     const PASSWORD       = 'password';
@@ -29,7 +29,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductMagentoWriter($channelManagerMock, $webserviceGuesserMock);
+        $writer = new ProductWriter($channelManagerMock, $webserviceGuesserMock);
 
         $products = array(array(
             array(
@@ -67,7 +67,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductMagentoWriter($channelManagerMock, $webserviceGuesserMock);
+        $writer = new ProductWriter($channelManagerMock, $webserviceGuesserMock);
 
         $writer->setSoapUsername(self::LOGIN);
         $writer->setSoapApiKey(self::PASSWORD);
@@ -94,17 +94,17 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get a all settled ProductMagentoWriter
+     * Get a all settled ProductWriter
      * @param ChannelManager    $channelManager
      * @param WebserviceGuesser $webserviceGuesser
      *
-     * @return ProductMagentoWriter
+     * @return ProductWriter
      */
-    protected function getProductMagentoWriter(
+    protected function getProductWriter(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser
     ) {
-        $writer = new ProductMagentoWriter($channelManager, $webserviceGuesser);
+        $writer = new ProductWriter($channelManager, $webserviceGuesser);
 
         $writer->setSoapUsername(self::LOGIN);
         $writer->setSoapApiKey(self::PASSWORD);
@@ -150,7 +150,7 @@ class ProductMagentoWriterTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductMagentoWriter($channelManagerMock, $webserviceGuesserMock);
+        $writer = new ProductWriter($channelManagerMock, $webserviceGuesserMock);
 
         $configurationFields = $writer->getConfigurationFields();
 

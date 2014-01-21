@@ -13,7 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
-class CategoryMagentoProcessorSpec extends ObjectBehavior
+class CategoryProcessorSpec extends ObjectBehavior
 {
     public function let(
         ChannelManager $channelManager,

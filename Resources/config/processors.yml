@@ -1,0 +1,35 @@
+parameters:
+    pim_magento_connector.processor.product.class: Pim\Bundle\MagentoConnectorBundle\Processor\ProductProcessor
+    pim_magento_connector.processor.configurable.class: Pim\Bundle\MagentoConnectorBundle\Processor\ConfigurableProcessor
+    pim_magento_connector.processor.product_association.class: Pim\Bundle\MagentoConnectorBundle\Processor\ProductAssociationProcessor
+    pim_magento_connector.processor.category.class: Pim\Bundle\MagentoConnectorBundle\Processor\CategoryProcessor
+
+services:
+    # processors
+    pim_magento_connector.processor.product:
+        class: %pim_magento_connector.processor.product.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_import_export.converter.metric'
+    pim_magento_connector.processor.configurable:
+        class: %pim_magento_connector.processor.configurable.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_magento_connector.manager.group'
+    pim_magento_connector.processor.category:
+        class: %pim_magento_connector.processor.category.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_magento_connector.manager.category_mapping'
+    pim_magento_connector.processor.product_association:
+        class: %pim_magento_connector.processor.product_association.class%
+        arguments:
+            - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
