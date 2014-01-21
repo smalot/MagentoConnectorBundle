@@ -24,6 +24,7 @@ class ProductAssociationProcessor extends AbstractProductProcessor
 {
     const MAGENTO_UP_SELL    = 'up_sell';
     const MAGENTO_CROSS_SELL = 'cross_sell';
+    const MAGENTO_RELATED    = 'related';
 
     /**
      * @var AssociationTypeManager
