@@ -74,7 +74,7 @@ class CategoryMappingManager
             )
         );
 
-        return ($magentoCategoryMapping !== null) ? $magentoCategoryMapping->getMagentoCategoryId() : null;
+        return $magentoCategoryMapping ? $magentoCategoryMapping->getMagentoCategoryId() : null;
     }
 
     /**
