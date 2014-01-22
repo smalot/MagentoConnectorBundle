@@ -10,6 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
 
 /**
@@ -27,22 +28,65 @@ class ProductProcessor extends AbstractProductProcessor
      * @var metricConverter
      */
     protected $metricConverter;
+    /**
+     * @var AssociationTypeManager
+     */
+    protected $associationTypeManager;
+
+    /**
+     * @var string
+     */
+    protected $pimGrouped;
+
+    /**
+     * Get pimGrouped
+     * @return string
+     */
+    public function getPimGrouped()
+    {
+        return $this->pimGrouped;
+    }
+
+    /**
+     * Set pimGrouped
+     * @param string $pimGrouped
+     *
+     * @return ProductProcessor
+     */
+    public function setPimGrouped($pimGrouped)
+    {
+        $this->pimGrouped = $pimGrouped;
+
+        return $this;
+    }
 
     /**
      * @param ChannelManager           $channelManager
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param MetricConverter          $metricConverter
+     * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
-        MetricConverter $metricConverter
+        MetricConverter $metricConverter,
+        AssociationTypeManager $associationTypeManager
     ) {
         parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
 
-        $this->metricConverter = $metricConverter;
+        $this->metricConverter        = $metricConverter;
+        $this->associationTypeManager = $associationTypeManager;
+    }
+    /**
+     * Function called before all process
+     */
+    protected function beforeProcess()
+    {
+        parent::beforeProcess();
+
+        $this->globalContext['pimGrouped'] = $this->pimGrouped;
     }
 
     /**
@@ -148,5 +192,23 @@ class ProductProcessor extends AbstractProductProcessor
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            array(
+                'pimGrouped' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices' => $this->associationTypeManager->getAssociationTypeChoices()
+                    )
+                )
+            )
+        );
     }
 }

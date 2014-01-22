@@ -146,7 +146,6 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         return $this->getComputedMapping($this->rootCategoryMapping);
     }
 
-
     /**
      * Function called before all process
      */

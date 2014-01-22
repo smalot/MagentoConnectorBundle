@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException;
 
 /**
@@ -43,6 +44,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     protected $mediaManager;
 
     /**
+     * @var AssociationTypeManager
+     */
+    protected $associationTypeManager;
+
+    /**
      * @var ProductValueNormalizer
      */
     protected $productValueNormalizer;
@@ -53,6 +59,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param MediaManager           $mediaManager
      * @param ProductValueNormalizer $productValueNormalizer
      * @param CategoryMappingManager $categoryMappingManager
+     * @param AssociationTypeManager $associationTypeManager
      * @param bool                   $enabled
      * @param bool                   $visibility
      * @param string                 $currency
@@ -63,6 +70,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
         CategoryMappingManager $categoryMappingManager,
+        AssociationTypeManager $associationTypeManager,
         $enabled,
         $visibility,
         $currency,
@@ -73,6 +81,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $this->mediaManager           = $mediaManager;
         $this->productValueNormalizer = $productValueNormalizer;
         $this->categoryMappingManager = $categoryMappingManager;
+        $this->associationTypeManager = $associationTypeManager;
         $this->enabled                = $enabled;
         $this->visibility             = $visibility;
         $this->currency               = $currency;
@@ -95,6 +104,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['channel'],
             $context['website'],
             $context['rootCategoryMapping'],
+            $context['pimGrouped'],
             $context['create']
         );
 
@@ -187,6 +197,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param string           $channel                  Channel
      * @param string           $website                  Website name
      * @param array            $rootCategoryMapping      Root category mapping
+     * @param string           $pimGrouped               Pim grouped association code
      * @param bool             $create                   Is it a creation ?
      *
      * @return array The default product data
@@ -200,6 +211,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $channel,
         $website,
         $rootCategoryMapping,
+        $pimGrouped,
         $create
     ) {
         $sku           = (string) $product->getIdentifier();
@@ -216,9 +228,15 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $defaultValues['websites'] = array($website);
 
         if ($create) {
+            if ($this->hasGroupedProduct($product, $pimGrouped)) {
+                $productType = self::MAGENTO_GROUPED_PRODUCT_KEY;
+            } else {
+                $productType = self::MAGENTO_SIMPLE_PRODUCT_KEY;
+            }
+
             //For the default storeview we create an entire product
             $defaultProduct = array(
-                self::MAGENTO_SIMPLE_PRODUCT_KEY,
+                $productType,
                 $attributeSetId,
                 $sku,
                 $defaultValues,
@@ -233,6 +251,22 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         }
 
         return $defaultProduct;
+    }
+
+    /**
+     * Test if a product has grouped products
+     * @param  ProductInterface $product
+     * @param  string           $pimGrouped
+     *
+     * @return boolean
+     */
+    protected function hasGroupedProduct(ProductInterface $product, $pimGrouped)
+    {
+        if ($associationType = $this->associationTypeManager->getAssociationTypesByCode($pimGrouped)) {
+            return (bool) $product->getAssociationForType($associationType);
+        } else {
+            return false;
+        }
     }
 
     /**

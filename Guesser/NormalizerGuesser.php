@@ -13,6 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 
 /**
@@ -40,22 +41,30 @@ class NormalizerGuesser extends AbstractGuesser
     protected $productValueNormalizer;
 
     /**
+     * @var AssociationTypeManager
+     */
+    protected $associationTypeManager;
+
+    /**
      * Constructor
      * @param ChannelManager         $channelManager
      * @param MediaManager           $mediaManager
      * @param ProductValueNormalizer $productValueNormalizer
      * @param CategoryMappingManager $categoryMappingManager
+     * @param AssociationTypeManager $associationTypeManager
      */
     public function __construct(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
-        CategoryMappingManager $categoryMappingManager
+        CategoryMappingManager $categoryMappingManager,
+        AssociationTypeManager $associationTypeManager
     ) {
         $this->channelManager         = $channelManager;
         $this->mediaManager           = $mediaManager;
         $this->productValueNormalizer = $productValueNormalizer;
         $this->categoryMappingManager = $categoryMappingManager;
+        $this->associationTypeManager = $associationTypeManager;
     }
 
     /**
@@ -87,6 +96,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->mediaManager,
                     $this->productValueNormalizer,
                     $this->categoryMappingManager,
+                    $this->associationTypeManager,
                     $enabled,
                     $visibility,
                     $currency,
@@ -98,6 +108,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->mediaManager,
                     $this->productValueNormalizer,
                     $this->categoryMappingManager,
+                    $this->associationTypeManager,
                     $enabled,
                     $visibility,
                     $currency,
