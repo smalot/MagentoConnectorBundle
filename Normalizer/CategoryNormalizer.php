@@ -132,7 +132,11 @@ class CategoryNormalizer extends AbstractNormalizer
     {
         return array(
             'magentoCategory' => array(
-                (string) $this->getMagentoParentId($category, $context['rootCategoryMapping'], $context['magentoUrl']),
+                (string) $this->categoryMappingManager->getIdFromCategory(
+                    $category->getParent(),
+                    $context['magentoUrl'],
+                    $context['rootCategoryMapping']
+                ),
                 array(
                     'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
                     'is_active'         => 1,
