@@ -21,7 +21,7 @@ use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
  *
  * @HasValidCredentials()
  */
-class ProductMagentoProcessor extends AbstractProductMagentoProcessor
+class ProductProcessor extends AbstractProductProcessor
 {
     /**
      * @var metricConverter

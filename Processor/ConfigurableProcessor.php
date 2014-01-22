@@ -22,7 +22,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
  *
  * @HasValidCredentials()
  */
-class ConfigurableMagentoProcessor extends AbstractProductMagentoProcessor
+class ConfigurableProcessor extends AbstractProductProcessor
 {
     /**
      * @var ConfigurableNormalizer

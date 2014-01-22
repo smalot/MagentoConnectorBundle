@@ -15,7 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
  *
  * @HasValidCredentials()
  */
-class ProductMagentoWriter extends AbstractMagentoWriter
+class ProductWriter extends AbstractWriter
 {
     /**
      * {@inheritdoc}

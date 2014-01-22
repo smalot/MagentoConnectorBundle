@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+
 /**
  * A magento soap client to abstract interaction with the magento api
  *
@@ -26,6 +28,9 @@ class Webservice
     const SOAP_ACTION_CATEGORY_CREATE               = 'catalog_category.create';
     const SOAP_ACTION_CATEGORY_UPDATE               = 'catalog_category.update';
     const SOAP_ACTION_CATEGORY_MOVE                 = 'catalog_category.move';
+    const SOAP_ACTION_LINK_LIST                     = 'catalog_product_link.list';
+    const SOAP_ACTION_LINK_REMOVE                   = 'catalog_product_link.remove';
+    const SOAP_ACTION_LINK_CREATE                   = 'catalog_product_link.assign';
 
     const SOAP_DEFAULT_STORE_VIEW                   = 'default';
     const IMAGES                                    = 'images';
@@ -349,6 +354,68 @@ class Webservice
     }
 
     /**
+     * Get associations status
+     * @param ProductInterface $product
+     *
+     * @return array
+     */
+    public function getAssociationsStatus(ProductInterface $product)
+    {
+        $associationStatus = array();
+        $sku               = (string) $product->getIdentifier();
+
+        $associationStatus['up_sell'] = $this->client->call(
+            self::SOAP_ACTION_LINK_LIST,
+            array(
+                'up_sell',
+                $sku
+            )
+        );
+
+        $associationStatus['cross_sell'] = $this->client->call(
+            self::SOAP_ACTION_LINK_LIST,
+            array(
+                'cross_sell',
+                $sku
+            )
+        );
+
+        $associationStatus['related'] = $this->client->call(
+            self::SOAP_ACTION_LINK_LIST,
+            array(
+                'related',
+                $sku
+            )
+        );
+
+        return $associationStatus;
+    }
+
+    /**
+     * Delete a product association
+     * @param array $productAssociation
+     */
+    public function removeProductAssociation(array $productAssociation)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_LINK_REMOVE,
+            $productAssociation
+        );
+    }
+
+    /**
+     * Create a product association
+     * @param array $productAssociation
+     */
+    public function createProductAssociation(array $productAssociation)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_LINK_CREATE,
+            $productAssociation
+        );
+    }
+
+    /**
      * Get the magento attributeSet list from the magento platform
      *
      * @return void
@@ -402,14 +469,19 @@ class Webservice
      */
     protected function getStatusForSkus($skus)
     {
-        $filters = json_decode(json_encode(array(
-            'complex_filter' => array(
+        $filters = json_decode(
+            json_encode(
                 array(
-                    'key' => 'sku',
-                    'value' => array('key' => 'in', 'value' => $skus)
+                    'complex_filter' => array(
+                        array(
+                            'key' => 'sku',
+                            'value' => array('key' => 'in', 'value' => $skus)
+                        )
+                    )
                 )
-            )
-        )), false);;
+            ),
+            false
+        );
 
         return $this->client->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_LIST,

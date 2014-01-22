@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Processor;
 
-use Pim\Bundle\MagentoConnectorBundle\Processor\ProductMagentoProcessor;
+use Pim\Bundle\MagentoConnectorBundle\Processor\ProductProcessor;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
+class ProductProcessorTest extends \PHPUnit_Framework_TestCase
 {
     const LOGIN                = 'login';
     const PASSWORD             = 'password';
@@ -112,7 +112,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $normalizerGuesserMock = $this->getNormalizerGuesserMock();
         $metricConverterMock          = $this->getMetricConverterMock();
 
-        $processor = new ProductMagentoProcessor(
+        $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $normalizerGuesserMock,
@@ -144,7 +144,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         );
         $metricConverterMock          = $this->getMetricConverterMock();
 
-        $processor = new ProductMagentoProcessor(
+        $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
@@ -176,7 +176,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         );
         $metricConverterMock          = $this->getMetricConverterMock();
 
-        $processor = new ProductMagentoProcessor(
+        $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
@@ -208,7 +208,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         );
         $metricConverterMock          = $this->getMetricConverterMock();
 
-        $processor = new ProductMagentoProcessor(
+        $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
@@ -308,7 +308,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Get a simple processor
-     * @return ProductMagentoProcessor
+     * @return ProductProcessor
      */
     protected function getSimpleProcessor()
     {
@@ -317,7 +317,7 @@ class ProductMagentoProcessorTest extends \PHPUnit_Framework_TestCase
         $normalizerGuesserMock = $this->getNormalizerGuesserMock();
         $metricConverterMock          = $this->getMetricConverterMock();
 
-        $processor = new ProductMagentoProcessor(
+        $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $normalizerGuesserMock,

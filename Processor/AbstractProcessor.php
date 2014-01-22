@@ -24,7 +24,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
  *
  * @HasValidCredentials()
  */
-abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement implements ItemProcessorInterface
+abstract class AbstractProcessor extends AbstractConfigurableStepElement implements ItemProcessorInterface
 {
     /**
      * @var ChannelManager
@@ -123,7 +123,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $soapUsername Soap mangeto soapUsername
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setSoapUsername($soapUsername)
     {
@@ -147,7 +147,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $soapApiKey Soap mangeto soapApiKey
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setSoapApiKey($soapApiKey)
     {
@@ -171,7 +171,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $soapUrl mangeto soap url
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setSoapUrl($soapUrl)
     {
@@ -195,7 +195,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $channel channel
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setChannel($channel)
     {
@@ -219,7 +219,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $defaultLocale defaultLocale
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setDefaultLocale($defaultLocale)
     {
@@ -243,7 +243,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $website website
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setWebsite($website)
     {
@@ -267,7 +267,7 @@ abstract class AbstractMagentoProcessor extends AbstractConfigurableStepElement 
      *
      * @param string $storeViewMapping storeViewMapping
      *
-     * @return AbstractMagentoProcessor
+     * @return AbstractProcessor
      */
     public function setStoreViewMapping($storeViewMapping)
     {

@@ -1,6 +1,7 @@
 parameters:
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.manager.category_mapping.class: Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager
+    pim_magento_connector.manager.association_type.class: Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager
 
 services:
     # manager
@@ -17,3 +18,9 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - %pim_magento_connector.entity.category_mapping.class%
+
+    pim_magento_connector.manager.association_type:
+        class: %pim_magento_connector.manager.association_type.class%
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - %pim_catalog.entity.association_type.class%

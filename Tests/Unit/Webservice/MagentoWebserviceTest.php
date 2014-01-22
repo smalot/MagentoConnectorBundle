@@ -349,20 +349,19 @@ class WebserviceTest extends WebserviceTestCase
      */
     protected function getProductFilters()
     {
-        $condition        = new \StdClass();
-        $condition->key   = 'in';
-        $condition->value = 'sku-000';
-
-        $fieldFilter        = new \StdClass();
-        $fieldFilter->key   = 'sku';
-        $fieldFilter->value = $condition;
-
-        $filters = new \StdClass();
-        $filters->complex_filter = array(
-            $fieldFilter
+        return json_decode(
+            json_encode(
+                array(
+                    'complex_filter' => array(
+                        array(
+                            'key' => 'sku',
+                            'value' => array('key' => 'in', 'value' => 'sku-000')
+                        )
+                    )
+                )
+            ),
+            false
         );
-
-        return $filters;
     }
 
     /**
