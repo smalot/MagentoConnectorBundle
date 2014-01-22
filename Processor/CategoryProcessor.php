@@ -16,7 +16,6 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
  */
 class CategoryProcessor extends AbstractProcessor
 {
-
     /**
      * @var string
      */

@@ -61,8 +61,6 @@ class NormalizerGuesser extends AbstractGuesser
     /**
      * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
-     * @param ProductValueNormalizer      $productValueNormalizer
-     * @param CategoryMappingManager      $categoryMappingManager
      * @param bool                        $enabled
      * @param bool                        $visibility
      * @param string                      $currency
@@ -144,7 +142,6 @@ class NormalizerGuesser extends AbstractGuesser
     /**
      * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
-     * @param CategoryMappingManager      $categoryMappingManager
      *
      * @return AbstractNormalizer
      */

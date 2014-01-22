@@ -52,6 +52,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param ChannelManager         $channelManager
      * @param MediaManager           $mediaManager
      * @param ProductValueNormalizer $productValueNormalizer
+     * @param CategoryMappingManager $categoryMappingManager
      * @param bool                   $enabled
      * @param bool                   $visibility
      * @param string                 $currency
@@ -93,6 +94,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
+            $context['rootCategoryMapping'],
             $context['create']
         );
 
@@ -114,6 +116,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $context['magentoAttributesOptions'],
                     $locale,
                     $context['channel'],
+                    $context['rootCategoryMapping'],
                     true
                 );
 
@@ -183,6 +186,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param string           $defaultLocale            Default locale
      * @param string           $channel                  Channel
      * @param string           $website                  Website name
+     * @param array            $rootCategoryMapping      Root category mapping
      * @param bool             $create                   Is it a creation ?
      *
      * @return array The default product data
@@ -195,6 +199,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $defaultLocale,
         $channel,
         $website,
+        $rootCategoryMapping,
         $create
     ) {
         $sku           = (string) $product->getIdentifier();
@@ -204,8 +209,10 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $magentoAttributesOptions,
             $defaultLocale,
             $channel,
+            $rootCategoryMapping,
             false
         );
+
         $defaultValues['websites'] = array($website);
 
         if ($create) {
@@ -236,6 +243,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param array            $magentoAttributesOptions Attribute options list from Magento
      * @param string           $localeCode               The locale to apply
      * @param string           $scopeCode                The akeno scope
+     * @param array            $rootCategoryMapping      Root category mapping
      * @param boolean          $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
@@ -246,6 +254,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $magentoAttributesOptions,
         $localeCode,
         $scopeCode,
+        $rootCategoryMapping,
         $onlyLocalized = false
     ) {
         $normalizedValues = array();
@@ -261,7 +270,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         );
 
         foreach ($product->getValues() as $value) {
-            if (($normalizedValue = $this->productValueNormalizer->normalize($value, 'MagentoArray', $context)) !== null) {
+            $normalizedValue = $this->productValueNormalizer->normalize($value, 'MagentoArray', $context);
+
+            if ($normalizedValue !== null) {
                 $normalizedValues = array_merge(
                     $normalizedValues,
                     $normalizedValue
@@ -271,7 +282,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         $normalizedValues = array_merge(
             $normalizedValues,
-            $this->getCustomValue($product)
+            $this->getCustomValue($product, array('rootCategoryMapping' => $rootCategoryMapping))
         );
 
         ksort($normalizedValues);
@@ -282,19 +293,24 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get categories for the given product
      * @param ProductInterface $product
+     * @param array            $rootCategoryMapping
      *
      * @return array
      */
-    protected function getProductCategories(ProductInterface $product)
+    protected function getProductCategories(ProductInterface $product, array $rootCategoryMapping)
     {
         $productCategories = array();
 
         foreach ($product->getCategories() as $category) {
-            $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory($category, $this->magentoUrl);
+            $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory(
+                $category,
+                $this->magentoUrl,
+                $rootCategoryMapping
+            );
 
             if (!$magentoCategoryId) {
                 throw new CategoryNotFoundException(
-                    sprintf('The category %s was not found. Please expot categories first', $category->getLabel())
+                    sprintf('The category %s was not found. Please export categories first', $category->getLabel())
                 );
             }
 
@@ -306,17 +322,19 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Get custom values (not provided by the PIM product)
+     * @param ProductInterface $product
+     * @param array            $parameters
      *
      * @return mixed
      */
-    protected function getCustomValue($product)
+    protected function getCustomValue(ProductInterface $product, array $parameters = array())
     {
         return array(
             self::VISIBILITY   => $this->visibility,
             self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
             'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
             'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'categories'       => $this->getProductCategories($product)
+            'categories'       => $this->getProductCategories($product, $parameters['rootCategoryMapping'])
         );
     }
 }
