@@ -13,7 +13,7 @@ class CategoryReaderSpec extends ObjectBehavior
 {
     const CATEGORY_CLASS = 'Pim\Bundle\CatalogBundle\Entity\Category';
 
-    public function let(
+    function let(
         EntityManager $em,
         CategoryRepository $repository,
         StepExecution $stepExecution

@@ -16,7 +16,7 @@ use Prophecy\Argument;
 
 class ProductAssociationProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,

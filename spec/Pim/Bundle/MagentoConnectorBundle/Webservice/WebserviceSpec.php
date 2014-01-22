@@ -10,7 +10,7 @@ use PhpSpec\ObjectBehavior;
 
 class WebserviceSpec extends ObjectBehavior
 {
-    public function let(MagentoSoapClient $magentoSoapClient)
+    function let(MagentoSoapClient $magentoSoapClient)
     {
         $this->beConstructedWith($magentoSoapClient);
     }

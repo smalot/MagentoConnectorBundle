@@ -15,7 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 class CategoryProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,

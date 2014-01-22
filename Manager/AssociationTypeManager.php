@@ -37,7 +37,7 @@ class AssociationTypeManager
     /**
      * Get association types with criterias
      *
-     * @param multitype:string $criterias
+     * @param string[] $criterias
      *
      * @return array
      */

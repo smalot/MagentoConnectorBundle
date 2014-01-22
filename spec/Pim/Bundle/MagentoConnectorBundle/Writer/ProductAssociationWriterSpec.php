@@ -10,7 +10,7 @@ use Prophecy\Argument;
 
 class ProductAssociationWriterSpec extends ObjectBehavior
 {
-    public function let(ChannelManager $channelManager, WebserviceGuesser $webserviceGuesser, Webservice $webservice)
+    function let(ChannelManager $channelManager, WebserviceGuesser $webserviceGuesser, Webservice $webservice)
     {
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
 

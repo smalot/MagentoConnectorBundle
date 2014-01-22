@@ -13,7 +13,7 @@ use Prophecy\Argument;
 
 class CategoryWriterSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
