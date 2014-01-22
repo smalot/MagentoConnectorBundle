@@ -7,12 +7,10 @@ Bug fix: [yes|no]
 Feature addition: [yes|no]
 Backwards compatibility break: [yes|no]
 Unit test passes: [yes|no]
-Behat scenarios passes: [yes|no]
+Phpspec specification passes: [yes|no]
 Checkstyle issues: [yes|no]*
 ChangeLog updated: [yes|no]
-Documentation PR: [link to the documentation PR if there is one]
-Fixes the following jira:
- - ...
+Fixes the following issue:
 ```
 
 *Use http://cs.sensiolabs.org/
