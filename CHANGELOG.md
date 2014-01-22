@@ -3,6 +3,7 @@
 ## Features
 
 - Added possibility to create, update and move categories
+- Added possibility to export associated products' links
 
 ## Improvements
 
