@@ -388,14 +388,6 @@ class Webservice
             )
         );
 
-        $associationStatus['grouped'] = $this->client->call(
-            self::SOAP_ACTION_LINK_LIST,
-            array(
-                'grouped',
-                $sku
-            )
-        );
-
         return $associationStatus;
     }
 

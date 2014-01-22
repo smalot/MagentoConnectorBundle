@@ -20,7 +20,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
  *
  * @HasValidCredentials()
  */
-class ProductAssociationProcessor extends AbstractProductProcessor
+class ProductAssociationProcessor extends AbstractProcessor
 {
     const MAGENTO_UP_SELL    = 'up_sell';
     const MAGENTO_CROSS_SELL = 'cross_sell';
@@ -127,6 +127,14 @@ class ProductAssociationProcessor extends AbstractProductProcessor
         $this->pimRelated = $pimRelated;
 
         return $this;
+    }
+
+    /**
+     * Function called before all process
+     */
+    protected function beforeProcess()
+    {
+        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
     }
 
     /**
