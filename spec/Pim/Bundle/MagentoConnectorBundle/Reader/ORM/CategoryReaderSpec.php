@@ -22,7 +22,7 @@ class CategoryReaderSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    public function it_reads_categories_with_custom_order_query(
+    function it_reads_categories_with_custom_order_query(
         $repository,
         QueryBuilder $qb,
         AbstractQuery $query

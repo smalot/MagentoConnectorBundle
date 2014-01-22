@@ -17,7 +17,7 @@ class ProductAssociationWriterSpec extends ObjectBehavior
         $this->beConstructedWith($channelManager, $webserviceGuesser);
     }
 
-    public function it_sends_remove_and_create_calls_to_the_webservice($webservice)
+    function it_sends_remove_and_create_calls_to_the_webservice($webservice)
     {
         $webservice->removeProductAssociation(array('foo'))->shouldBeCalled();
         $webservice->createProductAssociation(array('bar'))->shouldBeCalled();
