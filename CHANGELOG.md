@@ -4,6 +4,7 @@
 
 - Added possibility to create, update and move categories
 - Added possibility to export associated products' links
+- Added category assigment for simple and configurable products
 
 ## Improvements
 

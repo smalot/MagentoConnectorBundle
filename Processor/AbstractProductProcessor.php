@@ -109,18 +109,60 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
+     * @var string
+     */
+    protected $rootCategoryMapping = '';
+
+    /**
+     * get rootCategoryMapping
+     *
+     * @return string rootCategoryMapping
+     */
+    public function getRootCategoryMapping()
+    {
+        return $this->rootCategoryMapping;
+    }
+
+    /**
+     * Set rootCategoryMapping
+     *
+     * @param string $rootCategoryMapping rootCategoryMapping
+     *
+     * @return AbstractProcessor
+     */
+    public function setRootCategoryMapping($rootCategoryMapping)
+    {
+        $this->rootCategoryMapping = $rootCategoryMapping;
+
+        return $this;
+    }
+
+    /**
+     * Get computed storeView mapping (string to array)
+     * @return array
+     */
+    protected function getComputedRootCategoryMapping()
+    {
+        return $this->getComputedMapping($this->rootCategoryMapping);
+    }
+
+
+    /**
      * Function called before all process
      */
     protected function beforeProcess()
     {
+        parent::beforeProcess();
+
         $this->productNormalizer = $this->normalizerGuesser->getProductNormalizer(
             $this->getClientParameters(),
             $this->enabled,
             $this->visibility,
-            $this->currency
+            $this->currency,
+            $this->soapUrl
         );
 
-        parent::beforeProcess();
+        $this->globalContext['rootCategoryMapping'] = $this->getComputedRootCategoryMapping();
     }
 
     /**
@@ -147,6 +189,12 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                     'type'    => 'text',
                     'options' => array(
                         'required' => true
+                    )
+                ),
+                'rootCategoryMapping' => array(
+                    'type'    => 'textarea',
+                    'options' => array(
+                        'required' => false
                     )
                 )
             )

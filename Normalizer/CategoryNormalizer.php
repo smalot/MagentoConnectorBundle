@@ -132,7 +132,11 @@ class CategoryNormalizer extends AbstractNormalizer
     {
         return array(
             'magentoCategory' => array(
-                (string) $this->getMagentoParentId($category, $context['rootCategoryMapping'], $context['magentoUrl']),
+                (string) $this->categoryMappingManager->getIdFromCategory(
+                    $category->getParent(),
+                    $context['magentoUrl'],
+                    $context['rootCategoryMapping']
+                ),
                 array(
                     'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
                     'is_active'         => 1,
@@ -201,7 +205,11 @@ class CategoryNormalizer extends AbstractNormalizer
     {
         return array(
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
-            $this->getMagentoParentId($category, $context['rootCategoryMapping'], $context['magentoUrl'])
+            $this->categoryMappingManager->getIdFromCategory(
+                $category->getParent(),
+                $context['magentoUrl'],
+                $context['rootCategoryMapping']
+            )
         );
     }
 
@@ -217,23 +225,6 @@ class CategoryNormalizer extends AbstractNormalizer
         $category->setLocale($localeCode);
 
         return $category->getLabel();
-    }
-
-    /**
-     * Get Magento parent id
-     * @param CategoryInterface $category
-     * @param array             $rootCategoryMapping
-     * @param string            $magentoUrl
-     *
-     * @return int
-     */
-    protected function getMagentoParentId(CategoryInterface $category, array $rootCategoryMapping, $magentoUrl)
-    {
-        if (isset($rootCategoryMapping[$category->getParent()->getCode()])) {
-            return $rootCategoryMapping[$category->getParent()->getCode()];
-        } else {
-            return $this->getMagentoCategoryId($category->getParent(), $magentoUrl);
-        }
     }
 
     /**
