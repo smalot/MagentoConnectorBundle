@@ -17,6 +17,7 @@ services:
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.media'
             - '@pim_magento_connector.normalizer.value'
+            - '@pim_magento_connector.manager.category_mapping'
 
     # validator
     pim_magento_connector.validator.has_valid_credentials:

@@ -7,6 +7,8 @@ use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -53,22 +55,27 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param bool                   $enabled
      * @param bool                   $visibility
      * @param string                 $currency
+     * @param string                 $magentoUrl
      */
     public function __construct(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
+        CategoryMappingManager $categoryMappingManager,
         $enabled,
         $visibility,
-        $currency
+        $currency,
+        $magentoUrl
     ) {
         parent::__construct($channelManager);
 
-        $this->mediaManager    = $mediaManager;
+        $this->mediaManager           = $mediaManager;
         $this->productValueNormalizer = $productValueNormalizer;
-        $this->enabled         = $enabled;
-        $this->visibility      = $visibility;
-        $this->currency        = $currency;
+        $this->categoryMappingManager = $categoryMappingManager;
+        $this->enabled                = $enabled;
+        $this->visibility             = $visibility;
+        $this->currency               = $currency;
+        $this->magentoUrl             = $magentoUrl;
     }
 
     /**
@@ -260,12 +267,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $normalizedValue
                 );
             }
-
         }
 
         $normalizedValues = array_merge(
             $normalizedValues,
-            $this->getCustomValue()
+            $this->getCustomValue($product)
         );
 
         ksort($normalizedValues);
@@ -274,17 +280,43 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     }
 
     /**
+     * Get categories for the given product
+     * @param ProductInterface $product
+     *
+     * @return array
+     */
+    protected function getProductCategories(ProductInterface $product)
+    {
+        $productCategories = array();
+
+        foreach ($product->getCategories() as $category) {
+            $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory($category, $this->magentoUrl);
+
+            if (!$magentoCategoryId) {
+                throw new CategoryNotFoundException(
+                    sprintf('The category %s was not found. Please expot categories first', $category->getLabel())
+                );
+            }
+
+            $productCategories[] = $magentoCategoryId;
+        }
+
+        return $productCategories;
+    }
+
+    /**
      * Get custom values (not provided by the PIM product)
      *
      * @return mixed
      */
-    protected function getCustomValue()
+    protected function getCustomValue($product)
     {
         return array(
             self::VISIBILITY   => $this->visibility,
             self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
             'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT)
+            'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT),
+            'categories'       => $this->getProductCategories($product)
         );
     }
 }

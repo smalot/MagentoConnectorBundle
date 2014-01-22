@@ -3,9 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Entity\Category;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 
@@ -18,10 +16,6 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
  */
 class CategoryProcessor extends AbstractProcessor
 {
-    /**
-     * @var CategoryMappingManager
-     */
-    protected $categoryMappingManager;
 
     /**
      * @var string
@@ -62,32 +56,12 @@ class CategoryProcessor extends AbstractProcessor
     }
 
     /**
-     * @param ChannelManager         $channelManager
-     * @param WebserviceGuesser      $webserviceGuesser
-     * @param NormalizerGuesser      $normalizerGuesser
-     * @param CategoryMappingManager $categoryMappingManager
-     */
-    public function __construct(
-        ChannelManager $channelManager,
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        CategoryMappingManager $categoryMappingManager
-    ) {
-        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
-
-        $this->categoryMappingManager = $categoryMappingManager;
-    }
-
-    /**
      * Function called before all process
      */
     protected function beforeProcess()
     {
         $this->webservice  = $this->webserviceGuesser->getWebservice($this->getClientParameters());
-        $this->categoryNormalizer = $this->normalizerGuesser->getCategoryNormalizer(
-            $this->getClientParameters(),
-            $this->categoryMappingManager
-        );
+        $this->categoryNormalizer = $this->normalizerGuesser->getCategoryNormalizer($this->getClientParameters());
 
         $magentoCategories = $this->webservice->getCategoriesStatus();
         $magentoStoreViews = $this->webservice->getStoreViewsList();

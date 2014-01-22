@@ -24,8 +24,8 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->channelManager  = $this->getChannelManagerMock();
-        $this->mediaManager    = $this->getMediaManagerMock();
+        $this->channelManager         = $this->getChannelManagerMock();
+        $this->mediaManager           = $this->getMediaManagerMock();
         $this->productValueNormalizer = $this->getProductValueNormalizerMock();
 
         $this->normalizer = new ProductNormalizer(

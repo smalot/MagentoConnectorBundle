@@ -117,7 +117,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             $this->getClientParameters(),
             $this->enabled,
             $this->visibility,
-            $this->currency
+            $this->currency,
+            $this->soapUrl
         );
 
         parent::beforeProcess();

@@ -44,23 +44,29 @@ class NormalizerGuesser extends AbstractGuesser
      * @param ChannelManager         $channelManager
      * @param MediaManager           $mediaManager
      * @param ProductValueNormalizer $productValueNormalizer
+     * @param CategoryMappingManager $categoryMappingManager
      */
     public function __construct(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
-        ProductValueNormalizer $productValueNormalizer
+        ProductValueNormalizer $productValueNormalizer,
+        CategoryMappingManager $categoryMappingManager
     ) {
         $this->channelManager         = $channelManager;
         $this->mediaManager           = $mediaManager;
         $this->productValueNormalizer = $productValueNormalizer;
+        $this->categoryMappingManager = $categoryMappingManager;
     }
 
     /**
      * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
+     * @param ProductValueNormalizer      $productValueNormalizer
+     * @param CategoryMappingManager      $categoryMappingManager
      * @param bool                        $enabled
      * @param bool                        $visibility
      * @param string                      $currency
+     * @param string                      $magentoUrl
      *
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return AbstractNormalizer
@@ -69,7 +75,8 @@ class NormalizerGuesser extends AbstractGuesser
         MagentoSoapClientParameters $clientParameters,
         $enabled,
         $visibility,
-        $currency
+        $currency,
+        $magentoUrl
     ) {
         $client         = new MagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
@@ -81,18 +88,22 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->channelManager,
                     $this->mediaManager,
                     $this->productValueNormalizer,
+                    $this->categoryMappingManager,
                     $enabled,
                     $visibility,
-                    $currency
+                    $currency,
+                    $magentoUrl
                 );
             case AbstractGuesser::MAGENTO_VERSION_1_6:
                 return new ProductNormalizer16(
                     $this->channelManager,
                     $this->mediaManager,
                     $this->productValueNormalizer,
+                    $this->categoryMappingManager,
                     $enabled,
                     $visibility,
-                    $currency
+                    $currency,
+                    $magentoUrl
                 );
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
@@ -138,8 +149,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @return AbstractNormalizer
      */
     public function getCategoryNormalizer(
-        MagentoSoapClientParameters $clientParameters,
-        CategoryMappingManager $categoryMappingManager
+        MagentoSoapClientParameters $clientParameters
     ) {
         $client = new MagentoSoapClient($clientParameters);
 
@@ -151,7 +161,7 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_6:
                 return new CategoryNormalizer(
                     $this->channelManager,
-                    $categoryMappingManager
+                    $this->categoryMappingManager
                 );
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
