@@ -179,18 +179,18 @@ class ProductAssociationProcessor extends AbstractProcessor
     /**
      * Get create calls
      * @param ProductInterface $product
-     * @param Association      $productAssociation
+     * @param Association      $association
      *
      * @return array
      */
-    protected function getCreateCallsForAssociation(ProductInterface $product, Association $productAssociation)
+    protected function getCreateCallsForAssociation(ProductInterface $product, Association $association)
     {
         $createAssociationCalls = array();
 
-        $associationType = $productAssociation->getAssociationType()->getCode();
+        $associationType = $association->getAssociationType()->getCode();
 
         if (in_array($associationType, array_keys($this->getAssociationCodeMapping()))) {
-            foreach ($productAssociation->getProducts() as $associatedProduct) {
+            foreach ($association->getProducts() as $associatedProduct) {
                 $createAssociationCalls[] = array(
                     'type'          => $this->getAssociationCodeMapping()[$associationType],
                     'product'       => (string) $product->getIdentifier(),

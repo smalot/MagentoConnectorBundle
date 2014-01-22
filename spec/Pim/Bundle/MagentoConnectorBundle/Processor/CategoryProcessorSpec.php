@@ -15,7 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 class CategoryProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
@@ -37,7 +37,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->setRootCategoryMapping("test:4\n");
     }
 
-    public function it_normalizes_categories(
+    function it_normalizes_categories(
         Category $category,
         Category $parentCategory,
         $webservice,

@@ -16,7 +16,7 @@ use Prophecy\Argument;
 
 class ProductAssociationProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
@@ -29,7 +29,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->setPimUpSell('UPSELL');
     }
 
-    public function it_generated_association_calls_for_given_products(ProductInterface $product, ProductInterface $associatedProduct, Association $association, AssociationType $associationType, $webservice)
+    function it_generated_association_calls_for_given_products(ProductInterface $product, ProductInterface $associatedProduct, Association $association, AssociationType $associationType, $webservice)
     {
         $webservice->getAssociationsStatus($product)->willReturn(array('up_sell' => array(), 'cross_sell' => array(array('sku' => 'sku-011')), 'related' => array()));
 

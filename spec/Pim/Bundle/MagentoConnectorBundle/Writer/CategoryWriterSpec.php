@@ -13,7 +13,7 @@ use Prophecy\Argument;
 
 class CategoryWriterSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
@@ -24,7 +24,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->beConstructedWith($channelManager, $webserviceGuesser, $categoryMappingManager);
     }
 
-    public function it_sends_categories_to_create_on_magento_webservice(
+    function it_sends_categories_to_create_on_magento_webservice(
         Category $category,
         $webservice,
         $categoryMappingManager
@@ -48,7 +48,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    public function it_sends_categories_to_update_on_magento_webservice(
+    function it_sends_categories_to_update_on_magento_webservice(
         Category $category,
         $webservice
     ) {
@@ -65,7 +65,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    public function it_sends_categories_to_move_on_magento_webservice(
+    function it_sends_categories_to_move_on_magento_webservice(
         Category $category,
         $webservice
     ) {
@@ -82,7 +82,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    public function it_sends_categories_to_update_variation_on_magento_webservice(
+    function it_sends_categories_to_update_variation_on_magento_webservice(
         Category $category,
         $webservice,
         $categoryMappingManager
