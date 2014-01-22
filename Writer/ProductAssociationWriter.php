@@ -24,7 +24,7 @@ class ProductAssociationWriter extends AbstractWriter
 
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
             foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
-                $this->webservice->deleteProductAssociation($productAssociationRemoveCall);
+                $this->webservice->removeProductAssociation($productAssociationRemoveCall);
             }
 
             foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {

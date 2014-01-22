@@ -403,7 +403,7 @@ class Webservice
      * Delete a product association
      * @param array $productAssociation
      */
-    public function deleteProductAssociation(array $productAssociation)
+    public function removeProductAssociation(array $productAssociation)
     {
         $this->client->call(
             self::SOAP_ACTION_LINK_REMOVE,

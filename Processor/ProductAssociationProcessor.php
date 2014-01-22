@@ -162,7 +162,7 @@ class ProductAssociationProcessor extends AbstractProductProcessor
         $createAssociationCalls = array();
 
         foreach ($product->getAssociations() as $productAssociation) {
-            $createAssociationCalls += $this->getCreateCalls($product, $productAssociation);
+            $createAssociationCalls += $this->getCreateCallsForAssociation($product, $productAssociation);
         }
 
         return $createAssociationCalls;
@@ -175,7 +175,7 @@ class ProductAssociationProcessor extends AbstractProductProcessor
      *
      * @return array
      */
-    protected function getCreateCalls(ProductInterface $product, Association $productAssociation)
+    protected function getCreateCallsForAssociation(ProductInterface $product, Association $productAssociation)
     {
         $createAssociationCalls = array();
 

@@ -43,8 +43,7 @@ class AssociationTypeManager
      */
     public function getAssociationTypes($criterias = array())
     {
-        return $this->getEntityRepository()
-            ->findBy($criterias);
+        return $this->getEntityRepository()->findBy($criterias);
     }
 
     /**
