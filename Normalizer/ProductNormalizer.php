@@ -255,8 +255,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Test if a product has grouped products
-     * @param  ProductInterface $product
-     * @param  string           $pimGrouped
+     * @param ProductInterface $product
+     * @param string           $pimGrouped
      *
      * @return boolean
      */

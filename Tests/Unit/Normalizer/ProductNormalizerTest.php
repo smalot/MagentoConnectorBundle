@@ -18,6 +18,8 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     const CHANNEL           = 'channel';
     const ENABLED           = true;
     const VISIBILITY        = 4;
+    const MAGENTO_URL       = 'http://mangeto.dev';
+    const PIM_GROUPED       = 'grouped';
 
     /**
      * {@inheritdoc}
@@ -27,14 +29,19 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
         $this->channelManager         = $this->getChannelManagerMock();
         $this->mediaManager           = $this->getMediaManagerMock();
         $this->productValueNormalizer = $this->getProductValueNormalizerMock();
+        $this->categoryMappingManager = $this->getCategoryMappingManagerMock();
+        $this->associationTypeManager = $this->getAssociationTypeManagerMock();
 
         $this->normalizer = new ProductNormalizer(
             $this->channelManager,
             $this->mediaManager,
             $this->productValueNormalizer,
+            $this->categoryMappingManager,
+            $this->associationTypeManager,
             self::ENABLED,
             self::VISIBILITY,
-            self::CURRENCY
+            self::CURRENCY,
+            self::MAGENTO_URL
         );
     }
 
@@ -146,6 +153,8 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
                     'red' => 3
                 )
             ),
+            'rootCategoryMapping'      => array(),
+            'pimGrouped'               => self::PIM_GROUPED,
             'defaultLocale'            => 'en_US',
             'channel'                  => 'channel',
             'website'                  => 'base',
@@ -263,6 +272,10 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
         $product->expects($this->any())
             ->method('getValues')
             ->will($this->returnValue($values));
+
+        $product->expects($this->any())
+            ->method('getCategories')
+            ->will($this->returnValue(array()));
 
         return $product;
     }
@@ -519,14 +532,43 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getProductValueNormalizerMock()
     {
-        $productValueNormalizer = $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $productValueNormalizer =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer')
+                ->disableOriginalConstructor()
+                ->getMock();
 
         $productValueNormalizer->expects($this->any())
             ->method('normalize')
             ->will($this->returnValue(array('attribute' => '12')));
 
         return $productValueNormalizer;
+    }
+
+    /**
+     * Get the category mapping manager mock
+     * @return CategoryMappingManager
+     */
+    protected function getCategoryMappingManagerMock()
+    {
+        $categoryMappingManager =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        return $categoryMappingManager;
+    }
+
+    /**
+     * Get the association type manager mock
+     * @return AssociationTypeManager
+     */
+    protected function getAssociationTypeManagerMock()
+    {
+        $associationTypeManager =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        return $associationTypeManager;
     }
 }
