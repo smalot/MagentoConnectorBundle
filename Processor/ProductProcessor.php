@@ -28,6 +28,7 @@ class ProductProcessor extends AbstractProductProcessor
      * @var metricConverter
      */
     protected $metricConverter;
+
     /**
      * @var AssociationTypeManager
      */
@@ -79,6 +80,7 @@ class ProductProcessor extends AbstractProductProcessor
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;
     }
+
     /**
      * Function called before all process
      */
