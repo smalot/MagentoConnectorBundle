@@ -3,7 +3,7 @@ products:
         sku: sku-000
         family: Default
         groups: ""
-        categories: "default"
+        categories: "notebooks"
         name-en_US: "Product example"
         name-fr_FR: "Exemple de produit"
         short_description-en_US-magento: "Short description"
@@ -18,7 +18,7 @@ products:
         sku: sku-001
         family: Shirt
         groups: oro_shirt
-        categories: "default"
+        categories: "shirts"
         name-en_US: "Shirt product example"
         name-fr_FR: "Exemple de produit chemise"
         short_description-en_US-magento: "Short shirt description"
@@ -35,7 +35,7 @@ products:
         sku: sku-002
         family: Shirt
         groups: oro_shirt
-        categories: "default"
+        categories: "shirts"
         name-en_US: "Second shirt product example"
         name-fr_FR: "Second exemple de produit chemise"
         short_description-en_US-magento: "Second short shirt description"

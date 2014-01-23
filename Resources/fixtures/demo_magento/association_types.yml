@@ -7,10 +7,10 @@ associations:
         labels:
             en_US: Upsell
             fr_FR: Vente incitative
-    SUBSTITUTION:
+    RELATED:
         labels:
-            en_US: Substitution
-            fr_FR: Remplacement
+            en_US: Related
+            fr_FR: Suggérés
     PACK:
         labels:
             en_US: Pack
