@@ -149,9 +149,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     /**
      * Function called before all process
      */
-    protected function beforeProcess()
+    protected function beforeExecute()
     {
-        parent::beforeProcess();
+        parent::beforeExecute();
 
         $this->productNormalizer = $this->normalizerGuesser->getProductNormalizer(
             $this->getClientParameters(),
@@ -159,6 +159,21 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             $this->visibility,
             $this->currency,
             $this->soapUrl
+        );
+
+        $magentoStoreViews        = $this->webservice->getStoreViewsList();
+        $magentoAttributes        = $this->webservice->getAllAttributes();
+        $magentoAttributesOptions = $this->webservice->getAllAttributesOptions();
+
+        $this->globalContext = array(
+            'defaultLocale'            => $this->defaultLocale,
+            'channel'                  => $this->channel,
+            'currency'                 => $this->currency,
+            'website'                  => $this->website,
+            'magentoStoreViews'        => $magentoStoreViews,
+            'magentoAttributes'        => $magentoAttributes,
+            'magentoAttributesOptions' => $magentoAttributesOptions,
+            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
         );
 
         $this->globalContext['rootCategoryMapping'] = $this->getComputedRootCategoryMapping();

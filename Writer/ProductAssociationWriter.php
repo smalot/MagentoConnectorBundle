@@ -20,7 +20,7 @@ class ProductAssociationWriter extends AbstractWriter
      */
     public function write(array $productAssociationCallsBatchs)
     {
-        $this->beforeWrite();
+        $this->beforeExecute();
 
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
             foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {

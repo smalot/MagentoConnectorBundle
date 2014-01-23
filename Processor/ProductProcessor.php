@@ -84,9 +84,9 @@ class ProductProcessor extends AbstractProductProcessor
     /**
      * Function called before all process
      */
-    protected function beforeProcess()
+    protected function beforeExecute()
     {
-        parent::beforeProcess();
+        parent::beforeExecute();
 
         $this->globalContext['pimGrouped'] = $this->pimGrouped;
     }
@@ -96,9 +96,10 @@ class ProductProcessor extends AbstractProductProcessor
      */
     public function process($items)
     {
+        $this->beforeExecute();
+
         $processedItems = array();
 
-        $this->beforeProcess();
         $magentoProducts = $this->webservice->getProductsStatus($items);
 
         $channel = $this->channelManager->getChannelByCode($this->channel);

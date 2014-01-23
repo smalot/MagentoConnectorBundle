@@ -158,21 +158,13 @@ class ProductAssociationProcessor extends AbstractProcessor
     }
 
     /**
-     * Function called before all process
-     */
-    protected function beforeProcess()
-    {
-        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function process($items)
     {
-        $processedItems = array();
+        $this->beforeExecute();
 
-        $this->beforeProcess();
+        $processedItems = array();
 
         $productAssociationCalls = array('remove' => array(), 'create' => array());
 

@@ -57,9 +57,10 @@ class CategoryProcessor extends AbstractProcessor
     /**
      * Function called before all process
      */
-    protected function beforeProcess()
+    protected function beforeExecute()
     {
-        $this->webservice  = $this->webserviceGuesser->getWebservice($this->getClientParameters());
+        parent::beforeExecute();
+
         $this->categoryNormalizer = $this->normalizerGuesser->getCategoryNormalizer($this->getClientParameters());
 
         $magentoCategories = $this->webservice->getCategoriesStatus();
@@ -81,7 +82,7 @@ class CategoryProcessor extends AbstractProcessor
      */
     public function process($categories)
     {
-        $this->beforeProcess();
+        $this->beforeExecute();
 
         $normalizedCategories = array(
             'create'    => array(),

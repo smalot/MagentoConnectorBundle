@@ -45,7 +45,7 @@ class CategoryWriter extends AbstractWriter
      */
     public function write(array $batches)
     {
-        $this->beforeWrite();
+        $this->beforeExecute();
 
         //creation for each product in the admin storeView (with default locale)
         foreach ($batches as $batch) {

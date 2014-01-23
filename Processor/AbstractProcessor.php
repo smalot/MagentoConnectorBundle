@@ -4,10 +4,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
-use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
+use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
@@ -24,7 +24,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
  *
  * @HasValidCredentials()
  */
-abstract class AbstractProcessor extends AbstractConfigurableStepElement implements ItemProcessorInterface
+abstract class AbstractProcessor extends MagentoItemStep implements ItemProcessorInterface
 {
     /**
      * @var ChannelManager
@@ -32,36 +32,9 @@ abstract class AbstractProcessor extends AbstractConfigurableStepElement impleme
     protected $channelManager;
 
     /**
-     * @var Webservice
-     */
-    protected $webservice;
-
-    /**
-     * @var WebserviceGuesser
-     */
-    protected $webserviceGuesser;
-
-    /**
      * @var NormalizerGuesser
      */
     protected $normalizerGuesser;
-
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     */
-    protected $soapUsername;
-
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     */
-    protected $soapApiKey;
-
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     * @Assert\Url(groups={"Execution"})
-     * @MagentoUrl(groups={"Execution"})
-     */
-    protected $soapUrl;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -84,11 +57,6 @@ abstract class AbstractProcessor extends AbstractConfigurableStepElement impleme
     protected $storeViewMapping = '';
 
     /**
-     * @var MagentoSoapClientParameters
-     */
-    protected $clientParameters;
-
-    /**
      * @var array
      */
     protected $globalContext;
@@ -103,81 +71,10 @@ abstract class AbstractProcessor extends AbstractConfigurableStepElement impleme
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser
     ) {
-        $this->channelManager           = $channelManager;
-        $this->webserviceGuesser = $webserviceGuesser;
+        parent::__construct($webserviceGuesser);
+
+        $this->channelManager    = $channelManager;
         $this->normalizerGuesser = $normalizerGuesser;
-    }
-
-    /**
-     * get soapUsername
-     *
-     * @return string Soap mangeto soapUsername
-     */
-    public function getSoapUsername()
-    {
-        return $this->soapUsername;
-    }
-
-    /**
-     * Set soapUsername
-     *
-     * @param string $soapUsername Soap mangeto soapUsername
-     *
-     * @return AbstractProcessor
-     */
-    public function setSoapUsername($soapUsername)
-    {
-        $this->soapUsername = $soapUsername;
-
-        return $this;
-    }
-
-    /**
-     * get soapApiKey
-     *
-     * @return string Soap mangeto soapApiKey
-     */
-    public function getSoapApiKey()
-    {
-        return $this->soapApiKey;
-    }
-
-    /**
-     * Set soapApiKey
-     *
-     * @param string $soapApiKey Soap mangeto soapApiKey
-     *
-     * @return AbstractProcessor
-     */
-    public function setSoapApiKey($soapApiKey)
-    {
-        $this->soapApiKey = $soapApiKey;
-
-        return $this;
-    }
-
-    /**
-     * get soapUrl
-     *
-     * @return string mangeto soap url
-     */
-    public function getSoapUrl()
-    {
-        return $this->soapUrl;
-    }
-
-    /**
-     * Set soapUrl
-     *
-     * @param string $soapUrl mangeto soap url
-     *
-     * @return AbstractProcessor
-     */
-    public function setSoapUrl($soapUrl)
-    {
-        $this->soapUrl = $soapUrl;
-
-        return $this;
     }
 
     /**
@@ -307,24 +204,6 @@ abstract class AbstractProcessor extends AbstractConfigurableStepElement impleme
     }
 
     /**
-     * Get the magento soap client parameters
-     *
-     * @return MagentoSoapClientParameters
-     */
-    protected function getClientParameters()
-    {
-        if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->soapUrl
-            );
-        }
-
-        return $this->clientParameters;
-    }
-
-    /**
      * Get the attribute set id for the given family code
      *
      * @param string $familyCode
@@ -346,77 +225,39 @@ abstract class AbstractProcessor extends AbstractConfigurableStepElement impleme
     }
 
     /**
-     * Function called before all process
-     */
-    protected function beforeProcess()
-    {
-        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
-
-        $magentoStoreViews        = $this->webservice->getStoreViewsList();
-        $magentoAttributes        = $this->webservice->getAllAttributes();
-        $magentoAttributesOptions = $this->webservice->getAllAttributesOptions();
-
-        $this->globalContext = array(
-            'defaultLocale'            => $this->defaultLocale,
-            'channel'                  => $this->channel,
-            'currency'                 => $this->currency,
-            'website'                  => $this->website,
-            'magentoStoreViews'        => $magentoStoreViews,
-            'magentoAttributes'        => $magentoAttributes,
-            'magentoAttributesOptions' => $magentoAttributesOptions,
-            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
-        );
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()
     {
-        return array(
-            'soapUsername' => array(
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'soapApiKey'   => array(
-                //Should be remplaced by a password formType but who doesn't
-                //empty the field at each edit
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'soapUrl' => array(
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'channel' => array(
-                'type'    => 'choice',
-                'options' => array(
-                    'choices'  => $this->channelManager->getChannelChoices(),
-                    'required' => true
-                )
-            ),
-            'defaultLocale' => array(
-                //Should be fixed to display only active locale on the selected
-                //channel
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'website' => array(
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'storeViewMapping' => array(
-                'type'    => 'textarea',
-                'options' => array(
-                    'required' => false
+        return array_merge(
+            parent::getConfigurationFields(),
+            array(
+                'channel' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices'  => $this->channelManager->getChannelChoices(),
+                        'required' => true
+                    )
+                ),
+                'defaultLocale' => array(
+                    //Should be fixed to display only active locale on the selected
+                    //channel
+                    'type'    => 'text',
+                    'options' => array(
+                        'required' => true
+                    )
+                ),
+                'website' => array(
+                    'type'    => 'text',
+                    'options' => array(
+                        'required' => true
+                    )
+                ),
+                'storeViewMapping' => array(
+                    'type'    => 'textarea',
+                    'options' => array(
+                        'required' => false
+                    )
                 )
             )
         );

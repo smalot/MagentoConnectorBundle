@@ -54,9 +54,9 @@ class ConfigurableProcessor extends AbstractProductProcessor
     /**
      * Function called before all process
      */
-    protected function beforeProcess()
+    protected function beforeExecute()
     {
-        parent::beforeProcess();
+        parent::beforeExecute();
 
         $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency);
         $this->configurableNormalizer = $this->normalizerGuesser->getConfigurableNormalizer(
@@ -71,9 +71,9 @@ class ConfigurableProcessor extends AbstractProductProcessor
      */
     public function process($items)
     {
-        $processedItems = array();
+        $this->beforeExecute();
 
-        $this->beforeProcess();
+        $processedItems = array();
 
         $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
         $configurables        = $this->getProductsForGroups($items, $groupsIds);
