@@ -25,6 +25,7 @@ class ProductAssociationProcessor extends AbstractProcessor
     const MAGENTO_UP_SELL    = 'up_sell';
     const MAGENTO_CROSS_SELL = 'cross_sell';
     const MAGENTO_RELATED    = 'related';
+    const MAGENTO_GROUPED    = 'grouped';
 
     /**
      * @var AssociationTypeManager
@@ -45,6 +46,11 @@ class ProductAssociationProcessor extends AbstractProcessor
      * @var string
      */
     protected $pimRelated;
+
+    /**
+     * @var string
+     */
+    protected $pimGrouped;
 
     /**
      * @param ChannelManager           $channelManager
@@ -130,6 +136,28 @@ class ProductAssociationProcessor extends AbstractProcessor
     }
 
     /**
+     * Get pimGrouped
+     * @return string
+     */
+    public function getPimGrouped()
+    {
+        return $this->pimGrouped;
+    }
+
+    /**
+     * Set pimGrouped
+     * @param string $pimGrouped
+     *
+     * @return ProductAssociationProcessor
+     */
+    public function setPimGrouped($pimGrouped)
+    {
+        $this->pimGrouped = $pimGrouped;
+
+        return $this;
+    }
+
+    /**
      * Function called before all process
      */
     protected function beforeProcess()
@@ -149,11 +177,17 @@ class ProductAssociationProcessor extends AbstractProcessor
         $productAssociationCalls = array('remove' => array(), 'create' => array());
 
         foreach ($items as $product) {
-            $productAssociationCalls['remove'] += $this->getRemoveCallsForProduct(
-                $product,
-                $this->webservice->getAssociationsStatus($product)
+            $productAssociationCalls['remove'] = array_merge(
+                $productAssociationCalls['create'],
+                $this->getRemoveCallsForProduct(
+                    $product,
+                    $this->webservice->getAssociationsStatus($product)
+                )
             );
-            $productAssociationCalls['create'] += $this->getCreateCallsForProduct($product);
+            $productAssociationCalls['create'] = array_merge(
+                $productAssociationCalls['create'],
+                $this->getCreateCallsForProduct($product)
+            );
         }
 
         return $productAssociationCalls;
@@ -170,7 +204,10 @@ class ProductAssociationProcessor extends AbstractProcessor
         $createAssociationCalls = array();
 
         foreach ($product->getAssociations() as $productAssociation) {
-            $createAssociationCalls += $this->getCreateCallsForAssociation($product, $productAssociation);
+            $createAssociationCalls = array_merge(
+                $createAssociationCalls,
+                $this->getCreateCallsForAssociation($product, $productAssociation)
+            );
         }
 
         return $createAssociationCalls;
@@ -246,6 +283,10 @@ class ProductAssociationProcessor extends AbstractProcessor
             $associationCodeMapping[$this->getPimRelated()] = self::MAGENTO_RELATED;
         }
 
+        if ($this->getPimGrouped()) {
+            $associationCodeMapping[$this->getPimGrouped()] = self::MAGENTO_GROUPED;
+        }
+
         return $associationCodeMapping;
     }
 
@@ -270,6 +311,12 @@ class ProductAssociationProcessor extends AbstractProcessor
                     )
                 ),
                 'pimRelated' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices' => $this->associationTypeManager->getAssociationTypeChoices()
+                    )
+                ),
+                'pimGrouped' => array(
                     'type'    => 'choice',
                     'options' => array(
                         'choices' => $this->associationTypeManager->getAssociationTypeChoices()

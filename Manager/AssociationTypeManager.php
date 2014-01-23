@@ -47,6 +47,18 @@ class AssociationTypeManager
     }
 
     /**
+     * Get association types by code
+     *
+     * @param string $code
+     *
+     * @return array
+     */
+    public function getAssociationTypesByCode($code)
+    {
+        return $this->getEntityRepository()->findOneBy(array('code' => $code));
+    }
+
+    /**
      * Get assiociation type choices with criterias
      * Allow to list association types in an array like array[<code>] = <label>
      *

@@ -85,6 +85,7 @@ class WebserviceSpec extends ObjectBehavior
         $magentoSoapClient->call('catalog_product_link.list', array('up_sell', 'sku-012'))->willReturn('up_sell');
         $magentoSoapClient->call('catalog_product_link.list', array('cross_sell', 'sku-012'))->willReturn('cross_sell');
         $magentoSoapClient->call('catalog_product_link.list', array('related', 'sku-012'))->willReturn('related');
+        $magentoSoapClient->call('catalog_product_link.list', array('grouped', 'sku-012'))->willReturn('grouped');
 
         $product->getIdentifier()->willReturn('sku-012');
 
@@ -92,7 +93,8 @@ class WebserviceSpec extends ObjectBehavior
             array(
                 'up_sell'    => 'up_sell',
                 'cross_sell' => 'cross_sell',
-                'related'    => 'related'
+                'related'    => 'related',
+                'grouped'    => 'grouped'
             )
         );
     }

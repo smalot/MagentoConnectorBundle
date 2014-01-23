@@ -109,14 +109,16 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($webservice));
 
         $channelManagerMock           = $this->getChannelManagerMock();
-        $normalizerGuesserMock = $this->getNormalizerGuesserMock();
+        $normalizerGuesserMock        = $this->getNormalizerGuesserMock();
         $metricConverterMock          = $this->getMetricConverterMock();
+        $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $normalizerGuesserMock,
-            $metricConverterMock
+            $metricConverterMock,
+            $associationTypeManager
         );
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
@@ -138,17 +140,19 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcessInvalidOption()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
-        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
+        $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
+        $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
-            $metricConverterMock
+            $metricConverterMock,
+            $associationTypeManager
         );
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
@@ -170,17 +174,19 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcessInvalidScopeMatch()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
-        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
+        $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
+        $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
-            $metricConverterMock
+            $metricConverterMock,
+            $associationTypeManager
         );
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
@@ -202,17 +208,19 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcessAttributeNotFound()
     {
         $channelManagerMock           = $this->getChannelManagerMock();
-        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
+        $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException()
         );
         $metricConverterMock          = $this->getMetricConverterMock();
+        $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
-            $metricConverterMock
+            $metricConverterMock,
+            $associationTypeManager
         );
 
         $product = $this->getMock('Pim\Bundle\CatalogBundle\Model\Product');
@@ -312,16 +320,18 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function getSimpleProcessor()
     {
-        $channelManagerMock           = $this->getChannelManagerMock();
-        $webserviceGuesserMock = $this->getWebserviceGuesserMock();
-        $normalizerGuesserMock = $this->getNormalizerGuesserMock();
-        $metricConverterMock          = $this->getMetricConverterMock();
+        $channelManagerMock     = $this->getChannelManagerMock();
+        $webserviceGuesserMock  = $this->getWebserviceGuesserMock();
+        $normalizerGuesserMock  = $this->getNormalizerGuesserMock();
+        $metricConverterMock    = $this->getMetricConverterMock();
+        $associationTypeManager = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $channelManagerMock,
             $webserviceGuesserMock,
             $normalizerGuesserMock,
-            $metricConverterMock
+            $metricConverterMock,
+            $associationTypeManager
         );
 
         return $processor;
@@ -597,5 +607,19 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         return $this->getMockBuilder('Pim\Bundle\ImportExportBundle\Converter\MetricConverter')
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    /**
+     * Get the association type manager mock
+     * @return AssociationTypeManager
+     */
+    protected function getAssociationTypeManagerMock()
+    {
+        $associationTypeManager =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        return $associationTypeManager;
     }
 }
