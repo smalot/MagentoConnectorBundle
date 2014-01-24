@@ -24,7 +24,7 @@ In your Akeneo PIM standard edition, run the following composer command :
 
     php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA1
 
-Then you have to add the ConnectorBundle to you `AppKernel.php` :
+Then you have to add the ConnectorBundle to your `AppKernel.php` :
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 

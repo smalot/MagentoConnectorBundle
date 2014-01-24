@@ -23,6 +23,11 @@ connector:
                         reader:    pim_magento_connector.reader.orm.bulk_product_association
                         processor: pim_magento_connector.processor.product_association
                         writer:    pim_magento_connector.writer.product_association
+                prune_simple_products:
+                    title: pim_import_export.jobs.simple_product_clean.clean.title
+                    class: "%pim_magento_connector.step.prune.class%"
+                    services:
+                        cleaner: pim_magento_connector.cleaner.product
         magento_category_export:
             title: pim_magento_connector.jobs.category_export.title
             type:  export

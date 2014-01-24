@@ -12,6 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento product processor
@@ -151,6 +152,8 @@ class ProductProcessor extends AbstractProductProcessor
                 $context
             );
         } catch (NormalizeException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        } catch (SoapCallException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         }
 

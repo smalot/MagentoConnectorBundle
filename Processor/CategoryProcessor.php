@@ -3,9 +3,11 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Entity\Category;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento category processor
@@ -95,11 +97,15 @@ class CategoryProcessor extends AbstractProcessor
 
         foreach ($categories as $category) {
             if ($category->getParent()) {
-                $normalizedCategory = $this->categoryNormalizer->normalize(
-                    $category,
-                    AbstractNormalizer::MAGENTO_FORMAT,
-                    $this->globalContext
-                );
+                try {
+                    $normalizedCategory = $this->categoryNormalizer->normalize(
+                        $category,
+                        AbstractNormalizer::MAGENTO_FORMAT,
+                        $this->globalContext
+                    );
+                } catch (SoapCallException $e) {
+                    throw new InvalidItemException($e->getMessage(), array($category));
+                }
 
                 $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
             }
