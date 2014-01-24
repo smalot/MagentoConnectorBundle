@@ -58,6 +58,10 @@ class GroupRepository extends BaseGroupRepository
         return $variantGroups;
     }
 
+    /**
+     * Get variant group query builder
+     * @return QueryBuilder
+     */
     protected function getVariantGroupsQb()
     {
         return $this

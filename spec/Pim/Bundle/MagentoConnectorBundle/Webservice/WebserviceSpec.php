@@ -112,4 +112,18 @@ class WebserviceSpec extends ObjectBehavior
 
         $this->createProductAssociation(array('bar'));
     }
+
+    function it_send_delete_call($magentoSoapClient)
+    {
+        $magentoSoapClient->call('catalog_product.delete', array('sku-000'))->shouldBeCalled();
+
+        $this->deleteProduct('sku-000');
+    }
+
+    function it_send_disable_call($magentoSoapClient)
+    {
+        $magentoSoapClient->call('catalog_product.update', array('sku-001', array('status' => 2)))->shouldBeCalled();
+
+        $this->disableProduct('sku-001');
+    }
 }
