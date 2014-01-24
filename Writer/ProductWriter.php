@@ -5,6 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product writer
@@ -42,7 +44,11 @@ class ProductWriter extends AbstractWriter
         $this->pruneImages($product);
 
         foreach (array_keys($product) as $storeViewCode) {
-            $this->createCall($product[$storeViewCode], $storeViewCode);
+            try {
+                $this->createCall($product[$storeViewCode], $storeViewCode);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array($product));
+            }
         }
     }
 

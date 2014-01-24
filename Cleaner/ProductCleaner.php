@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 
 /**
- * Magento item cleaner
+ * Magento product cleaner
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -108,10 +108,6 @@ class ProductCleaner extends Cleaner
         $pimProducts      = $this->getPimProductsSkus();
 
         foreach ($magentoProducts as $product) {
-            var_dump($product['sku']);
-            var_dump($pimProducts);
-            var_dump($product['sku']);
-            var_dump($exportedProducts);
             if (!in_array($product['sku'], $pimProducts)) {
                 $this->handleProductNotInPimAnymore($product);
             } elseif (!in_array($product['sku'], $exportedProducts)) {
