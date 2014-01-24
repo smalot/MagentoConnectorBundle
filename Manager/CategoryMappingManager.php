@@ -44,18 +44,14 @@ class CategoryMappingManager
      */
     public function getCategoryFromId($id, $magentoUrl)
     {
-        try {
-            $magentoCategoryMapping = $this->getEntityRepository()->findOneBy(
-                array(
-                    'magentoCategoryId' => $id,
-                    'magentoUrl'        => $magentoUrl
-                )
-            );
-        } catch (\Doctrine\Orm\NoResultException $e) {
-            return null;
-        }
+        $magentoCategoryMapping = $this->getEntityRepository()->findOneBy(
+            array(
+                'magentoCategoryId' => $id,
+                'magentoUrl'        => $magentoUrl
+            )
+        );
 
-        return $magentoCategoryMapping->getCategory();
+        return $magentoCategoryMapping ? $magentoCategoryMapping->getCategory() : null;
     }
 
     /**
@@ -100,6 +96,18 @@ class CategoryMappingManager
 
         $this->objectManager->persist($magentoCategoryMapping);
         $this->objectManager->flush();
+    }
+
+    /**
+     * Does the given magento category exist in pim ?
+     * @param string $categoryId
+     * @param string $magentoUrl
+     *
+     * @return boolean
+     */
+    public function magentoCategoryExist($categoryId, $magentoUrl)
+    {
+        return $this->getCategoryFromId($categoryId, $magentoUrl) !== null;
     }
 
     /**

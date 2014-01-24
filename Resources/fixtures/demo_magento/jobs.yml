@@ -5,21 +5,23 @@ jobs:
         label:     Magento product export
         type:      export
         configuration:
-            channel:             magento
-            soapUsername:        soap
-            soapApiKey:          magento1
-            soapUrl:             http://magento.dev/
-            defaultLocale:       en_US
-            website:             base
-            enabled:             true
-            storeviewMapping:    ''
-            visibility:          4
-            currency:            EUR
-            rootCategoryMapping: 'default:2'
-            pimGrouped:          'PACK'
-            pimUpSell:           'UPSELL'
-            pimCrossSell:        'X_SELL'
-            pimRelated:          'RELATED'
+            channel:                  magento
+            soapUsername:             soap
+            soapApiKey:               magento1
+            soapUrl:                  http://magento.dev/
+            defaultLocale:            en_US
+            website:                  base
+            enabled:                  true
+            storeviewMapping:         ''
+            visibility:               4
+            currency:                 EUR
+            rootCategoryMapping:      'default:2'
+            pimGrouped:               'PACK'
+            pimUpSell:                'UPSELL'
+            pimCrossSell:              'X_SELL'
+            pimRelated:               'RELATED'
+            notCompleteAnymoreAction: 'disable'
+            notInPimAnymoreAction:    'disable'
     magento_category_export:
         connector: Magento Connector
         alias:     magento_category_export
@@ -34,3 +36,4 @@ jobs:
             website:       base
             storeviewMapping:    ''
             rootCategoryMapping: 'default:2'
+            notInPimAnymoreAction: 'disable'

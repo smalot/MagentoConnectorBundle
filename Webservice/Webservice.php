@@ -28,6 +28,7 @@ class Webservice
     const SOAP_ACTION_CATEGORY_TREE                 = 'catalog_category.tree';
     const SOAP_ACTION_CATEGORY_CREATE               = 'catalog_category.create';
     const SOAP_ACTION_CATEGORY_UPDATE               = 'catalog_category.update';
+    const SOAP_ACTION_CATEGORY_DELETE               = 'catalog_category.delete';
     const SOAP_ACTION_CATEGORY_MOVE                 = 'catalog_category.move';
     const SOAP_ACTION_LINK_LIST                     = 'catalog_product_link.list';
     const SOAP_ACTION_LINK_REMOVE                   = 'catalog_product_link.remove';
@@ -354,6 +355,41 @@ class Webservice
         }
 
         return $result;
+    }
+
+    /**
+     * Disable the given category on Magento
+     *
+     * @param string $categoryId
+     */
+    public function disableCategory($categoryId)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_UPDATE,
+            array(
+                $categoryId,
+                array(
+                    'is_active'         => 0,
+                    'available_sort_by' => 1,
+                    'default_sort_by'   => 1
+                )
+            )
+        );
+    }
+
+    /**
+     * Delete the given category on Magento
+     *
+     * @param string $categoryId
+     */
+    public function deleteCategory($categoryId)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_DELETE,
+            array(
+                $categoryId
+            )
+        );
     }
 
     /**

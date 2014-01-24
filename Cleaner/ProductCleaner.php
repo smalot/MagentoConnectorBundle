@@ -19,19 +19,39 @@ use Pim\Bundle\CatalogBundle\Manager\ProductManager;
  */
 class ProductCleaner extends Cleaner
 {
-    const DO_NOTHING = 'do_nothing';
-    const DISABLE    = 'disable';
-    const DELETE     = 'delete';
+    /**
+     * @Assert\NotBlank(groups={"Execution"})
+     */
+    protected $channel;
+
+    /**
+     * get channel
+     *
+     * @return string channel
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * Set channel
+     *
+     * @param string $channel channel
+     *
+     * @return AbstractProcessor
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+
+        return $this;
+    }
 
     /**
      * @var string
      */
     protected $notCompleteAnymoreAction;
-
-    /**
-     * @var string
-     */
-    protected $notInPimAnymoreAction;
 
     /**
      * get notCompleteAnymoreAction
@@ -58,41 +78,18 @@ class ProductCleaner extends Cleaner
     }
 
     /**
-     * get notInPimAnymoreAction
-     *
-     * @return string notInPimAnymoreAction
-     */
-    public function getNotInPimAnymoreAction()
-    {
-        return $this->notInPimAnymoreAction;
-    }
-
-    /**
-     * Set notInPimAnymoreAction
-     *
-     * @param string $notInPimAnymoreAction notInPimAnymoreAction
-     *
-     * @return ProductCleaner
-     */
-    public function setNotInPimAnymoreAction($notInPimAnymoreAction)
-    {
-        $this->notInPimAnymoreAction = $notInPimAnymoreAction;
-
-        return $this;
-    }
-
-    /**
-     * @param ChannelManager    $channelManager
      * @param WebserviceGuesser $webserviceGuesser
+     * @param ChannelManager    $channelManager
      * @param ProductManager    $productManager
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager,
         ProductManager $productManager
     ) {
-        parent::__construct($channelManager, $webserviceGuesser);
+        parent::__construct($webserviceGuesser);
 
+        $this->channelManager = $channelManager;
         $this->productManager = $productManager;
     }
 
@@ -200,21 +197,17 @@ class ProductCleaner extends Cleaner
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => array(
-                            self::DO_NOTHING => self::DO_NOTHING,
-                            self::DISABLE => self::DISABLE,
-                            self::DELETE => self::DELETE
+                            Cleaner::DO_NOTHING => Cleaner::DO_NOTHING,
+                            Cleaner::DISABLE    => Cleaner::DISABLE,
+                            Cleaner::DELETE     => Cleaner::DELETE
                         ),
                         'required' => true
                     )
                 ),
-                'notInPimAnymoreAction' => array(
+                'channel'      => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices'  => array(
-                            self::DO_NOTHING => self::DO_NOTHING,
-                            self::DISABLE => self::DISABLE,
-                            self::DELETE => self::DELETE
-                        ),
+                        'choices'  => $this->channelManager->getChannelChoices(),
                         'required' => true
                     )
                 )

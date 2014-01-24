@@ -32,7 +32,7 @@ class ProductCleanerSpec extends ObjectBehavior
         ProductInterface $thirdProduct,
         Channel $channel
     ) {
-        $this->beConstructedWith($channelManager, $webserviceGuesser, $productManager);
+        $this->beConstructedWith($webserviceGuesser, $channelManager, $productManager);
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
 
