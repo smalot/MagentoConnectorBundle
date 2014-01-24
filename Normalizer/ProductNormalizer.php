@@ -344,7 +344,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
             if (!$magentoCategoryId) {
                 throw new CategoryNotFoundException(
-                    sprintf('The category %s was not found. Please export categories first', $category->getLabel())
+                    sprintf(
+                        'The category %s was not found. Please export categories first or add it to the root ' .
+                        'category mapping',
+                        $category->getLabel()
+                    )
                 );
             }
 
