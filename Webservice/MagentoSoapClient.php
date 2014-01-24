@@ -94,9 +94,18 @@ class MagentoSoapClient
     public function call($resource, $params = null)
     {
         if ($this->isConnected()) {
-            $response = $this->client->call($this->session, $resource, $params);
-
-            $this->processSoapResponse($response, array($resource, $params));
+            try {
+                $response = $this->client->call($this->session, $resource, $params);
+            } catch (\SoapFault $e) {
+                throw new SoapCallException(
+                    sprintf(
+                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s',
+                        $e->getMessage(),
+                        $resource,
+                        json_encode($params)
+                    )
+                );
+            }
 
             return $response;
         } else {
@@ -128,40 +137,25 @@ class MagentoSoapClient
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
-                $responses = $this->client->multiCall(
-                    $this->session,
-                    $this->calls
-                );
-
-                $cpt = 0;
-                while ($cpt < count($responses)) {
-                    $this->processSoapResponse($responses[$cpt], $this->calls[$cpt]);
-                    $cpt++;
+                try {
+                    $responses = $this->client->multiCall(
+                        $this->session,
+                        $this->calls
+                    );
+                } catch (\SoapFault $e) {
+                    throw new SoapCallException(
+                        sprintf(
+                            'Error on Magento soap call : "%s". Called resources : "%s".',
+                            $e->getMessage(),
+                            json_encode($this->calls)
+                        )
+                    );
                 }
             } else {
                 throw new NotConnectedException();
             }
 
             $this->calls = array();
-        }
-    }
-
-    /**
-     * Process the soap response
-     *
-     * @param mixed $response The soap response
-     * @param array $call     The soap call
-     */
-    public function processSoapResponse($response, $call)
-    {
-        if (is_array($response)) {
-            if (isset($response['isFault']) && $response['isFault'] == 1) {
-
-            }
-        } else {
-            if ($response == 1) {
-
-            }
         }
     }
 }

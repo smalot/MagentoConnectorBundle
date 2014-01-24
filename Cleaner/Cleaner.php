@@ -1,37 +1,59 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Writer;
+namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-
+use Oro\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 
 /**
- * Magento product writer
+ * Magento item cleaner
  *
  * @author    Julien Sanchez <julien@akeneo.com>
- * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  * @HasValidCredentials()
  */
-abstract class AbstractWriter extends MagentoItemStep implements ItemWriterInterface
+abstract class Cleaner extends MagentoItemStep implements StepExecutionAwareInterface
 {
     /**
-     * @var ChannelManager
+     * @var StepExecution
      */
-    protected $channelManager;
+    protected $stepExecution;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
     protected $channel;
+
+    /**
+     * get channel
+     *
+     * @return string channel
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * Set channel
+     *
+     * @param string $channel channel
+     *
+     * @return AbstractProcessor
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+
+        return $this;
+    }
 
     /**
      * Constructor
@@ -49,27 +71,16 @@ abstract class AbstractWriter extends MagentoItemStep implements ItemWriterInter
     }
 
     /**
-     * get channel
-     *
-     * @return string channel
+     * {@inheritdoc}
      */
-    public function getChannel()
-    {
-        return $this->channel;
-    }
+    abstract public function execute();
 
     /**
-     * Set channel
-     *
-     * @param string $channel channel
-     *
-     * @return AbstractWriter
+     * {@inheritdoc}
      */
-    public function setChannel($channel)
+    public function setStepExecution(StepExecution $stepExecution)
     {
-        $this->channel = $channel;
-
-        return $this;
+        $this->stepExecution = $stepExecution;
     }
 
     /**

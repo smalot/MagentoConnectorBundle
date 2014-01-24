@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
@@ -10,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento product processor
@@ -169,17 +171,21 @@ class ProductAssociationProcessor extends AbstractProcessor
         $productAssociationCalls = array('remove' => array(), 'create' => array());
 
         foreach ($items as $product) {
-            $productAssociationCalls['remove'] = array_merge(
-                $productAssociationCalls['create'],
-                $this->getRemoveCallsForProduct(
-                    $product,
-                    $this->webservice->getAssociationsStatus($product)
-                )
-            );
-            $productAssociationCalls['create'] = array_merge(
-                $productAssociationCalls['create'],
-                $this->getCreateCallsForProduct($product)
-            );
+            try {
+                $productAssociationCalls['remove'] = array_merge(
+                    $productAssociationCalls['create'],
+                    $this->getRemoveCallsForProduct(
+                        $product,
+                        $this->webservice->getAssociationsStatus($product)
+                    )
+                );
+                $productAssociationCalls['create'] = array_merge(
+                    $productAssociationCalls['create'],
+                    $this->getCreateCallsForProduct($product)
+                );
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array($product));
+            }
         }
 
         return $productAssociationCalls;

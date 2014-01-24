@@ -4,8 +4,8 @@ parameters:
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
     pim_magento_connector.validator.magento_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository
-
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
+    pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
 
 services:
     # guesser
@@ -44,3 +44,4 @@ services:
         class: Doctrine\ORM\Mapping\ClassMetaData
         arguments:
             name: %pim_catalog.entity.category.class%
+

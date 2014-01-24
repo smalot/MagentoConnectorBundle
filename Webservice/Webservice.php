@@ -15,6 +15,7 @@ class Webservice
 {
     const SOAP_ACTION_CATALOG_PRODUCT_CREATE        = 'catalog_product.create';
     const SOAP_ACTION_CATALOG_PRODUCT_UPDATE        = 'catalog_product.update';
+    const SOAP_ACTION_CATALOG_PRODUCT_DELETE        = 'catalog_product.delete';
     const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 'catalog_product.currentStore';
     const SOAP_ACTION_CATALOG_PRODUCT_LIST          = 'catalog_product.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS     = 'catalog_product_attribute.options';
@@ -44,6 +45,8 @@ class Webservice
     const CREATE_CONFIGURABLE_SIZE = 4;
 
     const CONFIGURABLE_IDENTIFIER_PATTERN = 'conf-%s';
+
+    const MAGENTO_STATUS_DISABLE = 2;
 
     protected $client;
 
@@ -134,7 +137,7 @@ class Webservice
      *
      * @return array
      */
-    public function getProductsStatus($products)
+    public function getProductsStatus(array $products = array())
     {
         $skus = $this->getProductsIds($products);
 
@@ -147,7 +150,7 @@ class Webservice
      *
      * @return array
      */
-    public function getConfigurablesStatus(array $configurables)
+    public function getConfigurablesStatus(array $configurables = array())
     {
         $skus = $this->getConfigurablesIds($configurables);
 
@@ -424,6 +427,37 @@ class Webservice
     }
 
     /**
+     * Disable a product
+     * @param string $productSku
+     */
+    public function disableProduct($productSku)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
+            array(
+                $productSku,
+                array(
+                    'status' => self::MAGENTO_STATUS_DISABLE
+                )
+            )
+        );
+    }
+
+    /**
+     * Delete a product
+     * @param string $productSku
+     */
+    public function deleteProduct($productSku)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_CATALOG_PRODUCT_DELETE,
+            array(
+                $productSku
+            )
+        );
+    }
+
+    /**
      * Get the magento attributeSet list from the magento platform
      *
      * @return void
@@ -477,19 +511,23 @@ class Webservice
      */
     protected function getStatusForSkus($skus)
     {
-        $filters = json_decode(
-            json_encode(
-                array(
-                    'complex_filter' => array(
-                        array(
-                            'key' => 'sku',
-                            'value' => array('key' => 'in', 'value' => $skus)
+        if ($skus) {
+            $filters = json_decode(
+                json_encode(
+                    array(
+                        'complex_filter' => array(
+                            array(
+                                'key' => 'sku',
+                                'value' => array('key' => 'in', 'value' => $skus)
+                            )
                         )
                     )
-                )
-            ),
-            false
-        );
+                ),
+                false
+            );
+        } else {
+            $filters = array();
+        }
 
         return $this->client->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_LIST,
@@ -503,7 +541,7 @@ class Webservice
      *
      * @return string The serialization result
      */
-    protected function getProductsIds(array $products)
+    protected function getProductsIds(array $products = array())
     {
         $ids = array();
 
@@ -520,7 +558,7 @@ class Webservice
      *
      * @return string The serialization result
      */
-    protected function getConfigurablesIds(array $configurables)
+    protected function getConfigurablesIds(array $configurables = array())
     {
         $ids = array();
 

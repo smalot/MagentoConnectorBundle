@@ -6,6 +6,8 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento category writer
@@ -49,10 +51,14 @@ class CategoryWriter extends AbstractWriter
 
         //creation for each product in the admin storeView (with default locale)
         foreach ($batches as $batch) {
-            $this->handleNewCategory($batch);
-            $this->handleUpdateCategory($batch);
-            $this->handleMoveCategory($batch);
-            $this->handleVariationCategory($batch);
+            try {
+                $this->handleNewCategory($batch);
+                $this->handleUpdateCategory($batch);
+                $this->handleMoveCategory($batch);
+                $this->handleVariationCategory($batch);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array());
+            }
         }
     }
 

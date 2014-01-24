@@ -3,6 +3,8 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product association writer
@@ -23,12 +25,23 @@ class ProductAssociationWriter extends AbstractWriter
         $this->beforeExecute();
 
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
-            foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
-                $this->webservice->removeProductAssociation($productAssociationRemoveCall);
-            }
+            try {
+                foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
+                    $this->webservice->removeProductAssociation($productAssociationRemoveCall);
+                }
 
-            foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {
-                $this->webservice->createProductAssociation($productAssociationCreateCall);
+                foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {
+                    $this->webservice->createProductAssociation($productAssociationCreateCall);
+                }
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException(
+                    sprintf(
+                        'An error occured during a product association call. This may be due to a linked ' .
+                        'product that doesn\'t exist on Magento side. Error message : %s',
+                        $e->getMessage()
+                    ),
+                    array()
+                );
             }
         }
     }
