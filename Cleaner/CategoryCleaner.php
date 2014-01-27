@@ -37,6 +37,9 @@ class CategoryCleaner extends Cleaner
         $this->categoryMappingManager = $categoryMappingManager;
     }
 
+    /**
+     * {@inhertidoc}
+     */
     public function execute()
     {
         parent::beforeExecute();
@@ -59,6 +62,10 @@ class CategoryCleaner extends Cleaner
         }
     }
 
+    /**
+     * Handle deletion or disableing of categories that are not in PIM anymore
+     * @param  array  $category
+     */
     protected function handleCategoryNotInPimAnymore(array $category)
     {
         if ($this->notInPimAnymoreAction === self::DISABLE) {

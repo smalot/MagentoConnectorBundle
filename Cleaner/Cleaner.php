@@ -36,7 +36,7 @@ abstract class Cleaner extends MagentoItemStep implements StepExecutionAwareInte
     protected $notInPimAnymoreAction;
 
     /**
-     * get notInPimAnymoreAction
+     * Get notInPimAnymoreAction
      *
      * @return string notInPimAnymoreAction
      */
