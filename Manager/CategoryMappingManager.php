@@ -105,7 +105,7 @@ class CategoryMappingManager
      *
      * @return boolean
      */
-    public function magentoCategoryExist($categoryId, $magentoUrl)
+    public function magentoCategoryExists($categoryId, $magentoUrl)
     {
         return $this->getCategoryFromId($categoryId, $magentoUrl) !== null;
     }

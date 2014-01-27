@@ -47,7 +47,7 @@ class CategoryCleaner extends Cleaner
         $magentoCategories = $this->webservice->getCategoriesStatus();
 
         foreach ($magentoCategories as $category) {
-            if (!$this->categoryMappingManager->magentoCategoryExist($category['category_id'], $this->soapUrl) &&
+            if (!$this->categoryMappingManager->magentoCategoryExists($category['category_id'], $this->soapUrl) &&
                 !(
                     $category['level'] === '0' ||
                     $category['level'] === '1'

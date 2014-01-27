@@ -79,7 +79,7 @@ class CategoryNormalizer extends AbstractNormalizer
             'variation' => array()
         );
 
-        if ($this->magentoCategoryExist($category, $context['magentoCategories'], $context['magentoUrl'])) {
+        if ($this->magentoCategoryExists($category, $context['magentoCategories'], $context['magentoUrl'])) {
             $normalizedCategory['update'][] = $this->getNormalizedUpdateCategory(
                 $category,
                 $context
@@ -103,7 +103,7 @@ class CategoryNormalizer extends AbstractNormalizer
      *
      * @return boolean
      */
-    protected function magentoCategoryExist(CategoryInterface $category, array $magentoCategories, $magentoUrl)
+    protected function magentoCategoryExists(CategoryInterface $category, array $magentoCategories, $magentoUrl)
     {
         return ($magentoCategoryId = $this->getMagentoCategoryId($category, $magentoUrl)) !== null &&
             isset($magentoCategories[$magentoCategoryId]);
