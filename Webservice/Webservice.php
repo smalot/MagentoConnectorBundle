@@ -359,8 +359,9 @@ class Webservice
 
     /**
      * Disable the given category on Magento
-     *
      * @param string $categoryId
+     *
+     * @return int
      */
     public function disableCategory($categoryId)
     {
@@ -381,6 +382,8 @@ class Webservice
      * Delete the given category on Magento
      *
      * @param string $categoryId
+     *
+     * @return int
      */
     public function deleteCategory($categoryId)
     {

@@ -64,7 +64,7 @@ class CategoryCleaner extends Cleaner
 
     /**
      * Handle deletion or disableing of categories that are not in PIM anymore
-     * @param  array  $category
+     * @param array $category
      */
     protected function handleCategoryNotInPimAnymore(array $category)
     {
