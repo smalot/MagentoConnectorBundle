@@ -64,7 +64,11 @@ class CategoryCleaner extends Cleaner
         if ($this->notInPimAnymoreAction === self::DISABLE) {
             $this->webservice->disableCategory($category['category_id']);
         } elseif ($this->notInPimAnymoreAction === self::DELETE) {
-            $this->webservice->deleteCategory($category['category_id']);
+            try {
+                $this->webservice->deleteCategory($category['category_id']);
+            } catch (SoapCallException $e) {
+                //In any case, if deleteCategory fails, it is due to the parent category has allready been deleted.
+            }
         }
     }
 }
