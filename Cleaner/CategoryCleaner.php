@@ -5,6 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento category cleaner
@@ -42,14 +44,17 @@ class CategoryCleaner extends Cleaner
         $magentoCategories = $this->webservice->getCategoriesStatus();
 
         foreach ($magentoCategories as $category) {
-            var_dump($category);
             if (!$this->categoryMappingManager->magentoCategoryExist($category['category_id'], $this->soapUrl) &&
                 !(
                     $category['level'] === '0' ||
                     $category['level'] === '1'
                 )
             ) {
-                $this->handleCategoryNotInPimAnymore($category);
+                try {
+                    $this->handleCategoryNotInPimAnymore($category);
+                } catch (SoapCallException $e) {
+                    throw new InvalidItemException($e->getMessage(), array(json_encode($category)));
+                }
             }
         }
     }

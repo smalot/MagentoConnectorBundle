@@ -7,6 +7,8 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product cleaner
@@ -105,10 +107,14 @@ class ProductCleaner extends Cleaner
         $pimProducts      = $this->getPimProductsSkus();
 
         foreach ($magentoProducts as $product) {
-            if (!in_array($product['sku'], $pimProducts)) {
-                $this->handleProductNotInPimAnymore($product);
-            } elseif (!in_array($product['sku'], $exportedProducts)) {
-                $this->handleProductNotCompleteAnymore($product);
+            try {
+                if (!in_array($product['sku'], $pimProducts)) {
+                    $this->handleProductNotInPimAnymore($product);
+                } elseif (!in_array($product['sku'], $exportedProducts)) {
+                    $this->handleProductNotCompleteAnymore($product);
+                }
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array(json_encode($product)));
             }
         }
     }
