@@ -21,6 +21,9 @@ class Webservice
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS     = 'catalog_product_attribute.options';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
+    const SOAP_ACTION_ATTRIBUTE_OPTION_LIST         = 'catalog_product_attribute.options';
+    const SOAP_ACTION_ATTRIBUTE_OPTION_ADD          = 'catalog_product_attribute.addOption';
+    const SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE       = 'catalog_product_attribute.removeOption';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
     const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'catalog_product_attribute_media.create';
     const SOAP_ACTION_PRODUCT_MEDIA_LIST            = 'catalog_product_attribute_media.list';
@@ -48,6 +51,8 @@ class Webservice
     const CONFIGURABLE_IDENTIFIER_PATTERN = 'conf-%s';
 
     const MAGENTO_STATUS_DISABLE = 2;
+
+    const ADMIN_STOREVIEW = 0;
 
     protected $client;
 
@@ -493,6 +498,42 @@ class Webservice
             array(
                 $productSku
             )
+        );
+    }
+
+    /**
+     * Get options status for the given attributeCode
+     * @param  string $attributeCode
+     * @return array
+     */
+    public function getOptionsStatus($attributeCode)
+    {
+        $options = $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
+            array(
+                $attributeCode,
+                self::ADMIN_STOREVIEW
+            )
+        );
+
+        $optionsStatus = array();
+
+        foreach ($options as $option) {
+            $optionsStatus[] = $option['label'];
+        }
+
+        return $optionsStatus;
+    }
+
+    /**
+     * Create an option
+     * @param array $option
+     */
+    public function createOption($option)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_ADD,
+            $option
         );
     }
 

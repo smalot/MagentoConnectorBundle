@@ -44,18 +44,18 @@ class CategoryNormalizer extends AbstractNormalizer
 
         //For each storeview, we update the product only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {
-            $storeViewCode = $this->getStoreViewCodeForLocale(
+            $storeView = $this->getStoreViewForLocale(
                 $locale->getCode(),
                 $context['magentoStoreViews'],
                 $context['storeViewMapping']
             );
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($storeViewCode) {
+            if ($storeView) {
                 $normalizedCategory['variation'][] = $this->getNormalizedVariationCategory(
                     $object,
                     $locale->getCode(),
-                    $storeViewCode
+                    $storeView['code']
                 );
             }
         }

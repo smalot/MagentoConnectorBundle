@@ -72,14 +72,14 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
         //For each storeview, we update the group only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {
-            $storeViewCode = $this->getStoreViewCodeForLocale(
+            $storeView = $this->getStoreViewForLocale(
                 $locale->getCode(),
                 $context['magentoStoreViews'],
                 $context['storeViewMapping']
             );
 
             //If a locale for this storeview exist in PIM, we create a translated group in this locale
-            if ($storeViewCode) {
+            if ($storeView) {
                 $values = $this->productNormalizer->getValues(
                     $products[0],
                     $context['magentoAttributes'],
@@ -90,10 +90,10 @@ class ConfigurableNormalizer extends AbstractNormalizer
                     true
                 );
 
-                $processedItem[$storeViewCode] = array(
+                $processedItem[$storeView['code']] = array(
                     $sku,
                     $values,
-                    $storeViewCode
+                    $storeView['code']
                 );
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {

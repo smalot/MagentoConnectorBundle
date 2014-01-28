@@ -37,6 +37,11 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
     /**
+     * @var string
+     */
+    protected $rootCategoryMapping = '';
+
+    /**
      * get currency
      *
      * @return string currency
@@ -107,11 +112,6 @@ abstract class AbstractProductProcessor extends AbstractProcessor
 
         return $this;
     }
-
-    /**
-     * @var string
-     */
-    protected $rootCategoryMapping = '';
 
     /**
      * get rootCategoryMapping
