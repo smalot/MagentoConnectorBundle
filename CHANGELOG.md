@@ -12,6 +12,7 @@
 ## Improvements
 
 - Price mapping validation for configurable products
+- Fixtures improvements (configurables, linked products, categories, etc)
 
 ## Bug fixes
 
