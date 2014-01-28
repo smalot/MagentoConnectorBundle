@@ -6,6 +6,7 @@
 - Added possibility to export associated products' links
 - Added possibility to export grouped products
 - Added category assigment for simple and configurable products
+- Added possibility to export options (create and remove)
 - Products, categories and configurables prune after export
 
 ## Improvements
