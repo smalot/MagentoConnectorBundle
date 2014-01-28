@@ -27,3 +27,4 @@ services:
         arguments:
             - '@doctrine.orm.default_entity_manager'
             - %pim_catalog.entity.attribute_option.class%
+

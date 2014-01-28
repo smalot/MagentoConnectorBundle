@@ -51,6 +51,22 @@ connector:
                     services:
                         cleaner: pim_magento_connector.cleaner.category
 
+        magento_attribute_export:
+            title: pim_magento_connector.jobs.attribute_export.title
+            type:  export
+            steps:
+                export_attributes:
+                    title:     pim_magento_connector.jobs.attribute_export.export.title
+                    services:
+                        reader:    pim_import_export.reader.orm.attribute
+                        processor: pim_magento_connector.processor.attribute
+                        writer:    pim_magento_connector.writer.product
+                # prune_options:
+                #     title: pim_import_export.jobs.option_clean.clean.title
+                #     class: "%pim_magento_connector.step.prune.class%"
+                #     services:
+                #         cleaner: pim_magento_connector.cleaner.option
+
         magento_option_export:
             title: pim_magento_connector.jobs.option_export.title
             type:  export
