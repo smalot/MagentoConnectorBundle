@@ -25,7 +25,7 @@ class OptionNormalizer extends AbstractNormalizer
                 'value'    => $object->getCode()
             ),
             array(
-                'store_id' => 1,
+                'store_id' => '1',
                 'value'    => $object->setLocale($context['defaultLocale'])->getOptionValue()->getLabel()
             )
         );
@@ -39,8 +39,8 @@ class OptionNormalizer extends AbstractNormalizer
 
             if ($storeView) {
                 $label[] = array(
-                    'store_id' => $storeView['store_id'],
-                    'value'    => $object->setLocale($locale)->getOptionValue()->getLabel()
+                    'store_id' => (string) $storeView['store_id'],
+                    'value'    => $object->setLocale($locale->getCode())->getOptionValue()->getLabel()
                 );
             }
         }

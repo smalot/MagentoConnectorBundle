@@ -98,7 +98,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
      */
     protected function getMappedStoreView($localeCode, $storeViewMapping)
     {
-        return isset($storeViewMapping[strtolower($localeCode)]) ? $storeViewMapping[strlower($localeCode)] : null;
+        return isset($storeViewMapping[strtolower($localeCode)]) ? $storeViewMapping[strtolower($localeCode)] : null;
     }
 
     /**
