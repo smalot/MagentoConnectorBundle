@@ -45,7 +45,7 @@ class OptionProcessorSpec extends ObjectBehavior
         $optionBlue->getCode()->willReturn('blue');
 
         $webservice->getStoreViewsList()->shouldBeCalled();
-        $webservice->getOptionsStatus('size')->willReturn(array('red'));
+        $webservice->getAttributeOptions('size')->willReturn(array('red'));
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(array('foo'));
         $optionNormalizer->normalize($optionBlue, Argument::cetera())->willReturn(array('bar'));
@@ -53,6 +53,6 @@ class OptionProcessorSpec extends ObjectBehavior
         $this->process(array(
             $optionRed,
             $optionBlue
-        ))->shouldReturn(array(array('bar')));
+        ))->shouldReturn(array(array('foo'), array('bar')));
     }
 }

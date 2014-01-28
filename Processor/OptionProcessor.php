@@ -51,7 +51,7 @@ class OptionProcessor extends AbstractProcessor
         $attribute = $groupedOptions[0]->getAttribute();
 
         try {
-            $optionsStatus = $this->webservice->getOptionsStatus($attribute->getCode());
+            $optionsStatus = $this->webservice->getAttributeOptions($attribute->getCode());
         } catch (SoapCallException $e) {
             throw new InvalidItemException(
                 sprintf(
@@ -70,7 +70,7 @@ class OptionProcessor extends AbstractProcessor
         $normalizedOptions = array();
 
         foreach ($groupedOptions as $option) {
-            if (!in_array($option->getCode(), $optionsStatus)) {
+            if (!array_key_exists($option->getCode(), $optionsStatus)) {
                 $normalizedOptions[] = $this->getNormalizedOption($option, $this->globalContext);
             }
         }
@@ -80,8 +80,9 @@ class OptionProcessor extends AbstractProcessor
 
     /**
      * Get the normalized
-     * @param  AttributeOption $option
-     * @param  array           $context
+     * @param AttributeOption $option
+     * @param array           $context
+     *
      * @return array
      */
     protected function getNormalizedOption(AttributeOption $option, array $context)
@@ -90,7 +91,8 @@ class OptionProcessor extends AbstractProcessor
             $normalizedOption = $this->optionNormalizer->normalize(
                 $option,
                 AbstractNormalizer::MAGENTO_FORMAT,
-                $context);
+                $context
+            );
         } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
         } catch (SoapCallException $e) {

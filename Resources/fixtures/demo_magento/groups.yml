@@ -6,3 +6,4 @@ groups:
             fr_FR: Shirt Oro
         attributes:
             - size
+            - color

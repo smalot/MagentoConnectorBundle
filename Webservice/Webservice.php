@@ -101,7 +101,6 @@ class Webservice
     {
         if (!$this->attributeList) {
             $attributeSetList = $this->getAttributeSetList();
-
             foreach (array_keys($attributeSetList) as $attributeSet) {
                 $attributes = $this->getAttributeList($attributeSet);
                 $this->attributeSetList[$attributeSet] = array();
@@ -503,10 +502,11 @@ class Webservice
 
     /**
      * Get options status for the given attributeCode
-     * @param  string $attributeCode
+     * @param string $attributeCode
+     *
      * @return array
      */
-    public function getOptionsStatus($attributeCode)
+    public function getAllOptions($attributeCode)
     {
         $options = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
@@ -538,6 +538,45 @@ class Webservice
     }
 
     /**
+     * Get options for the given attribute
+     *
+     * @param string $attributeCode Attribute code
+     *
+     * @return array the formated options for the given attribute
+     */
+    public function getAttributeOptions($attributeCode)
+    {
+        $options = $this->client->call(
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+            array($attributeCode, self::ADMIN_STOREVIEW)
+        );
+
+        $formatedOptions = array();
+
+        foreach ($options as $option) {
+            $formatedOptions[$option['label']] = $option['value'];
+        }
+
+        return $formatedOptions;
+    }
+
+    /**
+     * Delete an option
+     * @param string $optionId
+     * @param string $attributeCode
+     */
+    public function deleteOption($optionId, $attributeCode)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE,
+            array(
+                $attributeCode,
+                $optionId,
+            )
+        );
+    }
+
+    /**
      * Get the magento attributeSet list from the magento platform
      *
      * @return void
@@ -558,29 +597,6 @@ class Webservice
         }
 
         return $this->magentoAttributeSets;
-    }
-
-    /**
-     * Get options for the given attribute
-     *
-     * @param string $attributeCode Attribute code
-     *
-     * @return array the formated options for the given attribute
-     */
-    protected function getAttributeOptions($attributeCode)
-    {
-        $options = $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
-            array($attributeCode)
-        );
-
-        $formatedOptions = array();
-
-        foreach ($options as $option) {
-            $formatedOptions[$option['label']] = $option['value'];
-        }
-
-        return $formatedOptions;
     }
 
     /**

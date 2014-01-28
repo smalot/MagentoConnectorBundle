@@ -24,10 +24,10 @@ class WebserviceTest extends WebserviceTestCase
             array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST, '9',  $this->getAttributeList()),
             array(
                 Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
-                array('colors'),
+                array('colors', 0),
                 $this->getOptions('colors')
             ),
-            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('size'), $this->getOptions('size')),
+            array(Webservice::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS, array('size', 0), $this->getOptions('size')),
         );
 
         $webservice = $this->getWebserviceWithCallMap($calls);

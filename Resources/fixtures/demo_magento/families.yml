@@ -32,6 +32,7 @@ families:
             - price
             - weight
             - size
+            - color
             - tax_class_id
         attributeAsLabel: name
         requirements:
@@ -42,4 +43,5 @@ families:
                 - price
                 - weight
                 - size
+                - color
                 - tax_class_id
