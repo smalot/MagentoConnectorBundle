@@ -28,3 +28,5 @@ services:
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@doctrine.orm.entity_manager'
+            - '%pim_catalog.entity.attribute.class%'
+            - '%pim_catalog.entity.attribute_option.class%'

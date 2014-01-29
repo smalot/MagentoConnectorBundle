@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -25,16 +26,32 @@ class OptionCleaner extends Cleaner
     protected $em;
 
     /**
+     * @var string
+     */
+    protected $attributeClassName;
+
+    /**
+     * @var string
+     */
+    protected $optionClassName;
+
+    /**
      * @param WebserviceGuesser $webserviceGuesser
      * @param EntityManager     $em
+     * @param string            $attributeClassName
+     * @param string            $optionClassName
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        EntityManager $em
+        EntityManager $em,
+        $attributeClassName,
+        $optionClassName
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->em = $em;
+        $this->em                 = $em;
+        $this->attributeClassName = $attributeClassName;
+        $this->optionClassName    = $optionClassName;
     }
 
     /**
@@ -47,16 +64,12 @@ class OptionCleaner extends Cleaner
         $magentoOptions = $this->webservice->getAllAttributesOptions();
 
         foreach ($magentoOptions as $attributeCode => $options) {
-            $attribute = $this->em->getRepository('PimCatalogBundle:Attribute')->findOneBy(
-                array('code' => $attributeCode)
-            );
+            $attribute = $this->getAttribute($attributeCode);
 
             foreach ($options as $optionLabel => $optionValue) {
                 if (!in_array($attributeCode, $this->getIgnoredAttributes()) &&
                     $attribute !== null &&
-                    $this->em->getRepository('PimCatalogBundle:AttributeOption')->findOneBy(
-                        array('code' => $optionLabel, 'attribute' => $attribute)
-                    ) === null
+                    $this->getOption($optionLabel, $attribute) === null
                 ) {
                     try {
                         $this->handleOptionNotInPimAnymore($optionValue, $attributeCode);
@@ -82,6 +95,30 @@ class OptionCleaner extends Cleaner
                 throw new InvalidItemException($e->getMessage(), array($optionId));
             }
         }
+    }
+
+    /**
+     * Get attribute for attribute code
+     * @param string $attributeCode
+     *
+     * @return mixed
+     */
+    protected function getAttribute($attributeCode) {
+        return $this->em->getRepository($this->attributeClassName)->findOneBy(array('code' => $attributeCode));
+    }
+
+    /**
+     * Get option for option label and attribute
+     * @param string    $optionLabel
+     * @param Attribute $attribute
+     *
+     * @return mixed
+     */
+    protected function getOption($optionLabel, Attribute $attribute)
+    {
+        return $this->em->getRepository($this->optionClassName)->findOneBy(
+            array('code' => $optionLabel, 'attribute' => $attribute)
+        );
     }
 
     /**
