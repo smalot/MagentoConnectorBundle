@@ -7,6 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
 /**
@@ -43,8 +44,18 @@ class AttributeProcessor extends AbstractProcessor
 
     protected function normalizeAttribute(Attribute $attribute, array $context)
     {
-        return array(
+        try {
+            $processedItem = $this->productNormalizer->normalize(
+                $attribute,
+                AbstractNormalizer::MAGENTO_FORMAT,
+                $context
+            );
+        } catch (NormalizeException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        } catch (SoapCallException $e) {
+            throw new InvalidItemException($e->getMessage(), array($product));
+        }
 
-        );
+        return $processedItem;
     }
 }
