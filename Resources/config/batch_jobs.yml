@@ -45,3 +45,24 @@ connector:
                         writer:    pim_magento_connector.writer.category
                     parameters:
                         batch_size: 1
+                prune_categories:
+                    title: pim_import_export.jobs.category_clean.clean.title
+                    class: "%pim_magento_connector.step.prune.class%"
+                    services:
+                        cleaner: pim_magento_connector.cleaner.category
+
+        magento_option_export:
+            title: pim_magento_connector.jobs.option_export.title
+            type:  export
+            steps:
+                export_options:
+                    title:     pim_magento_connector.jobs.option_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.orm.grouped_option
+                        processor: pim_magento_connector.processor.option
+                        writer:    pim_magento_connector.writer.option
+                prune_options:
+                    title: pim_import_export.jobs.option_clean.clean.title
+                    class: "%pim_magento_connector.step.prune.class%"
+                    services:
+                        cleaner: pim_magento_connector.cleaner.option

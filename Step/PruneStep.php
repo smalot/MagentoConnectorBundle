@@ -6,6 +6,8 @@ use Oro\Bundle\BatchBundle\Step\AbstractStep;
 use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Cleaner\Cleaner;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * A step to delete element that are no longer in PIM or in the channel
@@ -28,7 +30,12 @@ class PruneStep extends AbstractStep
     {
         // inject the step execution in the step item to be able to log summary info during execution
         $this->cleaner->setStepExecution($stepExecution);
-        $this->cleaner->execute();
+
+        try {
+            $this->cleaner->execute();
+        } catch (InvalidItemException $e) {
+            $this->handleStepExecutionWarning($stepExecution, $this->cleaner, $e);
+        }
     }
 
     /**
@@ -86,5 +93,32 @@ class PruneStep extends AbstractStep
     public function getConfigurableStepElements()
     {
         return array('cleaner' => $this->getCleaner());
+    }
+
+    /**
+     * Handle step execution warning
+     *
+     * @param StepExecution                   $stepExecution
+     * @param AbstractConfigurableStepElement $element
+     * @param InvalidItemException            $e
+     */
+    protected function handleStepExecutionWarning(
+        StepExecution $stepExecution,
+        AbstractConfigurableStepElement $element,
+        InvalidItemException $e
+    ) {
+        if ($element instanceof AbstractConfigurableStepElement) {
+            $warningName = $element->getName();
+        } else {
+            $warningName = get_class($element);
+        }
+
+        $stepExecution->addWarning($warningName, $e->getMessage(), $e->getMessageParameters(), $e->getItem());
+        $this->dispatchInvalidItemEvent(
+            get_class($element),
+            $e->getMessage(),
+            $e->getMessageParameters(),
+            $e->getItem()
+        );
     }
 }

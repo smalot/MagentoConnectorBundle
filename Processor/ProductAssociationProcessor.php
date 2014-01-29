@@ -173,7 +173,7 @@ class ProductAssociationProcessor extends AbstractProcessor
         foreach ($items as $product) {
             try {
                 $productAssociationCalls['remove'] = array_merge(
-                    $productAssociationCalls['create'],
+                    $productAssociationCalls['remove'],
                     $this->getRemoveCallsForProduct(
                         $product,
                         $this->webservice->getAssociationsStatus($product)

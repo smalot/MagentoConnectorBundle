@@ -20,3 +20,4 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
             joinColumn:
                 name: category_id
                 referencedColumnName: id
+                onDelete: 'CASCADE'

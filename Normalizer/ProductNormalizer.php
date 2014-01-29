@@ -112,14 +112,14 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         //For each storeview, we update the product only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {
-            $storeViewCode = $this->getStoreViewCodeForLocale(
+            $storeView = $this->getStoreViewForLocale(
                 $locale->getCode(),
                 $context['magentoStoreViews'],
                 $context['storeViewMapping']
             );
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($storeViewCode) {
+            if ($storeView) {
                 $values = $this->getValues(
                     $object,
                     $context['magentoAttributes'],
@@ -130,10 +130,10 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     true
                 );
 
-                $processedItem[$storeViewCode] = array(
+                $processedItem[$storeView['code']] = array(
                     (string) $object->getIdentifier(),
                     $values,
-                    $storeViewCode
+                    $storeView['code']
                 );
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {

@@ -21,6 +21,9 @@ class Webservice
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS     = 'catalog_product_attribute.options';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
+    const SOAP_ACTION_ATTRIBUTE_OPTION_LIST         = 'catalog_product_attribute.options';
+    const SOAP_ACTION_ATTRIBUTE_OPTION_ADD          = 'catalog_product_attribute.addOption';
+    const SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE       = 'catalog_product_attribute.removeOption';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
     const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'catalog_product_attribute_media.create';
     const SOAP_ACTION_PRODUCT_MEDIA_LIST            = 'catalog_product_attribute_media.list';
@@ -28,6 +31,7 @@ class Webservice
     const SOAP_ACTION_CATEGORY_TREE                 = 'catalog_category.tree';
     const SOAP_ACTION_CATEGORY_CREATE               = 'catalog_category.create';
     const SOAP_ACTION_CATEGORY_UPDATE               = 'catalog_category.update';
+    const SOAP_ACTION_CATEGORY_DELETE               = 'catalog_category.delete';
     const SOAP_ACTION_CATEGORY_MOVE                 = 'catalog_category.move';
     const SOAP_ACTION_LINK_LIST                     = 'catalog_product_link.list';
     const SOAP_ACTION_LINK_REMOVE                   = 'catalog_product_link.remove';
@@ -47,6 +51,8 @@ class Webservice
     const CONFIGURABLE_IDENTIFIER_PATTERN = 'conf-%s';
 
     const MAGENTO_STATUS_DISABLE = 2;
+
+    const ADMIN_STOREVIEW = 0;
 
     protected $client;
 
@@ -95,7 +101,6 @@ class Webservice
     {
         if (!$this->attributeList) {
             $attributeSetList = $this->getAttributeSetList();
-
             foreach (array_keys($attributeSetList) as $attributeSet) {
                 $attributes = $this->getAttributeList($attributeSet);
                 $this->attributeSetList[$attributeSet] = array();
@@ -357,6 +362,44 @@ class Webservice
     }
 
     /**
+     * Disable the given category on Magento
+     * @param string $categoryId
+     *
+     * @return int
+     */
+    public function disableCategory($categoryId)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_UPDATE,
+            array(
+                $categoryId,
+                array(
+                    'is_active'         => 0,
+                    'available_sort_by' => 1,
+                    'default_sort_by'   => 1
+                )
+            )
+        );
+    }
+
+    /**
+     * Delete the given category on Magento
+     *
+     * @param string $categoryId
+     *
+     * @return int
+     */
+    public function deleteCategory($categoryId)
+    {
+        return $this->client->call(
+            self::SOAP_ACTION_CATEGORY_DELETE,
+            array(
+                $categoryId
+            )
+        );
+    }
+
+    /**
      * Get associations status
      * @param ProductInterface $product
      *
@@ -458,6 +501,82 @@ class Webservice
     }
 
     /**
+     * Get options status for the given attributeCode
+     * @param string $attributeCode
+     *
+     * @return array
+     */
+    public function getAllOptions($attributeCode)
+    {
+        $options = $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
+            array(
+                $attributeCode,
+                self::ADMIN_STOREVIEW
+            )
+        );
+
+        $optionsStatus = array();
+
+        foreach ($options as $option) {
+            $optionsStatus[] = $option['label'];
+        }
+
+        return $optionsStatus;
+    }
+
+    /**
+     * Create an option
+     * @param array $option
+     */
+    public function createOption($option)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_ADD,
+            $option
+        );
+    }
+
+    /**
+     * Get options for the given attribute
+     *
+     * @param string $attributeCode Attribute code
+     *
+     * @return array the formated options for the given attribute
+     */
+    public function getAttributeOptions($attributeCode)
+    {
+        $options = $this->client->call(
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+            array($attributeCode, self::ADMIN_STOREVIEW)
+        );
+
+        $formatedOptions = array();
+
+        foreach ($options as $option) {
+            $formatedOptions[$option['label']] = $option['value'];
+        }
+
+        return $formatedOptions;
+    }
+
+    /**
+     * Delete an option
+     * @param string $optionId
+     * @param string $attributeCode
+     */
+    public function deleteOption($optionId, $attributeCode)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE,
+            array(
+                $attributeCode,
+                $optionId,
+            )
+        );
+    }
+
+    /**
      * Get the magento attributeSet list from the magento platform
      *
      * @return void
@@ -478,29 +597,6 @@ class Webservice
         }
 
         return $this->magentoAttributeSets;
-    }
-
-    /**
-     * Get options for the given attribute
-     *
-     * @param string $attributeCode Attribute code
-     *
-     * @return array the formated options for the given attribute
-     */
-    protected function getAttributeOptions($attributeCode)
-    {
-        $options = $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
-            array($attributeCode)
-        );
-
-        $formatedOptions = array();
-
-        foreach ($options as $option) {
-            $formatedOptions[$option['label']] = $option['value'];
-        }
-
-        return $formatedOptions;
     }
 
     /**

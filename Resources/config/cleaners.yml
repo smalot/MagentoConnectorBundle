@@ -1,18 +1,32 @@
 parameters:
     pim_magento_connector.cleaner.product.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\ProductCleaner
     pim_magento_connector.cleaner.configurable.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\ConfigurableCleaner
+    pim_magento_connector.cleaner.category.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\CategoryCleaner
+    pim_magento_connector.cleaner.option.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\OptionCleaner
 
 services:
     pim_magento_connector.cleaner.product:
         class: %pim_magento_connector.cleaner.product.class%
         arguments:
-            - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.product'
     pim_magento_connector.cleaner.configurable:
         class: %pim_magento_connector.cleaner.configurable.class%
         arguments:
-            - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.product'
             - '@pim_magento_connector.manager.group'
+    pim_magento_connector.cleaner.category:
+        class: %pim_magento_connector.cleaner.category.class%
+        arguments:
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.manager.category_mapping'
+    pim_magento_connector.cleaner.option:
+        class: %pim_magento_connector.cleaner.option.class%
+        arguments:
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@doctrine.orm.entity_manager'
+            - '%pim_catalog.entity.attribute.class%'
+            - '%pim_catalog.entity.attribute_option.class%'

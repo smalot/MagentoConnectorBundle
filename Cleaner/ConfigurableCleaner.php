@@ -26,18 +26,18 @@ class ConfigurableCleaner extends ProductCleaner
     protected $groupManager;
 
     /**
-     * @param ChannelManager    $channelManager
      * @param WebserviceGuesser $webserviceGuesser
+     * @param ChannelManager    $channelManager
      * @param ProductManager    $productManager
      * @param GroupManager      $groupManager
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager,
         ProductManager $productManager,
         GroupManager $groupManager
     ) {
-        parent::__construct($channelManager, $webserviceGuesser, $productManager);
+        parent::__construct($webserviceGuesser, $channelManager, $productManager);
 
         $this->groupManager = $groupManager;
     }

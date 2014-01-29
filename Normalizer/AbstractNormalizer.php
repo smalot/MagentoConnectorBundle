@@ -73,14 +73,14 @@ abstract class AbstractNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the corresponding storeview code for a givent locale
+     * Get the corresponding storeview for a given locale
      * @param string $locale
      * @param array  $magentoStoreViews
      * @param array  $storeViewMapping
      *
      * @return string
      */
-    protected function getStoreViewCodeForLocale($locale, $magentoStoreViews, $storeViewMapping)
+    protected function getStoreViewForLocale($locale, $magentoStoreViews, $storeViewMapping)
     {
         $mappedStoreView = $this->getMappedStoreView($locale, $storeViewMapping);
 
@@ -98,7 +98,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
      */
     protected function getMappedStoreView($localeCode, $storeViewMapping)
     {
-        return isset($storeViewMapping[strtolower($localeCode)]) ? $storeViewMapping[strlower($localeCode)] : null;
+        return isset($storeViewMapping[strtolower($localeCode)]) ? $storeViewMapping[strtolower($localeCode)] : null;
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
     {
         foreach ($magentoStoreViews as $magentoStoreView) {
             if ($magentoStoreView['code'] === strtolower($code)) {
-                return $magentoStoreView['code'];
+                return $magentoStoreView;
             }
         }
     }

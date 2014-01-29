@@ -21,53 +21,42 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
  */
 abstract class Cleaner extends MagentoItemStep implements StepExecutionAwareInterface
 {
+    const DO_NOTHING = 'do_nothing';
+    const DISABLE    = 'disable';
+    const DELETE     = 'delete';
+
     /**
      * @var StepExecution
      */
     protected $stepExecution;
 
     /**
-     * @Assert\NotBlank(groups={"Execution"})
+     * @var string
      */
-    protected $channel;
+    protected $notInPimAnymoreAction;
 
     /**
-     * get channel
+     * Get notInPimAnymoreAction
      *
-     * @return string channel
+     * @return string notInPimAnymoreAction
      */
-    public function getChannel()
+    public function getNotInPimAnymoreAction()
     {
-        return $this->channel;
+        return $this->notInPimAnymoreAction;
     }
 
     /**
-     * Set channel
+     * Set notInPimAnymoreAction
      *
-     * @param string $channel channel
+     * @param string $notInPimAnymoreAction notInPimAnymoreAction
      *
-     * @return AbstractProcessor
+     * @return Cleaner
      */
-    public function setChannel($channel)
+    public function setNotInPimAnymoreAction($notInPimAnymoreAction)
     {
-        $this->channel = $channel;
+        $this->notInPimAnymoreAction = $notInPimAnymoreAction;
 
         return $this;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param ChannelManager    $channelManager
-     * @param WebserviceGuesser $webserviceGuesser
-     */
-    public function __construct(
-        ChannelManager $channelManager,
-        WebserviceGuesser $webserviceGuesser
-    ) {
-        parent::__construct($webserviceGuesser);
-
-        $this->channelManager = $channelManager;
     }
 
     /**
@@ -91,10 +80,14 @@ abstract class Cleaner extends MagentoItemStep implements StepExecutionAwareInte
         return array_merge(
             parent::getConfigurationFields(),
             array(
-                'channel'      => array(
+                'notInPimAnymoreAction' => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices'  => $this->channelManager->getChannelChoices(),
+                        'choices'  => array(
+                            Cleaner::DO_NOTHING => Cleaner::DO_NOTHING,
+                            Cleaner::DISABLE    => Cleaner::DISABLE,
+                            Cleaner::DELETE     => Cleaner::DELETE
+                        ),
                         'required' => true
                     )
                 )

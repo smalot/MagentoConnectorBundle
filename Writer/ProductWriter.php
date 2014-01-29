@@ -106,24 +106,6 @@ class ProductWriter extends AbstractWriter
     }
 
     /**
-     * Get the magento soap client parameters
-     *
-     * @return MagentoSoapClientParameters
-     */
-    protected function getClientParameters()
-    {
-        if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->soapUrl
-            );
-        }
-
-        return $this->clientParameters;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()

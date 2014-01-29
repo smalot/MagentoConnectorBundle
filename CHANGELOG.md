@@ -6,11 +6,13 @@
 - Added possibility to export associated products' links
 - Added possibility to export grouped products
 - Added category assigment for simple and configurable products
-- Products and configurables prune after export
+- Added possibility to export options (create and remove)
+- Products, categories and configurables prune after export
 
 ## Improvements
 
 - Price mapping validation for configurable products
+- Fixtures improvements (configurables, linked products, categories, etc)
 
 ## Bug fixes
 
