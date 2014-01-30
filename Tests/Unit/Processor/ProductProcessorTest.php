@@ -604,7 +604,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMetricConverterMock()
     {
-        return $this->getMockBuilder('Pim\Bundle\ImportExportBundle\Converter\MetricConverter')
+        return $this->getMockBuilder('Pim\Bundle\TransformBundle\Converter\MetricConverter')
             ->disableOriginalConstructor()
             ->getMock();
     }

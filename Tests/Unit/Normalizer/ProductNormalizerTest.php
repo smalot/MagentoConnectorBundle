@@ -454,13 +454,13 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
     {
         $attribute = $this->getMockBuilder('Pim\Bundle\CatalogBundle\Entity\Attribute')
             ->disableOriginalConstructor()
-            ->setMethods(array('getCode', 'isTranslatable', 'isScopable'))
+            ->setMethods(array('getCode', 'isLocalizable', 'isScopable'))
             ->getMock();
         $attribute->expects($this->any())
             ->method('getCode')
             ->will($this->returnValue($value['code']));
         $attribute->expects($this->any())
-            ->method('isTranslatable')
+            ->method('isLocalizable')
             ->will($this->returnValue($value['translatable']));
         $attribute->expects($this->any())
             ->method('isScopable')

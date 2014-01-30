@@ -159,7 +159,7 @@ class AttributeNormalizer implements NormalizerInterface
      */
     protected function getNormalizedScope(Attribute $attribute)
     {
-        return $attribute->isTranslatable() ? self::STORE_SCOPE : self::GLOBAL_SCOPE;
+        return $attribute->isLocalizable() ? self::STORE_SCOPE : self::GLOBAL_SCOPE;
     }
 
     /**

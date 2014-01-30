@@ -7,14 +7,14 @@ parameters:
 services:
     # readers
     pim_magento_connector.reader.orm.bulk_simple_product:
-        parent: pim_import_export.reader.orm.product
-        class: %pim_import_export.reader.orm.bulk_product.class%
+        parent: pim_base_connector.reader.orm.product
+        class: %pim_base_connector.reader.orm.bulk_product.class%
     pim_magento_connector.reader.orm.bulk_configurable_product:
-        parent: pim_import_export.reader.orm.product
-        class: %pim_import_export.reader.orm.bulk_product.class%
+        parent: pim_base_connector.reader.orm.product
+        class: %pim_base_connector.reader.orm.bulk_product.class%
     pim_magento_connector.reader.orm.bulk_product_association:
-        parent: pim_import_export.reader.orm.product
-        class: %pim_import_export.reader.orm.bulk_product.class%
+        parent: pim_base_connector.reader.orm.product
+        class: %pim_base_connector.reader.orm.bulk_product.class%
 
     pim_magento_connector.reader.orm.category:
         class: %pim_magento_connector.reader.orm.category.class%

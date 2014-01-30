@@ -43,9 +43,9 @@ class CategoryNormalizer extends AbstractNormalizer
         $normalizedCategory = $this->getDefaultCategory($object, $context);
 
         //For each storeview, we update the product only with localized attributes
-        foreach ($this->getPimLocales($context['channel']) as $locale) {
+        foreach ($object->getTranslations() as $translation) {
             $storeView = $this->getStoreViewForLocale(
-                $locale->getCode(),
+                $translation->getLocale(),
                 $context['magentoStoreViews'],
                 $context['storeViewMapping']
             );
@@ -54,7 +54,7 @@ class CategoryNormalizer extends AbstractNormalizer
             if ($storeView) {
                 $normalizedCategory['variation'][] = $this->getNormalizedVariationCategory(
                     $object,
-                    $locale->getCode(),
+                    $translation->getLocale(),
                     $storeView['code']
                 );
             }
