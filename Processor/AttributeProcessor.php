@@ -27,8 +27,10 @@ class AttributeProcessor extends AbstractProcessor
         parent::beforeExecute();
 
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
-        $this->globalContext['magentoStoreViews'] = $this->webservice->getStoreViewsList();
-        $this->globalContext['defaultLocale']     = $this->defaultLocale;
+        $this->globalContext['magentoStoreViews']        = $this->webservice->getStoreViewsList();
+        $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
+        $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
+        $this->globalContext['defaultLocale']            = $this->defaultLocale;
     }
 
     /**

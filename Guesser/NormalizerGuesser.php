@@ -220,7 +220,7 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                return new AttributeNormalizer();
+                return new AttributeNormalizer($this->productValueNormalizer);
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }

@@ -72,15 +72,15 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Is the given value normalizable
-     * @param ProductValue $value
-     * @param string       $identifier
-     * @param string       $scopeCode
-     * @param string       $localeCode
-     * @param bool         $onlyLocalized
+     * @param ProductValueInterface $value
+     * @param string                $identifier
+     * @param string                $scopeCode
+     * @param string                $localeCode
+     * @param bool                  $onlyLocalized
      *
      * @return boolean
      */
-    protected function isValueNormalizable($value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
+    protected function isValueNormalizable(ProductValueInterface $value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
     {
         return (
             ($value !== $identifier) &&

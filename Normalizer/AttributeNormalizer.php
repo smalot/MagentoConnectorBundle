@@ -22,6 +22,20 @@ class AttributeNormalizer implements NormalizerInterface
     const MAGENTO_FORMAT = 'MagentoArray';
 
     /**
+     * @var ProductValueNormalizer
+     */
+    protected $productValueNormalizer;
+
+    /**
+     * Constructor
+     * @param ProductValueNormalizer $productValueNormalizer
+     */
+    public function __construct(ProductValueNormalizer $productValueNormalizer)
+    {
+        $this->productValueNormalizer = $productValueNormalizer;
+    }
+
+    /**
      * @var array
      */
     protected $supportedFormats = array(self::MAGENTO_FORMAT);
@@ -41,7 +55,12 @@ class AttributeNormalizer implements NormalizerInterface
     {
         $normalizedAttribute = array(
             'scope'                         => $this->getNormalizedScope($object),
-            'default_value'                 => $this->getNormalizedDefaultValue($object),
+            'default_value'                 => $this->getNormalizedDefaultValue(
+                $object,
+                $context['defaultLocale'],
+                $context['magentoAttributes'],
+                $context['magentoAttributesOptions']
+            ),
             'is_unique'                     => $this->getNormalizedUnique($object),
             'is_required'                   => $this->getNormalizedRequired($object),
             'apply_to'                      => '',
@@ -149,9 +168,31 @@ class AttributeNormalizer implements NormalizerInterface
      *
      * @return string
      */
-    protected function getNormalizedDefaultValue(Attribute $attribute)
-    {
-        return $attribute->getDefaultValue() === null ? '' : $attribute->getDefaultValue();
+    protected function getNormalizedDefaultValue(
+        Attribute $attribute,
+        $defaultLocale,
+        $magentoAttributes,
+        $magentoAttributesOptions
+    ) {
+        $context = array(
+            'identifier'               => null,
+            'scopeCode'                => null,
+            'localeCode'               => $defaultLocale,
+            'onlyLocalized'            => false,
+            'magentoAttributes'        => $magentoAttributes,
+            'magentoAttributesOptions' => $magentoAttributesOptions,
+            'currencyCode'             => ''
+        );
+
+        if ($attribute->getDefaultValue()) {
+            return $this->productValueNormalizer->normalize(
+                $attribute->getDefaultValue(),
+                'MagentoArray',
+                $context
+            );
+        } else {
+            return '';
+        }
     }
 
     /**
