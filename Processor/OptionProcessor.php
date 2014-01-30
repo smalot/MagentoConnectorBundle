@@ -95,8 +95,6 @@ class OptionProcessor extends AbstractProcessor
             );
         } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
-        } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
         }
 
         return $normalizedOption;

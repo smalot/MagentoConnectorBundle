@@ -6,7 +6,6 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
@@ -64,6 +63,7 @@ class AttributeProcessor extends AbstractProcessor
      * @param Attribute $attribute
      * @param array     $context
      *
+     * @throws InvalidItemException If a problem occured with the normalizer
      * @return array
      */
     protected function normalizeAttribute(Attribute $attribute, array $context)
@@ -75,8 +75,6 @@ class AttributeProcessor extends AbstractProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($attribute));
-        } catch (SoapCallException $e) {
             throw new InvalidItemException($e->getMessage(), array($attribute));
         }
 
