@@ -8,6 +8,7 @@
 - Added category assigment for simple and configurable products
 - Added possibility to export options (create and remove)
 - Products, categories and configurables prune after export
+- Added possibility to export attributes
 
 ## Improvements
 
