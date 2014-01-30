@@ -27,6 +27,11 @@ class AttributeNormalizer implements NormalizerInterface
     protected $productValueNormalizer;
 
     /**
+     * @var array
+     */
+    protected $supportedFormats = array(self::MAGENTO_FORMAT);
+
+    /**
      * Constructor
      * @param ProductValueNormalizer $productValueNormalizer
      */
@@ -34,11 +39,6 @@ class AttributeNormalizer implements NormalizerInterface
     {
         $this->productValueNormalizer = $productValueNormalizer;
     }
-
-    /**
-     * @var array
-     */
-    protected $supportedFormats = array(self::MAGENTO_FORMAT);
 
     /**
      * {@inheritdoc}
