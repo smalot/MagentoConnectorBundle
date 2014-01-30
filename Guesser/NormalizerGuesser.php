@@ -16,6 +16,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
 
 /**
  * A magento guesser to get the proper normalizer
@@ -178,7 +179,7 @@ class NormalizerGuesser extends AbstractGuesser
     }
 
     /**
-     * Get the Webservice corresponding to the given Magento parameters
+     * Get the option normalizer corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      *
      * @return AbstractNormalizer
@@ -197,6 +198,29 @@ class NormalizerGuesser extends AbstractGuesser
                 return new OptionNormalizer(
                     $this->channelManager
                 );
+            default:
+                throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+        }
+    }
+
+    /**
+     * Get the attribute normalizer corresponding to the given Magento parameters
+     * @param MagentoSoapClientParameters $clientParameters
+     *
+     * @return AbstractNormalizer
+     */
+    public function getAttributeNormalizer(
+        MagentoSoapClientParameters $clientParameters
+    ) {
+        $client = new MagentoSoapClient($clientParameters);
+
+        $magentoVersion = $this->getMagentoVersion($client);
+
+        switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_8:
+            case AbstractGuesser::MAGENTO_VERSION_1_7:
+            case AbstractGuesser::MAGENTO_VERSION_1_6:
+                return new AttributeNormalizer();
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }

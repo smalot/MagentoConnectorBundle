@@ -22,6 +22,18 @@ class AttributeProcessor extends AbstractProcessor
     /**
      * {@inheritdoc}
      */
+    protected function beforeExecute()
+    {
+        parent::beforeExecute();
+
+        $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
+        $this->globalContext['magentoStoreViews'] = $this->webservice->getStoreViewsList();
+        $this->globalContext['defaultLocale']     = $this->defaultLocale;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function process($attribute)
     {
         $this->beforeExecute();
@@ -37,23 +49,37 @@ class AttributeProcessor extends AbstractProcessor
         return $this->normalizeAttribute($attribute, $this->globalContext);
     }
 
+    /**
+     * Test if an attribute exist on magento
+     * @param Attribute $attribute
+     * @param array     $magentoAttributes
+     *
+     * @return boolean
+     */
     protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
     {
         return array_key_exists($attribute->getCode(), $magentoAttributes);
     }
 
+    /**
+     * Normalize the given attribute
+     * @param Attribute $attribute
+     * @param array     $context
+     *
+     * @return array
+     */
     protected function normalizeAttribute(Attribute $attribute, array $context)
     {
         try {
-            $processedItem = $this->productNormalizer->normalize(
+            $processedItem = $this->attributeNormalizer->normalize(
                 $attribute,
                 AbstractNormalizer::MAGENTO_FORMAT,
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
+            throw new InvalidItemException($e->getMessage(), array($attribute));
         } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
+            throw new InvalidItemException($e->getMessage(), array($attribute));
         }
 
         return $processedItem;

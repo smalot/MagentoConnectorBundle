@@ -59,7 +59,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     /**
      * @var array
      */
-    protected $globalContext;
+    protected $globalContext = array();
 
     /**
      * @param ChannelManager           $channelManager
