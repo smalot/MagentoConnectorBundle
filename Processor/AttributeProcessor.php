@@ -42,11 +42,7 @@ class AttributeProcessor extends AbstractProcessor
 
         $magentoAttributes = $this->webservice->getAllAttributes();
 
-        if ($this->magentoAttributeExists($attribute, $magentoAttributes)) {
-            $this->globalContext['create'] = false;
-        } else {
-            $this->globalContext['create'] = true;
-        }
+        $this->globalContext['create'] = !$this->magentoAttributeExists($attribute, $magentoAttributes);
 
         return $this->normalizeAttribute($attribute, $this->globalContext);
     }

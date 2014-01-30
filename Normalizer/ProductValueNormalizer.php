@@ -76,7 +76,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * @param string                $identifier
      * @param string                $scopeCode
      * @param string                $localeCode
-     * @param bool                  $onlyLocalized
+     * @param boolean               $onlyLocalized
      *
      * @return boolean
      */
