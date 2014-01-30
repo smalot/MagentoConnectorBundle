@@ -158,9 +158,8 @@ class NormalizerGuesser extends AbstractGuesser
      *
      * @return AbstractNormalizer
      */
-    public function getCategoryNormalizer(
-        MagentoSoapClientParameters $clientParameters
-    ) {
+    public function getCategoryNormalizer(MagentoSoapClientParameters $clientParameters)
+    {
         $client = new MagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
@@ -184,9 +183,8 @@ class NormalizerGuesser extends AbstractGuesser
      *
      * @return AbstractNormalizer
      */
-    public function getOptionNormalizer(
-        MagentoSoapClientParameters $clientParameters
-    ) {
+    public function getOptionNormalizer(MagentoSoapClientParameters $clientParameters)
+    {
         $client = new MagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
@@ -195,9 +193,7 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                return new OptionNormalizer(
-                    $this->channelManager
-                );
+                return new OptionNormalizer($this->channelManager);
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
@@ -209,9 +205,7 @@ class NormalizerGuesser extends AbstractGuesser
      *
      * @return AbstractNormalizer
      */
-    public function getAttributeNormalizer(
-        MagentoSoapClientParameters $clientParameters
-    ) {
+    public function getAttributeNormalizer(MagentoSoapClientParameters $clientParameters) {
         $client = new MagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);

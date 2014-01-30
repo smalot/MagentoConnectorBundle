@@ -80,7 +80,6 @@ class AttributeCleaner extends Cleaner
     protected function handleAttributeNotInPimAnymore(array $attribute)
     {
         if ($this->notInPimAnymoreAction === self::DELETE) {
-            var_dump($attribute);
             $this->webservice->deleteAttribute($attribute['code']);
         }
     }
