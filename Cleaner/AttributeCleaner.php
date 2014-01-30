@@ -58,11 +58,8 @@ class AttributeCleaner extends Cleaner
         foreach ($magentoAttributes as $attribute) {
             $pimAttribute = $this->getAttribute($attribute['code']);
 
-            if (
-                    (!$pimAttribute ||
-                    ($pimAttribute && !$pimAttribute->getFamilies())
-                ) &&
-                !in_array($attribute['code'], $this->getIgnoredAttributes())
+            if (!in_array($attribute['code'], $this->getIgnoredAttributes()) &&
+                (!$pimAttribute || ($pimAttribute && !$pimAttribute->getFamilies()))
             ) {
                 try {
                     $this->handleAttributeNotInPimAnymore($attribute);
