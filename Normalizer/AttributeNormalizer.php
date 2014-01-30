@@ -7,6 +7,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
 
 /**
  * A normalizer to transform a option entity into an array
@@ -79,15 +80,31 @@ class AttributeNormalizer implements NormalizerInterface
             )
         );
 
+        $magentoAttributeType = $this->getNormalizedType($object);
+
         if ($context['create']) {
             $normalizedAttribute = array_merge(
                 array(
                     'attribute_code' => $this->getNormalizedCode($object),
-                    'frontend_input' => $this->getNormalizedType($object),
+                    'frontend_input' => $magentoAttributeType,
                 ),
                 $normalizedAttribute
             );
         } else {
+            if ($magentoAttributeType !== $context['magentoAttributes'][$object->getCode()]['type'] &&
+                !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
+                throw new AttributeTypeChangedException(
+                    sprintf(
+                        'The type for the attribute "%s" has changed (Is "%s" in Magento and is %s in Akeneo PIM. This ' .
+                        'operation is not permitted by Magento. Please delete it first on Magento and try to export ' .
+                        'again.',
+                        $object->getCode(),
+                        $context['magentoAttributes'][$object->getCode()]['type'],
+                        $magentoAttributeType
+                    )
+                );
+            }
+
             $normalizedAttribute = array(
                 $object->getCode(),
                 $normalizedAttribute
@@ -270,7 +287,8 @@ class AttributeNormalizer implements NormalizerInterface
      *
      * @return mixed
      */
-    protected function getAttributeTranslation(AttributeInterface $attribute, $localeCode, $defaultLocale) {
+    protected function getAttributeTranslation(AttributeInterface $attribute, $localeCode, $defaultLocale)
+    {
         foreach ($attribute->getTranslations() as $translation) {
             if (strtolower($translation->getLocale()) == strtolower($localeCode) &&
                 $translation->getLabel() !== null) {
@@ -283,5 +301,17 @@ class AttributeNormalizer implements NormalizerInterface
         } else {
             return $this->getAttributeTranslation($attribute, $defaultLocale, $defaultLocale);
         }
+    }
+
+    /**
+     * Get all ignored attribute for type change detection
+     * @return array
+     */
+    protected function getIgnoredAttributesForTypeChangeDetection()
+    {
+        return array(
+            'tax_class_id',
+            'weight'
+        );
     }
 }

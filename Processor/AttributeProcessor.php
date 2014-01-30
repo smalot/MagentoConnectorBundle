@@ -7,7 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
 
 /**
  * Magento attributes processor
@@ -53,7 +53,7 @@ class AttributeProcessor extends AbstractProcessor
      *
      * @return boolean
      */
-    protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
+    protected function magentoAttributeExists(AttributeInterface $attribute, array $magentoAttributes)
     {
         return array_key_exists($attribute->getCode(), $magentoAttributes);
     }
@@ -66,7 +66,7 @@ class AttributeProcessor extends AbstractProcessor
      * @throws InvalidItemException If a problem occured with the normalizer
      * @return array
      */
-    protected function normalizeAttribute(Attribute $attribute, array $context)
+    protected function normalizeAttribute(AttributeInterface $attribute, array $context)
     {
         try {
             $processedItem = $this->attributeNormalizer->normalize(
