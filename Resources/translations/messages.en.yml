@@ -44,5 +44,5 @@ pim_import_export:
             label: Root category mapping
             help:  Mapping between root category on Magento and Pim categories
         notInPimAnymoreAction:
-            label: On category delete
-            help:  Action done on Magento if a category is deleted on Akeneo PIM
+            label: Action for item not in PIM anymore
+            help:  Action done on Magento if an item is deleted on Akeneo PIM

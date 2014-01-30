@@ -6,7 +6,6 @@ use Oro\Bundle\BatchBundle\Step\AbstractStep;
 use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Cleaner\Cleaner;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**

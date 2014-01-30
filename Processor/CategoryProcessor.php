@@ -97,15 +97,11 @@ class CategoryProcessor extends AbstractProcessor
 
         foreach ($categories as $category) {
             if ($category->getParent()) {
-                try {
-                    $normalizedCategory = $this->categoryNormalizer->normalize(
-                        $category,
-                        AbstractNormalizer::MAGENTO_FORMAT,
-                        $this->globalContext
-                    );
-                } catch (SoapCallException $e) {
-                    throw new InvalidItemException($e->getMessage(), array($category));
-                }
+                $normalizedCategory = $this->categoryNormalizer->normalize(
+                    $category,
+                    AbstractNormalizer::MAGENTO_FORMAT,
+                    $this->globalContext
+                );
 
                 $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
             }

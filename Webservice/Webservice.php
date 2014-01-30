@@ -24,6 +24,9 @@ class Webservice
     const SOAP_ACTION_ATTRIBUTE_OPTION_LIST         = 'catalog_product_attribute.options';
     const SOAP_ACTION_ATTRIBUTE_OPTION_ADD          = 'catalog_product_attribute.addOption';
     const SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE       = 'catalog_product_attribute.removeOption';
+    const SOAP_ACTION_ATTRIBUTE_CREATE              = 'product_attribute.create';
+    const SOAP_ACTION_ATTRIBUTE_UPDATE              = 'product_attribute.update';
+    const SOAP_ACTION_ATTRIBUTE_REMOVE              = 'product_attribute.remove';
     const SOAP_ACTION_STORE_LIST                    = 'store.list';
     const SOAP_ACTION_PRODUCT_MEDIA_CREATE          = 'catalog_product_attribute_media.create';
     const SOAP_ACTION_PRODUCT_MEDIA_LIST            = 'catalog_product_attribute_media.list';
@@ -534,6 +537,42 @@ class Webservice
         $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_ADD,
             $option
+        );
+    }
+
+    /**
+     * Create an attribute
+     * @param array $attribute
+     */
+    public function createAttribute($attribute)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_CREATE,
+            array($attribute)
+        );
+    }
+
+    /**
+     * Update an attribute
+     * @param array $attribute
+     */
+    public function updateAttribute($attribute)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_UPDATE,
+            $attribute
+        );
+    }
+
+    /**
+     * Delete an attribute
+     * @param string $attributeCode
+     */
+    public function deleteAttribute($attributeCode)
+    {
+        $this->client->call(
+            self::SOAP_ACTION_ATTRIBUTE_REMOVE,
+            $attributeCode
         );
     }
 

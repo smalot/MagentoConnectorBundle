@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 /**
  * A normalizer to transform a option entity into an array

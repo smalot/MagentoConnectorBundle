@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
-use Pim\Bundle\ImportExportBundle\Reader\ORM\EntityReader;
+use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
 
 /**
  * Reads all entities at once

@@ -74,7 +74,7 @@ class OptionCleaner extends Cleaner
                     try {
                         $this->handleOptionNotInPimAnymore($optionValue, $attributeCode);
                     } catch (SoapCallException $e) {
-                        throw new InvalidItemException($e->getMessage(), array(json_encode($category)));
+                        throw new InvalidItemException($e->getMessage(), array($optionLabel));
                     }
                 }
             }

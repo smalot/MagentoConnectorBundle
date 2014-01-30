@@ -172,20 +172,19 @@ class ProductAssociationProcessor extends AbstractProcessor
 
         foreach ($items as $product) {
             try {
-                $productAssociationCalls['remove'] = array_merge(
-                    $productAssociationCalls['remove'],
-                    $this->getRemoveCallsForProduct(
-                        $product,
-                        $this->webservice->getAssociationsStatus($product)
-                    )
-                );
-                $productAssociationCalls['create'] = array_merge(
-                    $productAssociationCalls['create'],
-                    $this->getCreateCallsForProduct($product)
-                );
+                $associationsStatus = $this->webservice->getAssociationsStatus($product);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array($product));
             }
+
+            $productAssociationCalls['remove'] = array_merge(
+                $productAssociationCalls['remove'],
+                $this->getRemoveCallsForProduct($product, $associationsStatus)
+            );
+            $productAssociationCalls['create'] = array_merge(
+                $productAssociationCalls['create'],
+                $this->getCreateCallsForProduct($product)
+            );
         }
 
         return $productAssociationCalls;

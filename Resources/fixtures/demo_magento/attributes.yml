@@ -16,7 +16,7 @@ attributes:
             fr_FR: Nom
         type:  pim_catalog_text
         group: general
-        translatable:        true
+        localizable:        true
         useableAsGridColumn: true
         useableAsGridFilter: true
         sortOrder:           2
@@ -32,14 +32,14 @@ attributes:
         numberMax:           500
         sortOrder:           1
         decimalsAllowed:     true
-        translatable:        true
+        localizable:        true
     short_description:
         labels:
             en_US: Short Description
             fr_FR: Description courte
         type:  pim_catalog_textarea
         group: general
-        translatable:        true
+        localizable:        true
         scopable:            true
         useableAsGridColumn: true
         useableAsGridFilter: true
@@ -51,7 +51,7 @@ attributes:
             fr_FR: Description
         type:  pim_catalog_textarea
         group: general
-        translatable:        true
+        localizable:        true
         scopable:            true
         useableAsGridColumn: false
         useableAsGridFilter: true
@@ -79,7 +79,7 @@ attributes:
         useableAsGridFilter: true
         sortOrder:           1
         defaultValue:        4
-        translatable:        false
+        localizable:        false
         options:
             1:
                 labels:
@@ -106,7 +106,7 @@ attributes:
         useableAsGridColumn: true
         useableAsGridFilter: true
         sortOrder:           1
-        translatable:        false
+        localizable:        false
         options:
             Red:
                 labels:
@@ -128,7 +128,7 @@ attributes:
         metricFamily:        Weight
         defaultMetricUnit:   GRAM
         decimalsAllowed:     true
-        translatable:        false
+        localizable:        false
     size:
         labels:
             en_US: Size
@@ -139,7 +139,7 @@ attributes:
         useableAsGridFilter: true
         sortOrder:           1
         defaultValue:        M
-        translatable:        false
+        localizable:        false
         options:
             XS:
                 labels:
@@ -213,4 +213,4 @@ attributes:
         useableAsGridFilter: true
         sortOrder:           100
         decimalsAllowed:     false
-        translatable:        true
+        localizable:        true

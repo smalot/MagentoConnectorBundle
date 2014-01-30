@@ -38,6 +38,20 @@ jobs:
             rootCategoryMapping: 'default:2'
             notInPimAnymoreAction: 'disable'
 
+    magento_attribute_export:
+        connector: Magento Connector
+        alias:     magento_attribute_export
+        label:     Magento attribute export
+        type:      export
+        configuration:
+            channel:          magento
+            soapUsername:     soap
+            soapApiKey:       magento1
+            soapUrl:          http://magento.dev/
+            defaultLocale:    en_US
+            website:          base
+            storeviewMapping: ''
+
     magento_option_export:
         connector: Magento Connector
         alias:     magento_option_export

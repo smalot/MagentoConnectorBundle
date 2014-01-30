@@ -72,15 +72,15 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Is the given value normalizable
-     * @param ProductValue $value
-     * @param string       $identifier
-     * @param string       $scopeCode
-     * @param string       $localeCode
-     * @param bool         $onlyLocalized
+     * @param ProductValueInterface $value
+     * @param string                $identifier
+     * @param string                $scopeCode
+     * @param string                $localeCode
+     * @param boolean               $onlyLocalized
      *
      * @return boolean
      */
-    protected function isValueNormalizable($value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
+    protected function isValueNormalizable(ProductValueInterface $value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
     {
         return (
             ($value !== $identifier) &&
@@ -92,12 +92,12 @@ class ProductValueNormalizer implements NormalizerInterface
             ) &&
             (
                 ($localeCode == null) ||
-                (!$value->getAttribute()->isTranslatable()) ||
-                ($value->getAttribute()->isTranslatable() && $value->getLocale() === $localeCode)
+                (!$value->getAttribute()->isLocalizable()) ||
+                ($value->getAttribute()->isLocalizable() && $value->getLocale() === $localeCode)
             ) &&
             (
-                (!$onlyLocalized && !$value->getAttribute()->isTranslatable()) ||
-                $value->getAttribute()->isTranslatable()
+                (!$onlyLocalized && !$value->getAttribute()->isLocalizable()) ||
+                $value->getAttribute()->isLocalizable()
             ) &&
             (
                 !(
@@ -181,11 +181,11 @@ class ProductValueNormalizer implements NormalizerInterface
         if (in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
             (
                 $attributeScope !== self::GLOBAL_SCOPE &&
-                $attribute->isTranslatable()
+                $attribute->isLocalizable()
             ) ||
             (
                 $attributeScope === self::GLOBAL_SCOPE &&
-                !$attribute->isTranslatable()
+                !$attribute->isLocalizable()
             )
         ) {
             $normalizedValue = $normalizer($data, array(
@@ -203,7 +203,7 @@ class ProductValueNormalizer implements NormalizerInterface
                     $attribute->getCode(),
                     $attribute->getCode(),
                     $attributeScope,
-                    (($attribute->isTranslatable()) ? 'translatable' : 'not translatable')
+                    (($attribute->isLocalizable()) ? 'translatable' : 'not translatable')
                 )
             );
         }

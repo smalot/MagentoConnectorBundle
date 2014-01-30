@@ -7,7 +7,7 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
- * Magento option writer
+ * Magento attribute writer
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -15,22 +15,26 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  *
  * @HasValidCredentials()
  */
-class OptionWriter extends AbstractWriter
+class AttributeWriter extends AbstractWriter
 {
+    const ATTRIBUTE_UPDATE_SIZE = 2;
+
     /**
      * {@inheritdoc}
      */
-    public function write(array $batches)
+    public function write(array $attributes)
     {
         $this->beforeExecute();
 
-        foreach ($batches as $options) {
-            foreach ($options as $option) {
-                try {
-                    $this->webservice->createOption($option);
-                } catch (SoapCallException $e) {
-                    throw new InvalidItemException($e->getMessage(), array(json_encode($option)));
+        foreach ($attributes as $attribute) {
+            try {
+                if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
+                    $this->webservice->updateAttribute($attribute);
+                } else {
+                    $this->webservice->createAttribute($attribute);
                 }
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array(json_encode($attribute)));
             }
         }
     }

@@ -11,8 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\ImportExportBundle\Converter\MetricConverter;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 
 /**
  * Magento product processor
@@ -111,7 +110,7 @@ class ProductProcessor extends AbstractProductProcessor
                 array('attributeSetId' => $this->getAttributeSetId($product->getFamily()->getCode(), $product))
             );
 
-            if ($this->magentoProductExist($product, $magentoProducts)) {
+            if ($this->magentoProductExists($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
                     throw new InvalidItemException(
                         'The product family has changed of this product. This modification cannot be applied to ' .
@@ -153,22 +152,20 @@ class ProductProcessor extends AbstractProductProcessor
             );
         } catch (NormalizeException $e) {
             throw new InvalidItemException($e->getMessage(), array($product));
-        } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
         }
 
         return $processedItem;
     }
 
     /**
-     * Test if a product allready exist on magento platform
+     * Test if a product allready exists on magento platform
      *
      * @param ProductInterface $product         The product
      * @param array            $magentoProducts Magento products
      *
      * @return bool
      */
-    protected function magentoProductExist(ProductInterface $product, $magentoProducts)
+    protected function magentoProductExists(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier()) {
