@@ -165,14 +165,17 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized default value for attribute
      * @param Attribute $attribute
+     * @param string    $defaultLocale
+     * @param array     $magentoAttributes
+     * @param array     $magentoAttributesOptions
      *
      * @return string
      */
     protected function getNormalizedDefaultValue(
         Attribute $attribute,
         $defaultLocale,
-        $magentoAttributes,
-        $magentoAttributesOptions
+        array $magentoAttributes,
+        array $magentoAttributesOptions
     ) {
         $context = array(
             'identifier'               => null,
