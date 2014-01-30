@@ -134,6 +134,7 @@ class AttributeNormalizer implements NormalizerInterface
      * Get normalized code for attribute
      * @param Attribute $attribute
      *
+     * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
      */
     protected function getNormalizedCode(Attribute $attribute)
