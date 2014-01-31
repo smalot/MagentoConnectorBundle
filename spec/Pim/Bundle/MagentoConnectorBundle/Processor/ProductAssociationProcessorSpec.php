@@ -23,7 +23,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         AssociationTypeManager $associationTypeManager,
         Webservice $webservice
     ) {
-        $this->beConstructedWith($channelManager, $webserviceGuesser, $normalizerGuesser, $associationTypeManager);
+        $this->beConstructedWith($webserviceGuesser, $normalizerGuesser, $associationTypeManager);
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
         $this->setPimUpSell('UPSELL');

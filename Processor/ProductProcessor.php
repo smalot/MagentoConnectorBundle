@@ -62,20 +62,20 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
-     * @param ChannelManager           $channelManager
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param ChannelManager           $channelManager
      * @param MetricConverter          $metricConverter
      * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
+        ChannelManager $channelManager,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
-        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $channelManager);
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;

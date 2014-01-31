@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 
 /**
  * A normalizer to transform a option entity into an array
@@ -25,13 +25,13 @@ class OptionNormalizer extends AbstractNormalizer
             ),
             array(
                 'store_id' => '1',
-                'value'    => $object->setLocale($context['defaultLocale'])->getOptionValue()->getLabel()
+                'value'    => $this->getOptionLabel($object, $context['defaultLocale'])
             )
         );
 
-        foreach ($this->getPimLocales($context['channel']) as $locale) {
+        foreach ($this->getOptionLocales($object) as $locale) {
             $storeView = $this->getStoreViewForLocale(
-                $locale->getCode(),
+                $locale,
                 $context['magentoStoreViews'],
                 $context['storeViewMapping']
             );
@@ -39,7 +39,11 @@ class OptionNormalizer extends AbstractNormalizer
             if ($storeView) {
                 $label[] = array(
                     'store_id' => (string) $storeView['store_id'],
-                    'value'    => $object->setLocale($locale->getCode())->getOptionValue()->getLabel()
+                    'value'    => $this->getOptionLabel(
+                        $object,
+                        $locale,
+                        $context['defaultLocale']
+                    )
                 );
             }
         }
@@ -52,5 +56,45 @@ class OptionNormalizer extends AbstractNormalizer
                 'is_default' => 0
             )
         );
+    }
+
+    /**
+     * get options locale
+     * @param AttributeOption $option
+     *
+     * @return array
+     */
+    protected function getOptionLocales(AttributeOption $option)
+    {
+        $locales = array();
+
+        foreach ($option->getOptionValues() as $optionValue) {
+            $locales[] = $optionValue->getLocale();
+        }
+
+        return $locales;
+    }
+
+    /**
+     * Get option translation for given locale code
+     * @param AttributeOption $option
+     * @param string          $locale
+     * @param string          $defaultLocale
+     *
+     * @return mixed
+     */
+    protected function getOptionLabel(AttributeOption $option, $locale, $defaultLocale = null)
+    {
+        $optionValue = $option->setLocale($locale)->getOptionValue();
+
+        if (!$optionValue) {
+            if ($defaultLocale) {
+                return $this->getOptionTranslation($option, $defaultLocale);
+            } else {
+                return $option->getCode();
+            }
+        } else {
+            return $optionValue->getLabel();
+        }
     }
 }

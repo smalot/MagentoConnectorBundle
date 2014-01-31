@@ -135,7 +135,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 (string) $this->categoryMappingManager->getIdFromCategory(
                     $category->getParent(),
                     $context['magentoUrl'],
-                    $context['rootCategoryMapping']
+                    $context['categoryMapping']
                 ),
                 array(
                     'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
@@ -208,7 +208,7 @@ class CategoryNormalizer extends AbstractNormalizer
             $this->categoryMappingManager->getIdFromCategory(
                 $category->getParent(),
                 $context['magentoUrl'],
-                $context['rootCategoryMapping']
+                $context['categoryMapping']
             )
         );
     }

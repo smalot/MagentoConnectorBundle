@@ -3,6 +3,9 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 
 /**
  * Abstract magento product processor
@@ -21,10 +24,20 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $productNormalizer;
 
     /**
+     * @var ChannelManager
+     */
+    protected $channelManager;
+
+    /**
      * @var string
      * @Assert\NotBlank(groups={"Execution"})
      */
     protected $currency;
+
+    /**
+     * @Assert\NotBlank(groups={"Execution"})
+     */
+    protected $channel;
 
     /**
      * @var boolean
@@ -39,7 +52,46 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $rootCategoryMapping = '';
+    protected $categoryMapping = '';
+
+    /**
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param ChannelManager           $channelManager
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        ChannelManager $channelManager
+    ) {
+        parent::__construct($webserviceGuesser, $normalizerGuesser);
+
+        $this->channelManager = $channelManager;
+    }
+
+    /**
+     * get channel
+     *
+     * @return string channel
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * Set channel
+     *
+     * @param string $channel channel
+     *
+     * @return AbstractProcessor
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+
+        return $this;
+    }
 
     /**
      * get currency
@@ -114,25 +166,25 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
-     * get rootCategoryMapping
+     * get categoryMapping
      *
-     * @return string rootCategoryMapping
+     * @return string categoryMapping
      */
-    public function getRootCategoryMapping()
+    public function getCategoryMapping()
     {
-        return $this->rootCategoryMapping;
+        return $this->categoryMapping;
     }
 
     /**
-     * Set rootCategoryMapping
+     * Set categoryMapping
      *
-     * @param string $rootCategoryMapping rootCategoryMapping
+     * @param string $categoryMapping categoryMapping
      *
      * @return AbstractProcessor
      */
-    public function setRootCategoryMapping($rootCategoryMapping)
+    public function setCategoryMapping($categoryMapping)
     {
-        $this->rootCategoryMapping = $rootCategoryMapping;
+        $this->categoryMapping = $categoryMapping;
 
         return $this;
     }
@@ -141,9 +193,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      * Get computed storeView mapping (string to array)
      * @return array
      */
-    protected function getComputedRootCategoryMapping()
+    protected function getComputedCategoryMapping()
     {
-        return $this->getComputedMapping($this->rootCategoryMapping);
+        return $this->getComputedMapping($this->categoryMapping);
     }
 
     /**
@@ -174,7 +226,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'storeViewMapping'         => $this->getComputedStoreViewMapping(),
-            'rootCategoryMapping'      => $this->getComputedRootCategoryMapping()
+            'categoryMapping'      => $this->getComputedCategoryMapping()
         );
     }
 
@@ -186,6 +238,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         return array_merge(
             parent::getConfigurationFields(),
             array(
+                'channel' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices'  => $this->channelManager->getChannelChoices(),
+                        'required' => true
+                    )
+                ),
                 'enabled' => array(
                     'type'    => 'switch',
                     'options' => array(
@@ -204,7 +263,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'required' => true
                     )
                 ),
-                'rootCategoryMapping' => array(
+                'categoryMapping' => array(
                     'type'    => 'textarea',
                     'options' => array(
                         'required' => false

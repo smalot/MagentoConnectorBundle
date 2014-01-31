@@ -103,7 +103,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['defaultLocale'],
             $context['channel'],
             $context['website'],
-            $context['rootCategoryMapping'],
+            $context['categoryMapping'],
             $context['pimGrouped'],
             $context['create']
         );
@@ -126,7 +126,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $context['magentoAttributesOptions'],
                     $locale,
                     $context['channel'],
-                    $context['rootCategoryMapping'],
+                    $context['categoryMapping'],
                     true
                 );
 
@@ -196,7 +196,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param string           $defaultLocale            Default locale
      * @param string           $channel                  Channel
      * @param string           $website                  Website name
-     * @param array            $rootCategoryMapping      Root category mapping
+     * @param array            $categoryMapping          Root category mapping
      * @param string           $pimGrouped               Pim grouped association code
      * @param bool             $create                   Is it a creation ?
      *
@@ -210,7 +210,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $defaultLocale,
         $channel,
         $website,
-        $rootCategoryMapping,
+        $categoryMapping,
         $pimGrouped,
         $create
     ) {
@@ -221,7 +221,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $magentoAttributesOptions,
             $defaultLocale,
             $channel,
-            $rootCategoryMapping,
+            $categoryMapping,
             false
         );
 
@@ -277,7 +277,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param array            $magentoAttributesOptions Attribute options list from Magento
      * @param string           $localeCode               The locale to apply
      * @param string           $scopeCode                The akeno scope
-     * @param array            $rootCategoryMapping      Root category mapping
+     * @param array            $categoryMapping          Root category mapping
      * @param boolean          $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
@@ -288,7 +288,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $magentoAttributesOptions,
         $localeCode,
         $scopeCode,
-        $rootCategoryMapping,
+        $categoryMapping,
         $onlyLocalized = false
     ) {
         $normalizedValues = array();
@@ -316,7 +316,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         $normalizedValues = array_merge(
             $normalizedValues,
-            $this->getCustomValue($product, array('rootCategoryMapping' => $rootCategoryMapping))
+            $this->getCustomValue($product, array('categoryMapping' => $categoryMapping))
         );
 
         ksort($normalizedValues);
@@ -327,11 +327,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get categories for the given product
      * @param ProductInterface $product
-     * @param array            $rootCategoryMapping
+     * @param array            $categoryMapping
      *
      * @return array
      */
-    protected function getProductCategories(ProductInterface $product, array $rootCategoryMapping)
+    protected function getProductCategories(ProductInterface $product, array $categoryMapping)
     {
         $productCategories = array();
 
@@ -339,7 +339,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory(
                 $category,
                 $this->magentoUrl,
-                $rootCategoryMapping
+                $categoryMapping
             );
 
             if (!$magentoCategoryId) {
@@ -372,7 +372,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
             'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
             'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'categories'       => $this->getProductCategories($product, $parameters['rootCategoryMapping'])
+            'categories'       => $this->getProductCategories($product, $parameters['categoryMapping'])
         );
     }
 }

@@ -58,14 +58,14 @@ class CategoryMappingManager
      * Get id from category and Magento url
      * @param Category $category
      * @param string   $magentoUrl
-     * @param array    $rootCategoryMapping
+     * @param array    $categoryMapping
      *
      * @return int
      */
-    public function getIdFromCategory(Category $category, $magentoUrl, array $rootCategoryMapping = array())
+    public function getIdFromCategory(Category $category, $magentoUrl, array $categoryMapping = array())
     {
-        if (isset($rootCategoryMapping[$category->getCode()])) {
-            return $rootCategoryMapping[$category->getCode()];
+        if (isset($categoryMapping[$category->getCode()])) {
+            return $categoryMapping[$category->getCode()];
         } else {
             $categoryMapping = $this->getEntityRepository()->findOneBy(
                 array(

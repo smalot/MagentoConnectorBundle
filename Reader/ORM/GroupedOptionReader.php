@@ -33,7 +33,9 @@ class GroupedOptionReader extends BulkEntityReader
             foreach ($options as $option) {
                 $attributeCode = $option->getAttribute()->getCode();
 
-                if (!in_array($attributeCode, $this->getIgnoredAttributes())) {
+                if (!in_array($attributeCode, $this->getIgnoredAttributes()) &&
+                    $option->getAttribute()->getFamilies()->count()
+                ) {
                     $this->groupedOptions[$attributeCode] =
                         isset($this->groupedOptions[$attributeCode]) ?
                             array_merge($this->groupedOptions[$attributeCode], array($option)) :

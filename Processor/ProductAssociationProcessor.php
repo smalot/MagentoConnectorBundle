@@ -8,7 +8,6 @@ use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -55,18 +54,16 @@ class ProductAssociationProcessor extends AbstractProcessor
     protected $pimGrouped;
 
     /**
-     * @param ChannelManager           $channelManager
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         AssociationTypeManager $associationTypeManager
     ) {
-        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
+        parent::__construct($webserviceGuesser, $normalizerGuesser);
 
         $this->associationTypeManager = $associationTypeManager;
     }

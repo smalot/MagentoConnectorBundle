@@ -2,7 +2,6 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
@@ -14,14 +13,13 @@ use Prophecy\Argument;
 class CategoryWriterSpec extends ObjectBehavior
 {
     function let(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
         Webservice $webservice
     ) {
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
-        $this->beConstructedWith($channelManager, $webserviceGuesser, $categoryMappingManager);
+        $this->beConstructedWith($webserviceGuesser, $categoryMappingManager);
     }
 
     function it_sends_categories_to_create_on_magento_webservice(

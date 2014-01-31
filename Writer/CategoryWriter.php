@@ -28,16 +28,14 @@ class CategoryWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param ChannelManager         $channelManager
      * @param WebserviceGuesser      $webserviceGuesser
      * @param CategoryMappingManager $categoryMappingManager
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager
     ) {
-        parent::__construct($channelManager, $webserviceGuesser);
+        parent::__construct($webserviceGuesser);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }

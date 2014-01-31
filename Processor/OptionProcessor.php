@@ -36,7 +36,6 @@ class OptionProcessor extends AbstractProcessor
         $this->globalContext = array(
             'magentoStoreViews' => $magentoStoreViews,
             'storeViewMapping'  => $this->getComputedStoreViewMapping(),
-            'channel'           => $this->channel,
             'defaultLocale'     => $this->defaultLocale
         );
     }

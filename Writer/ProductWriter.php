@@ -2,9 +2,12 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
@@ -19,6 +22,55 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductWriter extends AbstractWriter
 {
+    /**
+     * @var ChannelManager
+     */
+    protected $channelManager;
+
+    /**
+     * @Assert\NotBlank(groups={"Execution"})
+     */
+    protected $channel;
+
+    /**
+     * Constructor
+     *
+     * @param WebserviceGuesser $webserviceGuesser
+     * @param ChannelManager    $channelManager
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager
+    ) {
+        parent::__construct($webserviceGuesser);
+
+        $this->channelManager = $channelManager;
+    }
+
+    /**
+     * get channel
+     *
+     * @return string channel
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * Set channel
+     *
+     * @param string $channel channel
+     *
+     * @return AbstractWriter
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -110,32 +162,17 @@ class ProductWriter extends AbstractWriter
      */
     public function getConfigurationFields()
     {
-        return array(
-            'soapUsername' => array(
-                'options' => array(
-                    'required' => true
+        return array_merge(
+            parent::getConfigurationFields(),
+            array(
+                'channel' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices'  => $this->channelManager->getChannelChoices(),
+                        'required' => true
+                    )
                 )
-            ),
-            'soapApiKey'   => array(
-                //Should be remplaced by a password formType but who doesn't
-                //empty the field at each edit
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'soapUrl'      => array(
-                'options' => array(
-                    'required' => true
-                )
-            ),
-            'channel'      => array(
-                'type'    => 'choice',
-                'options' => array(
-                    'choices'  => $this->channelManager->getChannelChoices(),
-                    'required' => true
-                )
-            ),
+            )
         );
     }
 }

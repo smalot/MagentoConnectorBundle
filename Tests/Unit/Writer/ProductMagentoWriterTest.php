@@ -29,7 +29,7 @@ class ProductWriterTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductWriter($channelManagerMock, $webserviceGuesserMock);
+        $writer = new ProductWriter($webserviceGuesserMock, $channelManagerMock);
 
         $products = array(array(
             array(
@@ -67,7 +67,7 @@ class ProductWriterTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductWriter($channelManagerMock, $webserviceGuesserMock);
+        $writer = new ProductWriter($webserviceGuesserMock, $channelManagerMock);
 
         $writer->setSoapUsername(self::LOGIN);
         $writer->setSoapApiKey(self::PASSWORD);
@@ -104,7 +104,7 @@ class ProductWriterTest extends \PHPUnit_Framework_TestCase
         ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser
     ) {
-        $writer = new ProductWriter($channelManager, $webserviceGuesser);
+        $writer = new ProductWriter($webserviceGuesser, $channelManager);
 
         $writer->setSoapUsername(self::LOGIN);
         $writer->setSoapApiKey(self::PASSWORD);
@@ -150,7 +150,7 @@ class ProductWriterTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock = $this->getWebserviceGuesserMock();
 
-        $writer = new ProductWriter($channelManagerMock, $webserviceGuesserMock);
+        $writer = new ProductWriter($webserviceGuesserMock, $channelManagerMock);
 
         $configurationFields = $writer->getConfigurationFields();
 

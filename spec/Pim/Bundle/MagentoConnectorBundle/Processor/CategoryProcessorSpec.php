@@ -24,7 +24,6 @@ class CategoryProcessorSpec extends ObjectBehavior
         CategoryNormalizer $categoryNormalizer
     ) {
         $this->beConstructedWith(
-            $channelManager,
             $webserviceGuesser,
             $normalizerGuesser,
             $categoryMappingManager
@@ -34,7 +33,7 @@ class CategoryProcessorSpec extends ObjectBehavior
 
         $normalizerGuesser->getCategoryNormalizer(Argument::any(), Argument::any())->willReturn($categoryNormalizer);
 
-        $this->setRootCategoryMapping("test:4\n");
+        $this->setCategoryMapping("test:4\n");
     }
 
     function it_normalizes_categories(

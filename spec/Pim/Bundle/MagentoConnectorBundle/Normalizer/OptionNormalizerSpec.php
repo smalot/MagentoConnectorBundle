@@ -46,23 +46,22 @@ class OptionNormalizerSpec extends ObjectBehavior
 
         $option->getCode()->willReturn('red');
 
+        $option->getOptionValues()->willReturn(array($optionValueUS, $optionValueFR, $optionValueDE));
+
         $option->setLocale('en_US')->willReturn($optionUS);
         $optionUS->getOptionValue()->willReturn($optionValueUS);
+        $optionValueUS->getLocale()->willReturn('en_US');
         $optionValueUS->getLabel()->willReturn('Red');
 
         $option->setLocale('fr_FR')->willReturn($optionFR);
         $optionFR->getOptionValue()->willReturn($optionValueFR);
+        $optionValueFR->getLocale()->willReturn('fr_FR');
         $optionValueFR->getLabel()->willReturn('Rouge');
 
         $option->setLocale('de_DE')->willReturn($optionDE);
         $optionDE->getOptionValue()->willReturn($optionValueDE);
+        $optionValueDE->getLocale()->willReturn('de_DE');
         $optionValueDE->getLabel()->willReturn('Rot');
-
-        $localeUS->getCode()->willReturn('en_US');
-        $localeFR->getCode()->willReturn('fr_FR');
-        $localeDE->getCode()->willReturn('de_DE');
-
-        $channel->getLocales()->willReturn(array($localeUS, $localeFR, $localeDE));
 
         $option->getAttribute()->willReturn($attribute);
         $attribute->getCode()->willReturn('color');

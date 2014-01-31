@@ -64,7 +64,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['defaultLocale'],
             $context['website'],
             $context['channel'],
-            $context['rootCategoryMapping'],
+            $context['categoryMapping'],
             $context['create']
         );
 
@@ -86,7 +86,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
                     $context['magentoAttributesOptions'],
                     $locale->getCode(),
                     $context['channel'],
-                    $context['rootCategoryMapping'],
+                    $context['categoryMapping'],
                     true
                 );
 
@@ -116,7 +116,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
      * @param string $locale
      * @param string $website
      * @param string $channel
-     * @param arrray $rootCategoryMapping
+     * @param arrray $categoryMapping
      * @param bool   $create
      *
      * @return array
@@ -131,7 +131,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $locale,
         $website,
         $channel,
-        $rootCategoryMapping,
+        $categoryMapping,
         $create
     ) {
         $basePrice    = $this->priceMappingManager->getLowestPrice($products);
@@ -159,7 +159,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $magentoAttributesOptions,
             $locale,
             $channel,
-            $rootCategoryMapping,
+            $categoryMapping,
             false
         );
 

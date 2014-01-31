@@ -20,13 +20,13 @@ class CategoryMappingManagerSpec extends ObjectBehavior
 
     function it_gets_id_from_root_category_mapping(Category $category)
     {
-        $rootCategoryMapping = array(
+        $categoryMapping = array(
             'default' => 12
         );
 
         $category->getCode()->willReturn('default');
 
-        $this->getIdFromCategory($category, '', $rootCategoryMapping)->shouldReturn(12);
+        $this->getIdFromCategory($category, '', $categoryMapping)->shouldReturn(12);
     }
 
     function it_gets_id_from_category_mapping_stored_in_database(Category $category, $entityRepository, MagentoCategoryMapping $categoryMapping)
@@ -40,13 +40,13 @@ class CategoryMappingManagerSpec extends ObjectBehavior
 
         $categoryMapping->getMagentoCategoryId()->willReturn(13);
 
-        $rootCategoryMapping = array(
+        $categoryMapping = array(
             'default' => 12
         );
 
         $category->getCode()->willReturn('colors');
 
-        $this->getIdFromCategory($category, '', $rootCategoryMapping)->shouldReturn(13);
+        $this->getIdFromCategory($category, '', $categoryMapping)->shouldReturn(13);
     }
 
     function it_returns_null_if_category_is_not_found(Category $category, $entityRepository)
@@ -58,12 +58,12 @@ class CategoryMappingManagerSpec extends ObjectBehavior
             )
         )->willReturn(null);
 
-        $rootCategoryMapping = array(
+        $categoryMapping = array(
             'default' => 12
         );
 
         $category->getCode()->willReturn('colors');
 
-        $this->getIdFromCategory($category, '', $rootCategoryMapping)->shouldReturn(null);
+        $this->getIdFromCategory($category, '', $categoryMapping)->shouldReturn(null);
     }
 }

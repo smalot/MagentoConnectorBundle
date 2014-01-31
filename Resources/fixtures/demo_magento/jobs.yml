@@ -15,7 +15,7 @@ jobs:
             storeviewMapping:         ''
             visibility:               4
             currency:                 EUR
-            rootCategoryMapping:      'default:2'
+            categoryMapping:      'default:2'
             pimGrouped:               'PACK'
             pimUpSell:                'UPSELL'
             pimCrossSell:              'X_SELL'
@@ -28,14 +28,14 @@ jobs:
         label:     Magento category export
         type:      export
         configuration:
-            channel:       magento
-            soapUsername:  soap
-            soapApiKey:    magento1
-            soapUrl:       http://magento.dev/
-            defaultLocale: en_US
-            website:       base
-            storeviewMapping:    ''
-            rootCategoryMapping: 'default:2'
+            channel:               magento
+            soapUsername:          soap
+            soapApiKey:            magento1
+            soapUrl:               http://magento.dev/
+            defaultLocale:         en_US
+            website:               base
+            storeviewMapping:      ''
+            categoryMapping:       'default:2'
             notInPimAnymoreAction: 'disable'
 
     magento_attribute_export:

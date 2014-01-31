@@ -114,9 +114,9 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
-            $channelManagerMock,
             $webserviceGuesserMock,
             $normalizerGuesserMock,
+            $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
         );
@@ -148,9 +148,9 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
-            $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
+            $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
         );
@@ -182,9 +182,9 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
-            $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
+            $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
         );
@@ -216,9 +216,9 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
-            $channelManagerMock,
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
+            $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
         );
@@ -327,9 +327,9 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $associationTypeManager = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
-            $channelManagerMock,
             $webserviceGuesserMock,
             $normalizerGuesserMock,
+            $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
         );

@@ -22,7 +22,6 @@ class OptionProcessorSpec extends ObjectBehavior
         OptionNormalizer $optionNormalizer
     ) {
         $this->beConstructedWith(
-            $channelManager,
             $webserviceGuesser,
             $normalizerGuesser
         );

@@ -153,7 +153,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
                     'red' => 3
                 )
             ),
-            'rootCategoryMapping'      => array(),
+            'categoryMapping'          => array(),
             'pimGrouped'               => self::PIM_GROUPED,
             'defaultLocale'            => 'en_US',
             'channel'                  => 'channel',

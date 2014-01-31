@@ -40,7 +40,7 @@ pim_import_export:
         storeViewMapping:
             label: Storeview mapping
             help:  You can map storeviews to locales in PIM
-        rootCategoryMapping:
+        categoryMapping:
             label: Root category mapping
             help:  Mapping between root category on Magento and Pim categories
         notInPimAnymoreAction:

@@ -35,18 +35,18 @@ class ConfigurableProcessor extends AbstractProductProcessor
     protected $groupManager;
 
     /**
-     * @param ChannelManager           $channelManager
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param ChannelManager           $channelManager
      * @param GroupManager             $groupManager
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
+        ChannelManager $channelManager,
         GroupManager $groupManager
     ) {
-        parent::__construct($channelManager, $webserviceGuesser, $normalizerGuesser);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $channelManager);
 
         $this->groupManager = $groupManager;
     }

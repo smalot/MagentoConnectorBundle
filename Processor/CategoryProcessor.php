@@ -21,28 +21,28 @@ class CategoryProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $rootCategoryMapping = '';
+    protected $categoryMapping = '';
 
     /**
-     * get rootCategoryMapping
+     * get categoryMapping
      *
-     * @return string rootCategoryMapping
+     * @return string categoryMapping
      */
-    public function getRootCategoryMapping()
+    public function getCategoryMapping()
     {
-        return $this->rootCategoryMapping;
+        return $this->categoryMapping;
     }
 
     /**
-     * Set rootCategoryMapping
+     * Set categoryMapping
      *
-     * @param string $rootCategoryMapping rootCategoryMapping
+     * @param string $categoryMapping categoryMapping
      *
      * @return AbstractProcessor
      */
-    public function setRootCategoryMapping($rootCategoryMapping)
+    public function setCategoryMapping($categoryMapping)
     {
-        $this->rootCategoryMapping = $rootCategoryMapping;
+        $this->categoryMapping = $categoryMapping;
 
         return $this;
     }
@@ -51,9 +51,9 @@ class CategoryProcessor extends AbstractProcessor
      * Get computed storeView mapping (string to array)
      * @return array
      */
-    protected function getComputedRootCategoryMapping()
+    protected function getComputedCategoryMapping()
     {
-        return $this->getComputedMapping($this->rootCategoryMapping);
+        return $this->getComputedMapping($this->categoryMapping);
     }
 
     /**
@@ -72,8 +72,7 @@ class CategoryProcessor extends AbstractProcessor
             'magentoCategories'   => $magentoCategories,
             'magentoUrl'          => $this->soapUrl,
             'defaultLocale'       => $this->defaultLocale,
-            'channel'             => $this->channel,
-            'rootCategoryMapping' => $this->getComputedRootCategoryMapping(),
+            'categoryMapping'     => $this->getComputedCategoryMapping(),
             'magentoStoreViews'   => $magentoStoreViews,
             'storeViewMapping'    => $this->getComputedStoreViewMapping(),
         );
@@ -118,7 +117,7 @@ class CategoryProcessor extends AbstractProcessor
         return array_merge(
             parent::getConfigurationFields(),
             array(
-                'rootCategoryMapping' => array(
+                'categoryMapping' => array(
                     'type'    => 'textarea',
                     'options' => array(
                         'required' => false

@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
@@ -27,19 +26,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 abstract class AbstractProcessor extends MagentoItemStep implements ItemProcessorInterface
 {
     /**
-     * @var ChannelManager
-     */
-    protected $channelManager;
-
-    /**
      * @var NormalizerGuesser
      */
     protected $normalizerGuesser;
-
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     */
-    protected $channel;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -62,43 +51,16 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     protected $globalContext = array();
 
     /**
-     * @param ChannelManager           $channelManager
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      */
     public function __construct(
-        ChannelManager $channelManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->channelManager    = $channelManager;
         $this->normalizerGuesser = $normalizerGuesser;
-    }
-
-    /**
-     * get channel
-     *
-     * @return string channel
-     */
-    public function getChannel()
-    {
-        return $this->channel;
-    }
-
-    /**
-     * Set channel
-     *
-     * @param string $channel channel
-     *
-     * @return AbstractProcessor
-     */
-    public function setChannel($channel)
-    {
-        $this->channel = $channel;
-
-        return $this;
     }
 
     /**
@@ -232,16 +194,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
         return array_merge(
             parent::getConfigurationFields(),
             array(
-                'channel' => array(
-                    'type'    => 'choice',
-                    'options' => array(
-                        'choices'  => $this->channelManager->getChannelChoices(),
-                        'required' => true
-                    )
-                ),
                 'defaultLocale' => array(
-                    //Should be fixed to display only active locale on the selected
-                    //channel
                     'type'    => 'text',
                     'options' => array(
                         'required' => true
