@@ -12,6 +12,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 
 /**
  * Magento configurable processor
@@ -37,16 +39,20 @@ class ConfigurableProcessor extends AbstractProductProcessor
     /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
      * @param GroupManager             $groupManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        CurrencyManager $currencyManager,
         ChannelManager $channelManager,
         GroupManager $groupManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $channelManager);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $currencyManager, $channelManager);
 
         $this->groupManager = $groupManager;
     }

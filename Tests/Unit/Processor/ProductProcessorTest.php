@@ -110,12 +110,16 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
 
         $channelManagerMock           = $this->getChannelManagerMock();
         $normalizerGuesserMock        = $this->getNormalizerGuesserMock();
+        $localeManager                = $this->getLocaleManagerMock();
+        $currencyManager              = $this->getCurrencyManagerMock();
         $metricConverterMock          = $this->getMetricConverterMock();
         $associationTypeManager       = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $webserviceGuesserMock,
             $normalizerGuesserMock,
+            $localeManager,
+            $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
@@ -141,6 +145,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
+        $localeManager                = $this->getLocaleManagerMock();
+        $currencyManager              = $this->getCurrencyManagerMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException()
         );
@@ -150,6 +156,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductProcessor(
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
+            $localeManager,
+            $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
@@ -175,6 +183,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
+        $localeManager                = $this->getLocaleManagerMock();
+        $currencyManager              = $this->getCurrencyManagerMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException()
         );
@@ -184,6 +194,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductProcessor(
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
+            $localeManager,
+            $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
@@ -209,6 +221,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
+        $localeManager                = $this->getLocaleManagerMock();
+        $currencyManager              = $this->getCurrencyManagerMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException()
         );
@@ -218,6 +232,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductProcessor(
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
+            $localeManager,
+            $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
@@ -322,6 +338,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $channelManagerMock     = $this->getChannelManagerMock();
         $webserviceGuesserMock  = $this->getWebserviceGuesserMock();
+        $localeManager          = $this->getLocaleManagerMock();
+        $currencyManager        = $this->getCurrencyManagerMock();
         $normalizerGuesserMock  = $this->getNormalizerGuesserMock();
         $metricConverterMock    = $this->getMetricConverterMock();
         $associationTypeManager = $this->getAssociationTypeManagerMock();
@@ -329,6 +347,8 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new ProductProcessor(
             $webserviceGuesserMock,
             $normalizerGuesserMock,
+            $localeManager,
+            $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
             $associationTypeManager
@@ -621,5 +641,33 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
                 ->getMock();
 
         return $associationTypeManager;
+    }
+
+    /**
+     * Get the locale manager mock
+     * @return LocaleManager
+     */
+    protected function getLocaleManagerMock()
+    {
+        $localeManager =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        return $localeManager;
+    }
+
+    /**
+     * Get the currency manager mock
+     * @return LocaleManager
+     */
+    protected function getCurrencyManagerMock()
+    {
+        $currencyManager =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        return $currencyManager;
     }
 }

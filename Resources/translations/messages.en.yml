@@ -6,8 +6,14 @@ pim_magento_connector:
         category_export:
             title: Export categories to Magento
             export.title: Configuration
+        attribute_export:
+            title: Export attributes to Magento
+            export.title: Configuration
+        option_export:
+            title: Export attributes to Magento
+            export.title: Configuration
 
-pim_import_export:
+pim_base_connector:
     export:
         title: Processor
         soapUsername:
@@ -46,3 +52,18 @@ pim_import_export:
         notInPimAnymoreAction:
             label: Action for item not in PIM anymore
             help:  Action done on Magento if an item is deleted on Akeneo PIM
+        notCompleteAnymoreAction:
+            label: Action for item not complete anymore
+            help:  Action done on Magento if an item is not complete anymore on Akeneo PIM
+        pimGrouped:
+            label: Association type for grouped products
+            help:  Association type corresponding to grouped products
+        pimUpSell:
+            label: Association type for up-sell products
+            help:  Association type corresponding to up-sell products
+        pimCrossSell:
+            label: Association type for cross-sell products
+            help:  Association type corresponding to cross-sell products
+        pimRelated:
+            label: Association type for related products
+            help:  Association type corresponding to related products

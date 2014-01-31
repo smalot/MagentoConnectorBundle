@@ -13,6 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 
 /**
  * Magento product processor
@@ -29,6 +30,11 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      * @var NormalizerGuesser
      */
     protected $normalizerGuesser;
+
+    /**
+     * @var LocaleManager
+     */
+    protected $localeManager;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -53,13 +59,16 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager
     ) {
         parent::__construct($webserviceGuesser);
 
+        $this->localeManager     = $localeManager;
         $this->normalizerGuesser = $normalizerGuesser;
     }
 
@@ -166,6 +175,16 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     }
 
     /**
+     * Function called before all process
+     */
+    protected function beforeExecute()
+    {
+        parent::beforeExecute();
+
+        $this->globalContext['defaultLocale'] = $this->defaultLocale;
+    }
+
+    /**
      * Get the attribute set id for the given family code
      *
      * @param string $familyCode
@@ -195,9 +214,13 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
             parent::getConfigurationFields(),
             array(
                 'defaultLocale' => array(
-                    'type'    => 'text',
+                    'type'    => 'choice',
                     'options' => array(
-                        'required' => true
+                        'choices'  => $this->localeManager->getLocaleChoices(),
+                        'required' => true,
+                        'attr' => array(
+                            'class' => 'select2'
+                        )
                     )
                 ),
                 'website' => array(

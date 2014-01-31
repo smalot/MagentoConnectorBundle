@@ -6,6 +6,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocale;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 
 /**
  * Abstract magento product processor
@@ -13,6 +17,9 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ *
+ * @HasValidDefaultLocale()
+ * @HasValidCurrency()
  */
 abstract class AbstractProductProcessor extends AbstractProcessor
 {
@@ -29,7 +36,12 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $channelManager;
 
     /**
-     * @var string
+     * @var CurrencyManager
+     */
+    protected $currencyManager;
+
+    /**
+     * @var Currency
      * @Assert\NotBlank(groups={"Execution"})
      */
     protected $currency;
@@ -57,16 +69,21 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        CurrencyManager $currencyManager,
         ChannelManager $channelManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager);
 
-        $this->channelManager = $channelManager;
+        $this->currencyManager = $currencyManager;
+        $this->channelManager  = $channelManager;
     }
 
     /**
@@ -217,16 +234,17 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         $magentoAttributes        = $this->webservice->getAllAttributes();
         $magentoAttributesOptions = $this->webservice->getAllAttributesOptions();
 
-        $this->globalContext = array(
-            'defaultLocale'            => $this->defaultLocale,
-            'channel'                  => $this->channel,
-            'currency'                 => $this->currency,
-            'website'                  => $this->website,
-            'magentoStoreViews'        => $magentoStoreViews,
-            'magentoAttributes'        => $magentoAttributes,
-            'magentoAttributesOptions' => $magentoAttributesOptions,
-            'storeViewMapping'         => $this->getComputedStoreViewMapping(),
-            'categoryMapping'      => $this->getComputedCategoryMapping()
+        $this->globalContext = array_merge(
+            $this->globalContext,
+            array(
+                'channel'                  => $this->channel,
+                'website'                  => $this->website,
+                'magentoStoreViews'        => $magentoStoreViews,
+                'magentoAttributes'        => $magentoAttributes,
+                'magentoAttributesOptions' => $magentoAttributesOptions,
+                'storeViewMapping'         => $this->getComputedStoreViewMapping(),
+                'categoryMapping'          => $this->getComputedCategoryMapping()
+            )
         );
     }
 
@@ -258,9 +276,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                     )
                 ),
                 'currency' => array(
-                    'type'    => 'text',
+                    'type'    => 'choice',
                     'options' => array(
-                        'required' => true
+                        'choices'  => $this->currencyManager->getCurrencyChoices(),
+                        'required' => true,
+                        'attr' => array(
+                            'class' => 'select2'
+                        )
                     )
                 ),
                 'categoryMapping' => array(
