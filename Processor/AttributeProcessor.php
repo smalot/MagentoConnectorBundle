@@ -7,6 +7,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
 
 /**
@@ -18,6 +20,42 @@ use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
  */
 class AttributeProcessor extends AbstractProcessor
 {
+    /**
+     * @var MappingMerger
+     */
+    protected $attributeMappingMerger;
+
+    protected $attributeMapping;
+
+    public function setAttributeMapping($attributeMapping)
+    {
+        $this->attributeMappingMerger->setMapping($attributeMapping);
+
+        return $this;
+    }
+
+    public function getAttributeMapping()
+    {
+        return $this->attributeMappingMerger->getMapping();
+    }
+
+    /**
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MappingMerger            $attributeMappingMerger
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MappingMerger $attributeMappingMerger
+    ) {
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager);
+
+        $this->attributeMappingMerger = $attributeMappingMerger;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -78,5 +116,21 @@ class AttributeProcessor extends AbstractProcessor
         }
 
         return $processedItem;
+    }
+
+    protected function afterConfigurationSet()
+    {
+        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            $this->attributeMappingMerger->getConfigurationField()
+        );
     }
 }

@@ -66,6 +66,12 @@ class PruneStep extends AbstractStep
                 $stepElement->setConfiguration($config);
             }
         }
+
+        $this->afterConfigurationSet();
+    }
+
+    protected function afterConfigurationSet()
+    {
     }
 
     /**

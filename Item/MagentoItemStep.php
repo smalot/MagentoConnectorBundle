@@ -170,6 +170,22 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
     }
 
     /**
+     * Set the step element configuration
+     *
+     * @param array $config
+     */
+    public function setConfiguration(array $config)
+    {
+        parent::setConfiguration($config);
+
+        $this->afterConfigurationSet();
+    }
+
+    protected function afterConfigurationSet()
+    {
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()

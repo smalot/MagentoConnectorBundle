@@ -25,7 +25,7 @@ class WebserviceGuesser extends AbstractGuesser
      */
     public function getWebservice(MagentoSoapClientParameters $clientParameters)
     {
-        $client = new MagentoSoapClient($clientParameters);
+        $client = $this->getMagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
 
