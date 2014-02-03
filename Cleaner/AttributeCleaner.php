@@ -56,16 +56,26 @@ class AttributeCleaner extends Cleaner
         $magentoAttributes = $this->webservice->getAllAttributes();
 
         foreach ($magentoAttributes as $attribute) {
-            $pimAttribute = $this->getAttribute($attribute['code']);
+            $this->cleanAttribute($attribute, $magentoAttributes);
+        }
+    }
 
-            if (!in_array($attribute['code'], $this->getIgnoredAttributes()) &&
-                (!$pimAttribute || ($pimAttribute && !$pimAttribute->getFamilies()))
-            ) {
-                try {
-                    $this->handleAttributeNotInPimAnymore($attribute);
-                } catch (SoapCallException $e) {
-                    throw new InvalidItemException($e->getMessage(), array($attribute['code']));
-                }
+    /**
+     * Clean the given attribute
+     * @param array $attribute
+     * @param array $magentoAttributes
+     */
+    protected function cleanAttribute(array $attribute, array $magentoAttributes)
+    {
+        $pimAttribute = $this->getAttribute($attribute['code']);
+
+        if (!in_array($attribute['code'], $this->getIgnoredAttributes()) &&
+            (!$pimAttribute || ($pimAttribute && !$pimAttribute->getFamilies()))
+        ) {
+            try {
+                $this->handleAttributeNotInPimAnymore($attribute);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array($attribute['code']));
             }
         }
     }
