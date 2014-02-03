@@ -85,32 +85,67 @@ class ProductValueNormalizer implements NormalizerInterface
         return (
             ($value !== $identifier) &&
             ($value->getData() !== null) &&
-            (
-                ($scopeCode == null) ||
-                (!$value->getAttribute()->isScopable()) ||
-                ($value->getAttribute()->isScopable() && $value->getScope() === $scopeCode)
-            ) &&
-            (
-                ($localeCode == null) ||
-                (!$value->getAttribute()->isLocalizable()) ||
-                ($value->getAttribute()->isLocalizable() && $value->getLocale() === $localeCode)
-            ) &&
+            $this->isScopeNormalizable($value, $scopeCode) &&
+            $this->isLocaleNormalizable($value, $localeCode) &&
             (
                 (!$onlyLocalized && !$value->getAttribute()->isLocalizable()) ||
                 $value->getAttribute()->isLocalizable()
             ) &&
-            (
-                !(
-                    $onlyLocalized &&
-                    in_array(
-                        $value->getAttribute()->getCode(),
-                        $this->getIgnoredAttributesForLocalization()
-                    )
-                )
-            ) &&
-            !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes()) &&
+            $this->forceLocalization($value, $onlyLocalized) &&
+            $this->attributeIsNotIgnored($value) &&
             !($value->getData() instanceof Media)
         );
+    }
+
+    /**
+     * Is scopable and is the scope corresponding ?
+     * @param  ProductValueInterface $value
+     * @param  string                $scopeCode
+     * @return boolean
+     */
+    protected function isScopeNormalizable(ProductValueInterface $value, $scopeCode)
+    {
+        return ($scopeCode == null) ||
+            (!$value->getAttribute()->isScopable()) ||
+            ($value->getAttribute()->isScopable() && $value->getScope() === $scopeCode);
+    }
+
+    /**
+     * It is localizable and is the locale corresponding
+     * @param  ProductValueInterface $value
+     * @param  string                $localeCode
+     * @return boolean
+     */
+    protected function isLocaleNormalizable(ProductValueInterface $value, $localeCode)
+    {
+        return ($localeCode == null) ||
+            (!$value->getAttribute()->isLocalizable()) ||
+            ($value->getAttribute()->isLocalizable() && $value->getLocale() === $localeCode);
+    }
+
+    /**
+     * Should we normalize the given non localizable value even if we are in only_localizable mode
+     * @param  ProductValueInterface $value
+     * @param  boolean               $onlyLocalized
+     * @return boolean
+     */
+    protected function forceLocalization(ProductValueInterface $value, $onlyLocalized)
+    {
+        return !($onlyLocalized &&
+            in_array(
+                $value->getAttribute()->getCode(),
+                $this->getIgnoredAttributesForLocalization()
+            ));
+    }
+
+    /**
+     * Is the attribute of the given value ignored
+     * @param  ProductValueInterface $value
+     * @return boolean
+     */
+    protected function attributeIsNotIgnored(ProductValueInterface $value)
+    {
+        return !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes());
     }
 
     /**
