@@ -26,13 +26,7 @@ class ProductAssociationWriter extends AbstractWriter
 
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
             try {
-                foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
-                    $this->webservice->removeProductAssociation($productAssociationRemoveCall);
-                }
-
-                foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {
-                    $this->webservice->createProductAssociation($productAssociationCreateCall);
-                }
+                $this->handleProductAssociationCalls($productAssociationCalls);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException(
                     sprintf(
@@ -43,6 +37,23 @@ class ProductAssociationWriter extends AbstractWriter
                     array()
                 );
             }
+        }
+    }
+
+    /**
+     * Handle product association calls
+     * @param array $productAssociationCalls
+     *
+     * @throws SopaCallException If a soap call fails
+     */
+    protected function handleProductAssociationCalls(array $productAssociationCalls)
+    {
+        foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
+            $this->webservice->removeProductAssociation($productAssociationRemoveCall);
+        }
+
+        foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {
+            $this->webservice->createProductAssociation($productAssociationCreateCall);
         }
     }
 }
