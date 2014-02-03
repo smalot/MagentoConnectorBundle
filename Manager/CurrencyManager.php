@@ -16,7 +16,7 @@ class CurrencyManager extends BaseCurrencyManager
 {
     /**
      * Get currency choices
-     * Allow to list currencys in an array like array[<code>] = <label>
+     * Allow to list currencys in an array like array[<code>] = <code>
      *
      * @return string[]
      */
