@@ -29,7 +29,6 @@ class AttributeProcessor extends AbstractProcessor
         $this->globalContext['magentoStoreViews']        = $this->webservice->getStoreViewsList();
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
-        $this->globalContext['defaultLocale']            = $this->defaultLocale;
     }
 
     /**

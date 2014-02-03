@@ -12,6 +12,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 
 /**
  * Magento product processor
@@ -64,6 +66,8 @@ class ProductProcessor extends AbstractProductProcessor
     /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
      * @param MetricConverter          $metricConverter
      * @param AssociationTypeManager   $associationTypeManager
@@ -71,11 +75,13 @@ class ProductProcessor extends AbstractProductProcessor
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        CurrencyManager $currencyManager,
         ChannelManager $channelManager,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $channelManager);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $currencyManager, $channelManager);
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;

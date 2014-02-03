@@ -33,10 +33,12 @@ class OptionProcessor extends AbstractProcessor
         $this->optionNormalizer = $this->normalizerGuesser->getOptionNormalizer($this->getClientParameters());
         $magentoStoreViews      = $this->webservice->getStoreViewsList();
 
-        $this->globalContext = array(
-            'magentoStoreViews' => $magentoStoreViews,
-            'storeViewMapping'  => $this->getComputedStoreViewMapping(),
-            'defaultLocale'     => $this->defaultLocale
+        $this->globalContext = array_merge(
+            $this->globalContext,
+            array(
+                'magentoStoreViews' => $magentoStoreViews,
+                'storeViewMapping'  => $this->getComputedStoreViewMapping(),
+            )
         );
     }
 

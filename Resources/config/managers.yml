@@ -1,5 +1,7 @@
 parameters:
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
+    pim_magento_connector.manager.locale.class: Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager
+    pim_magento_connector.manager.currency.class: Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager
     pim_magento_connector.manager.category_mapping.class: Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager
     pim_magento_connector.manager.association_type.class: Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager
 
@@ -24,3 +26,14 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - %pim_catalog.entity.association_type.class%
+
+
+    pim_magento_connector.manager.locale:
+        class: %pim_magento_connector.manager.locale.class%
+        arguments:
+            - '@pim_catalog.repository.orm.locale'
+    pim_magento_connector.manager.currency:
+        class: %pim_magento_connector.manager.currency.class%
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@pim_magento_connector.repository.currency'

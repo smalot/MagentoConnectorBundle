@@ -14,6 +14,8 @@
 
 - Price mapping validation for configurable products
 - Fixtures improvements (configurables, linked products, categories, etc)
+- Selects for currencies and locales
+- Validation for currencies and locales
 
 ## Bug fixes
 
