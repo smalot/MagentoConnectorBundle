@@ -16,7 +16,7 @@ class LocaleManager extends BaseLocaleManager
 {
     /**
      * Get locale choices
-     * Allow to list locales in an array like array[<code>] = <label>
+     * Allow to list locales in an array like array[<code>] = <code>
      *
      * @return string[]
      */
