@@ -74,6 +74,8 @@ class OptionCleaner extends Cleaner
      * Clean options
      * @param AttributeOption    $options
      * @param AttributeInterface $attribute
+     *
+     * @throws InvalidItemException If clean doesn't goes well
      */
     protected function cleanOptions(AttributeOption $options, AttributeInterface $attribute)
     {
