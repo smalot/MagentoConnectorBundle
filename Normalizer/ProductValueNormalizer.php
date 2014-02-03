@@ -214,14 +214,7 @@ class ProductValueNormalizer implements NormalizerInterface
         $currencyCode
     ) {
         if (in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
-            (
-                $attributeScope !== self::GLOBAL_SCOPE &&
-                $attribute->isLocalizable()
-            ) ||
-            (
-                $attributeScope === self::GLOBAL_SCOPE &&
-                !$attribute->isLocalizable()
-            )
+            $this->scopeMatches($attribute, $attributeScope)
         ) {
             $normalizedValue = $normalizer($data, array(
                 'attributeCode'            => $attribute->getCode(),
@@ -244,6 +237,25 @@ class ProductValueNormalizer implements NormalizerInterface
         }
 
         return $normalizedValue;
+    }
+
+    /**
+     * Does the attribute scope match with attributeScope on magento ?
+     * @param AttributeInterface $attribute
+     * @param string             $attributeScope
+     *
+     * @return boolean
+     */
+    protected function scopeMatches(AttributeInterface $attribute, $attributeScope)
+    {
+        return (
+            $attributeScope !== self::GLOBAL_SCOPE &&
+            $attribute->isLocalizable()
+        ) ||
+        (
+            $attributeScope === self::GLOBAL_SCOPE &&
+            !$attribute->isLocalizable()
+        );
     }
 
     /**
