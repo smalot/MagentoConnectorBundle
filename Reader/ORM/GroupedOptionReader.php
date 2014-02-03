@@ -28,23 +28,36 @@ class GroupedOptionReader extends BulkEntityReader
                 return $options;
             }
 
-            $this->groupedOptions = array();
-
-            foreach ($options as $option) {
-                $attributeCode = $option->getAttribute()->getCode();
-
-                if (!in_array($attributeCode, $this->getIgnoredAttributes()) &&
-                    $option->getAttribute()->getFamilies()->count()
-                ) {
-                    $this->groupedOptions[$attributeCode] =
-                        isset($this->groupedOptions[$attributeCode]) ?
-                            array_merge($this->groupedOptions[$attributeCode], array($option)) :
-                            array($option);
-                }
-            }
+            $this->groupedOptions = $this->getGroupedOptions($options);
         }
 
         return is_array($this->groupedOptions) ? array_shift($this->groupedOptions) : null;
+    }
+
+    /**
+     * Get grouped options
+     * @param array  $options
+     *
+     * @return array
+     */
+    protected function getGroupedOptions(array $options)
+    {
+        $groupedOptions = array();
+
+        foreach ($options as $option) {
+            $attributeCode = $option->getAttribute()->getCode();
+
+            if (!in_array($attributeCode, $this->getIgnoredAttributes()) &&
+                $option->getAttribute()->getFamilies()->count()
+            ) {
+                $groupedOptions[$attributeCode] =
+                    isset($groupedOptions[$attributeCode]) ?
+                        array_merge($groupedOptions[$attributeCode], array($option)) :
+                        array($option);
+            }
+        }
+
+        return $groupedOptions;
     }
 
     /**
