@@ -70,6 +70,11 @@ class OptionCleaner extends Cleaner
         }
     }
 
+    /**
+     * Clean options
+     * @param AttributeOption    $options
+     * @param AttributeInterface $attribute
+     */
     protected function cleanOptions(AttributeOption $options, AttributeInterface $attribute)
     {
         foreach ($options as $optionLabel => $optionValue) {
