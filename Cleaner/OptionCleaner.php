@@ -66,16 +66,21 @@ class OptionCleaner extends Cleaner
         foreach ($magentoOptions as $attributeCode => $options) {
             $attribute = $this->getAttribute($attributeCode);
 
-            foreach ($options as $optionLabel => $optionValue) {
-                if (!in_array($attributeCode, $this->getIgnoredAttributes()) &&
-                    $attribute !== null &&
-                    $this->getOption($optionLabel, $attribute) === null
-                ) {
-                    try {
-                        $this->handleOptionNotInPimAnymore($optionValue, $attributeCode);
-                    } catch (SoapCallException $e) {
-                        throw new InvalidItemException($e->getMessage(), array($optionLabel));
-                    }
+            $this->cleanOptions($options, $attribute);
+        }
+    }
+
+    protected function cleanOptions(AttributeOption $options, AttributeInterface $attribute)
+    {
+        foreach ($options as $optionLabel => $optionValue) {
+            if (!in_array($attribute->getCode(), $this->getIgnoredAttributes()) &&
+                $attribute !== null &&
+                $this->getOption($optionLabel, $attribute) === null
+            ) {
+                try {
+                    $this->handleOptionNotInPimAnymore($optionValue, $attribute->getCode());
+                } catch (SoapCallException $e) {
+                    throw new InvalidItemException($e->getMessage(), array($optionLabel));
                 }
             }
         }
