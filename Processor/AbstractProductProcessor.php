@@ -18,8 +18,8 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
- * @HasValidDefaultLocale()
- * @HasValidCurrency()
+ * @HasValidDefaultLocale(groups={"Execution"})
+ * @HasValidCurrency(groups={"Execution"})
  */
 abstract class AbstractProductProcessor extends AbstractProcessor
 {
