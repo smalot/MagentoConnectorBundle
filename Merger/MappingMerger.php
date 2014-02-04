@@ -64,9 +64,12 @@ class MappingMerger
     {
         return array(
             $this->name . 'Mapping' => array(
-                'type'    => 'textarea',
+                'type'    => 'hidden',
                 'options' => array(
-                    'required' => false
+                    'required' => false,
+                    'attr'     => array(
+                        'class' => 'mapping-field'
+                    )
                 )
             )
         );

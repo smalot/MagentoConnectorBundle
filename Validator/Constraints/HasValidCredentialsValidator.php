@@ -60,7 +60,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
             try {
                 $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidCredentialException $e) {
-                $this->context->addViolation($constraint->message, array('soapUsername', 'soapApiKey'));
+                $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
+                $this->context->addViolationAt('soapApiKey', $constraint->messageApikey);
             }
         }
     }

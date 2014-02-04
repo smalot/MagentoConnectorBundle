@@ -59,10 +59,8 @@
 
                 {% set globalSettings %}
                     {% for step in form.job.steps %}
-                        {% for step_child in step.children %}
-                            {% for attribute in step_child.children %}
-                            {% endfor %}
-                            {{ form_rest(step_child) }}
+                        {% for child in step.children %}
+                            {{ form_widget(child) }}
                         {% endfor %}
                     {% endfor %}
                 {% endset %}
@@ -78,12 +76,14 @@
 
     <script type="text/javascript">
         require(
-            ['jquery'],
-            function ($) {
+            ['jquery', 'mapping-field'],
+            function ($, mappingField) {
                 'use strict';
                 $(function () {
-
-                });
+                    $('.mapping-field').each(function () {
+                        mappingField($(this));
+                    });
+                })
             }
         );
     </script>

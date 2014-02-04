@@ -7,7 +7,6 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
@@ -21,8 +20,6 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- *
- * @HasValidCredentials()
  */
 class ProductProcessor extends AbstractProductProcessor
 {

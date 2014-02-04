@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -17,8 +16,6 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- *
- * @HasValidCredentials()
  */
 class ProductWriter extends AbstractWriter
 {

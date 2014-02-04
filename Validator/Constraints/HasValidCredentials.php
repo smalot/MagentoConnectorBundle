@@ -15,7 +15,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class HasValidCredentials extends Constraint
 {
-    public $message = 'The given magento credentials are invalid';
+    public $messageUsername = 'The given magento api username is invalid';
+    public $messageApikey = 'The given magento api key is invalid';
 
     /**
      *{@inheritDoc}

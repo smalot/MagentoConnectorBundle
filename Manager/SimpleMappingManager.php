@@ -35,11 +35,22 @@ class SimpleMappingManager
         $this->className     = $className;
     }
 
+    /**
+     * Get mapping for given identifier
+     * @param string $identifier
+     *
+     * @return array
+     */
     public function getMapping($identifier)
     {
         return $this->getEntityRepository()->findBy(array('identifier' => $identifier));
     }
 
+    /**
+     * Set mapping to database for given identifier
+     * @param array  $mapping
+     * @param string $identifier
+     */
     public function setMapping(array $mapping, $identifier)
     {
         foreach ($mapping as $mappingItemSource => $mappingItemOutcome)

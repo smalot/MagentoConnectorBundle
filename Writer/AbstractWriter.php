@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 
 /**
  * Magento product writer
@@ -12,8 +11,6 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- *
- * @HasValidCredentials()
  */
 abstract class AbstractWriter extends MagentoItemStep implements ItemWriterInterface
 {

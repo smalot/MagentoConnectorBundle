@@ -1,0 +1,3 @@
+pim_magento_connector.mapping.attribute.source: Magento attribute
+pim_magento_connector.mapping.attribute.target: Akeneo attribute
+pim_magento_connector.mapping.attribute.add: Add
