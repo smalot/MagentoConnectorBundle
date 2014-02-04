@@ -47,6 +47,6 @@ class HasValidCurrencyValidator extends ConstraintValidator
             }
         }
 
-        $this->context->addViolation($constraint->message, array('currency'));
+        $this->context->addViolationAt('currency', $constraint->message, array('currency'));
     }
 }
