@@ -25,7 +25,6 @@ class MagentoAttributeMapper extends AbstractAttributeMapper
 
     public function getMapping()
     {
-
         if (!$this->isValid()) {
             return array();
         } else {

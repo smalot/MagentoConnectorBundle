@@ -46,17 +46,21 @@ class MappingMerger
     public function getMapping()
     {
         $mergedMapping = array();
-        foreach ($this->getOrderedMappers() as $mapper) {
-            $mergedMapping = array_merge($mergedMapping, $mapper->getMapping());
+
+        if ($this->hasParametersSetted) {
+            foreach ($this->getOrderedMappers() as $mapper) {
+                $mergedMapping = array_merge($mergedMapping, $mapper->getMapping());
+            }
         }
 
-        return json_encode($mergedMapping);
+        return $mergedMapping;
     }
 
     public function setMapping($mapping)
     {
+        error_log('set mapping');
         foreach ($this->getOrderedMappers() as $mapper) {
-            $mapper->setMapping(json_decode($mapping, true));
+            $mapper->setMapping($mapping);
         }
     }
 
@@ -64,15 +68,27 @@ class MappingMerger
     {
         return array(
             $this->name . 'Mapping' => array(
-                'type'    => 'hidden',
+                'type'    => 'textarea',
                 'options' => array(
                     'required' => false,
                     'attr'     => array(
-                        'class' => 'mapping-field'
+                        'class' => 'mapping-field',
+                        'data-sources' => json_encode($this->getAllSources()),
+                        'data-targets' => json_encode($this->getAllTargets())
                     )
                 )
             )
         );
+    }
+
+    protected function getAllSources()
+    {
+        return array_keys($this->getMapping());
+    }
+
+    protected function getAllTargets()
+    {
+        return array();
     }
 
     protected function getOrderedMappers()

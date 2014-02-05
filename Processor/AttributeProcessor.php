@@ -29,14 +29,14 @@ class AttributeProcessor extends AbstractProcessor
 
     public function setAttributeMapping($attributeMapping)
     {
-        $this->attributeMappingMerger->setMapping($attributeMapping);
+        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
 
         return $this;
     }
 
     public function getAttributeMapping()
     {
-        return $this->attributeMappingMerger->getMapping();
+        return json_encode($this->attributeMappingMerger->getMapping());
     }
 
     /**
@@ -128,6 +128,7 @@ class AttributeProcessor extends AbstractProcessor
      */
     public function getConfigurationFields()
     {
+        error_log('get configuration fields');
         return array_merge(
             parent::getConfigurationFields(),
             $this->attributeMappingMerger->getConfigurationField()

@@ -17,30 +17,37 @@ define(
             tagName: 'tr',
             template: _.template(
                 '<td>' +
-                    '<input type="text" class="mapping-source" value="<%= mappingItem.source %>"/>' +
+                    '<input type="hidden" class="mapping-source" value="<%= mappingItem.source %>"/>' +
                 '</td>' +
                 '<td>' +
                     '<i class="icon-arrow-right"></i>' +
                 '</td>' +
                 '<td>' +
-                    '<input type="text" class="mapping-target" value="<%= mappingItem.target %>"/>' +
+                    '<input type="hidden" class="mapping-target" value="<%= mappingItem.target %>"/>' +
                 '</td>' +
                 '<td>' +
                     '<a href="javascript:void(0);" class="btn remove-btn"><i class="icon-remove-sign"></i></a>' +
                 '</td>'
             ),
             events: {
-                'input input.mapping-source': 'updateSource',
-                'input input.mapping-target': 'updateTarget',
-                'click a.remove-btn':         'removeMappingItem'
+                'change input.mapping-source': 'updateSource',
+                'change input.mapping-target': 'updateTarget',
+                'click a.remove-btn':          'removeMappingItem'
             },
+            sources: [],
+            targets: [],
             initialize: function(options) {
-                Backbone.View.prototype.initialize.apply(this, arguments);
+                this.sources = options.sources;
+                this.targets = options.targets;
 
                 this.listenTo(this.model, "destroy", this.remove);
+                this.render();
             },
             render: function() {
                 this.$el.html(this.template({mappingItem: this.model.toJSON()}));
+
+                this.$el.find('.mapping-source').select2({tags: this.sources, maximumSelectionSize: 1});
+                this.$el.find('.mapping-target').select2({tags: this.targets, maximumSelectionSize: 1});
 
                 return this;
             },
@@ -51,6 +58,7 @@ define(
                 this.model.set('target', e.currentTarget.value);
             },
             removeMappingItem: function(e) {
+                console.log('cocou');
                 this.model.destroy();
             }
         });
@@ -60,34 +68,43 @@ define(
             className: 'table table-bordered mapping-table',
             template: _.template(
                 '<thead><tr><td><%= __("pim_magento_connector.mapping.attribute.source") %></td><td></td><td><%= __("pim_magento_connector.mapping.attribute.target") %></td><td></td></tr></thead>' +
-                '<tbody></tbody>' +
+                '<tbody>' +
+                '</tbody>' +
                 '<tfoot><tr><td colspan="4"><a href="javascript:void(0);" class="btn add-btn"><i class="icon-plus"></i> <%= __("pim_magento_connector.mapping.attribute.add") %></a></td></tr></tfoot>'
             ),
             events: {
-                'click a.add-btn': 'addMappingItem'
+                'click a.add-btn': function() {
+                    this.addMappingItem({});
+                },
             },
             $target: null,
+            sources: [],
+            targets: [],
             mappingItemViews: [],
             initialize: function(options) {
                 this.$target = options.$target;
+                this.sources = options.sources;
+                this.targets = options.targets;
 
-                _.each(this.collection.models, function(mappingItem) {
-                    this.mappingItemViews.push(new MappingItemView({model: mappingItem}))
-                }, this);
-
-                Backbone.View.prototype.initialize.apply(this, arguments);
                 this.listenTo(this.collection, "change add remove", this.save);
                 this.render();
             },
             render: function() {
+                this.$el.empty();
                 this.$el.html(this.template({__: __}));
-                this.$el.children('tbody').empty();
 
-                _.each(this.mappingItemViews, function(mappingItemView) {
-                    this.$el.children('tbody').append(mappingItemView.render().$el);
+                _.each(this.collection.models, function(mappingItem) {
+                    this.addMappingItem({mappingItem: mappingItem});
                 }, this);
 
-                this.$el.insertAfter(this.$target);
+                if (!this.$target.data('rendered')) {
+                    this.$target.after(this.$el)
+                    this.$target.hide();
+                }
+
+                this.$target.data('rendered', true);
+
+                return this;
             },
             save: function() {
                 var values = {};
@@ -95,30 +112,69 @@ define(
                     values[value.source] = value.target;
                 });
 
-                this.$target.val(JSON.stringify(values));
-            },
-            addMappingItem: function() {
-                var newMappingItem = new MappingItem({source: '', target:''});
-                this.collection.add(newMappingItem);
+                this.$target.html(JSON.stringify(values));
 
-                var mappingItemView = new MappingItemView({model: newMappingItem});
+                if (this.collection.length === 0) {
+                    this.addMappingItem();
+                }
+            },
+            createMappingItem: function() {
+                var mappingItem = new MappingItem({source: '', target: ''});
+                this.collection.add(mappingItem);
+
+                return mappingItem;
+            },
+            createMappingItemView: function(mappingItem) {
+                var mappingItemView = new MappingItemView({
+                    model: mappingItem,
+                    sources: this.sources,
+                    targets: this.targets
+                });
 
                 this.mappingItemViews.push(mappingItemView);
 
-                this.$el.children('tbody').append(mappingItemView.render().$el);
+                return mappingItemView;
+            },
+            addMappingItem: function(options) {
+                if (!options.mappingItem) {
+                    var mappingItem = this.createMappingItem();
+                } else {
+                    var mappingItem = options.mappingItem;
+                }
+
+                var mappingItemView = this.createMappingItemView(mappingItem);
+
+                mappingItemView.render();
+
+                this.$el.children('tbody').append(mappingItemView.$el);
             }
         });
 
         return function($element) {
-            var fieldValues = JSON.parse($element.val());
+            console.log($element.data('rendered'));
+            if ($element.data('rendered') == true) {
+                return;
+            }
 
-            fieldValues = _.map(fieldValues, function(target, source) {
-                if (target != '') {
-                    return {source: source, target: target};
+            if ($element.find('.mapping-field').length > 0) {
+                $element = $element.find('.mapping-field');
+            }
+
+            var fieldValues = JSON.parse($element.html());
+
+            var mappingCollection = [];
+            for (var field in fieldValues) {
+                if (fieldValues[field] != '') {
+                    mappingCollection.push({source: field, target: fieldValues[field]});
                 }
-            });
+            }
 
-            new MappingView({collection: new MappingCollection(fieldValues), $target: $element});
+            new MappingView({
+                collection: new MappingCollection(mappingCollection),
+                $target: $element,
+                sources: $element.data('sources'),
+                targets: $element.data('targets')
+            });
         };
     }
 );

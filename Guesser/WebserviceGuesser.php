@@ -16,6 +16,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
  */
 class WebserviceGuesser extends AbstractGuesser
 {
+    protected $webservice;
+
     /**
      * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
@@ -25,22 +27,24 @@ class WebserviceGuesser extends AbstractGuesser
      */
     public function getWebservice(MagentoSoapClientParameters $clientParameters)
     {
-        $client = $this->getMagentoSoapClient($clientParameters);
+        if (!$this->webservice) {
+            $client = $this->getMagentoSoapClient($clientParameters);
 
-        $magentoVersion = $this->getMagentoVersion($client);
+            $magentoVersion = $this->getMagentoVersion($client);
 
-        switch ($magentoVersion) {
-            case AbstractGuesser::MAGENTO_VERSION_1_8:
-            case AbstractGuesser::MAGENTO_VERSION_1_7:
-                $webservice = new Webservice($client);
-                break;
-            case AbstractGuesser::MAGENTO_VERSION_1_6:
-                $webservice = new Webservice16($client);
-                break;
-            default:
-                throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+            switch ($magentoVersion) {
+                case AbstractGuesser::MAGENTO_VERSION_1_8:
+                case AbstractGuesser::MAGENTO_VERSION_1_7:
+                    $this->webservice = new Webservice($client);
+                    break;
+                case AbstractGuesser::MAGENTO_VERSION_1_6:
+                    $this->webservice = new Webservice16($client);
+                    break;
+                default:
+                    throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+            }
         }
 
-        return $webservice;
+        return $this->webservice;
     }
 }
