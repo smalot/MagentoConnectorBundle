@@ -1,0 +1,3 @@
+css:
+  pim_magento_connector:
+    - bundles/pimmagentoconnector/css/mapping-field.less
