@@ -70,8 +70,12 @@ class PruneStep extends AbstractStep
         $this->afterConfigurationSet();
     }
 
+    /**
+     * Called after configuration affectation
+     */
     protected function afterConfigurationSet()
     {
+
     }
 
     /**

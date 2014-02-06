@@ -29,7 +29,7 @@ class SimpleMapping
     /**
      * @var string
      */
-    protected $outcome;
+    protected $target;
 
     /**
      * Get id
@@ -90,26 +90,26 @@ class SimpleMapping
     }
 
     /**
-     * Set outcome
+     * Set target
      *
-     * @param string $outcome
+     * @param string $target
      *
      * @return SimpleMapping
      */
-    public function setOutcome($outcome)
+    public function setTarget($target)
     {
-        $this->outcome = $outcome;
+        $this->target = $target;
 
         return $this;
     }
 
     /**
-     * Get outcome
+     * Get target
      *
      * @return string
      */
-    public function getOutcome()
+    public function getTarget()
     {
-        return $this->outcome;
+        return $this->target;
     }
 }

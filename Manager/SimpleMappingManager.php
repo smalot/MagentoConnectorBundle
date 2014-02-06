@@ -53,21 +53,20 @@ class SimpleMappingManager
      */
     public function setMapping(array $mapping, $identifier)
     {
-        foreach ($mapping as $mappingItemSource => $mappingItemOutcome)
-        {
-            if ($mappingItemSource != 0) {
+        foreach ($mapping as $mappingItem) {
+            if (!$mappingItem['source']) {
                 $simpleMappingItem = $this->getEntityRepository()->findOneBy(array(
                     'identifier' => $identifier,
-                    'source'     => $mappingItemSource
+                    'source'     => $mappingItem['source']
                 ));
 
                 if (!$simpleMappingItem) {
                     $simpleMappingItem = new SimpleMapping();
                     $simpleMappingItem->setIdentifier($identifier);
-                    $simpleMappingItem->setSource($mappingItemSource);
+                    $simpleMappingItem->setSource($mappingItem['source']);
                 }
 
-                $simpleMappingItem->setOutcome($mappingItemOutcome);
+                $simpleMappingItem->setTarget($$mappingItem['target']);
 
                 $this->objectManager->persist($simpleMappingItem);
             }

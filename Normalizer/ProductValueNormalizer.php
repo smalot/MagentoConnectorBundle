@@ -99,8 +99,9 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Is scopable and is the scope corresponding ?
-     * @param  ProductValueInterface $value
-     * @param  string                $scopeCode
+     * @param ProductValueInterface $value
+     * @param string                $scopeCode
+     *
      * @return boolean
      */
     protected function isScopeNormalizable(ProductValueInterface $value, $scopeCode)
@@ -112,8 +113,9 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * It is localizable and is the locale corresponding
-     * @param  ProductValueInterface $value
-     * @param  string                $localeCode
+     * @param ProductValueInterface $value
+     * @param string                $localeCode
+     *
      * @return boolean
      */
     protected function isLocaleNormalizable(ProductValueInterface $value, $localeCode)
@@ -125,8 +127,9 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Should we normalize the given non localizable value even if we are in only_localizable mode
-     * @param  ProductValueInterface $value
-     * @param  boolean               $onlyLocalized
+     * @param ProductValueInterface $value
+     * @param boolean               $onlyLocalized
+     *
      * @return boolean
      */
     protected function forceLocalization(ProductValueInterface $value, $onlyLocalized)
@@ -140,7 +143,8 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Is the attribute of the given value ignored
-     * @param  ProductValueInterface $value
+     * @param ProductValueInterface $value
+     *
      * @return boolean
      */
     protected function attributeIsNotIgnored(ProductValueInterface $value)

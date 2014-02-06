@@ -14,7 +14,7 @@ Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping:
             type: text
             length: 255
             column: source
-        outcome:
+        target:
             type: text
             length: 255
-            column: outcome
+            column: target

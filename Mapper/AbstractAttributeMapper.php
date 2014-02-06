@@ -21,16 +21,28 @@ Abstract class AbstractAttributeMapper implements MapperInterface
      */
     protected $clientParameters;
 
+    /**
+     * Set mapper parameters
+     * @param MagentoSoapClientParameters $clientParameters
+     */
     public function setParameters(MagentoSoapClientParameters $clientParameters)
     {
         $this->clientParameters = $clientParameters;
     }
 
+    /**
+     * Get mapper identifier
+     * @return string
+     */
     public function getIdentifier()
     {
         return sha1(sprintf(self::IDENTIFIER_FORMAT, $this->clientParameters->getSoapUrl()));
     }
 
+    /**
+     * Is the mapper valid ?
+     * @return boolean
+     */
     public function isValid()
     {
         if (!$this->clientParameters) {

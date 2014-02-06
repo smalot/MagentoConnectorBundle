@@ -18,32 +18,94 @@ class MagentoAttributeMapper extends AbstractAttributeMapper
      */
     protected $webserviceGuesser;
 
+    /**
+     * @param WebserviceGuesser $webserviceGuesser
+     */
     public function __construct(WebserviceGuesser $webserviceGuesser)
     {
         $this->webserviceGuesser = $webserviceGuesser;
     }
 
+    /**
+     * Get mapping
+     * @return array
+     */
     public function getMapping()
     {
         if (!$this->isValid()) {
-            return array();
+            return new MappingCollection();
         } else {
             $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
 
-            $mapping = array();
-            foreach(array_keys($attributes) as $attributeCode)
-            {
-                $mapping[$attributeCode] = '';
+            $mapping = new MappingCollection();
+            foreach (array_keys($attributes) as $attributeCode) {
+                if (in_array($attributeCode, $this->mandatoryAttributes())) {
+                    $mapping->add(array(
+                        'source'    => $attributeCode,
+                        'target'    => $attributeCode,
+                        'deletable' => false
+                    ));
+                }
             }
 
             return $mapping;
         }
     }
 
-    public function setMapping(array $mapping) {}
+    /**
+     * Set mapping
+     * @param array $mapping
+     */
+    public function setMapping(array $mapping)
+    {
 
+    }
+
+    /**
+     * Get all targets
+     * @return array
+     */
+    public function getAllTargets()
+    {
+        if (!$this->isValid()) {
+            return array();
+        } else {
+            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+
+            return array_keys($attributes);
+        }
+    }
+
+    /**
+     * Get all sources
+     * @return array
+     */
+    public function getAllSources()
+    {
+        return array();
+    }
+
+    /**
+     * Get mapper priority
+     * @return integer
+     */
     public function getPriority()
     {
         return 0;
+    }
+
+    /**
+     * Get mandatory attributes
+     * @return array
+     */
+    protected function mandatoryAttributes()
+    {
+        return array(
+            'name',
+            'price',
+            'description',
+            'short_description',
+            'tax_class_id',
+        );
     }
 }

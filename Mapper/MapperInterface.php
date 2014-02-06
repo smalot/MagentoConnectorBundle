@@ -11,13 +11,45 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
  */
 interface MapperInterface
 {
+    /**
+     * Get mapper identifier
+     * @return string
+     */
     public function getIdentifier();
 
+    /**
+     * Get mapping
+     * @return array
+     */
     public function getMapping();
 
+    /**
+     * Set mapping
+     * @param array $mapping
+     */
     public function setMapping(array $mapping);
 
+    /**
+     * Get all targets
+     * @return array
+     */
+    public function getAllTargets();
+
+    /**
+     * Get all sources
+     * @return array
+     */
+    public function getAllSources();
+
+    /**
+     * Get mapper priority
+     * @return integer
+     */
     public function getPriority();
 
+    /**
+     * Is the mapper valid ?
+     * @return boolean
+     */
     public function isValid();
 }

@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Merger;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Mapping merger
@@ -19,6 +20,10 @@ class MappingMerger
 
     protected $hasParametersSetted = false;
 
+    /**
+     * @param array  $mappers
+     * @param string $name
+     */
     public function __construct(array $mappers, $name)
     {
         $this->name = $name;
@@ -34,6 +39,10 @@ class MappingMerger
         ksort($this->mappers);
     }
 
+    /**
+     * Set parameters of all mappers
+     * @param MagentoSoapClientParameters $clientParameters
+     */
     public function setParameters(MagentoSoapClientParameters $clientParameters)
     {
         foreach ($this->getOrderedMappers() as $mapper) {
@@ -43,27 +52,38 @@ class MappingMerger
         $this->hasParametersSetted = true;
     }
 
+    /**
+     * Get mapping for all mappers
+     * @return array
+     */
     public function getMapping()
     {
-        $mergedMapping = array();
+        $mergedMapping = new MappingCollection();
 
         if ($this->hasParametersSetted) {
             foreach ($this->getOrderedMappers() as $mapper) {
-                $mergedMapping = array_merge($mergedMapping, $mapper->getMapping());
+                $mergedMapping->merge($mapper->getMapping());
             }
         }
 
         return $mergedMapping;
     }
 
+    /**
+     * Set mapping for all mappers
+     * @param array $mapping
+     */
     public function setMapping($mapping)
     {
-        error_log('set mapping');
         foreach ($this->getOrderedMappers() as $mapper) {
             $mapper->setMapping($mapping);
         }
     }
 
+    /**
+     * Get configuration field for the merger
+     * @return array
+     */
     public function getConfigurationField()
     {
         return array(
@@ -81,16 +101,38 @@ class MappingMerger
         );
     }
 
+    /**
+     * Get all sources (for suggestion)
+     * @return array
+     */
     protected function getAllSources()
     {
-        return array_keys($this->getMapping());
+        $sources = array();
+        foreach ($this->getOrderedMappers() as $mapper) {
+            $sources = array_merge($sources, $mapper->getAllSources());
+        }
+
+        return array_unique($sources);
     }
 
+    /**
+     * Get all targets (for suggestion)
+     * @return array
+     */
     protected function getAllTargets()
     {
-        return array();
+        $targets = array();
+        foreach ($this->getOrderedMappers() as $mapper) {
+            $targets = array_merge($targets, $mapper->getAllTargets());
+        }
+
+        return array_unique($targets);
     }
 
+    /**
+     * Get mappers ordered by priority
+     * @return array
+     */
     protected function getOrderedMappers()
     {
         $orderedMappers = array();

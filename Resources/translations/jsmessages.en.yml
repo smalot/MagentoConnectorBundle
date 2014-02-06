@@ -1,3 +1,7 @@
-pim_magento_connector.mapping.attribute.source: Magento attribute
-pim_magento_connector.mapping.attribute.target: Akeneo attribute
-pim_magento_connector.mapping.attribute.add: Add
+pim_magento_connector:
+    mapping:
+        attribute:
+            source: Akeneo attribute
+            target: Magento attribute
+            add: Add
+            not_blank: This field is required

@@ -1,11 +1,12 @@
 define(
-    ['jquery', 'backbone', 'underscore', 'oro/translator'],
-    function ($, Backbone, _, __) {
+    ['jquery', 'backbone', 'underscore', 'oro/translator', 'oro/form-validation'],
+    function ($, Backbone, _, __, FormValidation) {
         'use strict';
         var MappingItem = Backbone.Model.extend({
             defaults: {
-                source: null,
-                target: null
+                source    : null,
+                target    : null,
+                deletable : true
             }
         });
 
@@ -17,16 +18,18 @@ define(
             tagName: 'tr',
             template: _.template(
                 '<td>' +
-                    '<input type="hidden" class="mapping-source" value="<%= mappingItem.source %>"/>' +
+                    '<input type="text" class="mapping-source" required="required" value="<%= mappingItem.source %>"/>' +
                 '</td>' +
                 '<td>' +
                     '<i class="icon-arrow-right"></i>' +
                 '</td>' +
                 '<td>' +
-                    '<input type="hidden" class="mapping-target" value="<%= mappingItem.target %>"/>' +
+                    '<input type="text" class="mapping-target" required="required" required="required" value="<%= mappingItem.target %>"/>' +
                 '</td>' +
                 '<td>' +
-                    '<a href="javascript:void(0);" class="btn remove-btn"><i class="icon-remove-sign"></i></a>' +
+                    '<a href="javascript:void(0);" class="btn remove-btn <% if (!mappingItem.deletable) { %>disabled<% } %>">' +
+                        '<i class="icon-remove-sign"></i>' +
+                    '</a>' +
                 '</td>'
             ),
             events: {
@@ -41,13 +44,12 @@ define(
                 this.targets = options.targets;
 
                 this.listenTo(this.model, "destroy", this.remove);
+
                 this.render();
             },
             render: function() {
-                this.$el.html(this.template({mappingItem: this.model.toJSON()}));
+                this.$el.html(this.template({mappingItem: this.model.toJSON(), __: __}));
 
-                this.$el.find('.mapping-source').select2({tags: this.sources, maximumSelectionSize: 1});
-                this.$el.find('.mapping-target').select2({tags: this.targets, maximumSelectionSize: 1});
 
                 return this;
             },
@@ -58,8 +60,9 @@ define(
                 this.model.set('target', e.currentTarget.value);
             },
             removeMappingItem: function(e) {
-                console.log('cocou');
-                this.model.destroy();
+                if (this.model.attributes.deletable) {
+                    this.model.destroy();
+                }
             }
         });
 
@@ -67,15 +70,28 @@ define(
             tagName: 'table',
             className: 'table table-bordered mapping-table',
             template: _.template(
-                '<thead><tr><td><%= __("pim_magento_connector.mapping.attribute.source") %></td><td></td><td><%= __("pim_magento_connector.mapping.attribute.target") %></td><td></td></tr></thead>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<td><%= __("pim_magento_connector.mapping.attribute.source") %></td>' +
+                        '<td></td>' +
+                        '<td><%= __("pim_magento_connector.mapping.attribute.target") %></td>' +
+                        '<td></td>' +
+                    '</tr>' +
+                '</thead>' +
                 '<tbody>' +
                 '</tbody>' +
-                '<tfoot><tr><td colspan="4"><a href="javascript:void(0);" class="btn add-btn"><i class="icon-plus"></i> <%= __("pim_magento_connector.mapping.attribute.add") %></a></td></tr></tfoot>'
+                '<tfoot>' +
+                    '<tr>' +
+                        '<td colspan="4">' +
+                            '<a href="javascript:void(0);" class="btn add-btn">' +
+                                '<i class="icon-plus"></i><%= __("pim_magento_connector.mapping.attribute.add") %>' +
+                            '</a>' +
+                        '</td>' +
+                    '</tr>' +
+                '</tfoot>'
             ),
             events: {
-                'click a.add-btn': function() {
-                    this.addMappingItem({});
-                },
+                'click a.add-btn': 'addMappingItem',
             },
             $target: null,
             sources: [],
@@ -93,14 +109,14 @@ define(
                 this.$el.empty();
                 this.$el.html(this.template({__: __}));
 
-                _.each(this.collection.models, function(mappingItem) {
-                    this.addMappingItem({mappingItem: mappingItem});
-                }, this);
-
                 if (!this.$target.data('rendered')) {
                     this.$target.after(this.$el)
                     this.$target.hide();
                 }
+
+                _.each(this.collection.models, function(mappingItem) {
+                    this.addMappingItem({mappingItem: mappingItem});
+                }, this);
 
                 this.$target.data('rendered', true);
 
@@ -109,7 +125,7 @@ define(
             save: function() {
                 var values = {};
                 _.each(this.collection.toJSON(), function(value) {
-                    values[value.source] = value.target;
+                    values[value.source] = {source:value.source, target: value.target};
                 });
 
                 this.$target.html(JSON.stringify(values));
@@ -119,7 +135,7 @@ define(
                 }
             },
             createMappingItem: function() {
-                var mappingItem = new MappingItem({source: '', target: ''});
+                var mappingItem = new MappingItem({source: '', target: '', deletable: true});
                 this.collection.add(mappingItem);
 
                 return mappingItem;
@@ -136,6 +152,8 @@ define(
                 return mappingItemView;
             },
             addMappingItem: function(options) {
+                var options = options || {};
+
                 if (!options.mappingItem) {
                     var mappingItem = this.createMappingItem();
                 } else {
@@ -144,14 +162,15 @@ define(
 
                 var mappingItemView = this.createMappingItemView(mappingItem);
 
-                mappingItemView.render();
-
                 this.$el.children('tbody').append(mappingItemView.$el);
+
+                mappingItemView.$el.find('.mapping-source').select2({tags: this.sources, maximumSelectionSize: 1});
+                mappingItemView.$el.find('.mapping-target').select2({tags: this.targets, maximumSelectionSize: 1})
+                    .enable(mappingItemView.model.get('deletable'));
             }
         });
 
         return function($element) {
-            console.log($element.data('rendered'));
             if ($element.data('rendered') == true) {
                 return;
             }
@@ -164,8 +183,8 @@ define(
 
             var mappingCollection = [];
             for (var field in fieldValues) {
-                if (fieldValues[field] != '') {
-                    mappingCollection.push({source: field, target: fieldValues[field]});
+                if (fieldValues[field]['target'] != '') {
+                    mappingCollection.push(fieldValues[field]);
                 }
             }
 
@@ -174,6 +193,21 @@ define(
                 $target: $element,
                 sources: $element.data('sources'),
                 targets: $element.data('targets')
+            });
+
+            $element.parents('form').on('submit', function() {
+                var isValid = true;
+
+                $('input.mapping-source, input.mapping-target').each(function() {
+                    $(this).parent().children('.validation-faled').remove();
+
+                    if ($(this).val() == '') {
+                        FormValidation.addFieldErrors($(this), __('pim_magento_connector.mapping.attribute.not_blank'));
+                        isValid = false;
+                    }
+                });
+
+                return isValid;
             });
         };
     }
