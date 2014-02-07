@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "v1.0.0-BETA4",
+        "akeneo/pim-community-dev": "v1.0.0-RC1",
         "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev"
     },
     "require-dev": {
