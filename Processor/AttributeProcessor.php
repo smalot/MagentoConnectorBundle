@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
 /**
  * Magento attributes processor
@@ -100,7 +100,7 @@ class AttributeProcessor extends AbstractProcessor
      *
      * @return boolean
      */
-    protected function magentoAttributeExists(AttributeInterface $attribute, array $magentoAttributes)
+    protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
     {
         return array_key_exists($attribute->getCode(), $magentoAttributes);
     }
@@ -113,7 +113,7 @@ class AttributeProcessor extends AbstractProcessor
      * @throws InvalidItemException If a problem occured with the normalizer
      * @return array
      */
-    protected function normalizeAttribute(AttributeInterface $attribute, array $context)
+    protected function normalizeAttribute(Attribute $attribute, array $context)
     {
         try {
             $processedItem = $this->attributeNormalizer->normalize(

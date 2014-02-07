@@ -72,16 +72,16 @@ class OptionCleaner extends Cleaner
 
     /**
      * Clean options
-     * @param AttributeOption    $options
-     * @param AttributeInterface $attribute
+     * @param array     $options
+     * @param Attribute $attribute
      *
      * @throws InvalidItemException If clean doesn't goes well
      */
-    protected function cleanOptions(AttributeOption $options, AttributeInterface $attribute)
+    protected function cleanOptions(array $options, Attribute $attribute = null)
     {
         foreach ($options as $optionLabel => $optionValue) {
-            if (!in_array($attribute->getCode(), $this->getIgnoredAttributes()) &&
-                $attribute !== null &&
+            if ($attribute != null &&
+                !in_array($attribute->getCode(), $this->getIgnoredAttributes()) &&
                 $this->getOption($optionLabel, $attribute) === null
             ) {
                 try {

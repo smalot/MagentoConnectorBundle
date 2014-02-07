@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 
 /**
@@ -137,7 +137,7 @@ class PriceMappingManager
 
     /**
      * Get price mapping for an attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      * @param int                $basePrice
      * @param array              $products
      * @param array              $priceMapping
@@ -145,7 +145,7 @@ class PriceMappingManager
      * @return array
      */
     protected function getAttributeMapping(
-        AttributeInterface $attribute,
+        Attribute $attribute,
         $basePrice,
         array $products,
         array $priceMapping

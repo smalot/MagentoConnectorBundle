@@ -12,7 +12,7 @@ Warning : this connector is not production ready and is intended for evaluation 
 
  - php5-xml
  - php5-soap
- - Akeneo PIM beta 4 or above
+ - Akeneo PIM 1.0.0 RC1 or above
 
 # Installation instructions
 
@@ -22,7 +22,7 @@ Install the Akeneo PIM standard edition following [this documentation](https://g
 
 In your Akeneo PIM standard edition, run the following composer command :
 
-    php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA1
+    php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA2
 
 Then you have to add the ConnectorBundle to your `AppKernel.php` :
 
