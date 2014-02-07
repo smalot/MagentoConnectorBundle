@@ -6,6 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
@@ -17,6 +18,7 @@ class CategoryProcessorSpec extends ObjectBehavior
 {
     function let(
         ChannelManager $channelManager,
+        LocaleManager $localeManager,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         CategoryMappingManager $categoryMappingManager,
@@ -26,6 +28,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->beConstructedWith(
             $webserviceGuesser,
             $normalizerGuesser,
+            $localeManager,
             $categoryMappingManager
         );
 

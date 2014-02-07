@@ -22,6 +22,19 @@ Abstract class AbstractAttributeMapper implements MapperInterface
     protected $clientParameters;
 
     /**
+     * @var MagentoUrlValidator
+     */
+    protected $magentoUrlValidator;
+
+    /**
+     * @param MagentoUrlValidator $magentoUrlValidator
+     */
+    public function __construct(MagentoUrlValidator $magentoUrlValidator)
+    {
+        $this->magentoUrlValidator = $magentoUrlValidator;
+    }
+
+    /**
      * Set mapper parameters
      * @param MagentoSoapClientParameters $clientParameters
      */
@@ -46,11 +59,10 @@ Abstract class AbstractAttributeMapper implements MapperInterface
     public function isValid()
     {
         if (!$this->clientParameters) {
+            var_dump('false');
             return false;
         }
 
-        $magentoUrlValidator = new MagentoUrlValidator();
-
-        return $magentoUrlValidator->isValidMagentoUrl($this->clientParameters->getSoapUrl());
+        return $this->magentoUrlValidator->isValidMagentoUrl($this->clientParameters->getSoapUrl());
     }
 }

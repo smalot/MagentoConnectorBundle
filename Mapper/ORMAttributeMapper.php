@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator;
 
 /**
  * Magento attribute mapper
@@ -25,13 +26,17 @@ class ORMAttributeMapper extends AbstractAttributeMapper
     protected $attributeManager;
 
     /**
+     * @param MagentoUrlValidator  $magentoUrlValidator
      * @param SimpleMappingManager $simpleMappingManager
      * @param AttributeManager     $attributeManager
      */
     public function __construct(
+        MagentoUrlValidator $magentoUrlValidator,
         SimpleMappingManager $simpleMappingManager,
         AttributeManager $attributeManager
     ) {
+        parent::__construct($magentoUrlValidator);
+
         $this->simpleMappingManager = $simpleMappingManager;
         $this->attributeManager = $attributeManager;
     }
@@ -42,11 +47,15 @@ class ORMAttributeMapper extends AbstractAttributeMapper
      */
     public function getMapping()
     {
+        if (!$this->isValid()) {
+            return new MappingCollection();
+        }
+
         $simpleMappingItems = $this->simpleMappingManager->getMapping($this->getIdentifier());
 
         $mapping = new MappingCollection();
         foreach ($simpleMappingItems as $simpleMappingItem) {
-            $mapping.add(array(
+            $mapping->add(array(
                 'source'    => $simpleMappingItem->getSource(),
                 'target'    => $simpleMappingItem->getTarget(),
                 'deletable' => true
@@ -62,6 +71,10 @@ class ORMAttributeMapper extends AbstractAttributeMapper
      */
     public function setMapping(array $mapping)
     {
+        if (!$this->isValid()) {
+            return;
+        }
+
         $this->simpleMappingManager->setMapping($mapping, $this->getIdentifier());
     }
 

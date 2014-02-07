@@ -21,11 +21,11 @@ class MappingCollection extends ArrayCollection
         if ($this->containsKey($value['source'])) {
             $oldValue = $this->get($value['source']);
 
-            $oldValue['target']    = $value['target'] ? $value['target'] : $oldValue['target'];
-            $oldValue['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
-        } else {
-            $this->set($value['source'], $value);
+            $value['target']    = $value['target'] ? $value['target'] : $oldValue['target'];
+            $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
         }
+
+        $this->set($value['source'], $value);
 
         return true;
     }
