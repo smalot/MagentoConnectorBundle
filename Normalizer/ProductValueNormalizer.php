@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
-use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
 
@@ -99,8 +99,9 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Is scopable and is the scope corresponding ?
-     * @param  ProductValueInterface $value
-     * @param  string                $scopeCode
+     * @param ProductValueInterface $value
+     * @param string                $scopeCode
+     *
      * @return boolean
      */
     protected function isScopeNormalizable(ProductValueInterface $value, $scopeCode)
@@ -112,8 +113,9 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * It is localizable and is the locale corresponding
-     * @param  ProductValueInterface $value
-     * @param  string                $localeCode
+     * @param ProductValueInterface $value
+     * @param string                $localeCode
+     *
      * @return boolean
      */
     protected function isLocaleNormalizable(ProductValueInterface $value, $localeCode)
@@ -125,8 +127,9 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Should we normalize the given non localizable value even if we are in only_localizable mode
-     * @param  ProductValueInterface $value
-     * @param  boolean               $onlyLocalized
+     * @param ProductValueInterface $value
+     * @param boolean               $onlyLocalized
+     *
      * @return boolean
      */
     protected function forceLocalization(ProductValueInterface $value, $onlyLocalized)
@@ -140,7 +143,8 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Is the attribute of the given value ignored
-     * @param  ProductValueInterface $value
+     * @param ProductValueInterface $value
+     *
      * @return boolean
      */
     protected function attributeIsNotIgnored(ProductValueInterface $value)
@@ -197,7 +201,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * Normalize the given data
      * @param mixed              $data
      * @param callable           $normalizer
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      * @param string             $attributeScope
      * @param array              $magentoAttributesOptions
      * @param string             $currencyCode
@@ -208,7 +212,7 @@ class ProductValueNormalizer implements NormalizerInterface
     protected function normalizeData(
         $data,
         $normalizer,
-        AttributeInterface $attribute,
+        Attribute $attribute,
         $attributeScope,
         $magentoAttributesOptions,
         $currencyCode
@@ -241,12 +245,12 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Does the attribute scope match with attributeScope on magento ?
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      * @param string             $attributeScope
      *
      * @return boolean
      */
-    protected function scopeMatches(AttributeInterface $attribute, $attributeScope)
+    protected function scopeMatches(Attribute $attribute, $attributeScope)
     {
         return (
             $attributeScope !== self::GLOBAL_SCOPE &&

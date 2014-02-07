@@ -48,7 +48,7 @@ class GroupedOptionReader extends BulkEntityReader
             $attributeCode = $option->getAttribute()->getCode();
 
             if (!in_array($attributeCode, $this->getIgnoredAttributes()) &&
-                !$option->getAttribute()->getFamilies()->isEmpty()
+                !$option->getAttribute()->getFamilies()=== null
             ) {
                 $groupedOptions[$attributeCode] =
                     isset($groupedOptions[$attributeCode]) ?

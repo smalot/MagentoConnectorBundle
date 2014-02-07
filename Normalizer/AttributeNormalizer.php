@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Pim\Bundle\CatalogBundle\Model\AttributeInterface;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
@@ -116,11 +116,11 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized type for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      *
      * @return string
      */
-    protected function getNormalizedType(AttributeInterface $attribute)
+    protected function getNormalizedType(Attribute $attribute)
     {
         return $this->getTypeMapping()[$attribute->getAttributeType()];
     }
@@ -149,12 +149,12 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized code for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      *
      * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
      */
-    protected function getNormalizedCode(AttributeInterface $attribute)
+    protected function getNormalizedCode(Attribute $attribute)
     {
         if (preg_match('/^[a-z][0-9a-z_]*$/', $attribute->getCode()) === 0) {
             throw new InvalidAttributeNameException(
@@ -171,18 +171,18 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized scope for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      *
      * @return string
      */
-    protected function getNormalizedScope(AttributeInterface $attribute)
+    protected function getNormalizedScope(Attribute $attribute)
     {
         return $attribute->isLocalizable() ? self::STORE_SCOPE : self::GLOBAL_SCOPE;
     }
 
     /**
      * Get normalized default value for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      * @param string             $defaultLocale
      * @param array              $magentoAttributes
      * @param array              $magentoAttributesOptions
@@ -190,7 +190,7 @@ class AttributeNormalizer implements NormalizerInterface
      * @return string
      */
     protected function getNormalizedDefaultValue(
-        AttributeInterface $attribute,
+        Attribute $attribute,
         $defaultLocale,
         array $magentoAttributes,
         array $magentoAttributesOptions
@@ -218,46 +218,46 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized unquie value for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      *
      * @return string
      */
-    protected function getNormalizedUnique(AttributeInterface $attribute)
+    protected function getNormalizedUnique(Attribute $attribute)
     {
         return $attribute->isUnique() ? '1' : '0';
     }
 
     /**
      * Get normalized is required for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      *
      * @return string
      */
-    protected function getNormalizedRequired(AttributeInterface $attribute)
+    protected function getNormalizedRequired(Attribute $attribute)
     {
         return $attribute->isRequired() ? '1' : '0';
     }
 
     /**
      * Get normalized configurable for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      *
      * @return string
      */
-    protected function getNormalizedConfigurable(AttributeInterface $attribute)
+    protected function getNormalizedConfigurable(Attribute $attribute)
     {
         return ($attribute->getAttributeType() === 'pim_catalog_simpleselect') ? '1' : '0';
     }
 
     /**
      * Get normalized labels for attribute
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      * @param array              $magentoStoreViews
      * @param string             $defaultLocale
      *
      * @return string
      */
-    protected function getNormalizedLabels(AttributeInterface $attribute, array $magentoStoreViews, $defaultLocale)
+    protected function getNormalizedLabels(Attribute $attribute, array $magentoStoreViews, $defaultLocale)
     {
         $localizedLabels = array();
 
@@ -281,13 +281,13 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get attribute translation for given locale code
-     * @param AttributeInterface $attribute
+     * @param Attribute $attribute
      * @param string             $localeCode
      * @param string             $defaultLocale
      *
      * @return mixed
      */
-    protected function getAttributeTranslation(AttributeInterface $attribute, $localeCode, $defaultLocale)
+    protected function getAttributeTranslation(Attribute $attribute, $localeCode, $defaultLocale)
     {
         foreach ($attribute->getTranslations() as $translation) {
             if (strtolower($translation->getLocale()) == strtolower($localeCode) &&
