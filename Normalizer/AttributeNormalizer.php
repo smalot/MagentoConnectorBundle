@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * A normalizer to transform a option entity into an array
@@ -85,13 +86,15 @@ class AttributeNormalizer implements NormalizerInterface
         if ($context['create']) {
             $normalizedAttribute = array_merge(
                 array(
-                    'attribute_code' => $this->getNormalizedCode($object),
+                    'attribute_code' => $this->getNormalizedCode($object, $context['attributeMapping']),
                     'frontend_input' => $magentoAttributeType,
                 ),
                 $normalizedAttribute
             );
         } else {
-            if ($magentoAttributeType !== $context['magentoAttributes'][$object->getCode()]['type'] &&
+            $magentoAttributeCode = $context['attributeMapping']->getTarget($object->getCode());
+            $attributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
+            if ($magentoAttributeType !== $attributeType &&
                 !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
                 throw new AttributeTypeChangedException(
                     sprintf(
@@ -154,7 +157,7 @@ class AttributeNormalizer implements NormalizerInterface
      * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
      */
-    protected function getNormalizedCode(Attribute $attribute)
+    protected function getNormalizedCode(Attribute $attribute, MappingCollection $attributeMapping)
     {
         if (preg_match('/^[a-z][0-9a-z_]*$/', $attribute->getCode()) === 0) {
             throw new InvalidAttributeNameException(
@@ -166,7 +169,7 @@ class AttributeNormalizer implements NormalizerInterface
             );
         }
 
-        return $attribute->getCode();
+        return $attributeMapping->getTarget($attribute->getCode());
     }
 
     /**

@@ -44,4 +44,50 @@ class MappingCollection extends ArrayCollection
 
         return $this;
     }
+
+    /**
+     * Get source for the given target
+     * @param string  $target
+     * @param boolean $check
+     *
+     * @return string|null
+     */
+    public function getSource($target, $check = false)
+    {
+        $it = $this->getIterator();
+
+        while ($it->valid()) {
+            if ($it->current()['target'] == $target) {
+                return $it->key();
+            }
+
+            $it->next();
+        }
+
+        if ($check || $this->getTarget($target, true) == $target) {
+            return $target;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get target for the given source
+     * @param string  $source
+     * @param boolean $check
+     *
+     * @return string|null
+     */
+    public function getTarget($source, $check = false)
+    {
+        $target = $this->get($source);
+
+        if ($target) {
+            return $target['target'];
+        } elseif ($check || $this->getSource($source, true) == $source) {
+            return $source;
+        } else {
+            return null;
+        }
+    }
 }

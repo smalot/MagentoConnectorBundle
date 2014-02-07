@@ -76,4 +76,32 @@ class MappingCollectionSpec extends ObjectBehavior
             'bar' => array('source' => 'bar', 'target' => 'foo', 'deletable' => true)
         ));
     }
+
+    function it_shoulds_get_source_for_target()
+    {
+        $this->add(array('source' => 'foo', 'target' => 'bar', 'deletable' => true));
+
+        $this->getSource('bar')->shouldReturn('foo');
+    }
+
+    function it_shoulds_get_target_for_source()
+    {
+        $this->add(array('source' => 'foo', 'target' => 'bar', 'deletable' => true));
+
+        $this->getTarget('foo')->shouldReturn('bar');
+    }
+
+    function it_shoulds_get_target_for_not_known_target()
+    {
+        $this->add(array('source' => 'foo', 'target' => 'bar', 'deletable' => true));
+
+        $this->getTarget('test')->shouldReturn('test');
+    }
+
+    function it_shoulds_get_source_for_not_known_source()
+    {
+        $this->add(array('source' => 'foo', 'target' => 'bar', 'deletable' => true));
+
+        $this->getSource('test')->shouldReturn('test');
+    }
 }

@@ -4,6 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
+use Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -22,10 +23,23 @@ class SimpleMappingManagerSpec extends ObjectBehavior
         $this->getMapping('foo')->shouldReturn(array('bar'));
     }
 
-    function it_store_new_mapping_in_database($er)
+    function it_store_new_mapping_in_database($er, $objectManager)
     {
         $er->findOneBy(array('identifier' => 'identifier', 'source' => 'foo'))->willReturn(null);
-        $er->persist(Argument::cetera())->shouldBeCalled();
+        $objectManager->persist(Argument::cetera())->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->setMapping(array(array('source' => 'foo', 'target' => 'bar')), 'identifier');
+    }
+
+    function it_store_updated_mapping_in_database($er, $objectManager, SimpleMapping $simpleMapping)
+    {
+        $er->findOneBy(array('identifier' => 'identifier', 'source' => 'foo'))->willReturn($simpleMapping);
+
+        $simpleMapping->setTarget('bar')->shouldBeCalled();
+
+        $objectManager->persist(Argument::cetera())->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
 
         $this->setMapping(array(array('source' => 'foo', 'target' => 'bar')), 'identifier');
     }

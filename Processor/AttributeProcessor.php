@@ -25,13 +25,16 @@ class AttributeProcessor extends AbstractProcessor
      */
     protected $attributeMappingMerger;
 
+    /**
+     * @var string
+     */
     protected $attributeMapping;
 
     /**
      * Set attribute mapping
      * @param string $attributeMapping
      *
-     * @return AttributeMapping
+     * @return AttributeProcessor
      */
     public function setAttributeMapping($attributeMapping)
     {
@@ -77,6 +80,7 @@ class AttributeProcessor extends AbstractProcessor
         $this->globalContext['magentoStoreViews']        = $this->webservice->getStoreViewsList();
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
+        $this->globalContext['attributeMapping']         = $this->attributeMappingMerger->getMapping();
     }
 
     /**
@@ -102,7 +106,10 @@ class AttributeProcessor extends AbstractProcessor
      */
     protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
     {
-        return array_key_exists($attribute->getCode(), $magentoAttributes);
+        return array_key_exists(
+            $this->attributeMappingMerger->getMapping()->getTarget($attribute->getCode()),
+            $magentoAttributes
+        );
     }
 
     /**

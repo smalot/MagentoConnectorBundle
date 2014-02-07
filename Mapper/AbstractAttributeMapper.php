@@ -59,7 +59,6 @@ Abstract class AbstractAttributeMapper implements MapperInterface
     public function isValid()
     {
         if (!$this->clientParameters) {
-            var_dump('false');
             return false;
         }
 
