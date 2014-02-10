@@ -152,7 +152,8 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized code for attribute
-     * @param Attribute $attribute
+     * @param Attribute         $attribute
+     * @param MappingCollection $attributeMapping
      *
      * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
@@ -186,9 +187,9 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized default value for attribute
      * @param Attribute $attribute
-     * @param string             $defaultLocale
-     * @param array              $magentoAttributes
-     * @param array              $magentoAttributesOptions
+     * @param string    $defaultLocale
+     * @param array     $magentoAttributes
+     * @param array     $magentoAttributesOptions
      *
      * @return string
      */
@@ -255,8 +256,8 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized labels for attribute
      * @param Attribute $attribute
-     * @param array              $magentoStoreViews
-     * @param string             $defaultLocale
+     * @param array     $magentoStoreViews
+     * @param string    $defaultLocale
      *
      * @return string
      */
@@ -285,8 +286,8 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get attribute translation for given locale code
      * @param Attribute $attribute
-     * @param string             $localeCode
-     * @param string             $defaultLocale
+     * @param string    $localeCode
+     * @param string    $defaultLocale
      *
      * @return mixed
      */

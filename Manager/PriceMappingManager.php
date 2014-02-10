@@ -137,7 +137,7 @@ class PriceMappingManager
 
     /**
      * Get price mapping for an attribute
-     * @param Attribute $attribute
+     * @param Attribute          $attribute
      * @param int                $basePrice
      * @param array              $products
      * @param array              $priceMapping

@@ -56,12 +56,16 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getSoapUrl()
         );
 
-        return $this->areValidSoapParameters($clientParameters);
+        if (!$this->areValidSoapParameters($clientParameters)) {
+            $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
+            $this->context->addViolationAt('soapApikey', $constraint->messageApikey, array());
+        }
     }
 
     /**
      * Are the given parameters valid ?
-     * @param  MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParameters $clientParameters
+     *
      * @return boolean
      */
     public function areValidSoapParameters(MagentoSoapClientParameters $clientParameters)
