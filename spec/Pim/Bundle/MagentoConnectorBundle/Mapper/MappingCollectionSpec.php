@@ -104,4 +104,18 @@ class MappingCollectionSpec extends ObjectBehavior
 
         $this->getSource('test')->shouldReturn('test');
     }
+
+    function it_shoulds_get_null_for_renamed_source()
+    {
+        $this->add(array('source' => 'foo', 'target' => 'bar', 'deletable' => true));
+
+        $this->getSource('foo')->shouldReturn(null);
+    }
+
+    function it_shoulds_get_null_for_renamed_target()
+    {
+        $this->add(array('source' => 'foo', 'target' => 'bar', 'deletable' => true));
+
+        $this->getTarget('bar')->shouldReturn(null);
+    }
 }
