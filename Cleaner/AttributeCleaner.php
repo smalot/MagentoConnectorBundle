@@ -5,10 +5,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Doctrine\ORM\EntityManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Magento attribute cleaner

@@ -14,10 +14,19 @@ use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
  */
 class MappingMerger
 {
+    /**
+     * @var array
+     */
     protected $mappers = array();
 
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * @var boolean
+     */
     protected $hasParametersSetted = false;
 
     /**

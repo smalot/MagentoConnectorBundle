@@ -16,6 +16,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
  */
 class WebserviceGuesser extends AbstractGuesser
 {
+    /**
+     * @var Webservice
+     */
     protected $webservice;
 
     /**
