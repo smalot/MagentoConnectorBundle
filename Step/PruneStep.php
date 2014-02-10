@@ -75,7 +75,6 @@ class PruneStep extends AbstractStep
      */
     protected function afterConfigurationSet()
     {
-
     }
 
     /**

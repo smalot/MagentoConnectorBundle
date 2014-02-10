@@ -22,9 +22,7 @@ class AttributeManager extends BaseAttributeManager
      */
     public function getAttributes(array $criterias = array())
     {
-        $er = $this->getRepository();
-
-        return $er->findBy($criterias);
+        return $this->getRepository()->findBy($criterias);
     }
 
     /**

@@ -93,14 +93,9 @@ class ORMAttributeMapper extends AbstractAttributeMapper
      */
     public function getAllSources()
     {
-        $attributes = $this->attributeManager->getAttributes();
-
-        $sources = array();
-        foreach ($attributes as $attribute) {
-            $sources[] = $attribute->getCode();
-        }
-
-        return $sources;
+        return array_map(function($attribute) {
+            return $attribute->getCode();
+        }, $this->attributeManager->getAttributes());
     }
 
     /**
