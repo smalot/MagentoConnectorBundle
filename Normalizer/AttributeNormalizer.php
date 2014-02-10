@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * A normalizer to transform a option entity into an array
@@ -85,13 +86,15 @@ class AttributeNormalizer implements NormalizerInterface
         if ($context['create']) {
             $normalizedAttribute = array_merge(
                 array(
-                    'attribute_code' => $this->getNormalizedCode($object),
+                    'attribute_code' => $this->getNormalizedCode($object, $context['attributeMapping']),
                     'frontend_input' => $magentoAttributeType,
                 ),
                 $normalizedAttribute
             );
         } else {
-            if ($magentoAttributeType !== $context['magentoAttributes'][$object->getCode()]['type'] &&
+            $magentoAttributeCode = $context['attributeMapping']->getTarget($object->getCode());
+            $attributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
+            if ($magentoAttributeType !== $attributeType &&
                 !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
                 throw new AttributeTypeChangedException(
                     sprintf(
@@ -149,12 +152,13 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized code for attribute
-     * @param Attribute $attribute
+     * @param Attribute         $attribute
+     * @param MappingCollection $attributeMapping
      *
      * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
      */
-    protected function getNormalizedCode(Attribute $attribute)
+    protected function getNormalizedCode(Attribute $attribute, MappingCollection $attributeMapping)
     {
         if (preg_match('/^[a-z][0-9a-z_]*$/', $attribute->getCode()) === 0) {
             throw new InvalidAttributeNameException(
@@ -166,7 +170,7 @@ class AttributeNormalizer implements NormalizerInterface
             );
         }
 
-        return $attribute->getCode();
+        return $attributeMapping->getTarget($attribute->getCode());
     }
 
     /**
@@ -183,9 +187,9 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized default value for attribute
      * @param Attribute $attribute
-     * @param string             $defaultLocale
-     * @param array              $magentoAttributes
-     * @param array              $magentoAttributesOptions
+     * @param string    $defaultLocale
+     * @param array     $magentoAttributes
+     * @param array     $magentoAttributesOptions
      *
      * @return string
      */
@@ -252,8 +256,8 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized labels for attribute
      * @param Attribute $attribute
-     * @param array              $magentoStoreViews
-     * @param string             $defaultLocale
+     * @param array     $magentoStoreViews
+     * @param string    $defaultLocale
      *
      * @return string
      */
@@ -282,8 +286,8 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get attribute translation for given locale code
      * @param Attribute $attribute
-     * @param string             $localeCode
-     * @param string             $defaultLocale
+     * @param string    $localeCode
+     * @param string    $defaultLocale
      *
      * @return mixed
      */

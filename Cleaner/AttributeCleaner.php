@@ -5,8 +5,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -21,6 +22,11 @@ use Doctrine\ORM\EntityManager;
 class AttributeCleaner extends Cleaner
 {
     /**
+     * @var MappingMerger
+     */
+    protected $attributeMappingMerger;
+
+    /**
      * @var EntityManager
      */
     protected $em;
@@ -31,19 +37,49 @@ class AttributeCleaner extends Cleaner
     protected $attributeClassName;
 
     /**
+     * @var string
+     */
+    protected $attributeMapping;
+
+    /**
+     * Set attribute mapping
+     * @param string $attributeMapping
+     *
+     * @return AttributeCleaner
+     */
+    public function setAttributeMapping($attributeMapping)
+    {
+        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+
+        return $this;
+    }
+
+    /**
+     * Get attribute mapping
+     * @return string
+     */
+    public function getAttributeMapping()
+    {
+        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+    }
+
+    /**
      * @param WebserviceGuesser $webserviceGuesser
+     * @param MappingMerger     $attributeMappingMerger
      * @param EntityManager     $em
      * @param string            $attributeClassName
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
+        MappingMerger $attributeMappingMerger,
         EntityManager $em,
         $attributeClassName
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->em                 = $em;
-        $this->attributeClassName = $attributeClassName;
+        $this->attributeMappingMerger = $attributeMappingMerger;
+        $this->em                     = $em;
+        $this->attributeClassName     = $attributeClassName;
     }
 
     /**
@@ -67,10 +103,15 @@ class AttributeCleaner extends Cleaner
      */
     protected function cleanAttribute(array $attribute, array $magentoAttributes)
     {
-        $pimAttribute = $this->getAttribute($attribute['code']);
+        $magentoAttributeCode = $attribute['code'];
+        $pimAttributeCode     = $this->attributeMappingMerger->getMapping()->getSource($magentoAttributeCode);
+        $pimAttribute         = $this->getAttribute($pimAttributeCode);
 
         if (!in_array($attribute['code'], $this->getIgnoredAttributes()) &&
-            (!$pimAttribute || ($pimAttribute && !$pimAttribute->getFamilies()))
+            (
+                $pimAttributeCode == null ||
+                (!$pimAttribute || ($pimAttribute && !$pimAttribute->getFamilies()))
+            )
         ) {
             try {
                 $this->handleAttributeNotInPimAnymore($attribute);
@@ -113,7 +154,18 @@ class AttributeCleaner extends Cleaner
             Cleaner::DELETE     => Cleaner::DELETE
         );
 
-        return $configurationFields;
+        return array_merge(
+            $configurationFields,
+            $this->attributeMappingMerger->getConfigurationField()
+        );
+    }
+
+    /**
+     * Called after the configuration is setted
+     */
+    protected function afterConfigurationSet()
+    {
+        $this->attributeMappingMerger->setParameters($this->getClientParameters());
     }
 
     /**

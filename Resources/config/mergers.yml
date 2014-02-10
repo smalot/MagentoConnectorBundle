@@ -1,0 +1,9 @@
+parameters:
+    pim_magento_connector.merger.mapping.class: Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger
+
+services:
+    pim_magento_connector.merger.attribute_mapping:
+        class: %pim_magento_connector.merger.mapping.class%
+        arguments:
+            - ['@pim_magento_connector.mapper.magento_attribute', '@pim_magento_connector.mapper.orm_attribute']
+            - 'attribute'

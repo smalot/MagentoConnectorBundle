@@ -3,7 +3,9 @@ parameters:
     pim_magento_connector.manager.locale.class: Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager
     pim_magento_connector.manager.currency.class: Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager
     pim_magento_connector.manager.category_mapping.class: Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager
+    pim_magento_connector.manager.simple_mapping.class: Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager
     pim_magento_connector.manager.association_type.class: Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager
+    pim_magento_connector.manager.attribute.class: Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager
 
 services:
     # manager
@@ -37,3 +39,20 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@pim_magento_connector.repository.currency'
+
+    pim_magento_connector.manager.simple_mapping:
+        class: %pim_magento_connector.manager.simple_mapping.class%
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - %pim_magento_connector.entity.simple_mapping.class%
+
+    pim_magento_connector.manager.attribute:
+        class: %pim_magento_connector.manager.attribute.class%
+        arguments:
+            - %pim_catalog.entity.attribute.class%
+            - %pim_catalog.entity.attribute_option.class%
+            - %pim_catalog.entity.attribute_option_value.class%
+            - %pim_catalog.entity.product.class%
+            - '@doctrine.orm.entity_manager'
+            - '@pim_catalog.manager.locale'
+            - '@pim_flexibleentity.attributetype.factory'

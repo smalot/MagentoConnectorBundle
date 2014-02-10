@@ -7,6 +7,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
 /**
@@ -19,6 +21,55 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 class AttributeProcessor extends AbstractProcessor
 {
     /**
+     * @var MappingMerger
+     */
+    protected $attributeMappingMerger;
+
+    /**
+     * @var string
+     */
+    protected $attributeMapping;
+
+    /**
+     * Set attribute mapping
+     * @param string $attributeMapping
+     *
+     * @return AttributeProcessor
+     */
+    public function setAttributeMapping($attributeMapping)
+    {
+        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+
+        return $this;
+    }
+
+    /**
+     * Get attribute mapping
+     * @return string
+     */
+    public function getAttributeMapping()
+    {
+        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+    }
+
+    /**
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MappingMerger            $attributeMappingMerger
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MappingMerger $attributeMappingMerger
+    ) {
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager);
+
+        $this->attributeMappingMerger = $attributeMappingMerger;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function beforeExecute()
@@ -29,6 +80,7 @@ class AttributeProcessor extends AbstractProcessor
         $this->globalContext['magentoStoreViews']        = $this->webservice->getStoreViewsList();
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
+        $this->globalContext['attributeMapping']         = $this->attributeMappingMerger->getMapping();
     }
 
     /**
@@ -54,7 +106,10 @@ class AttributeProcessor extends AbstractProcessor
      */
     protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
     {
-        return array_key_exists($attribute->getCode(), $magentoAttributes);
+        return array_key_exists(
+            $this->attributeMappingMerger->getMapping()->getTarget($attribute->getCode()),
+            $magentoAttributes
+        );
     }
 
     /**
@@ -78,5 +133,24 @@ class AttributeProcessor extends AbstractProcessor
         }
 
         return $processedItem;
+    }
+
+    /**
+     * Called after the configuration is setted
+     */
+    protected function afterConfigurationSet()
+    {
+        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            $this->attributeMappingMerger->getConfigurationField()
+        );
     }
 }

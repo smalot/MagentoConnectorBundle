@@ -201,7 +201,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * Normalize the given data
      * @param mixed              $data
      * @param callable           $normalizer
-     * @param Attribute $attribute
+     * @param Attribute          $attribute
      * @param string             $attributeScope
      * @param array              $magentoAttributesOptions
      * @param string             $currencyCode
@@ -246,7 +246,7 @@ class ProductValueNormalizer implements NormalizerInterface
     /**
      * Does the attribute scope match with attributeScope on magento ?
      * @param Attribute $attribute
-     * @param string             $attributeScope
+     * @param string    $attributeScope
      *
      * @return boolean
      */

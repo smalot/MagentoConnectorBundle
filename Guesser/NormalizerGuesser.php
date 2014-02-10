@@ -87,7 +87,7 @@ class NormalizerGuesser extends AbstractGuesser
         $currency,
         $magentoUrl
     ) {
-        $client         = new MagentoSoapClient($clientParameters);
+        $client         = $this->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
@@ -134,7 +134,7 @@ class NormalizerGuesser extends AbstractGuesser
         ProductNormalizerInterface $productNormalizer,
         PriceMappingManager $priceMappingManager
     ) {
-        $client = new MagentoSoapClient($clientParameters);
+        $client = $this->getMagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
 
@@ -160,7 +160,7 @@ class NormalizerGuesser extends AbstractGuesser
      */
     public function getCategoryNormalizer(MagentoSoapClientParameters $clientParameters)
     {
-        $client = new MagentoSoapClient($clientParameters);
+        $client = $this->getMagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
 
@@ -185,7 +185,7 @@ class NormalizerGuesser extends AbstractGuesser
      */
     public function getOptionNormalizer(MagentoSoapClientParameters $clientParameters)
     {
-        $client = new MagentoSoapClient($clientParameters);
+        $client = $this->getMagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
 
@@ -206,7 +206,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @return AbstractNormalizer
      */
     public function getAttributeNormalizer(MagentoSoapClientParameters $clientParameters) {
-        $client = new MagentoSoapClient($clientParameters);
+        $client = $this->getMagentoSoapClient($clientParameters);
 
         $magentoVersion = $this->getMagentoVersion($client);
 

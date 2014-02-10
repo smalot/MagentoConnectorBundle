@@ -9,6 +9,7 @@
 - Added possibility to export options (create and remove)
 - Products, categories and configurables prune after export
 - Added possibility to export attributes
+- Mapping system between Akeneo and Magento
 
 ## Improvements
 

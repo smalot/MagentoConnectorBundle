@@ -68,4 +68,3 @@ services:
         class: Doctrine\ORM\Mapping\ClassMetaData
         arguments:
             name: %pim_catalog.entity.currency.class%
-

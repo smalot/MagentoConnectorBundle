@@ -67,3 +67,6 @@ pim_base_connector:
         pimRelated:
             label: Association type for related products
             help:  Association type corresponding to related products
+        attributeMapping:
+            label: Attribute mapping
+            help: Map attribute code between Akeneo PIM and Magento

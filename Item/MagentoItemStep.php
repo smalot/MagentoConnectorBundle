@@ -170,6 +170,25 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
     }
 
     /**
+     * Set the step element configuration
+     *
+     * @param array $config
+     */
+    public function setConfiguration(array $config)
+    {
+        parent::setConfiguration($config);
+
+        $this->afterConfigurationSet();
+    }
+
+    /**
+     * Called after configuration set
+     */
+    protected function afterConfigurationSet()
+    {
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()
@@ -177,7 +196,9 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
         return array(
             'soapUsername' => array(
                 'options' => array(
-                    'required' => true
+                    'required' => true,
+                    'help'     => 'pim_base_connector.export.soapUsername.help',
+                    'label'    => 'pim_base_connector.export.soapUsername.label'
                 )
             ),
             'soapApiKey'   => array(
@@ -185,12 +206,16 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
                 //empty the field at each edit
                 'type'    => 'text',
                 'options' => array(
-                    'required' => true
+                    'required' => true,
+                    'help'     => 'pim_base_connector.export.soapApiKey.help',
+                    'label'    => 'pim_base_connector.export.soapApiKey.label'
                 )
             ),
             'soapUrl' => array(
                 'options' => array(
-                    'required' => true
+                    'required' => true,
+                    'help'     => 'pim_base_connector.export.soapUrl.help',
+                    'label'    => 'pim_base_connector.export.soapUrl.label'
                 )
             )
         );

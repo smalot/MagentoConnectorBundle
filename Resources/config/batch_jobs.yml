@@ -54,6 +54,9 @@ connector:
         magento_attribute_export:
             title: pim_magento_connector.jobs.attribute_export.title
             type:  export
+            templates:
+                show: 'PimMagentoConnectorBundle:AttributeExport:show.html.twig'
+                edit: 'PimMagentoConnectorBundle:AttributeExport:edit.html.twig'
             steps:
                 export_attributes:
                     title:     pim_magento_connector.jobs.attribute_export.export.title
