@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
  * Magento attribute mapper
@@ -26,16 +26,16 @@ class ORMAttributeMapper extends AbstractAttributeMapper
     protected $attributeManager;
 
     /**
-     * @param MagentoUrlValidator  $magentoUrlValidator
-     * @param SimpleMappingManager $simpleMappingManager
-     * @param AttributeManager     $attributeManager
+     * @param HasValidCredentialsValidator $hasValidCredentialsValidator
+     * @param SimpleMappingManager         $simpleMappingManager
+     * @param AttributeManager             $attributeManager
      */
     public function __construct(
-        MagentoUrlValidator $magentoUrlValidator,
+        HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
         AttributeManager $attributeManager
     ) {
-        parent::__construct($magentoUrlValidator);
+        parent::__construct($hasValidCredentialsValidator);
 
         $this->simpleMappingManager = $simpleMappingManager;
         $this->attributeManager = $attributeManager;

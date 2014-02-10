@@ -36,8 +36,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
         WebserviceGuesser $webserviceGuesser,
         MagentoUrlValidator $magentoUrlValidator
     ) {
-        $this->webserviceGuesser = $webserviceGuesser;
-        $this->magentoUrlValidator      = $magentoUrlValidator;
+        $this->webserviceGuesser   = $webserviceGuesser;
+        $this->magentoUrlValidator = $magentoUrlValidator;
     }
 
     /**
@@ -56,13 +56,24 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getSoapUrl()
         );
 
-        if ($this->magentoUrlValidator->isValidMagentoUrl($protocol->getSoapUrl())) {
+        return $this->areValidSoapParameters($clientParameters);
+    }
+
+    /**
+     * Are the given parameters valid ?
+     * @param  MagentoSoapClientParameters $clientParameters
+     * @return boolean
+     */
+    public function areValidSoapParameters(MagentoSoapClientParameters $clientParameters)
+    {
+        if ($this->magentoUrlValidator->isValidMagentoUrl($clientParameters->getSoapUrl())) {
             try {
                 $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidCredentialException $e) {
-                $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
-                $this->context->addViolationAt('soapApiKey', $constraint->messageApikey);
+                return false;
             }
         }
+
+        return true;
     }
 }

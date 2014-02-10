@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
  * Abstract attribute mapper
@@ -22,16 +22,16 @@ Abstract class AbstractAttributeMapper implements MapperInterface
     protected $clientParameters;
 
     /**
-     * @var MagentoUrlValidator
+     * @var HasValidCredentialsValidator
      */
-    protected $magentoUrlValidator;
+    protected $hasValidCredentialsValidator;
 
     /**
-     * @param MagentoUrlValidator $magentoUrlValidator
+     * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      */
-    public function __construct(MagentoUrlValidator $magentoUrlValidator)
+    public function __construct(HasValidCredentialsValidator $hasValidCredentialsValidator)
     {
-        $this->magentoUrlValidator = $magentoUrlValidator;
+        $this->hasValidCredentialsValidator = $hasValidCredentialsValidator;
     }
 
     /**
@@ -62,6 +62,6 @@ Abstract class AbstractAttributeMapper implements MapperInterface
             return false;
         }
 
-        return $this->magentoUrlValidator->isValidMagentoUrl($this->clientParameters->getSoapUrl());
+        return $this->hasValidCredentialsValidator->areValidSoapParameters($this->clientParameters);
     }
 }

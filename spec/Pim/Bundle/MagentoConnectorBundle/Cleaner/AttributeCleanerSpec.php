@@ -68,17 +68,60 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_shoulds_delete_attribute_which_dot_renamed($webservice, $entityRepository, $mappingCollection, Attribute $attribute)
+    function it_shoulds_delete_attribute_which_got_renamed($webservice, $entityRepository, $mappingCollection, Attribute $attribute)
     {
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
-        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn($attribute);
+        $entityRepository->findOneBy(array('code' => null))->willReturn($attribute);
         $attribute->getFamilies()->willReturn(false);
         $mappingCollection->getSource('foo')->willReturn(null);
 
         $webservice->deleteAttribute('foo')->shouldBeCalled();
 
         $this->execute();
+    }
+
+    function it_shoulds_give_configuration_fields($attributeMappingMerger)
+    {
+        $attributeMappingMerger->getConfigurationField()->willReturn(array('attributeMapping' => array()));
+
+        $this->getConfigurationFields()->shouldReturn(
+            array(
+                'soapUsername' => array(
+                    'options' => array(
+                        'required' => true,
+                        'help'     => 'pim_base_connector.export.soapUsername.help',
+                        'label'    => 'pim_base_connector.export.soapUsername.label'
+                    )
+                ),
+                'soapApiKey'   => array(
+                    'type'    => 'text',
+                    'options' => array(
+                        'required' => true,
+                        'help'     => 'pim_base_connector.export.soapApiKey.help',
+                        'label'    => 'pim_base_connector.export.soapApiKey.label'
+                    )
+                ),
+                'soapUrl' => array(
+                    'options' => array(
+                        'required' => true,
+                        'help'     => 'pim_base_connector.export.soapUrl.help',
+                        'label'    => 'pim_base_connector.export.soapUrl.label'
+                    )
+                ),
+                'notInPimAnymoreAction' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices'  => array(
+                            'do_nothing' => 'do_nothing',
+                            'delete'     => 'delete'
+                        ),
+                        'required' => true
+                    )
+                ),
+                'attributeMapping' => array()
+            )
+        );
     }
 }

@@ -6,11 +6,11 @@ services:
     pim_magento_connector.mapper.magento_attribute:
         class: %pim_magento_connector.mapper.magento_attribute.class%
         arguments:
-            - '@pim_magento_connector.validator.magento_url'
+            - '@pim_magento_connector.validator.has_valid_credentials'
             - '@pim_magento_connector.guesser.magento_webservice'
     pim_magento_connector.mapper.orm_attribute:
         class: %pim_magento_connector.mapper.orm_attribute.class%
         arguments:
-            - '@pim_magento_connector.validator.magento_url'
+            - '@pim_magento_connector.validator.has_valid_credentials'
             - '@pim_magento_connector.manager.simple_mapping'
             - '@pim_magento_connector.manager.attribute'

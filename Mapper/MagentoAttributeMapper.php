@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
  * Magento attribute mapper
@@ -20,14 +20,14 @@ class MagentoAttributeMapper extends AbstractAttributeMapper
     protected $webserviceGuesser;
 
     /**
-     * @param MagentoUrlValidator $magentoUrlValidator
+     * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      * @param WebserviceGuesser $webserviceGuesser
      */
     public function __construct(
-        MagentoUrlValidator $magentoUrlValidator,
+        HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser
     ) {
-        parent::__construct($magentoUrlValidator);
+        parent::__construct($hasValidCredentialsValidator);
 
         $this->webserviceGuesser = $webserviceGuesser;
     }
