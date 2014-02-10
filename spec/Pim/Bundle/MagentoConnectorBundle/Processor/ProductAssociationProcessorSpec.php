@@ -4,6 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
@@ -20,12 +21,19 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
     function let(
         ChannelManager $channelManager,
         LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         AssociationTypeManager $associationTypeManager,
         Webservice $webservice
     ) {
-        $this->beConstructedWith($webserviceGuesser, $normalizerGuesser, $localeManager, $associationTypeManager);
+        $this->beConstructedWith(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $associationTypeManager
+        );
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
         $this->setPimUpSell('UPSELL');

@@ -45,6 +45,6 @@ class ORMStoreViewMapper extends ORMMapper
     {
         return array_map(function($locale) {
             return $locale->getCode();
-        }, $this->localeManager->getLocales());
+        }, $this->localeManager->getActiveLocales());
     }
 }

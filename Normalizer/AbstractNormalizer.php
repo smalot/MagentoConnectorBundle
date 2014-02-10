@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
 /**

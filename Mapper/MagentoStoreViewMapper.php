@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoStoreViewMapper extends AbstractStoreviewMapper
+class MagentoStoreViewMapper extends AbstractMapper
 {
     /**
      * @var WebserviceGuesser
@@ -64,7 +64,7 @@ class MagentoStoreViewMapper extends AbstractStoreviewMapper
      */
     public function getAllTargets()
     {
-        return $this->isValid() ? array_map(function($storeViews) {
+        return $this->isValid() ? array_map(function($storeView) {
             return $storeView['code'];
         }, $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList()) : array();
     }
