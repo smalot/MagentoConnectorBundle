@@ -65,8 +65,8 @@ class CategoryProcessor extends AbstractProcessor
 
         $this->categoryNormalizer = $this->normalizerGuesser->getCategoryNormalizer($this->getClientParameters());
 
-        $magentoCategories = $this->webservice->getCategoriesStatus();
         $magentoStoreViews = $this->webservice->getStoreViewsList();
+        $magentoCategories = $this->webservice->getCategoriesStatus();
 
         $this->globalContext = array_merge(
             $this->globalContext,
@@ -74,9 +74,8 @@ class CategoryProcessor extends AbstractProcessor
                 'magentoCategories'   => $magentoCategories,
                 'magentoUrl'          => $this->soapUrl,
                 'defaultLocale'       => $this->defaultLocale,
-                'categoryMapping'     => $this->getComputedCategoryMapping(),
                 'magentoStoreViews'   => $magentoStoreViews,
-                'storeViewMapping'    => $this->getComputedStoreViewMapping()
+                'categoryMapping'     => $this->getComputedCategoryMapping()
             )
         );
     }

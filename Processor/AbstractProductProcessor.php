@@ -9,6 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocale;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 
 /**
@@ -70,6 +71,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
      */
@@ -77,10 +79,11 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->currencyManager = $currencyManager;
         $this->channelManager  = $channelManager;
@@ -207,7 +210,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
-     * Get computed storeView mapping (string to array)
+     * Get computed category mapping (string to array)
      * @return array
      */
     protected function getComputedCategoryMapping()
@@ -239,10 +242,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             array(
                 'channel'                  => $this->channel,
                 'website'                  => $this->website,
-                'magentoStoreViews'        => $magentoStoreViews,
                 'magentoAttributes'        => $magentoAttributes,
                 'magentoAttributesOptions' => $magentoAttributesOptions,
-                'storeViewMapping'         => $this->getComputedStoreViewMapping(),
+                'magentoStoreViews'        => $magentoStoreViews,
                 'categoryMapping'          => $this->getComputedCategoryMapping()
             )
         );

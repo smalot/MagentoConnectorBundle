@@ -50,7 +50,6 @@ define(
             render: function() {
                 this.$el.html(this.template({mappingItem: this.model.toJSON(), __: __}));
 
-
                 return this;
             },
             updateSource: function(e) {
@@ -72,9 +71,9 @@ define(
             template: _.template(
                 '<thead>' +
                     '<tr>' +
-                        '<td><%= __("pim_magento_connector.mapping.attribute.source") %></td>' +
+                        '<td><%= sourceTitle %></td>' +
                         '<td></td>' +
-                        '<td><%= __("pim_magento_connector.mapping.attribute.target") %></td>' +
+                        '<td><%= targetTitle %></td>' +
                         '<td></td>' +
                     '</tr>' +
                 '</thead>' +
@@ -84,7 +83,7 @@ define(
                     '<tr>' +
                         '<td colspan="4">' +
                             '<a href="javascript:void(0);" class="btn add-btn">' +
-                                '<i class="icon-plus"></i><%= __("pim_magento_connector.mapping.attribute.add") %>' +
+                                '<i class="icon-plus"></i><%= addButton %>' +
                             '</a>' +
                         '</td>' +
                     '</tr>' +
@@ -96,18 +95,24 @@ define(
             $target: null,
             sources: [],
             targets: [],
+            name: null,
             mappingItemViews: [],
             initialize: function(options) {
                 this.$target = options.$target;
                 this.sources = options.sources;
                 this.targets = options.targets;
+                this.name    = options.name;
 
                 this.listenTo(this.collection, "change add remove", this.save);
                 this.render();
             },
             render: function() {
                 this.$el.empty();
-                this.$el.html(this.template({__: __}));
+                this.$el.html(this.template({
+                   sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
+                   targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target'),
+                   addButton   : __('pim_magento_connector.mapping.add')
+                }));
 
                 if (!this.$target.data('rendered')) {
                     this.$target.after(this.$el)
@@ -192,7 +197,8 @@ define(
                 collection: new MappingCollection(mappingCollection),
                 $target: $element,
                 sources: $element.data('sources'),
-                targets: $element.data('targets')
+                targets: $element.data('targets'),
+                name:    $element.data('name')
             });
 
             $element.parents('form').on('submit', function() {
@@ -202,7 +208,7 @@ define(
                     $(this).parent().children('.validation-faled').remove();
 
                     if ($(this).val() == '') {
-                        FormValidation.addFieldErrors($(this), __('pim_magento_connector.mapping.attribute.not_blank'));
+                        FormValidation.addFieldErrors($(this), __('pim_magento_connector.mapping.not_blank'));
                         isValid = false;
                     }
                 });

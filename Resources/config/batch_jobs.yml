@@ -4,6 +4,9 @@ connector:
         magento_product_export:
             title: pim_magento_connector.jobs.product_export.title
             type:  export
+            templates:
+                show: 'PimMagentoConnectorBundle:Export:show.html.twig'
+                edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_simple_products:
                     title:     pim_magento_connector.jobs.simple_product_export.export.title
@@ -36,6 +39,9 @@ connector:
         magento_category_export:
             title: pim_magento_connector.jobs.category_export.title
             type:  export
+            templates:
+                show: 'PimMagentoConnectorBundle:Export:show.html.twig'
+                edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_categories:
                     title:     pim_magento_connector.jobs.category_export.export.title
@@ -55,8 +61,8 @@ connector:
             title: pim_magento_connector.jobs.attribute_export.title
             type:  export
             templates:
-                show: 'PimMagentoConnectorBundle:AttributeExport:show.html.twig'
-                edit: 'PimMagentoConnectorBundle:AttributeExport:edit.html.twig'
+                show: 'PimMagentoConnectorBundle:Export:show.html.twig'
+                edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_attributes:
                     title:     pim_magento_connector.jobs.attribute_export.export.title
@@ -73,6 +79,9 @@ connector:
         magento_option_export:
             title: pim_magento_connector.jobs.option_export.title
             type:  export
+            templates:
+                show: 'PimMagentoConnectorBundle:Export:show.html.twig'
+                edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_options:
                     title:     pim_magento_connector.jobs.option_export.export.title

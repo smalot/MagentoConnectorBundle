@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoAttributeMapper extends AbstractAttributeMapper
+class MagentoAttributeMapper extends AbstractMapper
 {
     /**
      * @var WebserviceGuesser
@@ -59,45 +59,25 @@ class MagentoAttributeMapper extends AbstractAttributeMapper
     }
 
     /**
-     * Set mapping
-     * @param array $mapping
-     */
-    public function setMapping(array $mapping)
-    {
-
-    }
-
-    /**
      * Get all targets
      * @return array
      */
     public function getAllTargets()
     {
-        if (!$this->isValid()) {
-            return array();
-        } else {
-            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
-
-            return array_keys($attributes);
-        }
+        return $this->isValid() ?
+            array_keys($this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes()) :
+            array();
     }
 
     /**
-     * Get all sources
-     * @return array
+     * Get mapper identifier
+     * @param string rootIdentifier
+     *
+     * @return string
      */
-    public function getAllSources()
+    public function getIdentifier($rootIdentifier = 'attribute')
     {
-        return array();
-    }
-
-    /**
-     * Get mapper priority
-     * @return integer
-     */
-    public function getPriority()
-    {
-        return 0;
+        return parent::getIdentifier($rootIdentifier);
     }
 
     /**

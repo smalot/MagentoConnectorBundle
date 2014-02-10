@@ -20,7 +20,7 @@ class ORMAttributeMapperSpec extends ObjectBehavior
         SimpleMappingManager $simpleMappingManager,
         AttributeManager $attributeManager
     ) {
-        $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, $attributeManager);
+        $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'attribute', $attributeManager);
         $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
     }
 
@@ -31,7 +31,7 @@ class ORMAttributeMapperSpec extends ObjectBehavior
 
         $simpleMapping->getSource()->willReturn('attribute_source');
         $simpleMapping->getTarget()->willReturn('attribute_target');
-        $simpleMappingManager->getMapping($this->getIdentifier())->willReturn(array($simpleMapping));
+        $simpleMappingManager->getMapping($this->getIdentifier('attribute'))->willReturn(array($simpleMapping));
 
         $mapping = $this->getMapping();
 
@@ -61,7 +61,7 @@ class ORMAttributeMapperSpec extends ObjectBehavior
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $simpleMappingManager->setMapping(array('mapping'), $this->getIdentifier())->shouldBeCalled();
+        $simpleMappingManager->setMapping(array('mapping'), $this->getIdentifier('attribute'))->shouldBeCalled();
 
         $this->setMapping(array('mapping'));
     }

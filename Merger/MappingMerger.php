@@ -103,7 +103,8 @@ class MappingMerger
                     'attr'     => array(
                         'class' => 'mapping-field',
                         'data-sources' => json_encode($this->getAllSources()),
-                        'data-targets' => json_encode($this->getAllTargets())
+                        'data-targets' => json_encode($this->getAllTargets()),
+                        'data-name'    => $this->name
                     )
                 )
             )
@@ -121,7 +122,7 @@ class MappingMerger
             $sources = array_merge($sources, $mapper->getAllSources());
         }
 
-        return array_unique($sources);
+        return array_values(array_unique($sources));
     }
 
     /**
@@ -135,7 +136,7 @@ class MappingMerger
             $targets = array_merge($targets, $mapper->getAllTargets());
         }
 
-        return array_unique($targets);
+        return array_values(array_unique($targets));
     }
 
     /**

@@ -3,5 +3,5 @@ pim_magento_connector:
         attribute:
             source: Akeneo attribute
             target: Magento attribute
-            add: Add
-            not_blank: This field is required
+        add: Add
+        not_blank: This field is required

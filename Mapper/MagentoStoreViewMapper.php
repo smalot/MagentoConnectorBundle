@@ -59,51 +59,25 @@ class MagentoStoreViewMapper extends AbstractStoreviewMapper
     }
 
     /**
-     * Set mapping
-     * @param array $mapping
-     */
-    public function setMapping(array $mapping)
-    {
-
-    }
-
-    /**
      * Get all targets
      * @return array
      */
     public function getAllTargets()
     {
-        if (!$this->isValid()) {
-            return array();
-        } else {
-            $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
-
-            $targets = array();
-
-            foreach ($storeViews as $storeView) {
-                $targets[] => $storeView['code'];
-            }
-
-            return $targets;
-        }
+        return $this->isValid() ? array_map(function($storeViews) {
+            return $storeView['code'];
+        }, $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList()) : array();
     }
 
     /**
-     * Get all sources
-     * @return array
+     * Get mapper identifier
+     * @param string rootIdentifier
+     *
+     * @return string
      */
-    public function getAllSources()
+    public function getIdentifier($rootIdentifier = 'storeview')
     {
-        return array();
-    }
-
-    /**
-     * Get mapper priority
-     * @return integer
-     */
-    public function getPriority()
-    {
-        return 0;
+        return parent::getIdentifier($rootIdentifier);
     }
 
     /**

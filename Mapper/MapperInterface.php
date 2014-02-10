@@ -13,9 +13,11 @@ interface MapperInterface
 {
     /**
      * Get mapper identifier
+     * @param string $rootIdentifier
+     *
      * @return string
      */
-    public function getIdentifier();
+    public function getIdentifier($rootIdentifier);
 
     /**
      * Get mapping

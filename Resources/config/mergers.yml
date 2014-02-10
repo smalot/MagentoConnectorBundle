@@ -7,3 +7,8 @@ services:
         arguments:
             - ['@pim_magento_connector.mapper.magento_attribute', '@pim_magento_connector.mapper.orm_attribute']
             - 'attribute'
+    pim_magento_connector.merger.storeview_mapping:
+        class: %pim_magento_connector.merger.mapping.class%
+        arguments:
+            - ['@pim_magento_connector.mapper.magento_storeview', '@pim_magento_connector.mapper.orm_storeview']
+            - 'storeview'
