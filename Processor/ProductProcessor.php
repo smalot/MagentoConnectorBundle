@@ -68,6 +68,7 @@ class ProductProcessor extends AbstractProductProcessor
      * @param MappingMerger            $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
+     * @param MappingMerger            $categoryMappingMerger
      * @param MetricConverter          $metricConverter
      * @param AssociationTypeManager   $associationTypeManager
      */
@@ -78,10 +79,19 @@ class ProductProcessor extends AbstractProductProcessor
         MappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
+        MappingMerger $categoryMappingMerger,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger, $currencyManager, $channelManager);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $currencyManager,
+            $channelManager,
+            $categoryMappingMerger
+        );
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;

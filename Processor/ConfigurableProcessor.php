@@ -41,6 +41,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      * @param MappingMerger            $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
+     * @param MappingMerger            $categoryMappingMerger
      * @param GroupManager             $groupManager
      */
     public function __construct(
@@ -50,6 +51,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
         MappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
+        MappingMerger $categoryMappingMerger,
         GroupManager $groupManager
     ) {
         parent::__construct(
@@ -58,7 +60,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
             $localeManager,
             $storeViewMappingMerger,
             $currencyManager,
-            $channelManager
+            $channelManager,
+            $categoryMappingMerger
         );
 
         $this->groupManager = $groupManager;
