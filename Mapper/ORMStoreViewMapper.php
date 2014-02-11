@@ -46,10 +46,10 @@ class ORMStoreViewMapper extends ORMMapper
         $sources = array();
 
         if ($this->isValid()) {
-            $locales = $this->localeManager->getActiveLocales();
+            $codes = $this->localeManager->getActiveCodes();
 
-            foreach ($locales as $locale) {
-                $sources[] = array('id' => $locale->getCode(), 'text' => $locale->getCode());
+            foreach ($codes as $code) {
+                $sources[] = array('id' => $code, 'text' => $code);
             }
         }
 

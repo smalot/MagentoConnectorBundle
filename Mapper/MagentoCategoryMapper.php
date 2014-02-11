@@ -94,8 +94,6 @@ class MagentoCategoryMapper extends AbstractMapper
      */
     protected function mandatoryCategories()
     {
-        return array(
-
-        );
+        return array();
     }
 }
