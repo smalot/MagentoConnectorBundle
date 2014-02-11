@@ -38,7 +38,6 @@ abstract class AbstractGuesser
         }
 
         if (!$this->version) {
-
             try {
                 $magentoVersion = $client->call('core_magento.info')['magento_version'];
             } catch (\SoapFault $e) {
