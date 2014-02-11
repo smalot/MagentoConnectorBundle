@@ -25,6 +25,7 @@ class SimpleMappingManagerSpec extends ObjectBehavior
 
     function it_store_new_mapping_in_database($er, $objectManager)
     {
+        $er->findBy(array('identifier' => 'identifier'))->willReturn(array());
         $er->findOneBy(array('identifier' => 'identifier', 'source' => 'foo'))->willReturn(null);
         $objectManager->persist(Argument::cetera())->shouldBeCalled();
         $objectManager->flush()->shouldBeCalled();
@@ -34,12 +35,13 @@ class SimpleMappingManagerSpec extends ObjectBehavior
 
     function it_store_updated_mapping_in_database($er, $objectManager, SimpleMapping $simpleMapping)
     {
+        $objectManager->flush()->shouldBeCalled();
+        $er->findBy(array('identifier' => 'identifier'))->willReturn(array());
         $er->findOneBy(array('identifier' => 'identifier', 'source' => 'foo'))->willReturn($simpleMapping);
 
         $simpleMapping->setTarget('bar')->shouldBeCalled();
 
         $objectManager->persist(Argument::cetera())->shouldBeCalled();
-        $objectManager->flush()->shouldBeCalled();
 
         $this->setMapping(array(array('source' => 'foo', 'target' => 'bar')), 'identifier');
     }

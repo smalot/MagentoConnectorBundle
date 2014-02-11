@@ -13,6 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 
 /**
  * Magento product processor
@@ -64,8 +65,10 @@ class ProductProcessor extends AbstractProductProcessor
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
+     * @param MappingMerger            $categoryMappingMerger
      * @param MetricConverter          $metricConverter
      * @param AssociationTypeManager   $associationTypeManager
      */
@@ -73,12 +76,22 @@ class ProductProcessor extends AbstractProductProcessor
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
+        MappingMerger $categoryMappingMerger,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $currencyManager, $channelManager);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $currencyManager,
+            $channelManager,
+            $categoryMappingMerger
+        );
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;

@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Tests\Unit\Normalizer;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Test related class
@@ -142,7 +143,7 @@ class ProductNormalizerTest extends \PHPUnit_Framework_TestCase
                 array('code' => 'en_us'),
                 array('code' => 'fr_fr'),
             ),
-            'storeViewMapping' => array(array('test', 'fr_FR')),
+            'storeViewMapping' => new MappingCollection(array('fr_FR' => array('source' => 'fr_FR', 'target' => 'test', 'deletable' => true))),
             'magentoAttributesOptions' => array(
                 'colors' => array(
                     'blue' => 4,

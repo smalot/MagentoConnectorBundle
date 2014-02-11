@@ -3,5 +3,11 @@ pim_magento_connector:
         attribute:
             source: Akeneo attribute
             target: Magento attribute
-            add: Add
-            not_blank: This field is required
+        storeview:
+            source: Akeneo locale
+            target: Magento store view
+        category:
+            source: Akeneo category
+            target: Magento category
+        add: Add
+        not_blank: This field is required

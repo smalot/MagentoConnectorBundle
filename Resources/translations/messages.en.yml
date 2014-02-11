@@ -13,6 +13,24 @@ pim_magento_connector:
             title: Export attributes to Magento
             export.title: Configuration
 
+pim_import_export:
+    jobs:
+        attribute_clean:
+            clean:
+                title: Attribute cleaner
+        category_clean:
+            clean:
+                title: Category cleaner
+        product_clean:
+            clean:
+                title: Product cleaner
+        option_clean:
+            clean:
+                title: Option cleaner
+        configurable_clean:
+            clean:
+                title: Configurable cleaner
+
 pim_base_connector:
     export:
         title: Processor
@@ -43,7 +61,7 @@ pim_base_connector:
         currency:
             label: Currency
             help: The currency to send to Magento
-        storeViewMapping:
+        storeviewMapping:
             label: Storeview mapping
             help:  You can map storeviews to locales in PIM
         categoryMapping:

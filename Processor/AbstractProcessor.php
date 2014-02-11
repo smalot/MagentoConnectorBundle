@@ -13,6 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 
 /**
  * Magento product processor
@@ -44,9 +45,14 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     protected $website = 'base';
 
     /**
+     * @var MappingMerger
+     */
+    protected $storeViewMappingMerger;
+
+    /**
      * @var string
      */
-    protected $storeViewMapping = '';
+    protected $storeViewMapping;
 
     /**
      * @var array
@@ -57,16 +63,19 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager
+        LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->localeManager     = $localeManager;
-        $this->normalizerGuesser = $normalizerGuesser;
+        $this->normalizerGuesser      = $normalizerGuesser;
+        $this->localeManager          = $localeManager;
+        $this->storeViewMappingMerger = $storeViewMappingMerger;
     }
 
     /**
@@ -118,36 +127,27 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     }
 
     /**
-     * get storeViewMapping
-     *
-     * @return string storeViewMapping
-     */
-    public function getStoreViewMapping()
-    {
-        return $this->storeViewMapping;
-    }
-
-    /**
-     * Set storeViewMapping
-     *
-     * @param string $storeViewMapping storeViewMapping
+     * Set attribute mapping
+     * @param string $storeViewMapping
      *
      * @return AbstractProcessor
      */
     public function setStoreViewMapping($storeViewMapping)
     {
-        $this->storeViewMapping = $storeViewMapping;
+        $this->storeViewMappingMerger->setMapping(json_decode($storeViewMapping, true));
+
+        $this->storeViewMapping = $this->getStoreViewMapping();
 
         return $this;
     }
 
     /**
-     * Get computed storeView mapping (string to array)
-     * @return array
+     * Get attribute mapping
+     * @return string
      */
-    protected function getComputedStoreViewMapping()
+    public function getStoreViewMapping()
     {
-        return $this->getComputedMapping($this->storeViewMapping);
+        return json_encode($this->storeViewMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -178,7 +178,8 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     {
         parent::beforeExecute();
 
-        $this->globalContext['defaultLocale'] = $this->defaultLocale;
+        $this->globalContext['defaultLocale']    = $this->defaultLocale;
+        $this->globalContext['storeViewMapping'] = $this->storeViewMappingMerger->getMapping();
     }
 
     /**
@@ -200,6 +201,16 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
         } catch (AttributeSetNotFoundException $e) {
             throw new InvalidItemException($e->getMessage(), array($relatedItem));
         }
+    }
+
+    /**
+     * Called after the configuration is setted
+     */
+    protected function afterConfigurationSet()
+    {
+        parent::afterConfigurationSet();
+
+        $this->storeViewMappingMerger->setParameters($this->getClientParameters());
     }
 
     /**
@@ -225,14 +236,9 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                     'options' => array(
                         'required' => true
                     )
-                ),
-                'storeViewMapping' => array(
-                    'type'    => 'textarea',
-                    'options' => array(
-                        'required' => false
-                    )
                 )
-            )
+            ),
+            $this->storeViewMappingMerger->getConfigurationField()
         );
     }
 }

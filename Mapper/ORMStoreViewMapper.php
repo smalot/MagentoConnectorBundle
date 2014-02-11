@@ -3,38 +3,38 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
- * Magento attribute mapper
+ * Magento storeview mapper
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ORMAttributeMapper extends ORMMapper
+class ORMStoreViewMapper extends ORMMapper
 {
     /**
-     * @var AttributeManager
+     * @var LocaleManager
      */
-    protected $attributeManager;
+    protected $localeManager;
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      * @param SimpleMappingManager         $simpleMappingManager
      * @param string                       $rootIdentifier
-     * @param AttributeManager             $attributeManager
+     * @param LocaleManager                $localeManager
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
         $rootIdentifier,
-        AttributeManager $attributeManager
+        LocaleManager $localeManager
     ) {
         parent::__construct($hasValidCredentialsValidator, $simpleMappingManager, $rootIdentifier);
 
-        $this->attributeManager = $attributeManager;
+        $this->localeManager = $localeManager;
     }
 
     /**
@@ -46,10 +46,10 @@ class ORMAttributeMapper extends ORMMapper
         $sources = array();
 
         if ($this->isValid()) {
-            $attributes = $this->attributeManager->getAttributes();
+            $codes = $this->localeManager->getActiveCodes();
 
-            foreach ($attributes as $attribute) {
-                $sources[] = array('id' => $attribute->getCode(), 'text' => $attribute->getCode());
+            foreach ($codes as $code) {
+                $sources[] = array('id' => $code, 'text' => $code);
             }
         }
 

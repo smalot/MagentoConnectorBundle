@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
 /**
@@ -74,31 +75,15 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Get the corresponding storeview for a given locale
-     * @param string $locale
-     * @param array  $magentoStoreViews
-     * @param array  $storeViewMapping
+     * @param string            $locale
+     * @param array             $magentoStoreViews
+     * @param MappingCollection $storeViewMapping
      *
      * @return string
      */
-    protected function getStoreViewForLocale($locale, $magentoStoreViews, $storeViewMapping)
+    protected function getStoreViewForLocale($locale, $magentoStoreViews, MappingCollection $storeViewMapping)
     {
-        $mappedStoreView = $this->getMappedStoreView($locale, $storeViewMapping);
-
-        $code = ($mappedStoreView) ? $mappedStoreView : $locale;
-
-        return $this->getStoreView($code, $magentoStoreViews);
-    }
-
-    /**
-     * Get the locale based on storeViewMapping
-     * @param string $localeCode
-     * @param array  $storeViewMapping
-     *
-     * @return string
-     */
-    protected function getMappedStoreView($localeCode, $storeViewMapping)
-    {
-        return isset($storeViewMapping[strtolower($localeCode)]) ? $storeViewMapping[strtolower($localeCode)] : null;
+        return $this->getStoreView($storeViewMapping->getTarget($locale), $magentoStoreViews);
     }
 
     /**

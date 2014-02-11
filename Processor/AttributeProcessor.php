@@ -56,15 +56,17 @@ class AttributeProcessor extends AbstractProcessor
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
      * @param MappingMerger            $attributeMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
         MappingMerger $attributeMappingMerger
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->attributeMappingMerger = $attributeMappingMerger;
     }
@@ -76,11 +78,13 @@ class AttributeProcessor extends AbstractProcessor
     {
         parent::beforeExecute();
 
+        $magentoStoreViews = $this->webservice->getStoreViewsList();
+
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
-        $this->globalContext['magentoStoreViews']        = $this->webservice->getStoreViewsList();
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
         $this->globalContext['attributeMapping']         = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
     }
 
     /**
@@ -140,6 +144,8 @@ class AttributeProcessor extends AbstractProcessor
      */
     protected function afterConfigurationSet()
     {
+        parent::afterConfigurationSet();
+
         $this->attributeMappingMerger->setParameters($this->getClientParameters());
     }
 

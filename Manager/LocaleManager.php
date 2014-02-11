@@ -22,11 +22,11 @@ class LocaleManager extends BaseLocaleManager
      */
     public function getLocaleChoices()
     {
-        $locales = $this->getLocales();
+        $codes = $this->getActiveCodes();
 
         $choices = array();
-        foreach ($locales as $locale) {
-            $choices[$locale->getCode()] = $locale->getCode();
+        foreach ($codes as $code) {
+            $choices[$code] = $code;
         }
 
         return $choices;

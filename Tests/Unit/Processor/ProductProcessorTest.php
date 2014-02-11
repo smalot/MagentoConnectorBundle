@@ -108,17 +108,19 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
             ->with(new MagentoSoapClientParameters(null, null, null))
             ->will($this->returnValue($webservice));
 
-        $channelManagerMock           = $this->getChannelManagerMock();
-        $normalizerGuesserMock        = $this->getNormalizerGuesserMock();
-        $localeManager                = $this->getLocaleManagerMock();
-        $currencyManager              = $this->getCurrencyManagerMock();
-        $metricConverterMock          = $this->getMetricConverterMock();
-        $associationTypeManager       = $this->getAssociationTypeManagerMock();
+        $channelManagerMock     = $this->getChannelManagerMock();
+        $normalizerGuesserMock  = $this->getNormalizerGuesserMock();
+        $localeManager          = $this->getLocaleManagerMock();
+        $storeViewMerger        = $this->geStoreViewMergerMock();
+        $currencyManager        = $this->getCurrencyManagerMock();
+        $metricConverterMock    = $this->getMetricConverterMock();
+        $associationTypeManager = $this->getAssociationTypeManagerMock();
 
         $processor = new ProductProcessor(
             $webserviceGuesserMock,
             $normalizerGuesserMock,
             $localeManager,
+            $storeViewMerger,
             $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
@@ -146,6 +148,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
         $localeManager                = $this->getLocaleManagerMock();
+        $storeViewMerger              = $this->geStoreViewMergerMock();
         $currencyManager              = $this->getCurrencyManagerMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException()
@@ -157,6 +160,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
             $localeManager,
+            $storeViewMerger,
             $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
@@ -184,6 +188,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
         $localeManager                = $this->getLocaleManagerMock();
+        $storeViewMerger              = $this->geStoreViewMergerMock();
         $currencyManager              = $this->getCurrencyManagerMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException()
@@ -195,6 +200,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
             $localeManager,
+            $storeViewMerger,
             $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
@@ -222,6 +228,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock           = $this->getChannelManagerMock();
         $webserviceGuesserMock        = $this->getWebserviceGuesserMock();
         $localeManager                = $this->getLocaleManagerMock();
+        $storeViewMerger              = $this->geStoreViewMergerMock();
         $currencyManager              = $this->getCurrencyManagerMock();
         $productNormalizerGuesserMock = $this->getExceptionNormalizerGuesserMock(
             new \Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException()
@@ -233,6 +240,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
             $webserviceGuesserMock,
             $productNormalizerGuesserMock,
             $localeManager,
+            $storeViewMerger,
             $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
@@ -339,6 +347,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
         $channelManagerMock     = $this->getChannelManagerMock();
         $webserviceGuesserMock  = $this->getWebserviceGuesserMock();
         $localeManager          = $this->getLocaleManagerMock();
+        $storeViewMerger        = $this->geStoreViewMergerMock();
         $currencyManager        = $this->getCurrencyManagerMock();
         $normalizerGuesserMock  = $this->getNormalizerGuesserMock();
         $metricConverterMock    = $this->getMetricConverterMock();
@@ -348,6 +357,7 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
             $webserviceGuesserMock,
             $normalizerGuesserMock,
             $localeManager,
+            $storeViewMerger,
             $currencyManager,
             $channelManagerMock,
             $metricConverterMock,
@@ -669,5 +679,19 @@ class ProductProcessorTest extends \PHPUnit_Framework_TestCase
                 ->getMock();
 
         return $currencyManager;
+    }
+
+    /**
+     * Get the storeview merger mock
+     * @return MappingMerger
+     */
+    protected function geStoreViewMergerMock()
+    {
+        $storeViewMerger =
+            $this->getMockBuilder('Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger')
+                ->disableOriginalConstructor()
+                ->getMock();
+
+        return $storeViewMerger;
     }
 }

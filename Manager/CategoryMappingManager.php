@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Entity\Category;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Category mapping manager
@@ -56,16 +57,18 @@ class CategoryMappingManager
 
     /**
      * Get id from category and Magento url
-     * @param Category $category
-     * @param string   $magentoUrl
-     * @param array    $categoryMapping
+     * @param Category          $category
+     * @param string            $magentoUrl
+     * @param MappingCollection $categoryMapping
      *
      * @return int
      */
-    public function getIdFromCategory(Category $category, $magentoUrl, array $categoryMapping = array())
+    public function getIdFromCategory(Category $category, $magentoUrl, MappingCollection $categoryMapping = null)
     {
-        if (isset($categoryMapping[$category->getCode()])) {
-            return $categoryMapping[$category->getCode()];
+        if ($categoryMapping &&
+            ($categoryId = $categoryMapping->getTarget($category->getCode())) != $category->getCode()
+        ) {
+            return $categoryId;
         } else {
             $categoryMapping = $this->getEntityRepository()->findOneBy(
                 array(

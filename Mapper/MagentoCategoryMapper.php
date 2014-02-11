@@ -6,13 +6,13 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
- * Magento attribute mapper
+ * Magento category mapper
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoAttributeMapper extends AbstractMapper
+class MagentoCategoryMapper extends AbstractMapper
 {
     /**
      * @var WebserviceGuesser
@@ -41,14 +41,14 @@ class MagentoAttributeMapper extends AbstractMapper
         if (!$this->isValid()) {
             return new MappingCollection();
         } else {
-            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
 
             $mapping = new MappingCollection();
-            foreach (array_keys($attributes) as $attributeCode) {
-                if (in_array($attributeCode, $this->mandatoryAttributes())) {
+            foreach (array_keys($categories) as $id) {
+                if (in_array($id, $this->mandatoryCategories())) {
                     $mapping->add(array(
-                        'source'    => $attributeCode,
-                        'target'    => $attributeCode,
+                        'source'    => $id,
+                        'target'    => $id,
                         'deletable' => false
                     ));
                 }
@@ -67,12 +67,10 @@ class MagentoAttributeMapper extends AbstractMapper
         $targets = array();
 
         if ($this->isValid()) {
-            $attributeCodes = array_keys(
-                $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes()
-            );
+            $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
 
-            foreach ($attributeCodes as $attributeCode) {
-                $targets[] = array('id' => $attributeCode, 'text' => $attributeCode);
+            foreach ($categories as $categoryId => $category) {
+                $targets[] = array('id' => $categoryId, 'text' => $category['name']);
             }
         }
 
@@ -85,23 +83,17 @@ class MagentoAttributeMapper extends AbstractMapper
      *
      * @return string
      */
-    public function getIdentifier($rootIdentifier = 'attribute')
+    public function getIdentifier($rootIdentifier = 'category')
     {
         return parent::getIdentifier($rootIdentifier);
     }
 
     /**
-     * Get mandatory attributes
+     * Get mandatory categories
      * @return array
      */
-    protected function mandatoryAttributes()
+    protected function mandatoryCategories()
     {
-        return array(
-            'name',
-            'price',
-            'description',
-            'short_description',
-            'tax_class_id',
-        );
+        return array();
     }
 }

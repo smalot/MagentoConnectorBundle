@@ -6,13 +6,13 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
- * Magento attribute mapper
+ * Magento storeview mapper
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoAttributeMapper extends AbstractMapper
+class MagentoStoreViewMapper extends AbstractMapper
 {
     /**
      * @var WebserviceGuesser
@@ -41,14 +41,14 @@ class MagentoAttributeMapper extends AbstractMapper
         if (!$this->isValid()) {
             return new MappingCollection();
         } else {
-            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
 
             $mapping = new MappingCollection();
-            foreach (array_keys($attributes) as $attributeCode) {
-                if (in_array($attributeCode, $this->mandatoryAttributes())) {
+            foreach ($storeViews as $storeView) {
+                if (in_array($storeView['code'], $this->mandatoryStoreViews())) {
                     $mapping->add(array(
-                        'source'    => $attributeCode,
-                        'target'    => $attributeCode,
+                        'source'    => $storeView['code'],
+                        'target'    => $storeView['code'],
                         'deletable' => false
                     ));
                 }
@@ -67,12 +67,10 @@ class MagentoAttributeMapper extends AbstractMapper
         $targets = array();
 
         if ($this->isValid()) {
-            $attributeCodes = array_keys(
-                $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes()
-            );
+            $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
 
-            foreach ($attributeCodes as $attributeCode) {
-                $targets[] = array('id' => $attributeCode, 'text' => $attributeCode);
+            foreach ($storeViews as $storeView) {
+                $targets[] = array('id' => $storeView['code'], 'text' => $storeView['code']);
             }
         }
 
@@ -85,7 +83,7 @@ class MagentoAttributeMapper extends AbstractMapper
      *
      * @return string
      */
-    public function getIdentifier($rootIdentifier = 'attribute')
+    public function getIdentifier($rootIdentifier = 'storeview')
     {
         return parent::getIdentifier($rootIdentifier);
     }
@@ -94,14 +92,8 @@ class MagentoAttributeMapper extends AbstractMapper
      * Get mandatory attributes
      * @return array
      */
-    protected function mandatoryAttributes()
+    protected function mandatoryStoreViews()
     {
-        return array(
-            'name',
-            'price',
-            'description',
-            'short_description',
-            'tax_class_id',
-        );
+        return array();
     }
 }

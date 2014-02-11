@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Locale;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -32,7 +33,8 @@ class OptionNormalizerSpec extends ObjectBehavior
         Locale $localeFR,
         Locale $localeDE,
         Attribute $attribute,
-        $channel
+        $channel,
+        MappingCollection $storeViewMapping
     ) {
         $magentoStoreViews = array(
             array('code' => 'default', 'store_id' => 1),
@@ -40,9 +42,9 @@ class OptionNormalizerSpec extends ObjectBehavior
             array('code' => 'test',    'store_id' => 3),
         );
 
-        $storeViewMapping = array(
-            'de_de' => 'test'
-        );
+        $storeViewMapping->getTarget('en_US')->willReturn('en_us');
+        $storeViewMapping->getTarget('fr_FR')->willReturn('fr_fr');
+        $storeViewMapping->getTarget('de_DE')->willReturn('test');
 
         $option->getCode()->willReturn('red');
 

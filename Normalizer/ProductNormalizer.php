@@ -10,6 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -326,12 +327,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Get categories for the given product
-     * @param ProductInterface $product
-     * @param array            $categoryMapping
+     * @param ProductInterface  $product
+     * @param MappingCollection $categoryMapping
      *
      * @return array
      */
-    protected function getProductCategories(ProductInterface $product, array $categoryMapping)
+    protected function getProductCategories(ProductInterface $product, MappingCollection $categoryMapping)
     {
         $productCategories = array();
 

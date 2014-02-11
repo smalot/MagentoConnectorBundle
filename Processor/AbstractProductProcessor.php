@@ -9,6 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocale;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 
 /**
@@ -64,26 +65,36 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $categoryMapping = '';
+    protected $categoryMapping;
+
+    /**
+     * @var MappingMerger
+     */
+    protected $categoryMappingMerger;
 
     /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
+     * @param MappingMerger            $categoryMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
-        ChannelManager $channelManager
+        ChannelManager $channelManager,
+        MappingMerger $categoryMappingMerger
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager);
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
-        $this->currencyManager = $currencyManager;
-        $this->channelManager  = $channelManager;
+        $this->currencyManager       = $currencyManager;
+        $this->channelManager        = $channelManager;
+        $this->categoryMappingMerger = $categoryMappingMerger;
     }
 
     /**
@@ -189,7 +200,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     public function getCategoryMapping()
     {
-        return $this->categoryMapping;
+        return json_encode($this->categoryMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -201,18 +212,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     public function setCategoryMapping($categoryMapping)
     {
-        $this->categoryMapping = $categoryMapping;
+        $this->categoryMappingMerger->setMapping(json_decode($categoryMapping, true));
 
         return $this;
-    }
-
-    /**
-     * Get computed storeView mapping (string to array)
-     * @return array
-     */
-    protected function getComputedCategoryMapping()
-    {
-        return $this->getComputedMapping($this->categoryMapping);
     }
 
     /**
@@ -239,13 +241,22 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             array(
                 'channel'                  => $this->channel,
                 'website'                  => $this->website,
-                'magentoStoreViews'        => $magentoStoreViews,
                 'magentoAttributes'        => $magentoAttributes,
                 'magentoAttributesOptions' => $magentoAttributesOptions,
-                'storeViewMapping'         => $this->getComputedStoreViewMapping(),
-                'categoryMapping'          => $this->getComputedCategoryMapping()
+                'magentoStoreViews'        => $magentoStoreViews,
+                'categoryMapping'          => $this->categoryMappingMerger->getMapping()
             )
         );
+    }
+
+    /**
+     * Called after the configuration is setted
+     */
+    protected function afterConfigurationSet()
+    {
+        parent::afterConfigurationSet();
+
+        $this->categoryMappingMerger->setParameters($this->getClientParameters());
     }
 
     /**
@@ -284,14 +295,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                             'class' => 'select2'
                         )
                     )
-                ),
-                'categoryMapping' => array(
-                    'type'    => 'textarea',
-                    'options' => array(
-                        'required' => false
-                    )
                 )
-            )
+            ),
+            $this->categoryMappingMerger->getConfigurationField()
         );
     }
 }
