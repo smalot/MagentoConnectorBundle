@@ -17,6 +17,7 @@
 - Fixtures improvements (configurables, linked products, categories, etc)
 - Selects for currencies and locales
 - Validation for currencies and locales
+- New mappign field for attributes, storeviews and categories
 
 ## Bug fixes
 
