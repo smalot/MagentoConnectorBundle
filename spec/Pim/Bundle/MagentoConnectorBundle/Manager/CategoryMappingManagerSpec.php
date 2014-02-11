@@ -6,30 +6,29 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class CategoryMappingManagerSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager, EntityRepository $entityRepository)
+    function let(ObjectManager $objectManager, EntityRepository $entityRepository, MappingCollection $mappingCollection)
     {
         $this->beConstructedWith($objectManager, 'Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping');
         $objectManager->getRepository('Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping')
             ->willReturn($entityRepository);
+
+        $mappingCollection->getTarget('default')->willReturn(12);
     }
 
-    function it_gets_id_from_root_category_mapping(Category $category)
+    function it_gets_id_from_root_category_mapping(Category $category, $mappingCollection)
     {
-        $categoryMapping = array(
-            'default' => 12
-        );
-
         $category->getCode()->willReturn('default');
 
-        $this->getIdFromCategory($category, '', $categoryMapping)->shouldReturn(12);
+        $this->getIdFromCategory($category, '', $mappingCollection)->shouldReturn(12);
     }
 
-    function it_gets_id_from_category_mapping_stored_in_database(Category $category, $entityRepository, MagentoCategoryMapping $categoryMapping)
+    function it_gets_id_from_category_mapping_stored_in_database(Category $category, $entityRepository, MagentoCategoryMapping $categoryMapping, $mappingCollection)
     {
         $entityRepository->findOneBy(
             array(
@@ -40,16 +39,14 @@ class CategoryMappingManagerSpec extends ObjectBehavior
 
         $categoryMapping->getMagentoCategoryId()->willReturn(13);
 
-        $categoryMapping = array(
-            'default' => 12
-        );
+        $mappingCollection->getTarget('colors')->willReturn('colors');
 
         $category->getCode()->willReturn('colors');
 
-        $this->getIdFromCategory($category, '', $categoryMapping)->shouldReturn(13);
+        $this->getIdFromCategory($category, '', $mappingCollection)->shouldReturn(13);
     }
 
-    function it_returns_null_if_category_is_not_found(Category $category, $entityRepository)
+    function it_returns_null_if_category_is_not_found(Category $category, $entityRepository, $mappingCollection)
     {
         $entityRepository->findOneBy(
             array(
@@ -58,12 +55,10 @@ class CategoryMappingManagerSpec extends ObjectBehavior
             )
         )->willReturn(null);
 
-        $categoryMapping = array(
-            'default' => 12
-        );
+        $mappingCollection->getTarget('colors')->willReturn('colors');
 
         $category->getCode()->willReturn('colors');
 
-        $this->getIdFromCategory($category, '', $categoryMapping)->shouldReturn(null);
+        $this->getIdFromCategory($category, '', $mappingCollection)->shouldReturn(null);
     }
 }

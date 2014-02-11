@@ -8,6 +8,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 
 /**
  * Magento category processor
@@ -21,7 +23,31 @@ class CategoryProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $categoryMapping = '';
+    protected $categoryMapping;
+
+    /**
+     * @var MappingMerger
+     */
+    protected $categoryMappingMerger;
+
+    /**
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
+     * @param MappingMerger            $categoryMappingMerger
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
+        MappingMerger $categoryMappingMerger
+    ) {
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+
+        $this->categoryMappingMerger = $categoryMappingMerger;
+    }
 
     /**
      * get categoryMapping
@@ -30,7 +56,7 @@ class CategoryProcessor extends AbstractProcessor
      */
     public function getCategoryMapping()
     {
-        return $this->categoryMapping;
+        return json_encode($this->categoryMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -42,18 +68,9 @@ class CategoryProcessor extends AbstractProcessor
      */
     public function setCategoryMapping($categoryMapping)
     {
-        $this->categoryMapping = $categoryMapping;
+        $this->categoryMappingMerger->setMapping(json_decode($categoryMapping, true));
 
         return $this;
-    }
-
-    /**
-     * Get computed storeView mapping (string to array)
-     * @return array
-     */
-    protected function getComputedCategoryMapping()
-    {
-        return $this->getComputedMapping($this->categoryMapping);
     }
 
     /**
@@ -75,7 +92,7 @@ class CategoryProcessor extends AbstractProcessor
                 'magentoUrl'          => $this->soapUrl,
                 'defaultLocale'       => $this->defaultLocale,
                 'magentoStoreViews'   => $magentoStoreViews,
-                'categoryMapping'     => $this->getComputedCategoryMapping()
+                'categoryMapping'     => $this->categoryMappingMerger->getMapping()
             )
         );
     }
@@ -112,20 +129,23 @@ class CategoryProcessor extends AbstractProcessor
     }
 
     /**
+     * Called after the configuration is setted
+     */
+    protected function afterConfigurationSet()
+    {
+        parent::afterConfigurationSet();
+
+        $this->categoryMappingMerger->setParameters($this->getClientParameters());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'categoryMapping' => array(
-                    'type'    => 'textarea',
-                    'options' => array(
-                        'required' => false
-                    )
-                )
-            )
+            $this->categoryMappingMerger->getConfigurationField()
         );
     }
 }

@@ -64,14 +64,22 @@ class MagentoStoreViewMapper extends AbstractMapper
      */
     public function getAllTargets()
     {
-        return $this->isValid() ? array_map(function($storeView) {
-            return $storeView['code'];
-        }, $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList()) : array();
+        $targets = array();
+
+        if ($this->isValid()) {
+            $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
+
+            foreach ($storeViews as $storeView) {
+                $targets[] = array('id' => $storeView['code'], 'text' => $storeView['code']);
+            }
+        }
+
+        return $targets;
     }
 
     /**
      * Get mapper identifier
-     * @param string rootIdentifier
+     * @param string $rootIdentifier
      *
      * @return string
      */
@@ -86,8 +94,6 @@ class MagentoStoreViewMapper extends AbstractMapper
      */
     protected function mandatoryStoreViews()
     {
-        return array(
-            'default',
-        );
+        return array();
     }
 }

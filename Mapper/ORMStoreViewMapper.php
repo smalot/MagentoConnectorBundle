@@ -43,8 +43,16 @@ class ORMStoreViewMapper extends ORMMapper
      */
     public function getAllSources()
     {
-        return array_map(function($locale) {
-            return $locale->getCode();
-        }, $this->localeManager->getActiveLocales());
+        $sources = array();
+
+        if ($this->isValid()) {
+            $locales = $this->localeManager->getActiveLocales();
+
+            foreach ($locales as $locale) {
+                $sources[] = array('id' => $locale->getCode(), 'text' => $locale->getCode());
+            }
+        }
+
+        return $sources;
     }
 }

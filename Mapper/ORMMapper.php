@@ -83,9 +83,17 @@ class ORMMapper extends AbstractMapper
      */
     public function getAllTargets()
     {
-        return $this->isValid() ? array_map(function($mappingItem) {
-            return $mappingItem->getTarget();
-        }, $this->simpleMappingManager->getMapping($this->getIdentifier($this->rootIdentifier))) : array();
+        $targets = array();
+
+        if ($this->isValid()) {
+            $elements = $this->simpleMappingManager->getMapping($this->getIdentifier($this->rootIdentifier));
+
+            foreach ($elements as $element) {
+                $targets[] = array('id' => $element->getTarget(), 'text' => $element->getTarget());
+            }
+        }
+
+        return $targets;
     }
 
     /**
@@ -94,9 +102,17 @@ class ORMMapper extends AbstractMapper
      */
     public function getAllSources()
     {
-        return $this->isValid() ? array_map(function($mappingItem) {
-            return $mappingItem->getSource();
-        }, $this->simpleMappingManager->getMapping($this->getIdentifier($this->rootIdentifier))) : array();
+        $sources = array();
+
+        if ($this->isValid()) {
+            $elements = $this->simpleMappingManager->getMapping($this->getIdentifier($this->rootIdentifier));
+
+            foreach ($elements as $element) {
+                $sources[] = array('id' => $element->getSource(), 'text' => $element->getSource());
+            }
+        }
+
+        return $sources;
     }
 
     /**

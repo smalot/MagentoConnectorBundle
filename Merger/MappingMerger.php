@@ -122,7 +122,7 @@ class MappingMerger
             $sources = array_merge($sources, $mapper->getAllSources());
         }
 
-        return array_values(array_unique($sources));
+        return $sources;
     }
 
     /**
@@ -136,7 +136,7 @@ class MappingMerger
             $targets = array_merge($targets, $mapper->getAllTargets());
         }
 
-        return array_values(array_unique($targets));
+        return $targets;
     }
 
     /**

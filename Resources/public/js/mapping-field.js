@@ -16,6 +16,7 @@ define(
 
         var MappingItemView = Backbone.View.extend({
             tagName: 'tr',
+            className: 'mapping-row',
             template: _.template(
                 '<td>' +
                     '<input type="text" class="mapping-source" required="required" value="<%= mappingItem.source %>"/>' +
@@ -105,6 +106,10 @@ define(
 
                 this.listenTo(this.collection, "change add remove", this.save);
                 this.render();
+
+                if (this.collection.length === 0) {
+                    this.addMappingItem();
+                }
             },
             render: function() {
                 this.$el.empty();
@@ -140,6 +145,7 @@ define(
                 }
             },
             createMappingItem: function() {
+                console.log('coucou');
                 var mappingItem = new MappingItem({source: '', target: '', deletable: true});
                 this.collection.add(mappingItem);
 
@@ -204,11 +210,21 @@ define(
             $element.parents('form').on('submit', function() {
                 var isValid = true;
 
-                $('input.mapping-source, input.mapping-target').each(function() {
-                    $(this).parent().children('.validation-faled').remove();
+                $('.mapping-row').each(function() {
+                    $(this).find('.validation-faled').remove();
 
-                    if ($(this).val() == '') {
-                        FormValidation.addFieldErrors($(this), __('pim_magento_connector.mapping.not_blank'));
+                    var $source = $(this).find('input.mapping-source');
+                    var $target = $(this).find('input.mapping-target')
+
+                    if (($source.val() == '') !=
+                        ($target.val() == '')
+                    ) {
+                        if ($source.val() == '') {
+                            FormValidation.addFieldErrors($source, __('pim_magento_connector.mapping.not_blank'));
+                        } else {
+                            FormValidation.addFieldErrors($target, __('pim_magento_connector.mapping.not_blank'));
+                        }
+
                         isValid = false;
                     }
                 });

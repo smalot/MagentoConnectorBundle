@@ -43,8 +43,16 @@ class ORMAttributeMapper extends ORMMapper
      */
     public function getAllSources()
     {
-        return array_map(function($attribute) {
-            return $attribute->getCode();
-        }, $this->attributeManager->getAttributes());
+        $sources = array();
+
+        if ($this->isValid()) {
+            $attributes = $this->attributeManager->getAttributes();
+
+            foreach ($attributes as $attribute) {
+                $sources[] = array('id' => $attribute->getCode(), 'text' => $attribute->getCode());
+            }
+        }
+
+        return $sources;
     }
 }

@@ -12,3 +12,8 @@ services:
         arguments:
             - ['@pim_magento_connector.mapper.magento_storeview', '@pim_magento_connector.mapper.orm_storeview']
             - 'storeview'
+    pim_magento_connector.merger.category_mapping:
+        class: %pim_magento_connector.merger.mapping.class%
+        arguments:
+            - ['@pim_magento_connector.mapper.magento_category', '@pim_magento_connector.mapper.orm_category']
+            - 'category'

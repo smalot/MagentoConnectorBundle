@@ -78,13 +78,16 @@ class ORMAttributeMapperSpec extends ObjectBehavior
         $this->getAllTargets()->shouldReturn(array());
     }
 
-    function it_shoulds_return_all_attributes_from_database_as_sources($attributeManager, Attribute $attribute)
+    function it_shoulds_return_all_attributes_from_database_as_sources($attributeManager, $hasValidCredentialsValidator, Attribute $attribute)
     {
+        $this->setParameters($this->clientParameters);
+        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+
         $attributeManager->getAttributes()->willReturn(array($attribute));
 
         $attribute->getCode()->willReturn('foo');
 
-        $this->getAllSources()->shouldReturn(array('foo'));
+        $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
     }
 
     function it_shoulds_have_a_priority()

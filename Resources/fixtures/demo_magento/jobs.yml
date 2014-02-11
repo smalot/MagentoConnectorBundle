@@ -15,10 +15,10 @@ jobs:
             storeviewMapping:         ''
             visibility:               4
             currency:                 EUR
-            categoryMapping:      'default:2'
+            categoryMapping:          'default:2'
             pimGrouped:               'PACK'
             pimUpSell:                'UPSELL'
-            pimCrossSell:              'X_SELL'
+            pimCrossSell:             'X_SELL'
             pimRelated:               'RELATED'
             notCompleteAnymoreAction: 'disable'
             notInPimAnymoreAction:    'disable'

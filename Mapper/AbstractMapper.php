@@ -90,7 +90,7 @@ class AbstractMapper implements MapperInterface
 
     /**
      * Get mapper identifier
-     * @param string rootIdentifier
+     * @param string $rootIdentifier
      *
      * @return string
      */

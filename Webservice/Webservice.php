@@ -88,7 +88,9 @@ class Webservice
 
         foreach ($attributeList as $attributeCode => $attribute) {
             if (in_array($attribute['type'], array(self::SELECT, self::MULTI_SELECT))) {
-                $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
+                if (!isset($this->attributeOptionList[$attributeCode])) {
+                    $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
+                }
             }
         }
 
@@ -504,31 +506,6 @@ class Webservice
     }
 
     /**
-     * Get options status for the given attributeCode
-     * @param string $attributeCode
-     *
-     * @return array
-     */
-    public function getAllOptions($attributeCode)
-    {
-        $options = $this->client->call(
-            self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
-            array(
-                $attributeCode,
-                self::ADMIN_STOREVIEW
-            )
-        );
-
-        $optionsStatus = array();
-
-        foreach ($options as $option) {
-            $optionsStatus[] = $option['label'];
-        }
-
-        return $optionsStatus;
-    }
-
-    /**
      * Create an option
      * @param array $option
      */
@@ -586,7 +563,7 @@ class Webservice
     public function getAttributeOptions($attributeCode)
     {
         $options = $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS,
+            self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
             array($attributeCode, self::ADMIN_STOREVIEW)
         );
 

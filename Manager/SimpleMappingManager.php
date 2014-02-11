@@ -53,6 +53,8 @@ class SimpleMappingManager
      */
     public function setMapping(array $mapping, $identifier)
     {
+        $this->pruneOldMapping($identifier);
+
         foreach ($mapping as $mappingItem) {
             if ($mappingItem['source'] != '') {
                 $simpleMappingItem = $this->getEntityRepository()->findOneBy(array(
@@ -70,6 +72,21 @@ class SimpleMappingManager
 
                 $this->objectManager->persist($simpleMappingItem);
             }
+        }
+
+        $this->objectManager->flush();
+    }
+
+    /**
+     * Prune old instance of simple mapping for the given identifier
+     * @param string $identifier
+     */
+    protected function pruneOldMapping($identifier)
+    {
+        $oldMappingItems = $this->getEntityRepository()->findBy(array('identifier' => $identifier));
+
+        foreach ($oldMappingItems as $oldMappingItem) {
+            $this->objectManager->remove($oldMappingItem);
         }
 
         $this->objectManager->flush();

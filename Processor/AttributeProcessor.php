@@ -78,10 +78,13 @@ class AttributeProcessor extends AbstractProcessor
     {
         parent::beforeExecute();
 
+        $magentoStoreViews = $this->webservice->getStoreViewsList();
+
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
         $this->globalContext['attributeMapping']         = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
     }
 
     /**

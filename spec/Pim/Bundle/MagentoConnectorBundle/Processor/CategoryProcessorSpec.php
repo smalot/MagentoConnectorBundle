@@ -21,6 +21,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         ChannelManager $channelManager,
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
+        MappingMerger $categoryMappingMerger,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         CategoryMappingManager $categoryMappingManager,
@@ -32,6 +33,7 @@ class CategoryProcessorSpec extends ObjectBehavior
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
+            $categoryMappingMerger,
             $categoryMappingManager
         );
 
@@ -46,7 +48,8 @@ class CategoryProcessorSpec extends ObjectBehavior
         Category $category,
         Category $parentCategory,
         $webservice,
-        $categoryNormalizer
+        $categoryNormalizer,
+        $categoryMappingMerger
     ) {
         $webservice->getCategoriesStatus()->willReturn(array(
             1 => array(

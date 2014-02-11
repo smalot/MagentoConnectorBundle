@@ -67,7 +67,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
 
         $webservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
 
-        $this->getAllTargets()->shouldReturn(array('foo', 'bar'));
+        $this->getAllTargets()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo'), array('id' => 'bar', 'text' => 'bar')));
     }
 
     function it_returns_an_empty_array_as_targets_if_parameters_are_not_setted($hasValidCredentialsValidator)

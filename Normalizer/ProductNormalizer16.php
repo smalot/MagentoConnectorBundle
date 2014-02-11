@@ -16,8 +16,8 @@ class ProductNormalizer16 extends ProductNormalizer implements ProductNormalizer
     /**
      * Get the corresponding storeview code for a givent locale
      * @param string            $locale
+     * @param array             $magentoStoreViews
      * @param MappingCollection $storeViewMapping
-     * @param array             $storeViewMapping
      *
      * @return string
      */

@@ -56,6 +56,7 @@ class ProductAssociationProcessor extends AbstractProcessor
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
      * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
