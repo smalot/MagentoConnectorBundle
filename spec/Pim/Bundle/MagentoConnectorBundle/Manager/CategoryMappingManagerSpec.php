@@ -21,6 +21,24 @@ class CategoryMappingManagerSpec extends ObjectBehavior
         $mappingCollection->getTarget('default')->willReturn(12);
     }
 
+    function it_gets_category_from_id($entityRepository, MagentoCategoryMapping $categoryMapping, Category $category)
+    {
+        $entityRepository->findOneBy(array('magentoCategoryId' => 12, 'magentoUrl' => 'magento_url'))
+            ->willReturn($categoryMapping);
+
+        $categoryMapping->getCategory()->willReturn($category);
+
+        $this->getCategoryFromId(12, 'magento_url')->shouldReturn($category);
+    }
+
+    function it_shoulds_gets_null_if_category_mapping_is_not_found($entityRepository, MagentoCategoryMapping $categoryMapping, Category $category)
+    {
+        $entityRepository->findOneBy(array('magentoCategoryId' => 12, 'magentoUrl' => 'magento_url'))
+            ->willReturn(null);
+
+        $this->getCategoryFromId(12, 'magento_url')->shouldReturn(null);
+    }
+
     function it_gets_id_from_root_category_mapping(Category $category, $mappingCollection)
     {
         $category->getCode()->willReturn('default');
@@ -60,5 +78,15 @@ class CategoryMappingManagerSpec extends ObjectBehavior
         $category->getCode()->willReturn('colors');
 
         $this->getIdFromCategory($category, '', $mappingCollection)->shouldReturn(null);
+    }
+
+    function it_tests_if_a_category_exist_from_category_id($entityRepository, MagentoCategoryMapping $categoryMapping, Category $category)
+    {
+        $entityRepository->findOneBy(array('magentoCategoryId' => 12, 'magentoUrl' => 'magento_url'))
+            ->willReturn($categoryMapping);
+
+        $categoryMapping->getCategory()->willReturn($category);
+
+        $this->magentoCategoryExists(12, 'magento_url')->shouldReturn(true);
     }
 }

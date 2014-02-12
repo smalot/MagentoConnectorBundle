@@ -135,10 +135,14 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $create
     ) {
         $basePrice    = $this->priceMappingManager->getLowestPrice($products);
-        $priceChanges = $this->priceMappingManager->getPriceMapping($group, $products);
+        $priceMapping = $this->priceMappingManager->getPriceMapping($group, $products);
 
         try {
-            $this->priceMappingManager->validatePriceMapping($products, $priceChanges, $basePrice);
+            $this->priceMappingManager->validatePriceMapping(
+                $products,
+                $priceMapping['price_changes'],
+                $priceMapping['base_price']
+            );
         } catch (ComputedPriceNotMatchedException $e) {
             throw new InvalidPriceMappingException(
                 sprintf(
@@ -166,8 +170,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,
             array(
-                self::PRICE           => $basePrice,
-                self::PRICE_CHANGES   => $priceChanges,
+                self::PRICE           => $priceMapping['base_price'],
+                self::PRICE_CHANGES   => $priceMapping['price_changes'],
                 self::ASSOCIATED_SKUS => $associatedSkus
             )
         );

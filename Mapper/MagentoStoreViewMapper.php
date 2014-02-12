@@ -33,32 +33,6 @@ class MagentoStoreViewMapper extends AbstractMapper
     }
 
     /**
-     * Get mapping
-     * @return array
-     */
-    public function getMapping()
-    {
-        if (!$this->isValid()) {
-            return new MappingCollection();
-        } else {
-            $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
-
-            $mapping = new MappingCollection();
-            foreach ($storeViews as $storeView) {
-                if (in_array($storeView['code'], $this->mandatoryStoreViews())) {
-                    $mapping->add(array(
-                        'source'    => $storeView['code'],
-                        'target'    => $storeView['code'],
-                        'deletable' => false
-                    ));
-                }
-            }
-
-            return $mapping;
-        }
-    }
-
-    /**
      * Get all targets
      * @return array
      */
@@ -86,14 +60,5 @@ class MagentoStoreViewMapper extends AbstractMapper
     public function getIdentifier($rootIdentifier = 'storeview')
     {
         return parent::getIdentifier($rootIdentifier);
-    }
-
-    /**
-     * Get mandatory attributes
-     * @return array
-     */
-    protected function mandatoryStoreViews()
-    {
-        return array();
     }
 }

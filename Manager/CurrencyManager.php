@@ -22,7 +22,7 @@ class CurrencyManager extends BaseCurrencyManager
      */
     public function getCurrencyChoices()
     {
-        $currencies = $this->getCurrencies();
+        $currencies = $this->getActiveCurrencies();
 
         $choices = array();
         foreach ($currencies as $currency) {

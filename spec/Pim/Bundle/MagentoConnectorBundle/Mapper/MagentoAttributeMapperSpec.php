@@ -48,7 +48,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn(array('name' => array('source' => 'name', 'target' => 'name', 'deletable' => false)));
     }
 
-    function it_returns_an_empty_collection_if_parameters_are_not_setted($hasValidCredentialsValidator)
+    function it_returns_an_empty_collection_if_parameters_are_not_setted()
     {
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
@@ -83,5 +83,20 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
     function it_shoulds_have_a_priority()
     {
         $this->getPriority()->shouldReturn(0);
+    }
+
+    function it_should_give_an_proper_identifier($hasValidCredentialsValidator)
+    {
+        $this->setParameters($this->clientParameters);
+        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+
+        $identifier = sha1('attribute-soap_url');
+
+        $this->getIdentifier()->shouldReturn($identifier);
+    }
+
+    function it_should_give_an_empty_identifier_if_the_mapper_is_not_configured()
+    {
+        $this->getIdentifier()->shouldReturn('');
     }
 }

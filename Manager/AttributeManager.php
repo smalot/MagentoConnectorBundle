@@ -30,7 +30,7 @@ class AttributeManager extends BaseAttributeManager
      *
      * @return \Doctrine\ORM\EntityRepository
      */
-    public function getRepository()
+    protected function getRepository()
     {
         $classMetadata = $this->objectManager->getMetadataFactory()->getMetadataFor($this->attributeClass);
 

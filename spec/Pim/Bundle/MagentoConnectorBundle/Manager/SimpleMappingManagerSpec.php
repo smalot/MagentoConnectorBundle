@@ -45,4 +45,14 @@ class SimpleMappingManagerSpec extends ObjectBehavior
 
         $this->setMapping(array(array('source' => 'foo', 'target' => 'bar')), 'identifier');
     }
+
+    function it_cleans_old_mapping_values($er, $objectManager)
+    {
+        $er->findBy(array('identifier' => 'identifier'))->willReturn(array('old_mapping'));
+
+        $objectManager->remove('old_mapping')->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->setMapping(array(), 'identifier');
+    }
 }

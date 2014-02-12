@@ -55,7 +55,7 @@ class AssociationTypeManager
      */
     public function getAssociationTypesByCode($code)
     {
-        return $this->getEntityRepository()->findOneBy(array('code' => $code));
+        return $this->getAssociationTypes(array('code' => $code));
     }
 
     /**

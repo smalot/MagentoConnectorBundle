@@ -33,32 +33,6 @@ class MagentoCategoryMapper extends AbstractMapper
     }
 
     /**
-     * Get mapping
-     * @return array
-     */
-    public function getMapping()
-    {
-        if (!$this->isValid()) {
-            return new MappingCollection();
-        } else {
-            $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
-
-            $mapping = new MappingCollection();
-            foreach (array_keys($categories) as $id) {
-                if (in_array($id, $this->mandatoryCategories())) {
-                    $mapping->add(array(
-                        'source'    => $id,
-                        'target'    => $id,
-                        'deletable' => false
-                    ));
-                }
-            }
-
-            return $mapping;
-        }
-    }
-
-    /**
      * Get all targets
      * @return array
      */
@@ -86,16 +60,5 @@ class MagentoCategoryMapper extends AbstractMapper
     public function getIdentifier($rootIdentifier = 'category')
     {
         return parent::getIdentifier($rootIdentifier);
-    }
-
-    /**
-     * Get mandatory categories
-     * @return array
-     */
-    protected function mandatoryCategories()
-    {
-        return array(
-
-        );
     }
 }
