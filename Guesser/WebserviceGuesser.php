@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
 
 /**
  * A magento soap client to abstract interaction with the magento api
@@ -22,6 +23,20 @@ class WebserviceGuesser extends AbstractGuesser
     protected $webservice;
 
     /**
+     * @var MagentoSoapClientFactory
+     */
+    protected $magentoSoapClientFactory;
+
+    /**
+     * Constructor
+     * @param MagentoSoapClientFactory $magentoSoapClientFactory
+     */
+    public function __construct(MagentoSoapClientFactory $magentoSoapClientFactory)
+    {
+        $this->magentoSoapClientFactory = $magentoSoapClientFactory;
+    }
+
+    /**
      * Get the Webservice corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      *
@@ -31,8 +46,7 @@ class WebserviceGuesser extends AbstractGuesser
     public function getWebservice(MagentoSoapClientParameters $clientParameters)
     {
         if (!$this->webservice) {
-            $client = $this->getMagentoSoapClient($clientParameters);
-
+            $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
             $magentoVersion = $this->getMagentoVersion($client);
 
             switch ($magentoVersion) {
