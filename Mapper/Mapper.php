@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class AbstractMapper implements MapperInterface
+class Mapper implements MapperInterface
 {
     const IDENTIFIER_FORMAT = '%s-%s';
 

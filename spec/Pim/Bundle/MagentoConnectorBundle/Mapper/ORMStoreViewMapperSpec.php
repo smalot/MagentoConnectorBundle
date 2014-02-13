@@ -28,7 +28,7 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $localeManager->getActiveLocales()->willReturn(array($locale));
+        $localeManager->getActiveCodes()->willReturn(array('foo'));
 
         $locale->getCode()->willReturn('foo');
 
