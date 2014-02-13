@@ -145,7 +145,6 @@ define(
                 }
             },
             createMappingItem: function() {
-                console.log('coucou');
                 var mappingItem = new MappingItem({source: '', target: '', deletable: true});
                 this.collection.add(mappingItem);
 

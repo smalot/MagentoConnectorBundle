@@ -58,6 +58,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
     protected $beforeExecute = false;
 
     /**
+     * @var boolean
+     */
+    protected $afterConfiguration = false;
+
+    /**
      * get soapUsername
      *
      * @return string Soap mangeto soapUsername
@@ -178,7 +183,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
     {
         parent::setConfiguration($config);
 
-        $this->afterConfigurationSet();
+        if (!$this->afterConfiguration) {
+            $this->afterConfigurationSet();
+
+            $this->afterConfiguration = true;
+        }
     }
 
     /**

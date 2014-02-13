@@ -35,7 +35,6 @@ class OptionProcessor extends AbstractProcessor
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
         $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
-;
     }
 
     /**

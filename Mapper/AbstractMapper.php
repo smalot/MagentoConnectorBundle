@@ -19,7 +19,7 @@ class AbstractMapper implements MapperInterface
     /**
      * @var MagentoSoapClientParameters
      */
-    protected $clientParameters;
+    protected $clientParameters = null;
 
     /**
      * @var HasValidCredentialsValidator
@@ -29,9 +29,8 @@ class AbstractMapper implements MapperInterface
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      */
-    public function __construct(
-        HasValidCredentialsValidator $hasValidCredentialsValidator
-    ) {
+    public function __construct(HasValidCredentialsValidator $hasValidCredentialsValidator)
+    {
         $this->hasValidCredentialsValidator = $hasValidCredentialsValidator;
     }
 
@@ -109,7 +108,7 @@ class AbstractMapper implements MapperInterface
      */
     public function isValid()
     {
-        return $this->clientParameters != null &&
+        return $this->clientParameters !== null &&
             $this->hasValidCredentialsValidator->areValidSoapParameters($this->clientParameters);
     }
 }
