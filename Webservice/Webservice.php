@@ -67,6 +67,7 @@ class Webservice
     protected $attributes          = array();
     protected $attributeSetList    = array();
     protected $attributeOptionList = array();
+    protected $categories          = array();
 
     /**
      * Constructor
@@ -300,11 +301,15 @@ class Webservice
      */
     public function getCategoriesStatus()
     {
-        $tree = $this->client->call(
-            self::SOAP_ACTION_CATEGORY_TREE
-        );
+        if (!$this->categories) {
+            $tree = $this->client->call(
+                self::SOAP_ACTION_CATEGORY_TREE
+            );
 
-        return $this->flattenCategoryTree($tree);
+            $this->categories = $this->flattenCategoryTree($tree);
+        }
+
+        return $this->categories;
     }
 
     /**
