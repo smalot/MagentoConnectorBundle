@@ -53,7 +53,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof ProductInterface && in_array($format, $this->supportedFormats);
+        return in_array($format, $this->supportedFormats);
     }
 
     /**
