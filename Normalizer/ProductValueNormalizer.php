@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
@@ -50,6 +51,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $object,
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
+                $context['attributeMapping'],
                 $context['currencyCode']
             );
         } else {
@@ -158,6 +160,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * @param ProductValueInterface $value
      * @param array                 $magentoAttributes
      * @param array                 $magentoAttributesOptions
+     * @param MappingCollection     $attributeMapping
      * @param string                $currencyCode
      *
      * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
@@ -167,12 +170,13 @@ class ProductValueNormalizer implements NormalizerInterface
         ProductValueInterface $value,
         array $magentoAttributes,
         array $magentoAttributesOptions,
+        MappingCollection $attributeMapping,
         $currencyCode
     ) {
         $data      = $value->getData();
         $attribute = $value->getAttribute();
 
-        if (!isset($magentoAttributes[$attribute->getCode()])) {
+        if (!isset($magentoAttributes[$attributeMapping->getTarget($attribute->getCode())])) {
             throw new AttributeNotFoundException(
                 sprintf(
                     'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should ' .

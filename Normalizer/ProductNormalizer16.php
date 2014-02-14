@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
+use Pim\Bundle\CatalogBundle\Entity\Locale;
 
 /**
  * A normalizer to transform a product entity into an array for Magento platform above 1.6
@@ -28,18 +29,17 @@ class ProductNormalizer16 extends ProductNormalizer implements ProductNormalizer
 
     /**
      * Manage not found locales
-     * @param string $storeViewCode
-     * @param array  $magentoStoreViewMapping
+     * @param Locale $locale
      *
      * @throws LocaleNotMatchedException
      */
-    protected function localeNotFound($storeViewCode, $magentoStoreViewMapping)
+    protected function localeNotFound(Locale $locale)
     {
         throw new LocaleNotMatchedException(
             sprintf(
                 'No storeview found for the locale "%s". Please map the locale "%s" to a Magento storeview',
-                $storeViewCode,
-                $storeViewCode
+                $locale->getCode(),
+                $locale->getCode()
             )
         );
     }

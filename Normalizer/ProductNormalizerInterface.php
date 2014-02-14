@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Defines the interface of a product normalizers.
@@ -16,13 +17,14 @@ interface ProductNormalizerInterface
     /**
      * Get values array for a given product
      *
-     * @param ProductInterface $product                  The given product
-     * @param array            $magentoAttributes        Attribute list from Magento
-     * @param array            $magentoAttributesOptions Attribute options list from Magento
-     * @param string           $localeCode               The locale to apply
-     * @param string           $scopeCode                The akeno scope
-     * @param array            $categoryMapping          Root category mapping
-     * @param boolean          $onlyLocalized            If true, only get translatable attributes
+     * @param ProductInterface  $product                  The given product
+     * @param array             $magentoAttributes        Attribute list from Magento
+     * @param array             $magentoAttributesOptions Attribute options list from Magento
+     * @param string            $localeCode               The locale to apply
+     * @param string            $scopeCode                The akeno scope
+     * @param MappingCollection $categoryMapping          Root category mapping
+     * @param MappingCollection $attributeMapping         Attribute mapping
+     * @param boolean           $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
      */
@@ -32,7 +34,8 @@ interface ProductNormalizerInterface
         $magentoAttributesOptions,
         $localeCode,
         $scopeCode,
-        $categoryMapping,
+        MappingCollection $categoryMapping,
+        MappingCollection $attributeMapping,
         $onlyLocalized = false
     );
 

@@ -73,6 +73,16 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
+     * @var string
+     */
+    protected $attributeMapping;
+
+    /**
+     * @var MappingMerger
+     */
+    protected $attributeMappingMerger;
+
+    /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
@@ -80,6 +90,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
      * @param MappingMerger            $categoryMappingMerger
+     * @param MappingMerger            $attributeMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
@@ -88,13 +99,15 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         MappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger
+        MappingMerger $categoryMappingMerger,
+        MappingMerger $attributeMappingMerger
     ) {
         parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
-        $this->currencyManager       = $currencyManager;
-        $this->channelManager        = $channelManager;
-        $this->categoryMappingMerger = $categoryMappingMerger;
+        $this->currencyManager        = $currencyManager;
+        $this->channelManager         = $channelManager;
+        $this->categoryMappingMerger  = $categoryMappingMerger;
+        $this->attributeMappingMerger = $attributeMappingMerger;
     }
 
     /**
@@ -218,6 +231,30 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
+     * get attributeMapping
+     *
+     * @return string attributeMapping
+     */
+    public function getAttributeMapping()
+    {
+        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+    }
+
+    /**
+     * Set attributeMapping
+     *
+     * @param string $attributeMapping attributeMapping
+     *
+     * @return AbstractProcessor
+     */
+    public function setAttributeMapping($attributeMapping)
+    {
+        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+
+        return $this;
+    }
+
+    /**
      * Function called before all process
      */
     protected function beforeExecute()
@@ -243,7 +280,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                 'magentoAttributes'        => $magentoAttributes,
                 'magentoAttributesOptions' => $magentoAttributesOptions,
                 'magentoStoreViews'        => $magentoStoreViews,
-                'categoryMapping'          => $this->categoryMappingMerger->getMapping()
+                'categoryMapping'          => $this->categoryMappingMerger->getMapping(),
+                'attributeMapping'          => $this->attributeMappingMerger->getMapping()
             )
         );
     }
@@ -256,6 +294,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         parent::afterConfigurationSet();
 
         $this->categoryMappingMerger->setParameters($this->getClientParameters());
+        $this->attributeMappingMerger->setParameters($this->getClientParameters());
     }
 
     /**
@@ -296,7 +335,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                     )
                 )
             ),
-            $this->categoryMappingMerger->getConfigurationField()
+            $this->categoryMappingMerger->getConfigurationField(),
+            $this->attributeMappingMerger->getConfigurationField()
         );
     }
 }

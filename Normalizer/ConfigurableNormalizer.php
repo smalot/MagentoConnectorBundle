@@ -8,6 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * A normalizer to transform a group entity into an array
@@ -18,7 +19,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingEx
  */
 class ConfigurableNormalizer extends AbstractNormalizer
 {
-    const PRICE           = 'price';
+    const BASE_PRICE      = 'price';
     const PRICE_CHANGES   = 'price_changes';
     const ASSOCIATED_SKUS = 'associated_skus';
 
@@ -65,6 +66,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['website'],
             $context['channel'],
             $context['categoryMapping'],
+            $context['attributeMapping'],
             $context['create']
         );
 
@@ -87,6 +89,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
                     $locale->getCode(),
                     $context['channel'],
                     $context['categoryMapping'],
+                    $context['attributeMapping'],
                     true
                 );
 
@@ -97,7 +100,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
                 );
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
-                    $this->localeNotFound($locale, $context['storeViewMapping']);
+                    $this->localeNotFound($locale);
                 }
             }
         }
@@ -107,17 +110,18 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get default configurable
-     * @param Group  $group
-     * @param string $sku
-     * @param int    $attributeSetId
-     * @param array  $products
-     * @param array  $magentoAttributes
-     * @param array  $magentoAttributesOptions
-     * @param string $locale
-     * @param string $website
-     * @param string $channel
-     * @param arrray $categoryMapping
-     * @param bool   $create
+     * @param Group             $group
+     * @param string            $sku
+     * @param int               $attributeSetId
+     * @param array             $products
+     * @param array             $magentoAttributes
+     * @param array             $magentoAttributesOptions
+     * @param string            $locale
+     * @param string            $website
+     * @param string            $channel
+     * @param MappingCollection $categoryMapping
+     * @param MappingCollection $attributeMapping
+     * @param bool              $create
      *
      * @return array
      */
@@ -131,17 +135,17 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $locale,
         $website,
         $channel,
-        $categoryMapping,
+        MappingCollection $categoryMapping,
+        MappingCollection $attributeMapping,
         $create
     ) {
-        $basePrice    = $this->priceMappingManager->getLowestPrice($products);
         $priceMapping = $this->priceMappingManager->getPriceMapping($group, $products);
 
         try {
             $this->priceMappingManager->validatePriceMapping(
                 $products,
-                $priceMapping['price_changes'],
-                $priceMapping['base_price']
+                $priceMapping[self::PRICE_CHANGES],
+                $priceMapping[self::BASE_PRICE]
             );
         } catch (ComputedPriceNotMatchedException $e) {
             throw new InvalidPriceMappingException(
@@ -164,24 +168,22 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $locale,
             $channel,
             $categoryMapping,
+            $attributeMapping,
             false
         );
 
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,
-            array(
-                self::PRICE           => $priceMapping['base_price'],
-                self::PRICE_CHANGES   => $priceMapping['price_changes'],
-                self::ASSOCIATED_SKUS => $associatedSkus
-            )
+            $priceMapping,
+            array(self::ASSOCIATED_SKUS => $associatedSkus)
         );
 
         $defaultConfigurableValues['websites'] = array($website);
 
         if ($create) {
-            $defaultConfigurable = $this->getNewConfigurable($defaultConfigurableValues, $sku, $attributeSetId);
+            $defaultConfigurable = $this->getNewConfigurable($sku, $defaultConfigurableValues, $attributeSetId);
         } else {
-            $defaultConfigurable = $this->getUpdatedConfigurable($defaultConfigurableValues, $sku);
+            $defaultConfigurable = $this->getUpdatedConfigurable($sku, $defaultConfigurableValues);
         }
 
         return $defaultConfigurable;
@@ -195,7 +197,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
      *
      * @return array
      */
-    protected function getNewConfigurable($configurableValues, $sku, $attributeSetId)
+    protected function getNewConfigurable($sku, array $configurableValues, $attributeSetId)
     {
         return array(
             AbstractNormalizer::MAGENTO_CONFIGURABLE_PRODUCT_KEY,
@@ -212,7 +214,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
      *
      * @return array
      */
-    protected function getUpdatedConfigurable($configurableValues, $sku)
+    protected function getUpdatedConfigurable($sku, array $configurableValues)
     {
         return array(
             $sku,

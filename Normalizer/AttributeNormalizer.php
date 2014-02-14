@@ -61,7 +61,8 @@ class AttributeNormalizer implements NormalizerInterface
                 $object,
                 $context['defaultLocale'],
                 $context['magentoAttributes'],
-                $context['magentoAttributesOptions']
+                $context['magentoAttributesOptions'],
+                $context['attributeMapping']
             ),
             'is_unique'                     => $this->getNormalizedUnique($object),
             'is_required'                   => $this->getNormalizedRequired($object),
@@ -189,10 +190,11 @@ class AttributeNormalizer implements NormalizerInterface
 
     /**
      * Get normalized default value for attribute
-     * @param Attribute $attribute
-     * @param string    $defaultLocale
-     * @param array     $magentoAttributes
-     * @param array     $magentoAttributesOptions
+     * @param Attribute         $attribute
+     * @param string            $defaultLocale
+     * @param array             $magentoAttributes
+     * @param array             $magentoAttributesOptions
+       @param MappingCollection $attributeMapping
      *
      * @return string
      */
@@ -200,7 +202,8 @@ class AttributeNormalizer implements NormalizerInterface
         Attribute $attribute,
         $defaultLocale,
         array $magentoAttributes,
-        array $magentoAttributesOptions
+        array $magentoAttributesOptions,
+        MappingCollection $attributeMapping
     ) {
         $context = array(
             'identifier'               => null,
@@ -209,6 +212,7 @@ class AttributeNormalizer implements NormalizerInterface
             'onlyLocalized'            => false,
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
+            'attributeMapping'         => $attributeMapping,
             'currencyCode'             => ''
         );
 

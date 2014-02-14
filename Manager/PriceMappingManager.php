@@ -6,6 +6,7 @@ use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 
 /**
  * Price mapping manager
@@ -67,7 +68,7 @@ class PriceMappingManager
             }
         }
 
-        return array('price_changes' => $priceChanges, 'base_price' => $basePrice);
+        return array(ConfigurableNormalizer::PRICE_CHANGES => $priceChanges, ConfigurableNormalizer::BASE_PRICE => $basePrice);
     }
 
     /**

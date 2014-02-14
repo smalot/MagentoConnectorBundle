@@ -99,7 +99,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
                         'attribute_1_option_1' => 0.0
                     )
                 ),
-                'base_price' => 5.0
+                'price' => 5.0
             )
         );
     }
@@ -139,11 +139,11 @@ class PriceMappingManagerSpec extends ObjectBehavior
                         'attribute_1_option_2' => -5.0,
                     )
                 ),
-                'base_price' => 15.0
+                'price' => 15.0
             )
         );
 
-        $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['base_price']);
+        $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price']);
     }
 
     function it_gives_complexe_price_mapping_from_lower_price(
@@ -180,11 +180,11 @@ class PriceMappingManagerSpec extends ObjectBehavior
                         'attribute_1_option_2' => 0.0,
                     )
                 ),
-                'base_price' => 5.0
+                'price' => 5.0
             )
         );
 
-        $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['base_price']);
+        $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price']);
     }
 
     function it_gives_an_other_complexe_price_mapping_from_lower_price(
@@ -221,10 +221,10 @@ class PriceMappingManagerSpec extends ObjectBehavior
                         'attribute_2_option_2' => 10.0,
                     )
                 ),
-                'base_price' => 5.0
+                'price' => 5.0
             )
         );
 
-        $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['base_price']);
+        $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price']);
     }
 }
