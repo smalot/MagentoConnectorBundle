@@ -31,7 +31,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
     /**
      * @var boolean
      */
-    protected $isValid = false;
+    protected $checked = false;
 
     /**
      * @param WebserviceGuesser   $webserviceGuesser
@@ -75,20 +75,18 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function areValidSoapParameters(MagentoSoapClientParameters $clientParameters)
     {
-        if (!$this->isValid) {
+        if (!$this->checked) {
+            $this->checked = true;
+
             if ($this->magentoUrlValidator->isValidMagentoUrl($clientParameters->getSoapUrl())) {
                 try {
                     $this->webserviceGuesser->getWebservice($clientParameters);
                 } catch (InvalidCredentialException $e) {
-                    $this->isValid = false;
-
-                    return $this->isValid;
+                    return false;
                 }
             }
-
-            $this->isValid = true;
         }
 
-        return $this->isValid;
+        return true;
     }
 }
