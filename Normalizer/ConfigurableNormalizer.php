@@ -139,13 +139,14 @@ class ConfigurableNormalizer extends AbstractNormalizer
         MappingCollection $attributeMapping,
         $create
     ) {
-        $priceMapping = $this->priceMappingManager->getPriceMapping($group, $products);
+        $priceMapping = $this->priceMappingManager->getPriceMapping($group, $products, $attributeMapping);
 
         try {
             $this->priceMappingManager->validatePriceMapping(
                 $products,
                 $priceMapping[self::PRICE_CHANGES],
-                $priceMapping[self::BASE_PRICE]
+                $priceMapping[self::BASE_PRICE],
+                $attributeMapping
             );
         } catch (ComputedPriceNotMatchedException $e) {
             throw new InvalidPriceMappingException(

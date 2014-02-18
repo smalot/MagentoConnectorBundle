@@ -67,6 +67,12 @@ class ProductNormalizerSpec extends ObjectBehavior
             'pimGrouped'               => 'pim_grouped'
         );
 
+        $attributeMapping->getTarget('visibility')->willReturn('visibility');
+        $attributeMapping->getTarget('created_at')->willReturn('created_at');
+        $attributeMapping->getTarget('updated_at')->willReturn('updated_at');
+        $attributeMapping->getTarget('status')->willReturn('status');
+        $attributeMapping->getTarget('categories')->willReturn('categories');
+
         $channelManager->getChannelByCode('channel')->willReturn($channel);
         $channel->getLocales()->willReturn(array($localeEN, $localeFR));
         $localeEN->getCode()->willReturn('default_locale');
@@ -128,7 +134,7 @@ class ProductNormalizerSpec extends ObjectBehavior
 
     function it_normalizes_the_given_grouped_product($product, $associationTypeManager, AssociationType $associationType)
     {
-        $associationTypeManager->getAssociationTypesByCode('pim_grouped')->willReturn($associationType);
+        $associationTypeManager->getAssociationTypeByCode('pim_grouped')->willReturn($associationType);
         $product->getAssociationForType($associationType)->willReturn(new ArrayCollection(array('association')));
 
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn(array(

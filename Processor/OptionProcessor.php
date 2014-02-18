@@ -8,6 +8,9 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Excetpion\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 
 /**
  * Magento option processor
@@ -24,6 +27,57 @@ class OptionProcessor extends AbstractProcessor
     protected $optionNormalizer;
 
     /**
+     * @var MappingMerger
+     */
+    protected $attributeMappingMerger;
+
+    /**
+     * @var string
+     */
+    protected $attributeMapping;
+
+    /**
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MappingMerger            $storeViewMappingMerger
+     * @param MappingMerger            $attributeMappingMerger
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MappingMerger $storeViewMappingMerger,
+        MappingMerger $attributeMappingMerger
+    ) {
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+
+        $this->attributeMappingMerger = $attributeMappingMerger;
+    }
+
+    /**
+     * Set attribute mapping
+     * @param string $attributeMapping
+     *
+     * @return AttributeProcessor
+     */
+    public function setAttributeMapping($attributeMapping)
+    {
+        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+
+        return $this;
+    }
+
+    /**
+     * Get attribute mapping
+     * @return string
+     */
+    public function getAttributeMapping()
+    {
+        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function beforeExecute()
@@ -35,6 +89,7 @@ class OptionProcessor extends AbstractProcessor
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
         $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
+        $this->globalContext['attributeMapping']  = $this->attributeMappingMerger->getMapping();
     }
 
     /**
@@ -45,9 +100,10 @@ class OptionProcessor extends AbstractProcessor
         $this->beforeExecute();
 
         $attribute = $groupedOptions[0]->getAttribute();
+        $attributeCode = $this->globalContext['attributeMapping']->getTarget($attribute->getCode());
 
         try {
-            $optionsStatus = $this->webservice->getAttributeOptions($attribute->getCode());
+            $optionsStatus = $this->webservice->getAttributeOptions($attributeCode);
         } catch (SoapCallException $e) {
             throw new InvalidItemException(
                 sprintf(
@@ -55,13 +111,15 @@ class OptionProcessor extends AbstractProcessor
                     'due to the fact that "%s" attribute doesn\'t exist on Magento side. Please be sure that ' .
                     'this attribute is created (mannualy or by export) on Magento before options\' export. ' .
                     '(Original error : "%s")',
-                    $attribute->getCode(),
-                    $attribute->getCode(),
+                    $attributeCode,
+                    $attributeCode,
                     $e->getMessage()
                 ),
                 array($attribute)
             );
         }
+
+        $this->globalContext['attributeCode'] = $attributeCode;
 
         $normalizedOptions = array();
 
@@ -94,5 +152,26 @@ class OptionProcessor extends AbstractProcessor
         }
 
         return $normalizedOption;
+    }
+
+    /**
+     * Called after the configuration is setted
+     */
+    protected function afterConfigurationSet()
+    {
+        parent::afterConfigurationSet();
+
+        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            $this->attributeMappingMerger->getConfigurationField()
+        );
     }
 }

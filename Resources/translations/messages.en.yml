@@ -42,7 +42,7 @@ pim_base_connector:
             help: Your soap api key on Magento
         soapUrl:
             label: Soap url
-            help: Your magento url
+            help: Your Magento installation url
         channel:
             label: Channel
             help:

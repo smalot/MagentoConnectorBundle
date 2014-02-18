@@ -72,9 +72,10 @@ class OptionNormalizerSpec extends ObjectBehavior
             'magentoStoreViews' => $magentoStoreViews,
             'storeViewMapping'  => $storeViewMapping,
             'channel'           => 'magento',
-            'defaultLocale'     => 'en_US'
+            'defaultLocale'     => 'en_US',
+            'attributeCode'     => 'attribute_code'
         ))->shouldReturn(array(
-            'color',
+            'attribute_code',
             array(
                 'label' => array(
                     array(

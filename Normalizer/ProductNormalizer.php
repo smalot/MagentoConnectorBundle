@@ -268,8 +268,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected function hasGroupedProduct(ProductInterface $product, $pimGrouped)
     {
-        if ($associationType = $this->associationTypeManager->getAssociationTypesByCode($pimGrouped)) {
-            return $product->getAssociationForType($associationType)->count() > 0;
+        if ($associationType = $this->associationTypeManager->getAssociationTypeByCode($pimGrouped)) {
+            return (bool) $product->getAssociationForType($associationType);
         } else {
             return false;
         }
@@ -325,7 +325,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         $normalizedValues = array_merge(
             $normalizedValues,
-            $this->getCustomValue($product, array('categoryMapping' => $categoryMapping))
+            $this->getCustomValue(
+                $product,
+                $attributeMapping,
+                array('categoryMapping' => $categoryMapping)
+            )
         );
 
         ksort($normalizedValues);
@@ -369,19 +373,26 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Get custom values (not provided by the PIM product)
-     * @param ProductInterface $product
-     * @param array            $parameters
+     * @param ProductInterface  $product
+     * @param MappingCollection $attributeMapping
+     * @param array             $parameters
      *
      * @return mixed
      */
-    protected function getCustomValue(ProductInterface $product, array $parameters = array())
-    {
+    protected function getCustomValue(
+        ProductInterface $product,
+        MappingCollection $attributeMapping,
+        array $parameters = array()
+    ) {
         return array(
-            self::VISIBILITY   => $this->visibility,
-            self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
-            'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'categories'       => $this->getProductCategories($product, $parameters['categoryMapping'])
+            $attributeMapping->getTarget(self::VISIBILITY) => $this->visibility,
+            $attributeMapping->getTarget(self::ENABLED)    => (string) ($this->enabled) ? 1 : 2,
+            $attributeMapping->getTarget('created_at')     => (new \DateTime())->format(self::DATE_FORMAT),
+            $attributeMapping->getTarget('updated_at')     => (new \DateTime())->format(self::DATE_FORMAT),
+            $attributeMapping->getTarget('categories')     => $this->getProductCategories(
+                $product,
+                $parameters['categoryMapping']
+            )
         );
     }
 }

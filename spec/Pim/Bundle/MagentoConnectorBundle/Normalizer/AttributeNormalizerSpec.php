@@ -6,7 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
-use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -26,7 +26,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         'is_visible_on_front'           => '1',
         'used_in_product_listing'       => '1',
         'additional_fields'             => array(),
-        'frontend_label'                => array(array('store_id' => 0, 'label' => 'attribute_code')),
+        'frontend_label'                => array(array('store_id' => 0, 'label' => 'attribute_code_mapped')),
     );
 
     protected $baseContext = array(
@@ -44,6 +44,9 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attribute->isRequired()->willReturn(false);
         $attribute->isLocalizable()->willReturn(true);
         $attributeMapping->getTarget('attribute_code')->willReturn('attribute_code_mapped');
+        $attributeMapping->getTarget('Attribute_code')->willReturn('Attribute_code');
+        $attributeMapping->getTarget('2ttribute_code')->willReturn('2ttribute_code');
+        $attributeMapping->getTarget('attributeCode')->willReturn('attributeCode');
 
         $this->baseContext['attributeMapping'] = $attributeMapping;
         $this->baseContext['storeViewMapping'] = $storeViewMapping;
@@ -184,7 +187,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
                 $this->baseNormalizedAttribute,
                 array(
                     'frontend_label'                => array(
-                        array('store_id' => 0, 'label' => 'attribute_code'),
+                        array('store_id' => 0, 'label' => 'attribute_code_mapped'),
                         array('store_id' => 1, 'label' => 'attribute_code'),
                         array('store_id' => 2, 'label' => 'Attribut kod !'),
                     )
@@ -193,13 +196,13 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ));
     }
 
-    function it_normalize_a_new_attribute_with_default_value($attribute, $attributeMapping, $storeViewMapping, $productValueNormalizer, ProductValue $productValue)
+    function it_normalize_a_new_attribute_with_default_value($attribute, $attributeMapping, $storeViewMapping, $productValueNormalizer, ProductValueInterface $productValue)
     {
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn($productValue);
         $attribute->getCode()->willReturn('attribute_code');
 
-        $productValueNormalizer->normalize($productValue, 'MagentoArray', Argument::cetera())->willReturn('defaultValue');
+        $productValueNormalizer->normalize(Argument::cetera())->willReturn('defaultValue');
 
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array_merge(
             array(

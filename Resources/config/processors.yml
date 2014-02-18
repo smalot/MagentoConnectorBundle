@@ -66,3 +66,4 @@ services:
             - '@pim_magento_connector.guesser.magento_normalizer'
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
+            - '@pim_magento_connector.merger.attribute_mapping'

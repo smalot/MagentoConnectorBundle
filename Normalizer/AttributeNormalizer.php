@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
+use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
@@ -79,7 +80,8 @@ class AttributeNormalizer implements NormalizerInterface
                 $object,
                 $context['magentoStoreViews'],
                 $context['defaultLocale'],
-                $context['storeViewMapping']
+                $context['storeViewMapping'],
+                $context['attributeMapping']
             )
         );
 
@@ -216,9 +218,9 @@ class AttributeNormalizer implements NormalizerInterface
             'currencyCode'             => ''
         );
 
-        return null !== $attribute->getDefaultValue() ?
+        return $attribute->getDefaultValue() instanceof ProductValueInterface ?
             $this->productValueNormalizer->normalize($attribute->getDefaultValue(), 'MagentoArray', $context) :
-            '';
+            (null !== $attribute->getDefaultValue() ? $attribute->getDefaultValue() : '');
     }
 
     /**
@@ -260,6 +262,7 @@ class AttributeNormalizer implements NormalizerInterface
      * @param array             $magentoStoreViews
      * @param string            $defaultLocale
      * @param MappingCollection $storeViewMapping
+     * @param MappingCollection $AttributeMapping
      *
      * @return string
      */
@@ -267,7 +270,8 @@ class AttributeNormalizer implements NormalizerInterface
         Attribute $attribute,
         array $magentoStoreViews,
         $defaultLocale,
-        MappingCollection $storeViewMapping
+        MappingCollection $storeViewMapping,
+        MappingCollection $attributeMapping
     ) {
         $localizedLabels = array();
 
@@ -284,7 +288,7 @@ class AttributeNormalizer implements NormalizerInterface
             array(
                 array(
                     'store_id' => 0,
-                    'label'    => $attribute->getCode()
+                    'label'    => $attributeMapping->getTarget($attribute->getCode())
                 )
             ),
             $localizedLabels
