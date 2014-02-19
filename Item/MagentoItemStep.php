@@ -8,6 +8,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Oro\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 
 /**
  * Magento item step
@@ -18,12 +20,17 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
  *
  * @HasValidCredentials()
  */
-abstract class MagentoItemStep extends AbstractConfigurableStepElement
+abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
 {
     /**
      * @var Webservice
      */
     protected $webservice;
+
+    /**
+     * @var StepExecution
+     */
+    protected $stepExecution;
 
     /**
      * @var WebserviceGuesser
@@ -135,6 +142,14 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
     }
 
     /**
+     * @param StepExecution $stepExecution
+     */
+    public function setStepExecution(StepExecution $stepExecution)
+    {
+        $this->stepExecution = $stepExecution;
+    }
+
+    /**
      * Get the magento soap client parameters
      *
      * @return MagentoSoapClientParameters
@@ -196,6 +211,8 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
     protected function afterConfigurationSet()
     {
     }
+
+
 
     /**
      * {@inheritdoc}

@@ -15,6 +15,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 class AttributeWriter extends AbstractWriter
 {
     const ATTRIBUTE_UPDATE_SIZE = 2;
+    const ATTRIBUTE_UPDATED     = 'attribute_updated';
+    const ATTRIBUTE_CREATED     = 'attribute_created';
 
     /**
      * {@inheritdoc}
@@ -27,8 +29,10 @@ class AttributeWriter extends AbstractWriter
             try {
                 if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
                     $this->webservice->updateAttribute($attribute);
+                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
                 } else {
                     $this->webservice->createAttribute($attribute);
+                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
                 }
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array(json_encode($attribute)));

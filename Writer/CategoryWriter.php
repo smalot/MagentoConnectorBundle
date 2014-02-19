@@ -16,6 +16,11 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  */
 class CategoryWriter extends AbstractWriter
 {
+    const CATEGORY_CREATED            = 'category_created';
+    const CATEGORY_UPDATED            = 'category_updated';
+    const CATEGORY_MOVED              = 'category_moved';
+    const CATEGORY_TRANSLATION_SENDED = 'category_translation_sended';
+
     /**
      * @var CategoryMappingManager
      */
@@ -73,6 +78,8 @@ class CategoryWriter extends AbstractWriter
                     $magentoCategoryId,
                     $magentoUrl
                 );
+
+                $this->stepExecution->incrementSummaryInfo(self::CATEGORY_CREATED);
             }
         }
     }
@@ -86,6 +93,8 @@ class CategoryWriter extends AbstractWriter
         if (isset($batch['update'])) {
             foreach ($batch['update'] as $updateCategory) {
                 $this->webservice->sendUpdateCategory($updateCategory);
+
+                $this->stepExecution->incrementSummaryInfo(self::CATEGORY_UPDATED);
             }
         }
     }
@@ -99,6 +108,8 @@ class CategoryWriter extends AbstractWriter
         if (isset($batch['move'])) {
             foreach ($batch['move'] as $moveCategory) {
                 $this->webservice->sendMoveCategory($moveCategory);
+
+                $this->stepExecution->incrementSummaryInfo(self::CATEGORY_MOVED);
             }
         }
     }
@@ -117,6 +128,8 @@ class CategoryWriter extends AbstractWriter
                 $magentoCategory[0] = $magentoCategoryId;
 
                 $this->webservice->sendUpdateCategory($magentoCategory);
+
+                $this->stepExecution->incrementSummaryInfo(self::CATEGORY_TRANSLATION_SENDED);
             }
         }
     }

@@ -18,6 +18,10 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductWriter extends AbstractWriter
 {
+    const PRODUCT_SENT             = 'product_sent';
+    const PRODUCT_IMAGE_SENT       = 'product_image_sent';
+    const PRODUCT_TRANSLATION_SENT = 'product_image_sent';
+
     /**
      * @var ChannelManager
      */
@@ -111,12 +115,15 @@ class ProductWriter extends AbstractWriter
         switch ($storeViewCode) {
             case Webservice::SOAP_DEFAULT_STORE_VIEW:
                 $this->webservice->sendProduct($productPart);
+                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_SENT);
                 break;
             case Webservice::IMAGES:
                 $this->webservice->sendImages($productPart);
+                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_IMAGE_SENT);
                 break;
             default:
                 $this->webservice->updateProductPart($productPart);
+                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_TRANSLATION_SENT);
         }
     }
 

@@ -21,6 +21,9 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductCleaner extends Cleaner
 {
+    const PRODUCT_DISABLED = 'product_disabled';
+    const PRODUCT_DELETED  = 'product_deleted';
+
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
@@ -186,8 +189,10 @@ class ProductCleaner extends Cleaner
     {
         if ($action === self::DISABLE) {
             $this->webservice->disableProduct($product['sku']);
+            $this->stepExecution->incrementSummaryInfo(self::PRODUCT_DISABLED);
         } elseif ($action === self::DELETE) {
             $this->webservice->deleteProduct($product['sku']);
+            $this->stepExecution->incrementSummaryInfo(self::PRODUCT_DELETED);
         }
     }
 

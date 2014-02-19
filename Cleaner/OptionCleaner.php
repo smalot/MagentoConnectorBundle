@@ -20,6 +20,8 @@ use Doctrine\ORM\EntityManager;
  */
 class OptionCleaner extends Cleaner
 {
+    const OPTION_DELETED = 'option_deleted';
+
     /**
      * @var EntityManager
      */
@@ -103,6 +105,7 @@ class OptionCleaner extends Cleaner
         if ($this->notInPimAnymoreAction === self::DELETE) {
             try {
                 $this->webservice->deleteOption($optionId, $attributeCode);
+                $this->stepExecution->incrementSummaryInfo(self::OPTION_DELETED);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array($optionId));
             }

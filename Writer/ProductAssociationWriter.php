@@ -14,6 +14,8 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductAssociationWriter extends AbstractWriter
 {
+    const PRODUCT_LINKED = 'product_linked';
+
     /**
      * {@inheritdoc}
      */
@@ -24,6 +26,7 @@ class ProductAssociationWriter extends AbstractWriter
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
             try {
                 $this->handleProductAssociationCalls($productAssociationCalls);
+                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_LINKED);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException(
                     sprintf(
