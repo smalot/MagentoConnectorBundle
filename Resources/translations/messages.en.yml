@@ -2,19 +2,16 @@ pim_magento_connector:
     jobs:
         product_export:
             title: Export products to Magento
-            export.title: Configuration
+            export.title: Product export
         category_export:
             title: Export categories to Magento
-            export.title: Configuration
+            export.title: Category export
         attribute_export:
             title: Export attributes to Magento
-            export.title: Configuration
+            export.title: Attribute export
         option_export:
             title: Export attributes to Magento
-            export.title: Configuration
-
-pim_import_export:
-    jobs:
+            export.title: Option export
         attribute_clean:
             clean:
                 title: Attribute cleaner
@@ -30,10 +27,7 @@ pim_import_export:
         configurable_clean:
             clean:
                 title: Configurable cleaner
-
-pim_base_connector:
     export:
-        title: Processor
         soapUsername:
             label: Soap Username
             help: Your soap username on Magento
@@ -67,12 +61,6 @@ pim_base_connector:
         categoryMapping:
             label: Root category mapping
             help:  Mapping between root category on Magento and Pim categories
-        notInPimAnymoreAction:
-            label: Action for item not in PIM anymore
-            help:  Action done on Magento if an item is deleted on Akeneo PIM
-        notCompleteAnymoreAction:
-            label: Action for item not complete anymore
-            help:  Action done on Magento if an item is not complete anymore on Akeneo PIM
         pimGrouped:
             label: Association type for grouped products
             help:  Association type corresponding to grouped products
@@ -88,3 +76,10 @@ pim_base_connector:
         attributeMapping:
             label: Attribute mapping
             help: Map attribute code between Akeneo PIM and Magento
+    clean:
+        notInPimAnymoreAction:
+            label: Action for item not in PIM anymore
+            help:  What to do on Magento if an item is not in the Pim anymore ?
+        notCompleteAnymoreAction:
+            label: Action for item not complete anymore
+            help:  What to do on Magento if an item is not complete in Akeneo anymore ?

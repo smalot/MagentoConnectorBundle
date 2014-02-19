@@ -163,7 +163,9 @@ class ProductCleanerSpec extends ObjectBehavior
                         'disable'    => 'disable',
                         'delete'     => 'delete'
                     ),
-                    'required' => true
+                    'required' => true,
+                    'help'     => 'pim_base_connector.clean.notInPimAnymoreAction.help',
+                    'label'    => 'pim_base_connector.clean.notInPimAnymoreAction.label'
                 )
             ),
             'notCompleteAnymoreAction' => array(
@@ -174,7 +176,9 @@ class ProductCleanerSpec extends ObjectBehavior
                         'disable'    => 'disable',
                         'delete'     => 'delete'
                     ),
-                    'required' => true
+                    'required' => true,
+                    'help'     => 'pim_base_connector.clean.notCompleteAnymoreAction.help',
+                    'label'    => 'pim_base_connector.clean.notCompleteAnymoreAction.label'
                 )
             ),
             'channel'      => array(

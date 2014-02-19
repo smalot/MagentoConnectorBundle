@@ -145,6 +145,11 @@ class OptionCleaner extends Cleaner
             Cleaner::DELETE     => Cleaner::DELETE
         );
 
+        $configurationFields['notInPimAnymoreAction']['options']['help'] =
+            'pim_base_connector.clean.notInPimAnymoreAction.help';
+        $configurationFields['notInPimAnymoreAction']['options']['label'] =
+            'pim_base_connector.clean.notInPimAnymoreAction.label';
+
         return $configurationFields;
     }
 

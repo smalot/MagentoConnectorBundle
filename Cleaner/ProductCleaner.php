@@ -207,7 +207,9 @@ class ProductCleaner extends Cleaner
                             Cleaner::DISABLE    => Cleaner::DISABLE,
                             Cleaner::DELETE     => Cleaner::DELETE
                         ),
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_base_connector.clean.notCompleteAnymoreAction.help',
+                        'label'    => 'pim_base_connector.clean.notCompleteAnymoreAction.label'
                     )
                 ),
                 'channel'      => array(

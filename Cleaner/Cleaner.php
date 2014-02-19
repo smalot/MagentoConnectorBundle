@@ -85,7 +85,9 @@ abstract class Cleaner extends MagentoItemStep implements StepExecutionAwareInte
                             Cleaner::DISABLE    => Cleaner::DISABLE,
                             Cleaner::DELETE     => Cleaner::DELETE
                         ),
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_base_connector.clean.notInPimAnymoreAction.help',
+                        'label'    => 'pim_base_connector.clean.notInPimAnymoreAction.label'
                     )
                 )
             )

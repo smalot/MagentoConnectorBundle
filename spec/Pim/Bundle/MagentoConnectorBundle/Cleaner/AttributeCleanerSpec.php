@@ -146,7 +146,9 @@ class AttributeCleanerSpec extends ObjectBehavior
                             'do_nothing' => 'do_nothing',
                             'delete'     => 'delete'
                         ),
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_base_connector.clean.notInPimAnymoreAction.help',
+                        'label'    => 'pim_base_connector.clean.notInPimAnymoreAction.label'
                     )
                 ),
                 'attributeMapping' => array()
