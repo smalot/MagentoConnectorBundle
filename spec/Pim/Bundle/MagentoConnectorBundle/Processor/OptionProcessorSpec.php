@@ -5,6 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
@@ -20,6 +21,8 @@ class OptionProcessorSpec extends ObjectBehavior
         ChannelManager $channelManager,
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
+        MappingMerger $attributeMappingMerger,
+        MappingCollection $attributeMapping,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         Webservice $webservice,
@@ -29,9 +32,12 @@ class OptionProcessorSpec extends ObjectBehavior
             $webserviceGuesser,
             $normalizerGuesser,
             $localeManager,
-            $storeViewMappingMerger
+            $storeViewMappingMerger,
+            $attributeMappingMerger
         );
 
+        $attributeMappingMerger->getMapping()->willReturn($attributeMapping);
+        $attributeMapping->getTarget('size')->willReturn('size');
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $normalizerGuesser->getOptionNormalizer(Argument::cetera())->willReturn($optionNormalizer);
     }

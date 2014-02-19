@@ -47,15 +47,27 @@ class AssociationTypeManager
     }
 
     /**
+     * Get association types with criterias
+     *
+     * @param string[] $criterias
+     *
+     * @return AssociationType|null
+     */
+    public function getAssociationType($criterias = array())
+    {
+        return $this->getEntityRepository()->findOneBy($criterias);
+    }
+
+    /**
      * Get association types by code
      *
      * @param string $code
      *
      * @return array
      */
-    public function getAssociationTypesByCode($code)
+    public function getAssociationTypeByCode($code)
     {
-        return $this->getEntityRepository()->findOneBy(array('code' => $code));
+        return $this->getAssociationType(array('code' => $code));
     }
 
     /**

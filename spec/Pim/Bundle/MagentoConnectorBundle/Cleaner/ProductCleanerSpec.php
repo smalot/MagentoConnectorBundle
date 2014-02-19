@@ -112,4 +112,88 @@ class ProductCleanerSpec extends ObjectBehavior
 
         $this->execute();
     }
+
+    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api($webservice, $productRepository, $query)
+    {
+        $this->setNotCompleteAnymoreAction('delete');
+        $this->setNotInPimAnymoreAction('do_nothing');
+
+        $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
+        $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
+
+        $webservice->deleteProduct('sku-001')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+    }
+
+    function it_shoulds_have_a_well_formed_form_configuration($channelManager)
+    {
+        $channelManager->getChannelChoices()->willReturn(array('channel' => 'channel'));
+
+        $this->getConfigurationFields()->shouldReturn(array(
+            'soapUsername' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_base_connector.export.soapUsername.help',
+                    'label'    => 'pim_base_connector.export.soapUsername.label'
+                )
+            ),
+            'soapApiKey'   => array(
+                //Should be remplaced by a password formType but who doesn't
+                //empty the field at each edit
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_base_connector.export.soapApiKey.help',
+                    'label'    => 'pim_base_connector.export.soapApiKey.label'
+                )
+            ),
+            'soapUrl' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_base_connector.export.soapUrl.help',
+                    'label'    => 'pim_base_connector.export.soapUrl.label'
+                )
+            ),
+            'notInPimAnymoreAction' => array(
+                'type'    => 'choice',
+                'options' => array(
+                    'choices'  => array(
+                        'do_nothing' => 'do_nothing',
+                        'disable'    => 'disable',
+                        'delete'     => 'delete'
+                    ),
+                    'required' => true
+                )
+            ),
+            'notCompleteAnymoreAction' => array(
+                'type'    => 'choice',
+                'options' => array(
+                    'choices'  => array(
+                        'do_nothing' => 'do_nothing',
+                        'disable'    => 'disable',
+                        'delete'     => 'delete'
+                    ),
+                    'required' => true
+                )
+            ),
+            'channel'      => array(
+                'type'    => 'choice',
+                'options' => array(
+                    'choices'  => $this->channelManager->getChannelChoices(),
+                    'required' => true
+                )
+            )
+        ));
+    }
+
+    function it_shoulds_be_configurable()
+    {
+        $this->setChannel('channel');
+        $this->setNotCompleteAnymoreAction('not_complete_anymore_action');
+        $this->setNotInPimAnymoreAction('not_in_pim_anymore_action');
+        $this->getChannel()->shouldReturn('channel');
+        $this->getNotCompleteAnymoreAction()->shouldReturn('not_complete_anymore_action');
+        $this->getNotInPimAnymoreAction()->shouldReturn('not_in_pim_anymore_action');
+    }
 }

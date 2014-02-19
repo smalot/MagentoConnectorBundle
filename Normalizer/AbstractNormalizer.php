@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\CatalogBundle\Entity\Locale;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -53,7 +54,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof ProductInterface && in_array($format, $this->supportedFormats);
+        return in_array($format, $this->supportedFormats);
     }
 
     /**
@@ -104,19 +105,18 @@ abstract class AbstractNormalizer implements NormalizerInterface
 
     /**
      * Manage not found locales
-     * @param string $storeViewCode
-     * @param array  $magentoStoreViewMapping
+     * @param Locale $locale
      *
      * @throws LocaleNotMatchedException
      */
-    protected function localeNotFound($storeViewCode, array $magentoStoreViewMapping)
+    protected function localeNotFound(Locale $locale)
     {
         throw new LocaleNotMatchedException(
             sprintf(
                 'No storeview found for "%s" locale. Please create a storeview named "%s" on your Magento or map ' .
                 'this locale to a storeview code.',
-                $storeViewCode,
-                $storeViewCode
+                $locale->getCode(),
+                $locale->getCode()
             )
         );
     }

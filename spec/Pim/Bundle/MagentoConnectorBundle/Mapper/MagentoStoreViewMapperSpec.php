@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class MagentoAttributeMapperSpec extends ObjectBehavior
+class MagentoStoreViewMapperSpec extends ObjectBehavior
 {
     protected $clientParameters;
 
@@ -29,23 +29,11 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $webservice->getAllAttributes()->willReturn(array('attribute_foo' => array(), 'attribute_bar' => array()));
+        $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
 
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
         $mapping->toArray()->shouldReturn(array());
-    }
-
-    function it_shoulds_get_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $webservice)
-    {
-        $this->setParameters($this->clientParameters);
-        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
-
-        $webservice->getAllAttributes()->willReturn(array('name' => array(), 'attribute_bar' => array()));
-
-        $mapping = $this->getMapping();
-        $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
-        $mapping->toArray()->shouldReturn(array('name' => array('source' => 'name', 'target' => 'name', 'deletable' => false)));
     }
 
     function it_returns_an_empty_collection_if_parameters_are_not_setted()
@@ -60,29 +48,14 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->setMapping(array())->shouldReturn(null);
     }
 
-    function it_shoulds_get_all_magento_attributes_as_targets($hasValidCredentialsValidator, $webservice)
+    function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice)
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $webservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
+        $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
 
-        $this->getAllTargets()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo'), array('id' => 'bar', 'text' => 'bar')));
-    }
-
-    function it_returns_an_empty_array_as_targets_if_parameters_are_not_setted($hasValidCredentialsValidator)
-    {
-        $this->getAllTargets()->shouldReturn(array());
-    }
-
-    function it_shoulds_return_an_empty_array_as_sources()
-    {
-        $this->getAllSources()->shouldReturn(array());
-    }
-
-    function it_shoulds_have_a_priority()
-    {
-        $this->getPriority()->shouldReturn(0);
+        $this->getAllTargets()->shouldReturn(array(array('id' => 'attribute_code', 'text' => 'attribute_code')));
     }
 
     function it_should_give_an_proper_identifier($hasValidCredentialsValidator)
@@ -90,13 +63,8 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $identifier = sha1('attribute-soap_url');
+        $identifier = sha1('storeview-soap_url');
 
         $this->getIdentifier()->shouldReturn($identifier);
-    }
-
-    function it_should_give_an_empty_identifier_if_the_mapper_is_not_configured()
-    {
-        $this->getIdentifier()->shouldReturn('');
     }
 }

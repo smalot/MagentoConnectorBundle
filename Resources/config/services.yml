@@ -8,14 +8,20 @@ parameters:
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
+    pim_magento_connector.factory.magento_soap_client.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory
+    pim_magento_connector.repository.currency.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CurrencyRepository
+    pim_magento_connector.repository.category.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository
 
 services:
     # guesser
     pim_magento_connector.guesser.magento_webservice:
         class: %pim_magento_connector.guesser.magento_webservice.class%
+        arguments:
+            - '@pim_magento_connector.factory.magento_soap_client'
     pim_magento_connector.guesser.magento_normalizer:
         class: %pim_magento_connector.guesser.magento_normalizer.class%
         arguments:
+            - '@pim_magento_connector.factory.magento_soap_client'
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.media'
             - '@pim_magento_connector.normalizer.value'
@@ -48,12 +54,12 @@ services:
             - { name: validator.constraint_validator, alias: has_valid_default_locale }
 
     pim_magento_connector.repository.category:
-        class: 'Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository'
+        class: %pim_magento_connector.repository.category.class%
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@pim_magento_connector.metadata.category'
     pim_magento_connector.repository.currency:
-        class: 'Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CurrencyRepository'
+        class: %pim_magento_connector.repository.currency.class%
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@pim_magento_connector.metadata.currency'
@@ -68,3 +74,7 @@ services:
         class: Doctrine\ORM\Mapping\ClassMetaData
         arguments:
             name: %pim_catalog.entity.currency.class%
+
+
+    pim_magento_connector.factory.magento_soap_client:
+        class: %pim_magento_connector.factory.magento_soap_client.class%

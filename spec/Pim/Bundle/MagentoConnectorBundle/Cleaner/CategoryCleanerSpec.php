@@ -57,4 +57,21 @@ class CategoryCleanerSpec extends ObjectBehavior
 
         $this->execute();
     }
+
+    function it_raises_invalid_item_exception_if_something_goes_wrong_with_the_soap_api($webservice, $categoryMappingManager)
+    {
+        $this->setNotInPimAnymoreAction('disable');
+
+        $webservice->getCategoriesStatus()->willReturn(
+            array(
+                array('category_id' => '13', 'level' => '2')
+            )
+        );
+
+        $categoryMappingManager->magentoCategoryExists('13', Argument::cetera())->willReturn(false);
+
+        $webservice->disableCategory('13')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+    }
 }

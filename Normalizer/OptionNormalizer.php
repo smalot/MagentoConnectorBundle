@@ -49,7 +49,7 @@ class OptionNormalizer extends AbstractNormalizer
         }
 
         return array(
-            $object->getAttribute()->getCode(),
+            $context['attributeCode'],
             array(
                 'label'      => $label,
                 'order'      => 0,

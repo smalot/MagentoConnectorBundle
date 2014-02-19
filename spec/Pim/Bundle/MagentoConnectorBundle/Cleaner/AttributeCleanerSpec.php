@@ -82,6 +82,35 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
+    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api($webservice, $entityRepository, $mappingCollection, Attribute $attribute)
+    {
+        $this->setNotInPimAnymoreAction('delete');
+
+        $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
+        $entityRepository->findOneBy(array('code' => null))->willReturn($attribute);
+        $attribute->getFamilies()->willReturn(false);
+        $mappingCollection->getSource('foo')->willReturn(null);
+
+        $webservice->deleteAttribute('foo')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+    }
+
+    function it_shoulds_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
+    {
+        $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
+        $mappingCollection->toArray()->willReturn(array());
+
+        $this->getAttributeMapping()->shouldReturn('[]');
+    }
+
+    function it_shoulds_set_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
+    {
+        $attributeMappingMerger->setMapping(array())->shouldBeCalled();
+
+        $this->setAttributeMapping('[]');
+    }
+
     function it_shoulds_give_configuration_fields($attributeMappingMerger)
     {
         $attributeMappingMerger->getConfigurationField()->willReturn(array('attributeMapping' => array()));

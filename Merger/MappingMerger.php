@@ -84,8 +84,10 @@ class MappingMerger
      */
     public function setMapping($mapping)
     {
-        foreach ($this->getOrderedMappers() as $mapper) {
-            $mapper->setMapping($mapping);
+        if ($this->hasParametersSetted) {
+            foreach ($this->getOrderedMappers() as $mapper) {
+                $mapper->setMapping($mapping);
+            }
         }
     }
 
@@ -132,8 +134,11 @@ class MappingMerger
     protected function getAllTargets()
     {
         $targets = array();
-        foreach ($this->getOrderedMappers() as $mapper) {
-            $targets = array_merge($targets, $mapper->getAllTargets());
+
+        if ($this->hasParametersSetted) {
+            foreach ($this->getOrderedMappers() as $mapper) {
+                $targets = array_merge($targets, $mapper->getAllTargets());
+            }
         }
 
         return $targets;

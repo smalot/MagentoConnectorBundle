@@ -21,8 +21,8 @@ use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
  */
 class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerInterface
 {
-    const VISIBILITY   = 'visibility';
-    const ENABLED      = 'status';
+    const VISIBILITY = 'visibility';
+    const ENABLED    = 'status';
 
     /**
      * @var boolean
@@ -37,7 +37,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * @var string
      */
-    protected $currency;
+    protected $currencyCode;
 
     /**
      * @var MediaManager
@@ -63,7 +63,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param AssociationTypeManager $associationTypeManager
      * @param bool                   $enabled
      * @param bool                   $visibility
-     * @param string                 $currency
+     * @param string                 $currencyCode
      * @param string                 $magentoUrl
      */
     public function __construct(
@@ -74,7 +74,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         AssociationTypeManager $associationTypeManager,
         $enabled,
         $visibility,
-        $currency,
+        $currencyCode,
         $magentoUrl
     ) {
         parent::__construct($channelManager);
@@ -85,7 +85,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $this->associationTypeManager = $associationTypeManager;
         $this->enabled                = $enabled;
         $this->visibility             = $visibility;
-        $this->currency               = $currency;
+        $this->currencyCode           = $currencyCode;
         $this->magentoUrl             = $magentoUrl;
     }
 
@@ -105,6 +105,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['channel'],
             $context['website'],
             $context['categoryMapping'],
+            $context['attributeMapping'],
             $context['pimGrouped'],
             $context['create']
         );
@@ -128,6 +129,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $locale,
                     $context['channel'],
                     $context['categoryMapping'],
+                    $context['attributeMapping'],
                     true
                 );
 
@@ -138,7 +140,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 );
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
-                    $this->localeNotFound($locale, $context['storeViewMapping']);
+                    $this->localeNotFound($locale);
                 }
             }
         }
@@ -155,7 +157,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     public function getNormalizedImages(ProductInterface $product)
     {
-        $imagesValue = $product->getValues()->filter(
+        $imageValues = $product->getValues()->filter(
             function ($value) {
                 return $value->getData() instanceof Media;
             }
@@ -163,7 +165,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         $images = array();
 
-        foreach ($imagesValue as $imageValue) {
+        foreach ($imageValues as $imageValue) {
             $data = $imageValue->getData();
 
             if ($imageData = $this->mediaManager->getBase64($data)) {
@@ -190,16 +192,17 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get the default product with all attributes (ie : event the non localizables ones)
      *
-     * @param ProductInterface $product                  The given product
-     * @param array            $magentoAttributes        Attribute list from Magento
-     * @param array            $magentoAttributesOptions Attribute options list from Magento
-     * @param integer          $attributeSetId           Attribute set id
-     * @param string           $defaultLocale            Default locale
-     * @param string           $channel                  Channel
-     * @param string           $website                  Website name
-     * @param array            $categoryMapping          Root category mapping
-     * @param string           $pimGrouped               Pim grouped association code
-     * @param bool             $create                   Is it a creation ?
+     * @param ProductInterface  $product                  The given product
+     * @param array             $magentoAttributes        Attribute list from Magento
+     * @param array             $magentoAttributesOptions Attribute options list from Magento
+     * @param integer           $attributeSetId           Attribute set id
+     * @param string            $defaultLocale            Default locale
+     * @param string            $channel                  Channel
+     * @param string            $website                  Website name
+     * @param MappingCollection $categoryMapping          Root category mapping
+     * @param MappingCollection $attributeMapping         Attribute mapping
+     * @param string            $pimGrouped               Pim grouped association code
+     * @param bool              $create                   Is it a creation ?
      *
      * @return array The default product data
      */
@@ -211,7 +214,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $defaultLocale,
         $channel,
         $website,
-        $categoryMapping,
+        MappingCollection $categoryMapping,
+        MappingCollection $attributeMapping,
         $pimGrouped,
         $create
     ) {
@@ -223,6 +227,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $defaultLocale,
             $channel,
             $categoryMapping,
+            $attributeMapping,
             false
         );
 
@@ -263,7 +268,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected function hasGroupedProduct(ProductInterface $product, $pimGrouped)
     {
-        if ($associationType = $this->associationTypeManager->getAssociationTypesByCode($pimGrouped)) {
+        if ($associationType = $this->associationTypeManager->getAssociationTypeByCode($pimGrouped)) {
             return (bool) $product->getAssociationForType($associationType);
         } else {
             return false;
@@ -273,13 +278,14 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get values array for a given product
      *
-     * @param ProductInterface $product                  The given product
-     * @param array            $magentoAttributes        Attribute list from Magento
-     * @param array            $magentoAttributesOptions Attribute options list from Magento
-     * @param string           $localeCode               The locale to apply
-     * @param string           $scopeCode                The akeno scope
-     * @param array            $categoryMapping          Root category mapping
-     * @param boolean          $onlyLocalized            If true, only get translatable attributes
+     * @param ProductInterface  $product                  The given product
+     * @param array             $magentoAttributes        Attribute list from Magento
+     * @param array             $magentoAttributesOptions Attribute options list from Magento
+     * @param string            $localeCode               The locale to apply
+     * @param string            $scopeCode                The akeno scope
+     * @param MappingCollection $categoryMapping          Root category mapping
+     * @param MappingCollection $attributeMapping         Attribute mapping
+     * @param boolean           $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
      */
@@ -289,7 +295,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $magentoAttributesOptions,
         $localeCode,
         $scopeCode,
-        $categoryMapping,
+        MappingCollection $categoryMapping,
+        MappingCollection $attributeMapping,
         $onlyLocalized = false
     ) {
         $normalizedValues = array();
@@ -301,7 +308,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'onlyLocalized'            => $onlyLocalized,
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'currencyCode'             => $this->currency
+            'attributeMapping'         => $attributeMapping,
+            'currencyCode'             => $this->currencyCode
         );
 
         foreach ($product->getValues() as $value) {
@@ -317,7 +325,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         $normalizedValues = array_merge(
             $normalizedValues,
-            $this->getCustomValue($product, array('categoryMapping' => $categoryMapping))
+            $this->getCustomValue(
+                $product,
+                $attributeMapping,
+                array('categoryMapping' => $categoryMapping)
+            )
         );
 
         ksort($normalizedValues);
@@ -361,19 +373,26 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Get custom values (not provided by the PIM product)
-     * @param ProductInterface $product
-     * @param array            $parameters
+     * @param ProductInterface  $product
+     * @param MappingCollection $attributeMapping
+     * @param array             $parameters
      *
      * @return mixed
      */
-    protected function getCustomValue(ProductInterface $product, array $parameters = array())
-    {
+    protected function getCustomValue(
+        ProductInterface $product,
+        MappingCollection $attributeMapping,
+        array $parameters = array()
+    ) {
         return array(
-            self::VISIBILITY   => $this->visibility,
-            self::ENABLED      => (string) ($this->enabled) ? 1 : 2,
-            'created_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'updated_at'       => (new \DateTime())->format(self::DATE_FORMAT),
-            'categories'       => $this->getProductCategories($product, $parameters['categoryMapping'])
+            $attributeMapping->getTarget(self::VISIBILITY) => $this->visibility,
+            $attributeMapping->getTarget(self::ENABLED)    => (string) ($this->enabled) ? 1 : 2,
+            $attributeMapping->getTarget('created_at')     => (new \DateTime())->format(self::DATE_FORMAT),
+            $attributeMapping->getTarget('updated_at')     => (new \DateTime())->format(self::DATE_FORMAT),
+            $attributeMapping->getTarget('categories')     => $this->getProductCategories(
+                $product,
+                $parameters['categoryMapping']
+            )
         );
     }
 }

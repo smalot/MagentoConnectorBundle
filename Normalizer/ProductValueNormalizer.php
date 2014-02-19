@@ -7,7 +7,10 @@ use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
-
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Pim\Bundle\CatalogBundle\Model\ProductPrice;
+use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
@@ -22,11 +25,6 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionExceptio
 class ProductValueNormalizer implements NormalizerInterface
 {
     const GLOBAL_SCOPE = 'global';
-
-    /**
-     * @var array
-     */
-    protected $supportedFormats = array('MagentoArray');
 
     /**
      * Normalizes an object into a set of arrays/scalars
@@ -50,6 +48,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $object,
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
+                $context['attributeMapping'],
                 $context['currencyCode']
             );
         } else {
@@ -80,8 +79,13 @@ class ProductValueNormalizer implements NormalizerInterface
      *
      * @return boolean
      */
-    protected function isValueNormalizable(ProductValueInterface $value, $identifier, $scopeCode, $localeCode, $onlyLocalized)
-    {
+    protected function isValueNormalizable(
+        ProductValueInterface $value,
+        $identifier,
+        $scopeCode,
+        $localeCode,
+        $onlyLocalized
+    ) {
         return (
             ($value !== $identifier) &&
             ($value->getData() !== null) &&
@@ -158,6 +162,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * @param ProductValueInterface $value
      * @param array                 $magentoAttributes
      * @param array                 $magentoAttributesOptions
+     * @param MappingCollection     $attributeMapping
      * @param string                $currencyCode
      *
      * @throws AttributeNotFoundException If the given attribute doesn't exist in Magento
@@ -167,23 +172,25 @@ class ProductValueNormalizer implements NormalizerInterface
         ProductValueInterface $value,
         array $magentoAttributes,
         array $magentoAttributesOptions,
+        MappingCollection $attributeMapping,
         $currencyCode
     ) {
-        $data      = $value->getData();
-        $attribute = $value->getAttribute();
+        $data          = $value->getData();
+        $attribute     = $value->getAttribute();
+        $attributeCode = $attributeMapping->getTarget($attribute->getCode());
 
-        if (!isset($magentoAttributes[$attribute->getCode()])) {
+        if (!isset($magentoAttributes[$attributeCode])) {
             throw new AttributeNotFoundException(
                 sprintf(
                     'The magento attribute %s doesn\'t exist or isn\'t in the requested attributeSet. You should ' .
                     'create it first or adding it to the corresponding attributeSet',
-                    $attribute->getCode()
+                    $attributeCode
                 )
             );
         }
 
         $normalizer     = $this->getNormalizer($data);
-        $attributeScope = $magentoAttributes[$attribute->getCode()]['scope'];
+        $attributeScope = $magentoAttributes[$attributeCode]['scope'];
 
         $normalizedValue = $this->normalizeData(
             $data,
@@ -191,20 +198,22 @@ class ProductValueNormalizer implements NormalizerInterface
             $attribute,
             $attributeScope,
             $magentoAttributesOptions,
-            $currencyCode
+            $currencyCode,
+            $attributeMapping
         );
 
-        return array($attribute->getCode() => $normalizedValue);
+        return array($attributeCode => $normalizedValue);
     }
 
     /**
      * Normalize the given data
-     * @param mixed              $data
-     * @param callable           $normalizer
-     * @param Attribute          $attribute
-     * @param string             $attributeScope
-     * @param array              $magentoAttributesOptions
-     * @param string             $currencyCode
+     * @param mixed             $data
+     * @param callable          $normalizer
+     * @param Attribute         $attribute
+     * @param string            $attributeScope
+     * @param array             $magentoAttributesOptions
+     * @param string            $currencyCode
+     * @param MappingCollection $attributeMapping
      *
      * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array
@@ -215,15 +224,18 @@ class ProductValueNormalizer implements NormalizerInterface
         Attribute $attribute,
         $attributeScope,
         $magentoAttributesOptions,
-        $currencyCode
+        $currencyCode,
+        MappingCollection $attributeMapping
     ) {
-        if (in_array($attribute->getCode(), $this->getIgnoredScopeMatchingAttributes()) ||
+        $attributeCode = $attributeMapping->getTarget($attribute->getCode());
+
+        if (in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
             $this->scopeMatches($attribute, $attributeScope)
         ) {
             $normalizedValue = $normalizer($data, array(
-                'attributeCode'            => $attribute->getCode(),
+                'attributeCode'            => $attributeCode,
                 'magentoAttributesOptions' => $magentoAttributesOptions,
-                'currencyCode'                 => $currencyCode
+                'currencyCode'             => $currencyCode
             ));
         } else {
             throw new InvalidScopeMatchException(
@@ -232,8 +244,8 @@ class ProductValueNormalizer implements NormalizerInterface
                     'attribute. To export the "%s" attribute, you must set the same scope in both Magento and the PIM.'.
                     "\nMagento scope : %s\n" .
                     "PIM scope : %s",
-                    $attribute->getCode(),
-                    $attribute->getCode(),
+                    $attributeCode,
+                    $attributeCode,
                     $attributeScope,
                     (($attribute->isLocalizable()) ? 'translatable' : 'not translatable')
                 )
@@ -283,12 +295,12 @@ class ProductValueNormalizer implements NormalizerInterface
                     return $data instanceof \DateTime;
                 },
                 'normalizer' => function ($data, $parameters) {
-                    return $data->format(self::DATE_FORMAT);
+                    return $data->format(AbstractNormalizer::DATE_FORMAT);
                 }
             ),
             array(
                 'filter'     => function ($data) {
-                    return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+                    return $data instanceof AttributeOption;
                 },
                 'normalizer' => function ($data, $parameters) {
                     if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
@@ -304,7 +316,7 @@ class ProductValueNormalizer implements NormalizerInterface
             ),
             array(
                 'filter'     => function ($data) {
-                    return $data instanceof \Doctrine\Common\Collections\Collection;
+                    return $data instanceof Collection || is_array($data);
                 },
                 'normalizer' => function ($data, $parameters) {
                     return $this->normalizeCollectionData(
@@ -400,24 +412,24 @@ class ProductValueNormalizer implements NormalizerInterface
     }
 
     /**
-     * Normalize the value collection data
+     * Normalize the value collection
      *
-     * @param array  $data
+     * @param array  $collection
      * @param string $attributeCode
      * @param array  $magentoAttributesOptions
      * @param string $currencyCode
      *
      * @return string
      */
-    protected function normalizeCollectionData($data, $attributeCode, array $magentoAttributesOptions, $currencyCode)
+    protected function normalizeCollectionData($collection, $attributeCode, array $magentoAttributesOptions, $currencyCode)
     {
         $result = array();
-        foreach ($data as $item) {
-            if ($item instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
+        foreach ($collection as $item) {
+            if ($item instanceof AttributeOption) {
                 $optionCode = $item->getCode();
 
                 $result[] = $this->getOptionId($attributeCode, $optionCode, $magentoAttributesOptions);
-            } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
+            } elseif ($item instanceof ProductPrice) {
                 if ($item->getData() !== null &&
                     $item->getCurrency() === $currencyCode
                 ) {

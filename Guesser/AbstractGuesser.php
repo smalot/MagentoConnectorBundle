@@ -31,14 +31,13 @@ abstract class AbstractGuesser
      *
      * @return float
      */
-    protected function getMagentoVersion(MagentoSoapClient $client)
+    protected function getMagentoVersion(MagentoSoapClient $client = null)
     {
         if (null === $client) {
             return null;
         }
 
         if (!$this->version) {
-
             try {
                 $magentoVersion = $client->call('core_magento.info')['magento_version'];
             } catch (\SoapFault $e) {
@@ -55,16 +54,5 @@ abstract class AbstractGuesser
         }
 
         return $this->version;
-    }
-
-    /**
-     * Get magento soap client parameters
-     * @param MagentoSoapClientParameters $clientParameters
-     *
-     * @return MagentoSoapClient
-     */
-    protected function getMagentoSoapClient(MagentoSoapClientParameters $clientParameters)
-    {
-        return new MagentoSoapClient($clientParameters);
     }
 }

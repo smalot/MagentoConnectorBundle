@@ -69,6 +69,7 @@ class ProductProcessor extends AbstractProductProcessor
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
      * @param MappingMerger            $categoryMappingMerger
+     * @param MappingMerger            $attributeMappingMerger
      * @param MetricConverter          $metricConverter
      * @param AssociationTypeManager   $associationTypeManager
      */
@@ -80,6 +81,7 @@ class ProductProcessor extends AbstractProductProcessor
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
         MappingMerger $categoryMappingMerger,
+        MappingMerger $attributeMappingMerger,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
@@ -90,7 +92,8 @@ class ProductProcessor extends AbstractProductProcessor
             $storeViewMappingMerger,
             $currencyManager,
             $channelManager,
-            $categoryMappingMerger
+            $categoryMappingMerger,
+            $attributeMappingMerger
         );
 
         $this->metricConverter        = $metricConverter;

@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoCategoryMapper extends AbstractMapper
+class MagentoCategoryMapper extends Mapper
 {
     /**
      * @var WebserviceGuesser
@@ -30,32 +30,6 @@ class MagentoCategoryMapper extends AbstractMapper
         parent::__construct($hasValidCredentialsValidator);
 
         $this->webserviceGuesser = $webserviceGuesser;
-    }
-
-    /**
-     * Get mapping
-     * @return array
-     */
-    public function getMapping()
-    {
-        if (!$this->isValid()) {
-            return new MappingCollection();
-        } else {
-            $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
-
-            $mapping = new MappingCollection();
-            foreach (array_keys($categories) as $id) {
-                if (in_array($id, $this->mandatoryCategories())) {
-                    $mapping->add(array(
-                        'source'    => $id,
-                        'target'    => $id,
-                        'deletable' => false
-                    ));
-                }
-            }
-
-            return $mapping;
-        }
     }
 
     /**
@@ -86,14 +60,5 @@ class MagentoCategoryMapper extends AbstractMapper
     public function getIdentifier($rootIdentifier = 'category')
     {
         return parent::getIdentifier($rootIdentifier);
-    }
-
-    /**
-     * Get mandatory categories
-     * @return array
-     */
-    protected function mandatoryCategories()
-    {
-        return array();
     }
 }

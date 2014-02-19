@@ -85,7 +85,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 $context
             );
 
-            if ($this->categoryHasMoved($category, $context['magentoCategories'], $context['magentoUrl'])) {
+            if ($this->categoryHasMoved($category, $context)) {
                 $normalizedCategory['move'][] = $this->getNormalizedMoveCategory($category, $context);
             }
         } else {
@@ -230,16 +230,21 @@ class CategoryNormalizer extends AbstractNormalizer
     /**
      * Test if the category has moved on magento side
      * @param CategoryInterface $category
-     * @param array             $magentoCategories
-     * @param string            $magentoUrl
+     * @param array             $context
      *
      * @return boolean
      */
-    protected function categoryHasMoved(CategoryInterface $category, array $magentoCategories, $magentoUrl)
+    protected function categoryHasMoved(CategoryInterface $category, $context)
     {
-        $currentCategoryId = $this->getMagentoCategoryId($category, $magentoUrl);
-        $currentParentId   = $this->getMagentoCategoryId($category->getParent(), $magentoUrl);
+        $currentCategoryId = $this->getMagentoCategoryId($category, $context['magentoUrl']);
+        $currentParentId   = $this->categoryMappingManager->getIdFromCategory(
+            $category->getParent(),
+            $context['magentoUrl'],
+            $context['categoryMapping']
+        );
 
-        return $magentoCategories[$currentCategoryId] !== $currentParentId;
+        return isset($context['magentoCategories'][$currentCategoryId]) ?
+            $context['magentoCategories'][$currentCategoryId]['parent_id'] !== $currentParentId :
+            true;
     }
 }

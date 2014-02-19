@@ -4,34 +4,39 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\CatalogBundle\Entity\Locale;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ORMAttributeMapperSpec extends ObjectBehavior
+class ORMStoreViewMapperSpec extends ObjectBehavior
 {
     protected $clientParameters;
 
     function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
-        AttributeManager $attributeManager
+        LocaleManager $localeManager
     ) {
-        $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'attribute', $attributeManager);
+        $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'storeview', $localeManager);
         $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
     }
 
-    function it_shoulds_return_all_attributes_from_database_as_sources($attributeManager, $hasValidCredentialsValidator, Attribute $attribute)
+    function it_shoulds_return_all_locales_from_database_as_sources($localeManager, $hasValidCredentialsValidator, Locale $locale)
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $attributeManager->getAttributes()->willReturn(array($attribute));
+        $localeManager->getActiveCodes()->willReturn(array('foo'));
 
-        $attribute->getCode()->willReturn('foo');
+        $locale->getCode()->willReturn('foo');
 
         $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
+    }
+
+    function it_shoulds_return_nothing_as_sources_if_it_is_not_well_configured()
+    {
+        $this->getAllSources()->shouldReturn(array());
     }
 }
