@@ -2,13 +2,10 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Oro\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 
 /**
  * Magento item cleaner

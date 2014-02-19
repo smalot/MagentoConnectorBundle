@@ -214,7 +214,7 @@ class PriceMappingManager
         $attributePriceMapping = array();
 
         foreach ($attribute->getOptions() as $option) {
-            $productsWithOption = $this->getProductsWithOption($products, $option, $attributeMapping);
+            $productsWithOption = $this->getProductsWithOption($products, $option);
 
             if (count($productsWithOption) > 0) {
                 $priceDiff = $this->getLimitPrice(
@@ -235,15 +235,11 @@ class PriceMappingManager
      * Get all products with the given option value
      * @param array             $products
      * @param AttributeOption   $option
-     * @param MappingCollection $attributeMapping
      *
      * @return array
      */
-    protected function getProductsWithOption(
-        array $products,
-        AttributeOption $option,
-        MappingCollection $attributeMapping
-    ) {
+    protected function getProductsWithOption(array $products, AttributeOption $option)
+    {
         $productsWithOption = array();
         $attributeCode      = $option->getAttribute()->getCode();
 

@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Manager\LocaleManager as BaseLocaleManager;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * Custom locale manager

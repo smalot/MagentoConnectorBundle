@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Manager\CurrencyManager as BaseCurrencyManager;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * Custom currency manager

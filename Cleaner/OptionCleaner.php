@@ -55,7 +55,7 @@ class OptionCleaner extends Cleaner
     }
 
     /**
-     * {@inhertidoc}
+     * {@inheritdoc}
      */
     public function execute()
     {

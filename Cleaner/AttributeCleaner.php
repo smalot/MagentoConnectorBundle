@@ -6,7 +6,6 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Doctrine\ORM\EntityManager;
 
@@ -83,7 +82,7 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * {@inhertidoc}
+     * {@inheritdoc}
      */
     public function execute()
     {

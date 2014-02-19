@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;

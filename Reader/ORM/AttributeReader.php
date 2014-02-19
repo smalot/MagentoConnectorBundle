@@ -3,8 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
 use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
-use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository;
-use Doctrine\ORM\EntityManager;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
 /**

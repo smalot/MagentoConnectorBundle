@@ -2,7 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;

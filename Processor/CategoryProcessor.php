@@ -2,12 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Pim\Bundle\CatalogBundle\Entity\Category;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 

@@ -130,15 +130,13 @@ class MagentoSoapClient
 
     /**
      * Send pending calls to the magento soap api (with multiCall function)
-     *
-     * @return mixed The soap response
      */
     public function sendCalls()
     {
         if (count($this->calls) > 0) {
             if ($this->isConnected()) {
                 try {
-                    $responses = $this->client->multiCall(
+                    $this->client->multiCall(
                         $this->session,
                         $this->calls
                     );

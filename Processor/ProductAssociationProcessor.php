@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\Association;
-use Pim\Bundle\CatalogBundle\Entity\AssociationType;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
@@ -165,8 +164,6 @@ class ProductAssociationProcessor extends AbstractProcessor
     public function process($items)
     {
         $this->beforeExecute();
-
-        $processedItems = array();
 
         $productAssociationCalls = array('remove' => array(), 'create' => array());
 
