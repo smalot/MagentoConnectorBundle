@@ -57,10 +57,12 @@ class SimpleMappingManager
 
         foreach ($mapping as $mappingItem) {
             if ($mappingItem['source'] != '') {
-                $simpleMappingItem = $this->getEntityRepository()->findOneBy(array(
-                    'identifier' => $identifier,
-                    'source'     => $mappingItem['source']
-                ));
+                $simpleMappingItem = $this->getEntityRepository()->findOneBy(
+                    array(
+                        'identifier' => $identifier,
+                        'source'     => $mappingItem['source']
+                    )
+                );
 
                 if (!$simpleMappingItem) {
                     $simpleMappingItem = new SimpleMapping();

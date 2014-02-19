@@ -421,8 +421,12 @@ class ProductValueNormalizer implements NormalizerInterface
      *
      * @return string
      */
-    protected function normalizeCollectionData($collection, $attributeCode, array $magentoAttributesOptions, $currencyCode)
-    {
+    protected function normalizeCollectionData(
+        $collection,
+        $attributeCode,
+        array $magentoAttributesOptions,
+        $currencyCode
+    ) {
         $result = array();
         foreach ($collection as $item) {
             if ($item instanceof AttributeOption) {

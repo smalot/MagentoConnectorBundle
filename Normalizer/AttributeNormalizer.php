@@ -100,9 +100,9 @@ class AttributeNormalizer implements NormalizerInterface
                 !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
                 throw new AttributeTypeChangedException(
                     sprintf(
-                        'The type for the attribute "%s" has changed (Is "%s" in Magento and is %s in Akeneo PIM. This ' .
-                        'operation is not permitted by Magento. Please delete it first on Magento and try to export ' .
-                        'again.',
+                        'The type for the attribute "%s" has changed (Is "%s" in Magento and is %s in Akeneo PIM. ' .
+                        'This operation is not permitted by Magento. Please delete it first on Magento and try to ' .
+                        'export again.',
                         $object->getCode(),
                         $context['magentoAttributes'][$magentoAttributeCode]['type'],
                         $mappedAttributeType

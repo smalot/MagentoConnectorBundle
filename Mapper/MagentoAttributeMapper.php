@@ -46,11 +46,13 @@ class MagentoAttributeMapper extends Mapper
             $mapping = new MappingCollection();
             foreach (array_keys($attributes) as $attributeCode) {
                 if (in_array($attributeCode, $this->mandatoryAttributes())) {
-                    $mapping->add(array(
-                        'source'    => $attributeCode,
-                        'target'    => $attributeCode,
-                        'deletable' => false
-                    ));
+                    $mapping->add(
+                        array(
+                            'source'    => $attributeCode,
+                            'target'    => $attributeCode,
+                            'deletable' => false
+                        )
+                    );
                 }
             }
 

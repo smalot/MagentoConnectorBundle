@@ -115,7 +115,8 @@ class OptionCleaner extends Cleaner
      *
      * @return mixed
      */
-    protected function getAttribute($attributeCode) {
+    protected function getAttribute($attributeCode)
+    {
         return $this->em->getRepository($this->attributeClassName)->findOneBy(array('code' => $attributeCode));
     }
 

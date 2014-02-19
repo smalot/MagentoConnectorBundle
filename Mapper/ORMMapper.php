@@ -54,11 +54,13 @@ class ORMMapper extends Mapper
 
         $mapping = new MappingCollection();
         foreach ($simpleMappingItems as $simpleMappingItem) {
-            $mapping->add(array(
-                'source'    => $simpleMappingItem->getSource(),
-                'target'    => $simpleMappingItem->getTarget(),
-                'deletable' => true
-            ));
+            $mapping->add(
+                array(
+                    'source'    => $simpleMappingItem->getSource(),
+                    'target'    => $simpleMappingItem->getTarget(),
+                    'deletable' => true
+                )
+            );
         }
 
         return $mapping;

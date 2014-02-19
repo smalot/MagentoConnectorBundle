@@ -152,9 +152,12 @@ class PriceMappingManager
 
         asort($attributeDelta);
 
-        array_walk($attributeDelta, function (&$value, $key) use ($attributeMap) {
-            $value = $attributeMap[$key];
-        });
+        array_walk(
+            $attributeDelta,
+            function (&$value, $key) use ($attributeMap) {
+                $value = $attributeMap[$key];
+            }
+        );
 
         return $attributeDelta;
     }
