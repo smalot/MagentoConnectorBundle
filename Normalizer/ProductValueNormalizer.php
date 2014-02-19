@@ -8,7 +8,9 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
-
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Pim\Bundle\CatalogBundle\Model\ProductPrice;
+use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
@@ -175,7 +177,6 @@ class ProductValueNormalizer implements NormalizerInterface
     ) {
         $data          = $value->getData();
         $attribute     = $value->getAttribute();
-        var_dump($attribute->getCode());
         $attributeCode = $attributeMapping->getTarget($attribute->getCode());
 
         if (!isset($magentoAttributes[$attributeCode])) {
@@ -293,12 +294,12 @@ class ProductValueNormalizer implements NormalizerInterface
                     return $data instanceof \DateTime;
                 },
                 'normalizer' => function ($data, $parameters) {
-                    return $data->format(self::DATE_FORMAT);
+                    return $data->format(AbstractNormalizer::DATE_FORMAT);
                 }
             ),
             array(
                 'filter'     => function ($data) {
-                    return $data instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+                    return $data instanceof AttributeOption;
                 },
                 'normalizer' => function ($data, $parameters) {
                     if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
@@ -314,7 +315,7 @@ class ProductValueNormalizer implements NormalizerInterface
             ),
             array(
                 'filter'     => function ($data) {
-                    return $data instanceof \Doctrine\Common\Collections\Collection;
+                    return $data instanceof Collection || is_array($data);
                 },
                 'normalizer' => function ($data, $parameters) {
                     return $this->normalizeCollectionData(
@@ -410,24 +411,24 @@ class ProductValueNormalizer implements NormalizerInterface
     }
 
     /**
-     * Normalize the value collection data
+     * Normalize the value collection
      *
-     * @param array  $data
+     * @param array  $collection
      * @param string $attributeCode
      * @param array  $magentoAttributesOptions
      * @param string $currencyCode
      *
      * @return string
      */
-    protected function normalizeCollectionData($data, $attributeCode, array $magentoAttributesOptions, $currencyCode)
+    protected function normalizeCollectionData($collection, $attributeCode, array $magentoAttributesOptions, $currencyCode)
     {
         $result = array();
-        foreach ($data as $item) {
-            if ($item instanceof \Pim\Bundle\CatalogBundle\Entity\AttributeOption) {
+        foreach ($collection as $item) {
+            if ($item instanceof AttributeOption) {
                 $optionCode = $item->getCode();
 
                 $result[] = $this->getOptionId($attributeCode, $optionCode, $magentoAttributesOptions);
-            } elseif ($item instanceof \Pim\Bundle\CatalogBundle\Model\ProductPrice) {
+            } elseif ($item instanceof ProductPrice) {
                 if ($item->getData() !== null &&
                     $item->getCurrency() === $currencyCode
                 ) {
