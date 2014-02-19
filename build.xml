@@ -3,7 +3,7 @@
     <property environment="dev"/>
     <property name="Magento connector bundle" value="${env.JOB_NAME}" />
 
-    <target name="build" depends="prepare,composer,vendors,phpspec-coverage,phploc,pdepend,phpcs-ci,phpcpd"/>
+    <target name="build" depends="prepare,composer,vendors,phpspec-coverage,phploc,pdepend,phpcs-ci"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/build/api"/>
