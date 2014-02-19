@@ -196,7 +196,7 @@ class AttributeNormalizer implements NormalizerInterface
      * @param string            $defaultLocale
      * @param array             $magentoAttributes
      * @param array             $magentoAttributesOptions
-       @param MappingCollection $attributeMapping
+     * @param MappingCollection $attributeMapping
      *
      * @return string
      */
@@ -262,7 +262,7 @@ class AttributeNormalizer implements NormalizerInterface
      * @param array             $magentoStoreViews
      * @param string            $defaultLocale
      * @param MappingCollection $storeViewMapping
-     * @param MappingCollection $AttributeMapping
+     * @param MappingCollection $attributeMapping
      *
      * @return string
      */

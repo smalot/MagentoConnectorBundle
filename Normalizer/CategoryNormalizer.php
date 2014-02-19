@@ -230,8 +230,7 @@ class CategoryNormalizer extends AbstractNormalizer
     /**
      * Test if the category has moved on magento side
      * @param CategoryInterface $category
-     * @param array             $magentoCategories
-     * @param string            $magentoUrl
+     * @param array             $context
      *
      * @return boolean
      */

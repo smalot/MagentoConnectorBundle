@@ -192,8 +192,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get the configurable for a new call
-     * @param array  $configurableValues
      * @param string $sku
+     * @param array  $configurableValues
      * @param int    $attributeSetId
      *
      * @return array
@@ -210,8 +210,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get the configurable for an update call
-     * @param array  $configurableValues
      * @param string $sku
+     * @param array  $configurableValues
      *
      * @return array
      */

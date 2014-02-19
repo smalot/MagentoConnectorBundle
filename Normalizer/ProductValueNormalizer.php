@@ -207,12 +207,13 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Normalize the given data
-     * @param mixed              $data
-     * @param callable           $normalizer
-     * @param Attribute          $attribute
-     * @param string             $attributeScope
-     * @param array              $magentoAttributesOptions
-     * @param string             $currencyCode
+     * @param mixed             $data
+     * @param callable          $normalizer
+     * @param Attribute         $attribute
+     * @param string            $attributeScope
+     * @param array             $magentoAttributesOptions
+     * @param string            $currencyCode
+     * @param MappingCollection $attributeMapping
      *
      * @throws InvalidScopeMatchException If there is a scope matching error between Magento and the PIM
      * @return array

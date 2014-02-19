@@ -88,8 +88,10 @@ class PriceMappingManager
 
     /**
      * Get the limit price of given products
-     * @param array $products
-     * @param array $priceChanges
+     * @param array             $products
+     * @param MappingCollection $attributeMapping
+     * @param array             $priceChanges
+     * @param boolean           $lowest
      *
      * @return int
      */
@@ -159,8 +161,10 @@ class PriceMappingManager
 
     /**
      * Get the price of the given product
-     * @param ProductInterface $product
-     * @param array            $priceChanges
+     * @param ProductInterface  $product
+     * @param MappingCollection $attributeMapping
+     * @param array             $priceChanges
+     * @param boolean           $lowest
      *
      * @return int
      */
@@ -256,9 +260,10 @@ class PriceMappingManager
 
     /**
      * Validate generated price mapping
-     * @param array $products
-     * @param array $priceChanges
-     * @param float $basePrice
+     * @param array             $products
+     * @param array             $priceChanges
+     * @param float             $basePrice
+     * @param MappingCollection $attributeMapping
      *
      * @return boolean
      */
@@ -301,9 +306,10 @@ class PriceMappingManager
 
     /**
      * Get product price from generated mapping
-     * @param ProductInterface $product
-     * @param array            $priceChanges
-     * @param float            $basePrice
+     * @param ProductInterface  $product
+     * @param array             $priceChanges
+     * @param float             $basePrice
+     * @param MappingCollection $attributeMapping
      *
      * @return float
      */
