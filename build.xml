@@ -3,7 +3,7 @@
     <property environment="dev"/>
     <property name="Magento connector bundle" value="${env.JOB_NAME}" />
 
-    <target name="build" depends="prepare,composer,vendors,phpspec-coverage,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb"/>
+    <target name="build" depends="prepare,composer,vendors,phpspec-coverage,phploc,pdepend,phpcs-ci,phpcpd"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/build/api"/>
@@ -42,9 +42,10 @@
 
     <target name="phploc" description="Measure project size using PHPLOC">
         <exec executable="phploc">
+            <arg path="${basedir}/" />
             <arg value="--log-csv" />
             <arg value="${basedir}/build/logs/phploc.csv" />
-            <arg path="${basedir}/" />
+            <arg value="--exclude=vendor,bin,spec" />
         </exec>
     </target>
 
@@ -53,8 +54,8 @@
             <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
             <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
             <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-            <arg value="--ignore=Tests" />
-            <arg path="${basedir}/src/Pim" />
+            <arg value="--ignore=Tests,vendor,spec" />
+            <arg path="${basedir}/" />
         </exec>
     </target>
 
@@ -88,17 +89,15 @@
             <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
+            <arg value="--ignore=vendor,bin,coverage,spec" />
             <arg path="${basedir}/" />
         </exec>
     </target>
 
     <target name="phpcpd" description="Find duplicate code using PHPCPD">
         <exec executable="phpcpd">
-            <arg value="--exclude" />
-            <arg value="spec" />
-            <arg value="bin" />
-            <arg value="src" />
-            <arg value="vendor" />
+            <arg value="--exclude=vendor" />
+            <arg value="--exclude=spec" />
             <arg value="--log-pmd" />
             <arg value="${basedir}/build/logs/pmd-cpd.xml" />
             <arg path="${basedir}/" />
@@ -128,17 +127,6 @@
             <arg value="-fpretty" />
             <arg value="--no-interaction" />
             <arg value="--verbose" />
-        </exec>
-    </target>
-
-    <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
-        <exec executable="phpcb">
-            <arg value="--log" />
-            <arg path="${basedir}/app/build/logs" />
-            <arg value="--source" />
-            <arg path="${basedir}/src/Pim" />
-            <arg value="--output" />
-            <arg path="${basedir}/app/build/code-browser" />
         </exec>
     </target>
 
