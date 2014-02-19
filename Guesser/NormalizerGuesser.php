@@ -83,7 +83,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @param MagentoSoapClientParameters $clientParameters
      * @param bool                        $enabled
      * @param bool                        $visibility
-     * @param string                      $currency
+     * @param string                      $currencyCode
      *
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return AbstractNormalizer
@@ -92,7 +92,7 @@ class NormalizerGuesser extends AbstractGuesser
         MagentoSoapClientParameters $clientParameters,
         $enabled,
         $visibility,
-        $currency
+        $currencyCode
     ) {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
@@ -108,7 +108,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->associationTypeManager,
                     $enabled,
                     $visibility,
-                    $currency,
+                    $currencyCode,
                     $clientParameters->getSoapUrl()
                 );
             case AbstractGuesser::MAGENTO_VERSION_1_6:
@@ -120,7 +120,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->associationTypeManager,
                     $enabled,
                     $visibility,
-                    $currency,
+                    $currencyCode,
                     $clientParameters->getSoapUrl()
                 );
             default:

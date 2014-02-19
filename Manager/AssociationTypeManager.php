@@ -51,7 +51,7 @@ class AssociationTypeManager
      *
      * @param string[] $criterias
      *
-     * @return AssociationType
+     * @return AssociationType|null
      */
     public function getAssociationType($criterias = array())
     {
@@ -67,7 +67,7 @@ class AssociationTypeManager
      */
     public function getAssociationTypeByCode($code)
     {
-        return $this->getAssociationType(array('code' => $code))->first();
+        return $this->getAssociationType(array('code' => $code));
     }
 
     /**

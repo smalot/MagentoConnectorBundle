@@ -26,9 +26,7 @@ class AssociationTypeManagerSpec extends ObjectBehavior
 
     function it_gets_association_type_from_repository_by_code($entityRepository, AssociationType $associationType, $arrayCollection)
     {
-        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn($arrayCollection);
-
-        $arrayCollection->first()->willReturn($associationType);
+        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn($associationType);
 
         $this->getAssociationTypeByCode('foo')->shouldReturn($associationType);
     }

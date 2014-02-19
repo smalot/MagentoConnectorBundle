@@ -37,7 +37,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * @var string
      */
-    protected $currency;
+    protected $currencyCode;
 
     /**
      * @var MediaManager
@@ -63,7 +63,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param AssociationTypeManager $associationTypeManager
      * @param bool                   $enabled
      * @param bool                   $visibility
-     * @param string                 $currency
+     * @param string                 $currencyCode
      * @param string                 $magentoUrl
      */
     public function __construct(
@@ -74,7 +74,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         AssociationTypeManager $associationTypeManager,
         $enabled,
         $visibility,
-        $currency,
+        $currencyCode,
         $magentoUrl
     ) {
         parent::__construct($channelManager);
@@ -85,7 +85,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $this->associationTypeManager = $associationTypeManager;
         $this->enabled                = $enabled;
         $this->visibility             = $visibility;
-        $this->currency               = $currency;
+        $this->currencyCode           = $currencyCode;
         $this->magentoUrl             = $magentoUrl;
     }
 
@@ -309,7 +309,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'attributeMapping'         => $attributeMapping,
-            'currencyCode'             => $this->currency
+            'currencyCode'             => $this->currencyCode
         );
 
         foreach ($product->getValues() as $value) {
