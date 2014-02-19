@@ -203,13 +203,13 @@ class ProductCleaner extends Cleaner
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => array(
-                            Cleaner::DO_NOTHING => Cleaner::DO_NOTHING,
-                            Cleaner::DISABLE    => Cleaner::DISABLE,
-                            Cleaner::DELETE     => Cleaner::DELETE
+                            Cleaner::DO_NOTHING => 'pim_magento_connector.clean.do_nothing.label',
+                            Cleaner::DISABLE    => 'pim_magento_connector.clean.disable.label',
+                            Cleaner::DELETE     => 'pim_magento_connector.clean.delete.label'
                         ),
                         'required' => true,
-                        'help'     => 'pim_base_connector.clean.notCompleteAnymoreAction.help',
-                        'label'    => 'pim_base_connector.clean.notCompleteAnymoreAction.label'
+                        'help'     => 'pim_magento_connector.clean.notCompleteAnymoreAction.help',
+                        'label'    => 'pim_magento_connector.clean.notCompleteAnymoreAction.label'
                     )
                 ),
                 'channel'      => array(

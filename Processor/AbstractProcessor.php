@@ -226,13 +226,17 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                         'required' => true,
                         'attr' => array(
                             'class' => 'select2'
-                        )
+                        ),
+                        'help'  => 'pim_magento_connector.export.defaultLocale.help',
+                        'label' => 'pim_magento_connector.export.defaultLocale.label'
                     )
                 ),
                 'website' => array(
                     'type'    => 'text',
                     'options' => array(
-                        'required' => true
+                        'required' => true,
+                        'help'  => 'pim_magento_connector.export.website.help',
+                        'label' => 'pim_magento_connector.export.website.label'
                     )
                 )
             ),

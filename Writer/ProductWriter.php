@@ -165,7 +165,9 @@ class ProductWriter extends AbstractWriter
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => $this->channelManager->getChannelChoices(),
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.channel.help',
+                        'label'    => 'pim_magento_connector.export.channel.label'
                     )
                 )
             )

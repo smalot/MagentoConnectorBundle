@@ -59,8 +59,11 @@ pim_magento_connector:
             label: Storeview mapping
             help:  You can map storeviews to locales in PIM
         categoryMapping:
-            label: Root category mapping
-            help:  Mapping between root category on Magento and Pim categories
+            label: Category mapping
+            help:  Mapping between category on Magento and Pim categories
+        attributeMapping:
+            label: Category mapping
+            help:  Mapping between category on Magento and Pim categories
         pimGrouped:
             label: Association type for grouped products
             help:  Association type corresponding to grouped products
@@ -83,3 +86,9 @@ pim_magento_connector:
         notCompleteAnymoreAction:
             label: Action for item not complete anymore
             help:  What to do on Magento if an item is not complete in Akeneo anymore ?
+        delete:
+            label: Delete it
+        do_nothing:
+            label: Do nothing
+        disable:
+            label: Disable it

@@ -1,6 +1,4 @@
 extensions:
     - PhpSpec\Extension\CodeCoverageExtension
 code_coverage:
-    format: clover
-    output: coverage.xml
     show_uncovered_files: true

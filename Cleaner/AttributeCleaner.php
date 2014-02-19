@@ -20,6 +20,8 @@ use Doctrine\ORM\EntityManager;
  */
 class AttributeCleaner extends Cleaner
 {
+    const ATTRIBUTE_DELETED = 'attribute_deleted';
+
     /**
      * @var MappingMerger
      */
@@ -128,6 +130,7 @@ class AttributeCleaner extends Cleaner
     {
         if ($this->notInPimAnymoreAction === self::DELETE) {
             $this->webservice->deleteAttribute($attribute['code']);
+            $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_DELETED);
         }
     }
 
@@ -150,14 +153,14 @@ class AttributeCleaner extends Cleaner
         $configurationFields = parent::getConfigurationFields();
 
         $configurationFields['notInPimAnymoreAction']['options']['choices'] = array(
-            Cleaner::DO_NOTHING => Cleaner::DO_NOTHING,
-            Cleaner::DELETE     => Cleaner::DELETE
+            Cleaner::DO_NOTHING => 'pim_magento_connector.clean.do_nothing.label',
+            Cleaner::DELETE     => 'pim_magento_connector.clean.delete.label'
         );
 
         $configurationFields['notInPimAnymoreAction']['options']['help'] =
-            'pim_base_connector.clean.notInPimAnymoreAction.help';
+            'pim_magento_connector.clean.notInPimAnymoreAction.help';
         $configurationFields['notInPimAnymoreAction']['options']['label'] =
-            'pim_base_connector.clean.notInPimAnymoreAction.label';
+            'pim_magento_connector.clean.notInPimAnymoreAction.label';
 
         return array_merge(
             $configurationFields,

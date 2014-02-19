@@ -309,19 +309,25 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => $this->channelManager->getChannelChoices(),
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.channel.help',
+                        'label'    => 'pim_magento_connector.export.channel.label'
                     )
                 ),
                 'enabled' => array(
                     'type'    => 'switch',
                     'options' => array(
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.enabled.help',
+                        'label'    => 'pim_magento_connector.export.enabled.label'
                     )
                 ),
                 'visibility' => array(
                     'type'    => 'text',
                     'options' => array(
-                        'required' => true
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.visibility.help',
+                        'label'    => 'pim_magento_connector.export.visibility.label'
                     )
                 ),
                 'currency' => array(
@@ -330,7 +336,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'choices'  => $this->currencyManager->getCurrencyChoices(),
                         'required' => true,
                         'attr' => array(
-                            'class' => 'select2'
+                            'class' => 'select2',
+                            'help'     => 'pim_magento_connector.export.currency.help',
+                            'label'    => 'pim_magento_connector.export.currency.label'
                         )
                     )
                 )

@@ -227,7 +227,9 @@ class ProductProcessor extends AbstractProductProcessor
                 'pimGrouped' => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices' => $this->associationTypeManager->getAssociationTypeChoices()
+                        'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
+                        'help'     => 'pim_magento_connector.export.pimGrouped.help',
+                        'label'    => 'pim_magento_connector.export.pimGrouped.label'
                     )
                 )
             )

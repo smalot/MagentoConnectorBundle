@@ -206,8 +206,8 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
             'soapUsername' => array(
                 'options' => array(
                     'required' => true,
-                    'help'     => 'pim_base_connector.export.soapUsername.help',
-                    'label'    => 'pim_base_connector.export.soapUsername.label'
+                    'help'     => 'pim_magento_connector.export.soapUsername.help',
+                    'label'    => 'pim_magento_connector.export.soapUsername.label'
                 )
             ),
             'soapApiKey'   => array(
@@ -216,15 +216,15 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement
                 'type'    => 'text',
                 'options' => array(
                     'required' => true,
-                    'help'     => 'pim_base_connector.export.soapApiKey.help',
-                    'label'    => 'pim_base_connector.export.soapApiKey.label'
+                    'help'     => 'pim_magento_connector.export.soapApiKey.help',
+                    'label'    => 'pim_magento_connector.export.soapApiKey.label'
                 )
             ),
             'soapUrl' => array(
                 'options' => array(
                     'required' => true,
-                    'help'     => 'pim_base_connector.export.soapUrl.help',
-                    'label'    => 'pim_base_connector.export.soapUrl.label'
+                    'help'     => 'pim_magento_connector.export.soapUrl.help',
+                    'label'    => 'pim_magento_connector.export.soapUrl.label'
                 )
             )
         );
