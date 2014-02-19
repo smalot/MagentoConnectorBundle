@@ -120,6 +120,22 @@
         </exec>
     </target>
 
+    <target name="phpspec-coverage" description="Run specs with Php spec and generate coverage">
+        <exec executable="sh" outputproperty="xdebug_path">
+            <arg value="-c" />
+            <arg value="php -i | grep ^extension_dir | cut -d ' ' -f3"/>
+        </exec>
+        <exec executable="php">
+            <arg value="-d zend_extension=${xdebug_path}/xdebug.so" />
+            <arg value="./bin/phpspec" />
+            <arg value="run" />
+            <arg value="--ansi" />
+            <arg value="-fpretty" />
+            <arg value="--no-interaction" />
+            <arg value="--verbose" />
+        </exec>
+    </target>
+
     <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
         <exec executable="phpcb">
             <arg value="--log" />
