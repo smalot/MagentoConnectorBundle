@@ -126,7 +126,7 @@ class MappingMergerSpec extends ObjectBehavior
                         'data-targets' => '{"id":"test","text":"Text2"}',
                         'data-name'    => 'generic'
                     ),
-                    'help' => 'pim_magento_connector.export.genericMapping.label'
+                    'help' => 'pim_magento_connector.export.genericMapping.help'
                 )
             )
         ));
