@@ -7,7 +7,7 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Excetpion\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
@@ -148,7 +148,7 @@ class OptionProcessor extends AbstractProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
+            throw new InvalidItemException($e->getMessage(), array($option));
         }
 
         return $normalizedOption;

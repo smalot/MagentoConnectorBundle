@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
@@ -85,6 +86,66 @@ class CategoryProcessorSpec extends ObjectBehavior
             'update'    => array(),
             'move'      => array(),
             'variation' => array()
+        ));
+    }
+
+    function it_gives_category_mapping_in_json($categoryMappingMerger, MappingCollection $mappingCollection)
+    {
+        $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
+        $mappingCollection->toArray()->willReturn(array('foo'));
+
+        $this->getCategoryMapping()->shouldReturn('["foo"]');
+    }
+
+    function it_gives_a_proper_configuration_for_fields($categoryMappingMerger, $storeViewMappingMerger)
+    {
+        $categoryMappingMerger->getConfigurationField()->willReturn(array('foo' => 'bar'));
+        $storeViewMappingMerger->getConfigurationField()->willReturn(array('fooo' => 'baar'));
+        $this->getConfigurationFields()->shouldReturn(array(
+            'soapUsername' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.soapUsername.help',
+                    'label'    => 'pim_magento_connector.export.soapUsername.label'
+                )
+            ),
+            'soapApiKey'   => array(
+                //Should be remplaced by a password formType but who doesn't
+                //empty the field at each edit
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.soapApiKey.help',
+                    'label'    => 'pim_magento_connector.export.soapApiKey.label'
+                )
+            ),
+            'soapUrl' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.soapUrl.help',
+                    'label'    => 'pim_magento_connector.export.soapUrl.label'
+                )
+            ),
+            'defaultLocale' => array(
+                'type' => 'choice',
+                'options' => array(
+                    'choices' => null,
+                    'required' => true,
+                    'attr' => array('class' => 'select2'),
+                    'help'     => 'pim_magento_connector.export.defaultLocale.help',
+                    'label'    => 'pim_magento_connector.export.defaultLocale.label'
+                )
+            ),
+            'website' => array(
+                'type' => 'text',
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.website.help',
+                    'label'    => 'pim_magento_connector.export.website.label'
+                )
+            ),
+            'fooo' => 'baar',
+            'foo' => 'bar',
         ));
     }
 }
