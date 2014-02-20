@@ -12,6 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -25,7 +26,8 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         AssociationTypeManager $associationTypeManager,
-        Webservice $webservice
+        Webservice $webservice,
+        StepExecution $stepExecution
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -34,6 +36,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
             $storeViewMappingMerger,
             $associationTypeManager
         );
+        $this->setStepExecution($stepExecution);
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
         $this->setPimUpSell('UPSELL');

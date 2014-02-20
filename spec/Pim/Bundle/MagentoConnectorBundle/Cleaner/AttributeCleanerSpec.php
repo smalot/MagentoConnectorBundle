@@ -9,6 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -20,9 +21,12 @@ class AttributeCleanerSpec extends ObjectBehavior
         EntityManager $em,
         Webservice $webservice,
         EntityRepository $entityRepository,
-        MappingCollection $mappingCollection
+        MappingCollection $mappingCollection,
+        StepExecution $stepExecution
     ) {
         $this->beConstructedWith($webserviceGuesser, $attributeMappingMerger, $em, 'attribute_class');
+        $this->setStepExecution($stepExecution);
+
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
         $em->getRepository('attribute_class')->willReturn($entityRepository);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
@@ -120,35 +124,35 @@ class AttributeCleanerSpec extends ObjectBehavior
                 'soapUsername' => array(
                     'options' => array(
                         'required' => true,
-                        'help'     => 'pim_base_connector.export.soapUsername.help',
-                        'label'    => 'pim_base_connector.export.soapUsername.label'
+                        'help'     => 'pim_magento_connector.export.soapUsername.help',
+                        'label'    => 'pim_magento_connector.export.soapUsername.label'
                     )
                 ),
                 'soapApiKey'   => array(
                     'type'    => 'text',
                     'options' => array(
                         'required' => true,
-                        'help'     => 'pim_base_connector.export.soapApiKey.help',
-                        'label'    => 'pim_base_connector.export.soapApiKey.label'
+                        'help'     => 'pim_magento_connector.export.soapApiKey.help',
+                        'label'    => 'pim_magento_connector.export.soapApiKey.label'
                     )
                 ),
                 'soapUrl' => array(
                     'options' => array(
                         'required' => true,
-                        'help'     => 'pim_base_connector.export.soapUrl.help',
-                        'label'    => 'pim_base_connector.export.soapUrl.label'
+                        'help'     => 'pim_magento_connector.export.soapUrl.help',
+                        'label'    => 'pim_magento_connector.export.soapUrl.label'
                     )
                 ),
                 'notInPimAnymoreAction' => array(
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => array(
-                            'do_nothing' => 'do_nothing',
-                            'delete'     => 'delete'
+                            'do_nothing' => 'pim_magento_connector.clean.do_nothing.label',
+                            'delete'     => 'pim_magento_connector.clean.delete.label'
                         ),
                         'required' => true,
-                        'help'     => 'pim_base_connector.clean.notInPimAnymoreAction.help',
-                        'label'    => 'pim_base_connector.clean.notInPimAnymoreAction.label'
+                        'help'     => 'pim_magento_connector.clean.notInPimAnymoreAction.help',
+                        'label'    => 'pim_magento_connector.clean.notInPimAnymoreAction.label'
                     )
                 ),
                 'attributeMapping' => array()

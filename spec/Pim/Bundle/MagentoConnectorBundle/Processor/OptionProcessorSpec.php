@@ -12,6 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -26,7 +27,8 @@ class OptionProcessorSpec extends ObjectBehavior
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         Webservice $webservice,
-        OptionNormalizer $optionNormalizer
+        OptionNormalizer $optionNormalizer,
+        StepExecution $stepExecution
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -35,6 +37,7 @@ class OptionProcessorSpec extends ObjectBehavior
             $storeViewMappingMerger,
             $attributeMappingMerger
         );
+        $this->setStepExecution($stepExecution);
 
         $attributeMappingMerger->getMapping()->willReturn($attributeMapping);
         $attributeMapping->getTarget('size')->willReturn('size');

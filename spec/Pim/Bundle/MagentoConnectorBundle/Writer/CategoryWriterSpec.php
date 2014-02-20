@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Entity\Category;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -15,11 +16,13 @@ class CategoryWriterSpec extends ObjectBehavior
     function let(
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
-        Webservice $webservice
+        Webservice $webservice,
+        StepExecution $stepExecution
     ) {
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
         $this->beConstructedWith($webserviceGuesser, $categoryMappingManager);
+        $this->setStepExecution($stepExecution);
     }
 
     function it_sends_categories_to_create_on_magento_webservice(

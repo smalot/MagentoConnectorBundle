@@ -5,6 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Cleaner;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -13,9 +14,11 @@ class CategoryCleanerSpec extends ObjectBehavior
     function let(
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
-        Webservice $webservice
+        Webservice $webservice,
+        StepExecution $stepExecution
     ) {
         $this->beConstructedWith($webserviceGuesser, $categoryMappingManager);
+        $this->setStepExecution($stepExecution);
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
     }

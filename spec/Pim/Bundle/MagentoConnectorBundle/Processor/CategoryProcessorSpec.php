@@ -14,6 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 
 class CategoryProcessorSpec extends ObjectBehavior
 {
@@ -26,7 +27,8 @@ class CategoryProcessorSpec extends ObjectBehavior
         NormalizerGuesser $normalizerGuesser,
         CategoryMappingManager $categoryMappingManager,
         Webservice $webservice,
-        CategoryNormalizer $categoryNormalizer
+        CategoryNormalizer $categoryNormalizer,
+        StepExecution $stepExecution
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -36,6 +38,7 @@ class CategoryProcessorSpec extends ObjectBehavior
             $categoryMappingMerger,
             $categoryMappingManager
         );
+        $this->setStepExecution($stepExecution);
 
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
