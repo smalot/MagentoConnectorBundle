@@ -109,7 +109,6 @@ class ProductNormalizerSpec extends ObjectBehavior
                 ),
                 'default'
             ),
-            'images' => array(),
             'fr_fr'  => array(
                 'sku-000',
                 array(
@@ -153,7 +152,6 @@ class ProductNormalizerSpec extends ObjectBehavior
                 ),
                 'default'
             ),
-            'images' => array(),
             'fr_fr'  => array(
                 'sku-000',
                 array(
@@ -224,7 +222,6 @@ class ProductNormalizerSpec extends ObjectBehavior
                 ),
                 'default'
             ),
-            'images' => array(),
             'fr_fr'  => array(
                 'sku-000',
                 array(
