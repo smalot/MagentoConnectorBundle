@@ -110,7 +110,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['create']
         );
 
-        $processedItem[Webservice::IMAGES] = $this->getNormalizedImages($object);
+        if (count($images = $this->getNormalizedImages($object)) > 0) {
+            $processedItem[Webservice::IMAGES] = $images;
+        }
 
         //For each storeview, we update the product only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {

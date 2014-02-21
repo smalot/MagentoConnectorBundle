@@ -27,7 +27,7 @@ class MappingMerger
     /**
      * @var boolean
      */
-    protected $hasParametersSetted = false;
+    protected $hasParametersSet = false;
 
     /**
      * @param array  $mappers
@@ -58,7 +58,7 @@ class MappingMerger
             $mapper->setParameters($clientParameters);
         }
 
-        $this->hasParametersSetted = true;
+        $this->hasParametersSet = true;
     }
 
     /**
@@ -69,7 +69,7 @@ class MappingMerger
     {
         $mergedMapping = new MappingCollection();
 
-        if ($this->hasParametersSetted) {
+        if ($this->hasParametersSet) {
             foreach ($this->getOrderedMappers() as $mapper) {
                 $mergedMapping->merge($mapper->getMapping());
             }
@@ -84,7 +84,7 @@ class MappingMerger
      */
     public function setMapping($mapping)
     {
-        if ($this->hasParametersSetted) {
+        if ($this->hasParametersSet) {
             foreach ($this->getOrderedMappers() as $mapper) {
                 $mapper->setMapping($mapping);
             }
@@ -136,7 +136,7 @@ class MappingMerger
     {
         $targets = array();
 
-        if ($this->hasParametersSetted) {
+        if ($this->hasParametersSet) {
             foreach ($this->getOrderedMappers() as $mapper) {
                 $targets = array_merge($targets, $mapper->getAllTargets());
             }

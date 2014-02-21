@@ -65,8 +65,7 @@ class MagentoSoapClient
             );
         } catch (\Exception $e) {
             throw new InvalidCredentialException(
-                'The given credential are invalid or not allowed to ' .
-                'connect to the soap api.',
+                'The given credential are invalid or not allowed to connect to the soap api.',
                 $e->getCode(),
                 $e
             );

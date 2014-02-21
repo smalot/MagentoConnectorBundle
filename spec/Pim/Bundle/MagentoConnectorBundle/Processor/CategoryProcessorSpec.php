@@ -44,8 +44,6 @@ class CategoryProcessorSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
         $normalizerGuesser->getCategoryNormalizer(Argument::any(), Argument::any())->willReturn($categoryNormalizer);
-
-        $this->setCategoryMapping("test:4\n");
     }
 
     function it_normalizes_categories(

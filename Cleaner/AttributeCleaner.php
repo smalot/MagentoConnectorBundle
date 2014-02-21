@@ -169,7 +169,7 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * Called after the configuration is setted
+     * Called after the configuration is set
      */
     protected function afterConfigurationSet()
     {

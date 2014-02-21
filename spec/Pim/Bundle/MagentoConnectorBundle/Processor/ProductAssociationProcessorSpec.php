@@ -75,4 +75,17 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
             )
         );
     }
+
+    function it_shoulds_be_configurable()
+    {
+        $this->setPimUpSell('foo');
+        $this->setPimCrossSell('bar');
+        $this->setPimRelated('fooo');
+        $this->setPimGrouped('baar');
+
+        $this->getPimUpSell()->shouldReturn('foo');
+        $this->getPimCrossSell()->shouldReturn('bar');
+        $this->getPimRelated()->shouldReturn('fooo');
+        $this->getPimGrouped()->shouldReturn('baar');
+    }
 }

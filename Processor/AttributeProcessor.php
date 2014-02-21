@@ -140,7 +140,7 @@ class AttributeProcessor extends AbstractProcessor
     }
 
     /**
-     * Called after the configuration is setted
+     * Called after the configuration is set
      */
     protected function afterConfigurationSet()
     {
