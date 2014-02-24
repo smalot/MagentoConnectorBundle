@@ -10,7 +10,7 @@ pim_magento_connector:
             title: Export attributes to Magento
             export.title: Attribute export
         option_export:
-            title: Export attributes to Magento
+            title: Export options to Magento
             export.title: Option export
         attribute_clean:
             clean:
@@ -105,7 +105,7 @@ pim_base_connector:
             title: Export attributes to Magento
             export.title: Attribute export
         option_export:
-            title: Export attributes to Magento
+            title: Export options to Magento
             export.title: Option export
         attribute_clean:
             clean:
