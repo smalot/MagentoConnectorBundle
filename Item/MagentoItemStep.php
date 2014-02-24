@@ -18,7 +18,7 @@ use Oro\Bundle\BatchBundle\Entity\StepExecution;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
- * @HasValidCredentials()
+ * @HasValidCredentials(groups={"Execution"})
  */
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
 {

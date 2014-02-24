@@ -13,6 +13,9 @@ use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
  */
 class OptionNormalizer extends AbstractNormalizer
 {
+    const IS_DEFAULT     = 2;
+    const IS_NOT_DEFAULT = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -52,8 +55,8 @@ class OptionNormalizer extends AbstractNormalizer
             $context['attributeCode'],
             array(
                 'label'      => $label,
-                'order'      => 0,
-                'is_default' => 0
+                'order'      => $object->getSortOrder(),
+                'is_default' => $object->isDefault() ? self::IS_DEFAULT : self::IS_NOT_DEFAULT
             )
         );
     }
