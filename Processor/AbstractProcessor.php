@@ -50,7 +50,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     /**
      * @var string
      */
-    protected $storeViewMapping;
+    protected $storeviewMapping = '';
 
     /**
      * @var array
@@ -134,7 +134,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     {
         $this->storeViewMappingMerger->setMapping(json_decode($storeViewMapping, true));
 
-        $this->storeViewMapping = $this->getStoreViewMapping();
+        $this->storeviewMapping = $this->getStoreViewMapping();
 
         return $this;
     }

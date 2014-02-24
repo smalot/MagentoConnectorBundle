@@ -28,7 +28,7 @@ class AttributeProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeMapping;
+    protected $attributeMapping = '';
 
     /**
      * Set attribute mapping
