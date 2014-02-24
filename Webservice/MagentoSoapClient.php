@@ -106,6 +106,19 @@ class MagentoSoapClient
                 );
             }
 
+            if (is_array($response) && isset($response['isFault']) && $response['isFault']) {
+                throw new SoapCallException(
+                    sprintf(
+                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s.' .
+                        'Response from API : %s',
+                        $e->getMessage(),
+                        $resource,
+                        json_encode($params),
+                        json_encode($response)
+                    )
+                );
+            }
+
             return $response;
         } else {
             throw new NotConnectedException();
@@ -120,11 +133,7 @@ class MagentoSoapClient
      */
     public function addCall(array $call, $maximumCalls = 0)
     {
-        $this->calls[] = $call;
-
-        if ($maximumCalls > 0 && (count($this->calls) % $maximumCalls) == 0) {
-            $this->sendCalls();
-        }
+        $this->call($call[0], $call[1]);
     }
 
     /**

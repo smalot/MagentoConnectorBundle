@@ -159,13 +159,17 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      *
      * @return array
      */
-    public function getNormalizedImages(ProductInterface $product)
+    public function getNormalizedImages(ProductInterface $product, $sku = '')
     {
         $imageValues = $product->getValues()->filter(
             function ($value) {
                 return $value->getData() instanceof Media;
             }
         );
+
+        if ($sku === '') {
+            $sku = $product->getIdentifier();
+        }
 
         $images = array();
 
@@ -174,7 +178,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
             if ($imageData = $this->mediaManager->getBase64($data)) {
                 $images[] = array(
-                    (string) $product->getIdentifier(),
+                    (string) $sku,
                     array(
                         'file' => array(
                             'name'    => $data->getFilename(),
@@ -185,7 +189,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         'position' => 0,
                         'types'    => array(Webservice::SMALL_IMAGE),
                         'exclude'  => 0
-                    )
+                    ),
+                    Webservice::SOAP_DEFAULT_STORE_VIEW,
+                    'sku'
                 );
             }
         }
@@ -256,7 +262,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                Webservice::SOAP_DEFAULT_STORE_VIEW
+                Webservice::SOAP_DEFAULT_STORE_VIEW,
+                'sku'
             );
         }
 

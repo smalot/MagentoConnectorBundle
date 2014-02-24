@@ -279,7 +279,8 @@ class Webservice
     public function sendProduct($productPart)
     {
         if (count($productPart) == self::CREATE_PRODUCT_SIZE ||
-            count($productPart) == self::CREATE_CONFIGURABLE_SIZE
+            count($productPart) == self::CREATE_CONFIGURABLE_SIZE &&
+            $productPart[self::CREATE_CONFIGURABLE_SIZE - 1] != 'sku'
         ) {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
         } else {
