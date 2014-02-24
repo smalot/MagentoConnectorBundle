@@ -211,3 +211,110 @@ pim_base_connector:
             label: Do nothing
         disable:
             label: Disable it
+
+pim_import_export:
+    jobs:
+        simple_product_export:
+            title: Export simple products to Magento
+            export.title: Simple product export
+        configurable_product_export:
+            title: Export configurable products to Magento
+            export.title: Configurable product export
+        association_product_export:
+            title: Export associated products to Magento
+            export.title: Product association export
+        simple_product_clean:
+            title: Clean simple products to Magento
+            export.title: Product export
+        configurable_product_clean:
+            title: Clean configurable products to Magento
+            export.title: Product export
+        category_export:
+            title: Export categories to Magento
+            export.title: Category export
+        attribute_export:
+            title: Export attributes to Magento
+            export.title: Attribute export
+        option_export:
+            title: Export options to Magento
+            export.title: Option export
+        attribute_clean:
+            clean.title: Attribute cleaner
+        category_clean:
+            clean.title: Category cleaner
+        product_clean:
+            clean.title: Product cleaner
+        option_clean:
+            clean.title: Option cleaner
+        configurable_clean:
+            clean.title: Configurable cleaner
+    steps:
+        product_processor:
+            title: Product processor
+        product_association_processor:
+            title: Product association processor
+    export:
+        soapUsername:
+            label: Soap Username
+            help: Your soap username on Magento
+        soapApiKey:
+            label: Soap api key
+            help: Your soap api key on Magento
+        soapUrl:
+            label: Soap url
+            help: Your Magento installation url
+        channel:
+            label: Channel
+            help:
+        defaultLocale:
+            label: Default locale
+            help: The default locale to apply on admin storeView
+        enabled:
+            label: Status on Magento
+            help:
+        visibility:
+            label: Visibility on Magento
+            help:
+        website:
+            label: Website
+            help: The website to which the products will be sent
+        currency:
+            label: Currency
+            help: The currency to send to Magento
+        storeviewMapping:
+            label: Storeview mapping
+            help:  You can map storeviews to locales in PIM
+        categoryMapping:
+            label: Category mapping
+            help:  Mapping between category on Magento and Pim categories
+        attributeMapping:
+            label: Category mapping
+            help:  Mapping between category on Magento and Pim categories
+        pimGrouped:
+            label: Association type for grouped products
+            help:  Association type corresponding to grouped products
+        pimUpSell:
+            label: Association type for up-sell products
+            help:  Association type corresponding to up-sell products
+        pimCrossSell:
+            label: Association type for cross-sell products
+            help:  Association type corresponding to cross-sell products
+        pimRelated:
+            label: Association type for related products
+            help:  Association type corresponding to related products
+        attributeMapping:
+            label: Attribute mapping
+            help: Map attribute code between Akeneo PIM and Magento
+    clean:
+        notInPimAnymoreAction:
+            label: Action for item not in PIM anymore
+            help:  What to do on Magento if an item is not in the Pim anymore ?
+        notCompleteAnymoreAction:
+            label: Action for item not complete anymore
+            help:  What to do on Magento if an item is not complete in Akeneo anymore ?
+        delete:
+            label: Delete it
+        do_nothing:
+            label: Do nothing
+        disable:
+            label: Disable it
