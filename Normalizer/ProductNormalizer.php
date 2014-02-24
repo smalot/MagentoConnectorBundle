@@ -110,7 +110,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['create']
         );
 
-        if (count($images = $this->getNormalizedImages($object)) > 0) {
+        $images = $this->getNormalizedImages($object);
+
+        if (count($images) > 0) {
             $processedItem[Webservice::IMAGES] = $images;
         }
 
