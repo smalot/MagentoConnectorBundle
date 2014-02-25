@@ -156,6 +156,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * Get all images of a product normalized
      *
      * @param ProductInterface $product
+     * @param string           $sku
      *
      * @return array
      */
