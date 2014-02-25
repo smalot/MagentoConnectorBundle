@@ -215,11 +215,14 @@ class Webservice
     public function getImages($sku)
     {
         try {
-            $images = $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, array(
-                $sku,
-                self::SOAP_DEFAULT_STORE_VIEW,
-                'sku'
-            ));
+            $images = $this->client->call(
+                self::SOAP_ACTION_PRODUCT_MEDIA_LIST,
+                array(
+                    $sku,
+                    self::SOAP_DEFAULT_STORE_VIEW,
+                    'sku'
+                )
+            );
         } catch (\Exception $e) {
             $images = array();
         }
