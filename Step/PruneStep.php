@@ -2,11 +2,11 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Step;
 
-use Akeneo\Bundle\BatchBundle\Step\AbstractStep;
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
+use Oro\Bundle\BatchBundle\Step\AbstractStep;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Cleaner\Cleaner;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * A step to delete element that are no longer in PIM or in the channel

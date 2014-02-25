@@ -46,8 +46,8 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'create'                   => true
         );
 
+        $productNormalizer->getNormalizedImages($product, 'conf-group_code')->willReturn(array());
         $productNormalizer->getValues(Argument::cetera())->willReturn(array());
-        $productNormalizer->getNormalizedImages($product)->willReturn(array());
 
         $channelManager->getChannelByCode('channel')->willReturn($channel);
         $channel->getLocales()->willReturn(array($localeEN, $localeFR));
@@ -84,7 +84,6 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
                     'websites'        => array('website')
                 )
             ),
-            'images' => array(),
             'fr_fr'  => array(
                 'conf-group_code',
                 array(),
@@ -115,7 +114,6 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
                     'websites'        => array('website')
                 )
             ),
-            'images' => array(),
             'fr_fr'  => array(
                 'conf-group_code',
                 array(),

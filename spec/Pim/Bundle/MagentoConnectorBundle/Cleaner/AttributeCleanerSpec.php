@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -97,7 +97,7 @@ class AttributeCleanerSpec extends ObjectBehavior
 
         $webservice->deleteAttribute('foo')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
     function it_shoulds_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)

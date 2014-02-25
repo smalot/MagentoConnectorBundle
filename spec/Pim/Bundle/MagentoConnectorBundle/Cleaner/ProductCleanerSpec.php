@@ -11,7 +11,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -126,7 +126,7 @@ class ProductCleanerSpec extends ObjectBehavior
 
         $webservice->deleteProduct('sku-001')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
     function it_shoulds_have_a_well_formed_form_configuration($channelManager)

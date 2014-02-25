@@ -199,7 +199,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'position' => 0,
                     'types'    => array('small_image'),
                     'exclude'  => 0
-                )
+                ),
+                'default',
+                'sku'
             )
         ));
     }
@@ -220,7 +222,8 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'visibility' => 4,
                     'websites'   => array('website'),
                 ),
-                'default'
+                'default',
+                'sku'
             ),
             'fr_fr'  => array(
                 'sku-000',

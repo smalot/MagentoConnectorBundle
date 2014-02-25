@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product association writer

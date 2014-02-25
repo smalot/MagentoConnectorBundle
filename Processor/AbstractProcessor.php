@@ -3,8 +3,8 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
+use Oro\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;

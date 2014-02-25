@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -86,7 +86,7 @@ class OptionProcessorSpec extends ObjectBehavior
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(array('foo'));
 
-        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', array(array($optionRed)));
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('process', array(array($optionRed)));
     }
 
     function it_raises_an_exception_if_a_error_occure_during_normalization_process(
@@ -105,7 +105,7 @@ class OptionProcessorSpec extends ObjectBehavior
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException');
 
-        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', array(array($optionRed)));
+        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('process', array(array($optionRed)));
     }
 
     function it_gives_a_proper_configuration_for_fields($storeViewMappingMerger, $attributeMappingMerger)
