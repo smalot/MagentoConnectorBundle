@@ -1,4 +1,4 @@
-{% extends 'PimImportExportBundle:JobProfile:show.html.twig' %}
+{% extends 'PimMagentoConnectorBundle:JobProfile:show.html.twig' %}
 
 {% oro_title_set({ params: {"%job.label%": jobInstance.label } }) %}
 
@@ -7,3 +7,4 @@
 {% set indexRoute  = path('pim_importexport_export_profile_index') %}
 {% set editRoute   = path('pim_importexport_export_profile_edit', {'id': jobInstance.id}) %}
 {% set launchRoute = path('pim_importexport_export_profile_launch', {'id': jobInstance.id}) %}
+
