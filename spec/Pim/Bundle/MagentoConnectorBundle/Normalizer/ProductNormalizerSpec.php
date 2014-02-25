@@ -119,7 +119,8 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
-                'fr_fr'
+                'fr_fr',
+                'sku'
             )
         ));
     }
@@ -162,7 +163,8 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
-                'fr_fr'
+                'fr_fr',
+                'sku'
             )
         ));
     }
@@ -197,7 +199,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     ),
                     'label'    => 'image_filename',
                     'position' => 0,
-                    'types'    => array('small_image'),
+                    'types'    => array('small_image', 'image', 'thumbnail'),
                     'exclude'  => 0
                 ),
                 'default',
@@ -235,7 +237,8 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
-                'fr_fr'
+                'fr_fr',
+                'sku'
             )
         ));
     }

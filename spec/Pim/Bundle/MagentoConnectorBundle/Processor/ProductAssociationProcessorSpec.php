@@ -62,14 +62,16 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
                     array(
                         'type'          => 'cross_sell',
                         'product'       => 'sku-012',
-                        'linkedProduct' => 'sku-011'
+                        'linkedProduct' => 'sku-011',
+                        'identifierType' => 'sku'
                     )
                 ),
                 'create' => array(
                     array(
                         'type'          => 'up_sell',
                         'product'       => 'sku-012',
-                        'linkedProduct' => 'sku-011'
+                        'linkedProduct' => 'sku-011',
+                        'identifierType' => 'sku'
                     )
                 )
             )
