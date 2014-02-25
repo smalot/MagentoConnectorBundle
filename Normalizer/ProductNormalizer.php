@@ -189,7 +189,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(Webservice::SMALL_IMAGE),
+                        'types'    => array(Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL),
                         'exclude'  => 0
                     ),
                     Webservice::SOAP_DEFAULT_STORE_VIEW,

@@ -41,6 +41,8 @@ pim_magento_connector:
             title: Product association processor
         product_writer:
             title: Product writer
+        product_association_writer:
+            title: Product association writer
     export:
         soapUsername:
             label: Soap Username

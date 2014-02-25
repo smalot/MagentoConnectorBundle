@@ -44,6 +44,8 @@ class Webservice
     const IMAGES                                    = 'images';
     const SOAP_ATTRIBUTE_ID                         = 'attribute_id';
     const SMALL_IMAGE                               = 'small_image';
+    const BASE_IMAGE                                = 'image';
+    const THUMBNAIL                                 = 'thumbnail';
     const SELECT                                    = 'select';
     const MULTI_SELECT                              = 'multiselect';
 
@@ -213,7 +215,11 @@ class Webservice
     public function getImages($sku)
     {
         try {
-            $images = $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, $sku);
+            $images = $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, array(
+                $sku,
+                self::SOAP_DEFAULT_STORE_VIEW,
+                'sku'
+            ));
         } catch (\Exception $e) {
             $images = array();
         }
@@ -251,8 +257,9 @@ class Webservice
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE,
             array(
-                'product' => $sku,
-                'file'    => $imageFilename
+                $sku,
+                $imageFilename,
+                'sku'
             )
         );
     }
@@ -425,7 +432,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'up_sell',
-                $sku
+                $sku,
+                'sku'
             )
         );
 
@@ -433,7 +441,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'cross_sell',
-                $sku
+                $sku,
+                'sku'
             )
         );
 
@@ -441,7 +450,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'related',
-                $sku
+                $sku,
+                'sku'
             )
         );
 
@@ -449,7 +459,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'grouped',
-                $sku
+                $sku,
+                'sku'
             )
         );
 

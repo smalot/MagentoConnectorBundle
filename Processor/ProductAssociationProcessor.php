@@ -223,9 +223,10 @@ class ProductAssociationProcessor extends AbstractProcessor
         if (in_array($associationType, array_keys($this->getAssociationCodeMapping()))) {
             foreach ($association->getProducts() as $associatedProduct) {
                 $createAssociationCalls[] = array(
-                    'type'          => $this->getAssociationCodeMapping()[$associationType],
-                    'product'       => (string) $product->getIdentifier(),
-                    'linkedProduct' => (string) $associatedProduct->getIdentifier()
+                    'type'           => $this->getAssociationCodeMapping()[$associationType],
+                    'product'        => (string) $product->getIdentifier(),
+                    'linkedProduct'  => (string) $associatedProduct->getIdentifier(),
+                    'identifierType' => 'sku'
                 );
             }
         }
@@ -247,9 +248,10 @@ class ProductAssociationProcessor extends AbstractProcessor
         foreach ($associationStatus as $associationType => $associatedProducts) {
             foreach ($associatedProducts as $associatedProduct) {
                 $removeAssociationCalls[] = array(
-                    'type'          => $associationType,
-                    'product'       => (string) $product->getIdentifier(),
-                    'linkedProduct' => (string) $associatedProduct['sku']
+                    'type'           => $associationType,
+                    'product'        => (string) $product->getIdentifier(),
+                    'linkedProduct'  => (string) $associatedProduct['sku'],
+                    'identifierType' => 'sku'
                 );
             }
         }

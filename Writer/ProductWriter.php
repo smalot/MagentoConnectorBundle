@@ -93,15 +93,18 @@ class ProductWriter extends AbstractWriter
      */
     protected function computeProduct($product)
     {
-        $this->pruneImages($product);
+        $sku = $this->getProductSku($product);
+        $images = $this->webservice->getImages($sku);
 
         foreach (array_keys($product) as $storeViewCode) {
             try {
                 $this->createCall($product[$storeViewCode], $storeViewCode);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product));
+                throw new InvalidItemException($e->getMessage(), $product[$storeViewCode]);
             }
         }
+
+        $this->pruneImages($sku, $images);
     }
 
     /**
@@ -150,13 +153,14 @@ class ProductWriter extends AbstractWriter
      *
      * @param array $product
      */
-    protected function pruneImages($product)
+    protected function pruneImages($sku, array $images = array())
     {
-        $sku = $this->getProductSku($product);
-        $images = $this->webservice->getImages($sku);
-
         foreach ($images as $image) {
-            $this->webservice->deleteImage($sku, $image['file']);
+            try {
+                $this->webservice->deleteImage($sku, $image['file']);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), $image);
+            }
         }
     }
 
