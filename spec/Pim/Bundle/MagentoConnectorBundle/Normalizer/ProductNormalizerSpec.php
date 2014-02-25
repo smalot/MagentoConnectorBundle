@@ -202,7 +202,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'types'    => array('small_image', 'image', 'thumbnail'),
                     'exclude'  => 0
                 ),
-                'default',
+                0,
                 'sku'
             )
         ));
