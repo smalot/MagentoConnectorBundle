@@ -128,10 +128,9 @@ class MagentoSoapClient
     /**
      * Add a call to the soap call stack
      *
-     * @param array   $call         A magento soap call
-     * @param integer $maximumCalls Send calls envery maximumCalls
+     * @param array $call A magento soap call
      */
-    public function addCall(array $call, $maximumCalls = 0)
+    public function addCall(array $call)
     {
         $this->call($call[0], $call[1]);
     }

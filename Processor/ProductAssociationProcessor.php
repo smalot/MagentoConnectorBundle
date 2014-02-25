@@ -222,7 +222,6 @@ class ProductAssociationProcessor extends AbstractProcessor
 
         if (in_array($associationType, array_keys($this->getAssociationCodeMapping()))) {
             foreach ($association->getProducts() as $associatedProduct) {
-                //$magentoProducts = $this->webservice->getProductsStatus(array($product));
                 $createAssociationCalls[] = array(
                     'type'           => $this->getAssociationCodeMapping()[$associationType],
                     'product'        => (string) $product->getIdentifier(),

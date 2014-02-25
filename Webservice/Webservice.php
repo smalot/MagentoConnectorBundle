@@ -239,8 +239,7 @@ class Webservice
                 array(
                     self::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
                     $image
-                ),
-                self::MAXIMUM_CALLS
+                )
             );
         }
     }
@@ -271,11 +270,7 @@ class Webservice
     public function updateProductPart($productPart)
     {
         $this->client->addCall(
-            array(
-                self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                $productPart,
-            ),
-            self::MAXIMUM_CALLS
+            array(self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart)
         );
     }
 
@@ -294,13 +289,7 @@ class Webservice
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
         }
 
-        $this->client->addCall(
-            array(
-                $resource,
-                $productPart,
-            ),
-            self::MAXIMUM_CALLS
-        );
+        $this->client->addCall(array($resource, $productPart));
     }
 
     /**
