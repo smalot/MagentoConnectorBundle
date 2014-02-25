@@ -140,7 +140,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $processedItem[$storeView['code']] = array(
                     (string) $object->getIdentifier(),
                     $values,
-                    $storeView['code']
+                    $storeView['code'],
+                    'sku'
                 );
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
