@@ -27,12 +27,12 @@ connector:
                         processor: pim_magento_connector.processor.product_association
                         writer:    pim_magento_connector.writer.product_association
                 prune_simple_products:
-                    title: pim_import_export.jobs.simple_product_clean.clean.title
+                    title: pim_magento_connector.jobs.simple_product_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.product
                 prune_configurable_products:
-                    title: pim_import_export.jobs.configurable_product_clean.clean.title
+                    title: pim_magento_connector.jobs.configurable_product_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.configurable
@@ -52,7 +52,7 @@ connector:
                     parameters:
                         batch_size: 1
                 prune_categories:
-                    title: pim_import_export.jobs.category_clean.clean.title
+                    title: pim_magento_connector.jobs.category_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.category
@@ -73,7 +73,7 @@ connector:
                     parameters:
                         batch_size: 1
                 prune_attributes:
-                    title: pim_import_export.jobs.attribute_clean.clean.title
+                    title: pim_magento_connector.jobs.attribute_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.attribute
@@ -92,7 +92,7 @@ connector:
                         processor: pim_magento_connector.processor.option
                         writer:    pim_magento_connector.writer.option
                 prune_options:
-                    title: pim_import_export.jobs.option_clean.clean.title
+                    title: pim_magento_connector.jobs.option_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.option
