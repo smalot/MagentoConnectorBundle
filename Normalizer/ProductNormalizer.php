@@ -192,7 +192,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         'types'    => array(Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL),
                         'exclude'  => 0
                     ),
-                    Webservice::SOAP_DEFAULT_STORE_VIEW,
+                    0,
                     'sku'
                 );
             }
