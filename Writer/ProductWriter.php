@@ -95,6 +95,7 @@ class ProductWriter extends AbstractWriter
     {
         $sku = $this->getProductSku($product);
         $images = $this->webservice->getImages($sku);
+        $this->pruneImages($sku, $images);
 
         foreach (array_keys($product) as $storeViewCode) {
             try {
@@ -104,7 +105,6 @@ class ProductWriter extends AbstractWriter
             }
         }
 
-        $this->pruneImages($sku, $images);
     }
 
     /**

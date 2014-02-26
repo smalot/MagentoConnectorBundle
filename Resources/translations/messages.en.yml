@@ -77,9 +77,6 @@ pim_magento_connector:
         categoryMapping:
             label: Category mapping
             help:  Mapping between category on Magento and Pim categories
-        attributeMapping:
-            label: Category mapping
-            help:  Mapping between category on Magento and Pim categories
         pimGrouped:
             label: Association type for grouped products
             help:  Association type corresponding to grouped products
@@ -95,6 +92,12 @@ pim_magento_connector:
         attributeMapping:
             label: Attribute mapping
             help: Map attribute code between Akeneo PIM and Magento
+        notInPimAnymoreAction:
+            label: Action for item not in PIM anymore
+            help:  What to do on Magento if an item is not in the Pim anymore ?
+        notCompleteAnymoreAction:
+            label: Action for item not complete anymore
+            help:  What to do on Magento if an item is not complete in Akeneo anymore ?
     clean:
         notInPimAnymoreAction:
             label: Action for item not in PIM anymore
