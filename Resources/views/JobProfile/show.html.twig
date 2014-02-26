@@ -4,10 +4,14 @@
 <table class="configuration">
     <thead></thead>
     <tbody>
-        {% for element,value in config['attributes'] %}
+        {% for element,elementParameters in config['attributes'] %}
             <tr>
                 <td><b>{{ 'pim_magento_connector.%s.%s.label'|format(jobType, element)|trans }}</b></td>
-                <td>{{ value|normalizeValue }} {{ getViolations(violations, element) }}</td>
+                    <td><span class="{{ elementParameters['class'] is defined ? elementParameters['class'] }}">{{ elementParameters['value']|normalizeValue|trans }} {{ getViolations(violations, element) }}</span>
+                    {% if elementParameters['type'] is defined and elementParameters['type'] == 'url' %}
+                    <a target="_blank" href="{{ elementParameters['value']|normalizeValue }}"><i class="icon-circle-arrow-right"></i></a>
+                    {% endif %}
+                    </td>
             </tr>
         {% endfor %}
     </tbody>

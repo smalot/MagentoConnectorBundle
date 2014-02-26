@@ -37,9 +37,12 @@ class ConfigurationExtension extends \Twig_Extension
     {
         foreach ($this->configuration['show_configuration'] as $blockIndex => $block) {
             $attributes = array();
-            foreach ($block['elements'] as $elementIndex => $element) {
+            foreach ($block['elements'] as $element => $elementParameters) {
                 if (in_array($element, array_keys($configuration))) {
-                    $attributes[$element] = $configuration[$element];
+                    $attributes[$element] = array_merge(
+                        array('value' => $configuration[$element]),
+                        $elementParameters ? $elementParameters : array()
+                    );
                 }
             }
 
