@@ -98,13 +98,6 @@ pim_magento_connector:
         notCompleteAnymoreAction:
             label: Action for item not complete anymore
             help:  What to do on Magento if an item is not complete in Akeneo anymore ?
-    clean:
-        notInPimAnymoreAction:
-            label: Action for item not in PIM anymore
-            help:  What to do on Magento if an item is not in the Pim anymore ?
-        notCompleteAnymoreAction:
-            label: Action for item not complete anymore
-            help:  What to do on Magento if an item is not complete in Akeneo anymore ?
         delete:
             label: Delete it
         do_nothing:

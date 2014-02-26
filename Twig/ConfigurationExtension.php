@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Parser;
 
 class ConfigurationExtension extends \Twig_Extension
 {
-    public function getGlobals()
+    public function __construct()
     {
         $yaml = new Parser();
 
@@ -23,7 +23,34 @@ class ConfigurationExtension extends \Twig_Extension
         $configuration['edit_configuration'] = isset($configuration['edit_configuration']) ?
             $configuration['edit_configuration'] : array();
 
-        return $configuration;
+        $this->configuration = $configuration;
+    }
+
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('get_show_configuration', array($this, 'getShowConfiguration')),
+        );
+    }
+
+    public function getShowConfiguration($configuration)
+    {
+        foreach ($this->configuration['show_configuration'] as $blockIndex => $block) {
+            $attributes = array();
+            foreach ($block['elements'] as $elementIndex => $element) {
+                if (in_array($element, array_keys($configuration))) {
+                    $attributes[$element] = $configuration[$element];
+                }
+            }
+
+            if (count($attributes) === 0) {
+                unset($this->configuration['show_configuration'][$blockIndex]);
+            } else {
+                $this->configuration['show_configuration'][$blockIndex]['attributes'] = $attributes;
+            }
+        }
+
+        return $this->configuration['show_configuration'];
     }
 
     public function getName()

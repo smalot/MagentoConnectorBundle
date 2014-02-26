@@ -1,29 +1,28 @@
 {% extends 'PimImportExportBundle:JobProfile:show.html.twig' %}
 
-{% macro magento_configuration(config, violations, jobType, blocks) %}
+{% macro magento_configuration(config, violations, jobType) %}
 <table class="configuration">
     <thead></thead>
     <tbody>
-        {% for element in blocks %}
-            {% if config[element] is defined %}
+        {% for element,value in config['attributes'] %}
             <tr>
                 <td><b>{{ 'pim_magento_connector.%s.%s.label'|format(jobType, element)|trans }}</b></td>
-                <td>{{ config[element]|normalizeValue }} {{ getViolations(violations, element) }}</td>
+                <td>{{ value|normalizeValue }} {{ getViolations(violations, element) }}</td>
             </tr>
-            {% endif %}
         {% endfor %}
     </tbody>
 </table>
 {% endmacro %}
 
 {% block configuration %}
-    {% for configuration_block in show_configuration %}
+    {% set cpt = 1 %}
+    {% for configurationBlock in get_show_configuration(jobInstance.job.configuration) %}
         {% set configuration = _self.magento_configuration(
-            jobInstance.job.configuration,
+            configurationBlock,
             violations,
-            action,
-            configuration_block['elements'])
-        %}
-        {{ elements.accordion({ (configuration_block['title']): configuration }, 1, true) }}
+            action
+        ) %}
+        {{ elements.accordion({ (configurationBlock['title']): configuration }, cpt, true) }}
+        {% set cpt = cpt + 1 %}
     {% endfor %}
 {% endblock configuration %}
