@@ -37,6 +37,8 @@ pim_magento_connector:
     steps:
         product_processor:
             title: Product processor
+        configurable_processor:
+            title: Configurable processor
         product_association_processor:
             title: Product association processor
         product_writer:
