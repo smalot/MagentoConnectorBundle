@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
@@ -14,7 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  */
 class OptionWriter extends AbstractWriter
 {
-    const OPTION_CREATED = 'option_created';
+    const OPTION_CREATED = 'Option created';
 
     /**
      * {@inheritdoc}

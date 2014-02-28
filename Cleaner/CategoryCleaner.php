@@ -6,7 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento category cleaner
@@ -19,8 +19,8 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class CategoryCleaner extends Cleaner
 {
-    const CATEGORY_DELETED  = 'category_deleted';
-    const CATEGORY_DISABLED = 'category_disabled';
+    const CATEGORY_DELETED  = 'Category deleted';
+    const CATEGORY_DISABLED = 'Category disabled';
 
     /**
      * @var CategoryMappingManager

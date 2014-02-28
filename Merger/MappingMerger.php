@@ -108,6 +108,7 @@ class MappingMerger
                         'data-targets' => json_encode($this->getAllTargets()),
                         'data-name'    => $this->name
                     ),
+                    'label' => 'pim_magento_connector.export.' . $this->name . 'Mapping.label',
                     'help'  => 'pim_magento_connector.export.' . $this->name . 'Mapping.help'
                 )
             )

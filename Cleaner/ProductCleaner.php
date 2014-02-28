@@ -8,7 +8,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product cleaner
@@ -21,8 +21,8 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductCleaner extends Cleaner
 {
-    const PRODUCT_DISABLED = 'product_disabled';
-    const PRODUCT_DELETED  = 'product_deleted';
+    const PRODUCT_DISABLED = 'Product disabled';
+    const PRODUCT_DELETED  = 'Product deleted';
 
     /**
      * @Assert\NotBlank(groups={"Execution"})

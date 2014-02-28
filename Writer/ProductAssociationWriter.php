@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product association writer
@@ -14,7 +14,7 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductAssociationWriter extends AbstractWriter
 {
-    const PRODUCT_LINKED = 'product_linked';
+    const PRODUCT_LINKED = 'Product linked';
 
     /**
      * {@inheritdoc}

@@ -3,8 +3,8 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Oro\Bundle\BatchBundle\Item\ItemProcessorInterface;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
@@ -197,7 +197,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                     $familyCode
                 );
         } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array($relatedItem));
+            throw new InvalidItemException($e->getMessage(), array());
         }
     }
 

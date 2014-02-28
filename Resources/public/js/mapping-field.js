@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'backbone', 'underscore', 'oro/translator', 'oro/form-validation'],
-    function ($, Backbone, _, __, FormValidation) {
+    ['jquery', 'backbone', 'underscore', 'oro/translator', 'bootstrap-tooltip'],
+    function ($, Backbone, _, __) {
         'use strict';
         var MappingItem = Backbone.Model.extend({
             defaults: {
@@ -26,6 +26,7 @@ define(
                 '</td>' +
                 '<td>' +
                     '<input type="text" class="mapping-target" required="required" required="required" value="<%= mappingItem.target %>"/>' +
+                    '<i class="validation-tooltip" data-placement="right" data-toggle="tooltip" data-original-title="<%= notBlankError %>"></i>' +
                 '</td>' +
                 '<td>' +
                     '<a href="javascript:void(0);" class="btn remove-btn <% if (!mappingItem.deletable) { %>disabled<% } %>">' +
@@ -49,8 +50,8 @@ define(
                 this.render();
             },
             render: function() {
-                this.$el.html(this.template({mappingItem: this.model.toJSON(), __: __}));
-
+                this.$el.html(this.template({mappingItem: this.model.toJSON(), notBlankError: __('pim_magento_connector.mapping.not_blank')}));
+                this.$el.find('.validation-tooltip').hide();
                 return this;
             },
             updateSource: function(e) {
@@ -208,9 +209,11 @@ define(
 
             $element.parents('form').on('submit', function() {
                 var isValid = true;
+                var $error = $('<i class="validation-tooltip" data-placement="right" data-toggle="tooltip" ' +
+                            'data-original-title="' + __('pim_magento_connector.mapping.not_blank') + '"></i>').tooltip();
 
                 $('.mapping-row').each(function() {
-                    $(this).find('.validation-faled').remove();
+                    $(this).find('.validation-tooltip').hide();
 
                     var $source = $(this).find('input.mapping-source');
                     var $target = $(this).find('input.mapping-target')
@@ -218,10 +221,11 @@ define(
                     if (($source.val() == '') !=
                         ($target.val() == '')
                     ) {
+
                         if ($source.val() == '') {
-                            FormValidation.addFieldErrors($source, __('pim_magento_connector.mapping.not_blank'));
+                            $source.next('.validation-tooltip').show();
                         } else {
-                            FormValidation.addFieldErrors($target, __('pim_magento_connector.mapping.not_blank'));
+                            $target.next('.validation-tooltip').show();
                         }
 
                         isValid = false;
