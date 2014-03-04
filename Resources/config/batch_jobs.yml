@@ -11,27 +11,27 @@ connector:
                 export_simple_products:
                     title:     pim_magento_connector.steps.simple_product_export.export.title
                     services:
-                        reader:    pim_magento_connector.reader.orm.bulk_simple_product
+                        reader:    pim_base_connector.reader.orm.product
                         processor: pim_magento_connector.processor.product
                         writer:    pim_magento_connector.writer.product
                     parameters:
-                        batch_size: 1
+                        batch_size: 100
                 export_configurable_product:
                     title:     pim_magento_connector.steps.configurable_product_export.export.title
                     services:
-                        reader:    pim_magento_connector.reader.orm.bulk_configurable_product
+                        reader:    pim_base_connector.reader.orm.product
                         processor: pim_magento_connector.processor.configurable
                         writer:    pim_magento_connector.writer.product
                     parameters:
-                        batch_size: 1
+                        batch_size: 100
                 export_product_association:
                     title:     pim_magento_connector.steps.association_product_export.export.title
                     services:
-                        reader:    pim_magento_connector.reader.orm.bulk_product_association
+                        reader:    pim_base_connector.reader.orm.product
                         processor: pim_magento_connector.processor.product_association
                         writer:    pim_magento_connector.writer.product_association
                     parameters:
-                        batch_size: 1
+                        batch_size: 100
                 prune_simple_products:
                     title: pim_magento_connector.steps.simple_product_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"

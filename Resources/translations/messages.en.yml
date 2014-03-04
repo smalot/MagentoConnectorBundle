@@ -22,11 +22,11 @@ pim_magento_connector:
         category_processor.title: Category processor
         configurable_processor.title: Configurable processor
         option_processor.title: Option processor
-        product_association_processor: Product association processor
+        product_association_processor.title: Product association processor
         attribute_writer.title: Attribute writer
         category_writer.title: Catgeory writer
         option_writer.title: Option writer
-        product_association_writer: Product association writer
+        product_association_writer.title: Product association writer
         product_writer.title: Product writer
         attribute_cleaner.title: Attribute cleaner
         category_cleaner.title: Category cleaner

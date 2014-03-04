@@ -163,6 +163,8 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     public function process($items)
     {
+        $items = is_array($items) ? $items : array($items);
+
         $this->beforeExecute();
 
         $productAssociationCalls = array('remove' => array(), 'create' => array());
@@ -171,7 +173,7 @@ class ProductAssociationProcessor extends AbstractProcessor
             try {
                 $associationsStatus = $this->webservice->getAssociationsStatus($product);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product));
+                throw new InvalidItemException($e->getMessage(), array($product->getIdentifier()));
             }
 
             $productAssociationCalls['remove'] = array_merge(
