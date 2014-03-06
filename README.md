@@ -18,19 +18,30 @@ Warning : this connector is not production ready and is intended for evaluation 
 
 # Installation instructions
 
-## Inside a community standard installation
+Please make sure that your version of PHP has support for SOAP and XML (natively coming with PHP for Debian based distributions).
 
-Install the Akeneo PIM standard edition following [this documentation](https://github.com/akeneo/pim-community-standard).
+## Installing the Magento Connector in an Akeneo PIM standard installation
 
-In your Akeneo PIM standard edition, run the following composer command :
+If not already done, install Akeneo PIM (see [this documentation](https://github.com/akeneo/pim-community-standard)).
 
-    php composer.phar require akeneo/magento-connector-bundle:v1.0.0-ALPHA2
+The PIM installation directory where you will find `app`, `web`, `src`, ... is called thereafter `/my/pim/installation/dir`.
 
-Then you have to add the ConnectorBundle to your `AppKernel.php` :
+Get composer:
+
+    $ cd /my/pim/installation/dir
+    $ curl -sS https://getcomposer.org/installer | php
+
+Install the MagentoConnector with composer:
+
+    $ php composer.phar require akeneo/magento-connector-bundle:v1.0.0-RC1 --no-dev
+
+Enable the bundle in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 
-## Inside a Akeneo PIM developpement environnement
+## Installatino the Magento Connector in an Akeneo PIM developpement environnement
+
+The following installation instructions are meant for developement on the Magento Connector itself.
 
 To install the magento connector for developpement purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
 
@@ -40,7 +51,7 @@ After that, add the PimMagentoConnectorBundle to your `AppKernel.php` :
 
 # Configuration
 
-In order to export products to Magento you need to create a soap user on Magento and give him all rights.
+In order to export products to Magento, a SOAP user with full rights has to be created on Magento.
 
 After that you can go to `spread > export profiles` on Akeneo PIM and create your first Magento export job.
 
@@ -50,15 +61,13 @@ After that you can go to `spread > export profiles` on Akeneo PIM and create you
 
 # Demo fixtures
 
-To test the connector with the minimum data requirements you can load the demo fictures. Just add this line to your `parameters.yml`
+To test the connector with the minimum data requirements, you can load the demo fixtures. Change the `installer_data` line from the `app/config/parameters.yml` file to:
 
     installer_data: 'PimMagentoConnectorBundle:demo_magento'
 
 # Notes
 
-A standard Magento's installation require some fields to create a products. In order to be as generic as possible, you need to manage them in Akeneo PIM.
-
-The following Magento's attributes are mandatory and need to be created in Akeneo :
+The following Magento's attributes are mandatory for Mangeot and need to be created in Akeneo :
 
 - name
 - price
@@ -68,4 +77,4 @@ The following Magento's attributes are mandatory and need to be created in Akene
 
 # Bug and issues
 
-This bundle is still under active development. So you could encounter bugs and instabilities. Feel free to report them on this repository's [issue section](https://github.com/akeneo/MagentoConnectorBundle/issues).
+This bundle is still under active development. Expect bugs and instabilities. Feel free to report them on this repository's [issue section](https://github.com/akeneo/MagentoConnectorBundle/issues).
