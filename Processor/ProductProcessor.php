@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;

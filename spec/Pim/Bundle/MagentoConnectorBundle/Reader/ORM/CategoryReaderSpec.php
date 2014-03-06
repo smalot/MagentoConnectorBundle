@@ -6,7 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\AbstractQuery;
-use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository;
 
 class CategoryReaderSpec extends ObjectBehavior

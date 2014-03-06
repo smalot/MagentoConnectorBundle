@@ -11,7 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
-use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

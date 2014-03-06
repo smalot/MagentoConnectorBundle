@@ -9,14 +9,14 @@
         {
             "name":     "Julien Sanchez",
             "email":    "julien@akeneo.com",
-            "homepage": "http://akeneo.com"
+            "homepage": "http://www.akeneo.com/"
         }
     ],
     "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/akeneo/pim-community-dev.git",
-            "branch": "master"
+            "branch": "1.0"
         },
         {
             "type": "vcs",
@@ -24,11 +24,11 @@
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "v1.0.0-RC1",
-        "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev"
+        "akeneo/pim-community-dev": "1.0.*"
     },
     "require-dev": {
-        "phpspec/phpspec": "2.0.*@dev"
+        "phpspec/phpspec": "2.0.*@dev",
+        "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev"
     },
     "autoload": {
         "psr-0": { "Pim\\Bundle\\MagentoConnectorBundle\\": "" }

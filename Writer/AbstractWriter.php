@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Oro\Bundle\BatchBundle\Item\ItemWriterInterface;
+use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 
 /**

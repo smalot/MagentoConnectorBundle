@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
