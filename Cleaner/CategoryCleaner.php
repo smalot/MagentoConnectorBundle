@@ -19,8 +19,8 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class CategoryCleaner extends Cleaner
 {
-    const CATEGORY_DELETED  = 'category_deleted';
-    const CATEGORY_DISABLED = 'category_disabled';
+    const CATEGORY_DELETED  = 'Category deleted';
+    const CATEGORY_DISABLED = 'Category disabled';
 
     /**
      * @var CategoryMappingManager

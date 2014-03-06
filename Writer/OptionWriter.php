@@ -14,7 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  */
 class OptionWriter extends AbstractWriter
 {
-    const OPTION_CREATED = 'option_created';
+    const OPTION_CREATED = 'Option created';
 
     /**
      * {@inheritdoc}

@@ -212,8 +212,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     {
     }
 
-
-
     /**
      * {@inheritdoc}
      */
