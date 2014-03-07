@@ -100,6 +100,7 @@ class CategoryNormalizerSpec extends ObjectBehavior
                         'name'              => 'category_label',
                         'available_sort_by' => 1,
                         'default_sort_by'   => 1,
+                        'is_anchor'         => 1
                     ),
                     'default'
                 )
@@ -141,6 +142,7 @@ class CategoryNormalizerSpec extends ObjectBehavior
                         'name'              => 'category_label',
                         'available_sort_by' => 1,
                         'default_sort_by'   => 1,
+                        'is_anchor'         => 1
                     ),
                     'default'
                 )

@@ -147,12 +147,12 @@ class AttributeCleanerSpec extends ObjectBehavior
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => array(
-                            'do_nothing' => 'pim_magento_connector.clean.do_nothing.label',
-                            'delete'     => 'pim_magento_connector.clean.delete.label'
+                            'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
+                            'delete'     => 'pim_magento_connector.export.delete.label'
                         ),
                         'required' => true,
-                        'help'     => 'pim_magento_connector.clean.notInPimAnymoreAction.help',
-                        'label'    => 'pim_magento_connector.clean.notInPimAnymoreAction.label'
+                        'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
+                        'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
                     )
                 ),
                 'attributeMapping' => array()

@@ -115,6 +115,8 @@ class ProductProcessor extends AbstractProductProcessor
      */
     public function process($items)
     {
+        $items = is_array($items) ? $items : array($items);
+
         $this->beforeExecute();
 
         $processedItems = array();

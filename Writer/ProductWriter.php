@@ -18,9 +18,9 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductWriter extends AbstractWriter
 {
-    const PRODUCT_SENT             = 'product_sent';
-    const PRODUCT_IMAGE_SENT       = 'product_image_sent';
-    const PRODUCT_TRANSLATION_SENT = 'product_image_sent';
+    const PRODUCT_SENT             = 'Products sent';
+    const PRODUCT_IMAGE_SENT       = 'Products images sent';
+    const PRODUCT_TRANSLATION_SENT = 'Products images sent';
 
     /**
      * @var ChannelManager
@@ -101,7 +101,7 @@ class ProductWriter extends AbstractWriter
             try {
                 $this->createCall($product[$storeViewCode], $storeViewCode);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), $product[$storeViewCode]);
+                throw new InvalidItemException($e->getMessage(), array($product[$storeViewCode]));
             }
         }
 

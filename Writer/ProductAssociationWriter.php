@@ -14,7 +14,7 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductAssociationWriter extends AbstractWriter
 {
-    const PRODUCT_LINKED = 'product_linked';
+    const PRODUCT_LINKED = 'Product linked';
 
     /**
      * {@inheritdoc}

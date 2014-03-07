@@ -7,15 +7,22 @@ use Symfony\Component\Yaml\Parser;
 
 class ConfigurationExtension extends \Twig_Extension
 {
-    public function __construct()
+    const CONFIG_RESOURCE = '@PimMagentoConnectorBundle/Resources/config/configuration_settings.yml';
+
+    public function __construct(FileLocatorInterface $fileLocator)
     {
         $yaml = new Parser();
 
+        $configuration = array();
+
         try {
-            $configuration = $yaml->parse(file_get_contents(__DIR__.'/../Resources/config/configuration_settings.yml'));
+            $configFilePath = $fileLocator->locate(self::CONFIG_RESOURCE);
+
+            $configuration = $yaml->parse(file_get_contents($configFilePath));
+        } catch (\InvalidArgumentException $e) {
+            printf("Configuration file not found from resource: %s", self::CONFIG_RESOURCE);
         } catch (ParseException $e) {
             printf("Unable to parse the YAML string: %s", $e->getMessage());
-            $configuration = array();
         }
 
         $configuration['show_configuration'] = isset($configuration['show_configuration']) ?

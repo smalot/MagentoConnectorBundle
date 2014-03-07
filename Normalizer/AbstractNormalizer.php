@@ -113,7 +113,8 @@ abstract class AbstractNormalizer implements NormalizerInterface
         throw new LocaleNotMatchedException(
             sprintf(
                 'No storeview found for "%s" locale. Please create a storeview named "%s" on your Magento or map ' .
-                'this locale to a storeview code.',
+                'this locale to a storeview code. You can also disable this locale in your channel\'s settings if you '.
+                'don\'t want to export it.',
                 $locale->getCode(),
                 $locale->getCode()
             )

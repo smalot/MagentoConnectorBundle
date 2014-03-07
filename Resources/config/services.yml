@@ -82,5 +82,7 @@ services:
 
     pim_magento_connector.twig.configuration_extension:
         class: '%pim_magento_connector.twig.configuration_extension.class%'
+        arguments:
+            name: %file_locator%
         tags:
             - { name: twig.extension }
