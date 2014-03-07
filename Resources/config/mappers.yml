@@ -5,28 +5,34 @@ parameters:
     pim_magento_connector.mapper.orm_attribute.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMAttributeMapper
     pim_magento_connector.mapper.orm_storeview.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMStoreViewMapper
     pim_magento_connector.mapper.orm.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMMapper
+    pim_magento_connector.mapper.addition_not_allowed: true
+    pim_magento_connector.mapper.addition_allowed: false
 
 services:
     pim_magento_connector.mapper.magento_attribute:
         class: %pim_magento_connector.mapper.magento_attribute.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
+            - %pim_magento_connector.mapper.addition_allowed%
             - '@pim_magento_connector.guesser.magento_webservice'
     pim_magento_connector.mapper.magento_storeview:
         class: %pim_magento_connector.mapper.magento_storeview.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
+            - %pim_magento_connector.mapper.addition_allowed%
             - '@pim_magento_connector.guesser.magento_webservice'
     pim_magento_connector.mapper.magento_category:
         class: %pim_magento_connector.mapper.magento_category.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
+            - %pim_magento_connector.mapper.addition_not_allowed%
             - '@pim_magento_connector.guesser.magento_webservice'
 
     pim_magento_connector.mapper.orm_attribute:
         class: %pim_magento_connector.mapper.orm_attribute.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
+            - %pim_magento_connector.mapper.addition_allowed%
             - '@pim_magento_connector.manager.simple_mapping'
             - 'attribute'
             - '@pim_magento_connector.manager.attribute'
@@ -34,6 +40,7 @@ services:
         class: %pim_magento_connector.mapper.orm_storeview.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
+            - %pim_magento_connector.mapper.addition_allowed%
             - '@pim_magento_connector.manager.simple_mapping'
             - 'storeview'
             - '@pim_magento_connector.manager.locale'
@@ -41,5 +48,6 @@ services:
         class: %pim_magento_connector.mapper.orm.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
+            - %pim_magento_connector.mapper.addition_not_allowed%
             - '@pim_magento_connector.manager.simple_mapping'
             - 'category'
