@@ -22,17 +22,19 @@ class ORMStoreViewMapper extends ORMMapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
+     * @param boolean                      $allowAddition
      * @param SimpleMappingManager         $simpleMappingManager
      * @param string                       $rootIdentifier
      * @param LocaleManager                $localeManager
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
+        $allowAddition,
         SimpleMappingManager $simpleMappingManager,
         $rootIdentifier,
         LocaleManager $localeManager
     ) {
-        parent::__construct($hasValidCredentialsValidator, $simpleMappingManager, $rootIdentifier);
+        parent::__construct($hasValidCredentialsValidator, $allowAddition, $simpleMappingManager, $rootIdentifier);
 
         $this->localeManager = $localeManager;
     }
@@ -53,6 +55,6 @@ class ORMStoreViewMapper extends ORMMapper
             }
         }
 
-        return $sources;
+        return array('sources' => $sources);
     }
 }
