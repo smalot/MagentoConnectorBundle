@@ -151,7 +151,8 @@ class ProductWriter extends AbstractWriter
     /**
      * Clean old images on magento product
      *
-     * @param array $product
+     * @param string $sku
+     * @param array  $images
      */
     protected function pruneImages($sku, array $images = array())
     {

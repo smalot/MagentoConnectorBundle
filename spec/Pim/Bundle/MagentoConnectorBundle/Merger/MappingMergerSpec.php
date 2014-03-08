@@ -18,7 +18,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_sets_parameters_to_all_mappers($mapper1, $mapper2, MagentoSoapClientParameters $clientParameters)
     {
-        $this->beConstructedWith(array($mapper1, $mapper2), 'generic');
+        $this->beConstructedWith(array($mapper1, $mapper2), 'generic', true);
 
         $mapper1->setParameters($clientParameters)->shouldBeCalled();
         $mapper2->setParameters($clientParameters)->shouldBeCalled();
@@ -28,7 +28,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_gives_ordered_mapping_from_mappers($mapper1, $mapper2, MagentoSoapClientParameters $clientParameters)
     {
-        $this->beConstructedWith(array($mapper2, $mapper1), 'generic');
+        $this->beConstructedWith(array($mapper2, $mapper1), 'generic', true);
 
         $mapper1->setParameters($clientParameters)->shouldBeCalled();
         $mapper2->setParameters($clientParameters)->shouldBeCalled();
@@ -62,7 +62,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_gives_an_empty_mapping_collection_if_any_mapper_are_setted(MagentoSoapClientParameters $clientParameters)
     {
-        $this->beConstructedWith(array(), 'generic');
+        $this->beConstructedWith(array(), 'generic', true);
         $this->setParameters($clientParameters);
 
         $mappingCollection = $this->getMapping();
@@ -71,7 +71,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_gives_an_empty_mapping_collection_parameters_are_not_setted($mapper1, $mapper2)
     {
-        $this->beConstructedWith(array($mapper1, $mapper2), 'generic');
+        $this->beConstructedWith(array($mapper1, $mapper2), 'generic', true);
 
         $mappingCollection = $this->getMapping();
         $mappingCollection->toArray()->shouldBe(array());
@@ -79,7 +79,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_sets_all_mappers_with_given_mapping($mapper1, $mapper2, MagentoSoapClientParameters $clientParameters)
     {
-        $this->beConstructedWith(array($mapper2, $mapper1), 'generic');
+        $this->beConstructedWith(array($mapper2, $mapper1), 'generic', true);
 
         $mapper1->setParameters($clientParameters)->shouldBeCalled();
         $mapper2->setParameters($clientParameters)->shouldBeCalled();
@@ -93,7 +93,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_sets_any_mappers_if_mappers_are_not_setted($mapper1, $mapper2)
     {
-        $this->beConstructedWith(array($mapper2, $mapper1), 'generic');
+        $this->beConstructedWith(array($mapper2, $mapper1), 'generic', true);
 
         $mapper1->setMapping(array('foo'))->shouldNotBeCalled();
         $mapper2->setMapping(array('foo'))->shouldNotBeCalled();
@@ -103,7 +103,7 @@ class MappingMergerSpec extends ObjectBehavior
 
     function it_gives_a_configuration_field($mapper1, $mapper2, MagentoSoapClientParameters $clientParameters)
     {
-        $this->beConstructedWith(array($mapper2, $mapper1), 'generic');
+        $this->beConstructedWith(array($mapper2, $mapper1), 'generic', true);
 
         $mapper1->setParameters($clientParameters)->shouldBeCalled();
         $mapper2->setParameters($clientParameters)->shouldBeCalled();
@@ -122,8 +122,8 @@ class MappingMergerSpec extends ObjectBehavior
                     'required' => false,
                     'attr'     => array(
                         'class' => 'mapping-field',
-                        'data-sources' => '{"id":"test","text":"Text4"}',
-                        'data-targets' => '{"id":"test","text":"Text2"}',
+                        'data-sources' => '{"sources":{"id":"test","text":"Text4"}}',
+                        'data-targets' => '{"targets":{"id":"test","text":"Text2"},"allowAddition":true}',
                         'data-name'    => 'generic'
                     ),
                     'label' => 'pim_magento_connector.export.genericMapping.label',

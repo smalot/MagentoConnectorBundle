@@ -25,7 +25,7 @@ class ORMCategoryMapper extends ORMMapper
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      * @param SimpleMappingManager         $simpleMappingManager
      * @param string                       $rootIdentifier
-     * @param CategoryManager             $categoryManager
+     * @param CategoryManager              $categoryManager
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
@@ -40,6 +40,8 @@ class ORMCategoryMapper extends ORMMapper
 
     /**
      * Get all sources
+     * @param CategoryInterface $category
+     *
      * @return array
      */
     public function getAllSources(CategoryInterface $category = null)
