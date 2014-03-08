@@ -39,7 +39,7 @@ Enable the bundle in the `app/AppKernel.php` file, in the `registerBundles` func
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 
-## Installatino the Magento Connector in an Akeneo PIM developpement environnement
+## Installation the Magento Connector in an Akeneo PIM developpement environnement
 
 The following installation instructions are meant for developement on the Magento Connector itself.
 
