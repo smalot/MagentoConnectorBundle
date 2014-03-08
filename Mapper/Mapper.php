@@ -27,17 +27,11 @@ class Mapper implements MapperInterface
     protected $hasValidCredentialsValidator;
 
     /**
-     * @var boolean
-     */
-    protected $allowAddition = true;
-
-    /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      */
-    public function __construct(HasValidCredentialsValidator $hasValidCredentialsValidator, $allowAddition = true)
+    public function __construct(HasValidCredentialsValidator $hasValidCredentialsValidator)
     {
         $this->hasValidCredentialsValidator = $hasValidCredentialsValidator;
-        $this->allowAddition                = $allowAddition;
     }
 
     /**
@@ -72,7 +66,7 @@ class Mapper implements MapperInterface
      */
     public function getAllTargets()
     {
-        return array('targets' => array(), 'allowAddition' => $this->allowAddition);
+        return array();
     }
 
     /**
@@ -81,7 +75,7 @@ class Mapper implements MapperInterface
      */
     public function getAllSources()
     {
-        return array('sources' => array());
+        return array();
     }
 
     /**

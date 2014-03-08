@@ -37,7 +37,7 @@ services:
     pim_magento_connector.manager.currency:
         class: %pim_magento_connector.manager.currency.class%
         arguments:
-            - '@doctrine.orm.entity_manager'
+            - '@pim_catalog.repository.currency'
             - '@pim_magento_connector.repository.currency'
 
     pim_magento_connector.manager.simple_mapping:

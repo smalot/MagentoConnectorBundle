@@ -21,15 +21,13 @@ class MagentoAttributeMapper extends Mapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param boolean                      $allowAddition
      * @param WebserviceGuesser            $webserviceGuesser
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        $allowAddition,
         WebserviceGuesser $webserviceGuesser
     ) {
-        parent::__construct($hasValidCredentialsValidator, $allowAddition);
+        parent::__construct($hasValidCredentialsValidator);
 
         $this->webserviceGuesser = $webserviceGuesser;
     }
@@ -80,7 +78,7 @@ class MagentoAttributeMapper extends Mapper
             }
         }
 
-        return array('targets' => $targets, 'allowAddition' => $this->allowAddition);
+        return $targets;
     }
 
     /**

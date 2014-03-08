@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Twig;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Config\FileLocatorInterface;
 
 class ConfigurationExtension extends \Twig_Extension
 {

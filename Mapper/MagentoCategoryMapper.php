@@ -14,6 +14,8 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  */
 class MagentoCategoryMapper extends Mapper
 {
+    const ROOT_CATEGORY_ID = 1;
+
     /**
      * @var WebserviceGuesser
      */
@@ -21,15 +23,13 @@ class MagentoCategoryMapper extends Mapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param boolean                      $allowAddition
      * @param WebserviceGuesser            $webserviceGuesser
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        $allowAddition,
         WebserviceGuesser $webserviceGuesser
     ) {
-        parent::__construct($hasValidCredentialsValidator, $allowAddition);
+        parent::__construct($hasValidCredentialsValidator);
 
         $this->webserviceGuesser = $webserviceGuesser;
     }
@@ -46,11 +46,13 @@ class MagentoCategoryMapper extends Mapper
             $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
 
             foreach ($categories as $categoryId => $category) {
-                $targets[] = array('id' => $categoryId, 'text' => $category['name']);
+                if ($categoryId != self::ROOT_CATEGORY_ID) {
+                    $targets[] = array('id' => $categoryId, 'text' => $category['name']);
+                }
             }
         }
 
-        return array('targets' => $targets, 'allowAddition' => $this->allowAddition);
+        return $targets;
     }
 
     /**

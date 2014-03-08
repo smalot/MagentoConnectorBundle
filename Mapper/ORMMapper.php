@@ -26,17 +26,15 @@ class ORMMapper extends Mapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param boolean                      $allowAddition
      * @param SimpleMappingManager         $simpleMappingManager
      * @param string                       $rootIdentifier
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        $allowAddition,
         SimpleMappingManager $simpleMappingManager,
         $rootIdentifier
     ) {
-        parent::__construct($hasValidCredentialsValidator, $allowAddition);
+        parent::__construct($hasValidCredentialsValidator);
 
         $this->simpleMappingManager = $simpleMappingManager;
         $this->rootIdentifier       = $rootIdentifier;
@@ -97,7 +95,7 @@ class ORMMapper extends Mapper
             }
         }
 
-        return array('targets' => $targets, 'allowAddition' => $this->allowAddition);
+        return $targets;
     }
 
     /**
@@ -116,7 +114,7 @@ class ORMMapper extends Mapper
             }
         }
 
-        return array('sources' => $sources);
+        return $sources;
     }
 
     /**

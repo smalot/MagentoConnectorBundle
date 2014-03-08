@@ -22,19 +22,17 @@ class ORMAttributeMapper extends ORMMapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param boolean                      $allowAddition
      * @param SimpleMappingManager         $simpleMappingManager
      * @param string                       $rootIdentifier
      * @param AttributeManager             $attributeManager
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        $allowAddition,
         SimpleMappingManager $simpleMappingManager,
         $rootIdentifier,
         AttributeManager $attributeManager
     ) {
-        parent::__construct($hasValidCredentialsValidator, $allowAddition, $simpleMappingManager, $rootIdentifier);
+        parent::__construct($hasValidCredentialsValidator, $simpleMappingManager, $rootIdentifier);
 
         $this->attributeManager = $attributeManager;
     }
@@ -55,6 +53,6 @@ class ORMAttributeMapper extends ORMMapper
             }
         }
 
-        return array('sources' => $sources);
+        return $sources;
     }
 }

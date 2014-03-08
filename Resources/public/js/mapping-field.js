@@ -70,7 +70,7 @@ define(
         var MappingView = Backbone.View.extend({
             tagName: 'table',
             className: 'table table-bordered mapping-table',
-            template: _.template(
+            mappingTemplate: _.template(
                 '<thead>' +
                     '<tr>' +
                         '<td><%= sourceTitle %></td>' +
@@ -90,6 +90,13 @@ define(
                         '</td>' +
                     '</tr>' +
                 '</tfoot>'
+            ),
+            emptyTemplate: _.template(
+                '<thead>' +
+                    '<tr>' +
+                        '<td colspan="4"><%= emptyMessage %></td>' +
+                    '</tr>' +
+                '</thead>'
             ),
             events: {
                 'click a.add-btn': 'addMappingItem',
@@ -114,20 +121,28 @@ define(
             },
             render: function() {
                 this.$el.empty();
-                this.$el.html(this.template({
-                   sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
-                   targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target'),
-                   addButton   : __('pim_magento_connector.mapping.add')
-                }));
+
+                if (!this.targets.allowAddition && this.targets.targets.length === 0) {
+                    this.$el.html(this.emptyTemplate({
+                       emptyMessage : __('pim_magento_connector.mapping.' + this.name + '.empty')
+                    }));
+                } else {
+                    this.$el.html(this.mappingTemplate({
+                       sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
+                       targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target'),
+                       addButton   : __('pim_magento_connector.mapping.add')
+                    }));
+
+
+                    _.each(this.collection.models, function(mappingItem) {
+                        this.addMappingItem({mappingItem: mappingItem});
+                    }, this);
+                }
 
                 if (!this.$target.data('rendered')) {
                     this.$target.after(this.$el)
                     this.$target.hide();
                 }
-
-                _.each(this.collection.models, function(mappingItem) {
-                    this.addMappingItem({mappingItem: mappingItem});
-                }, this);
 
                 this.$target.data('rendered', true);
 
@@ -175,8 +190,22 @@ define(
 
                 this.$el.children('tbody').append(mappingItemView.$el);
 
-                mappingItemView.$el.find('.mapping-source').select2({tags: this.sources, maximumSelectionSize: 1});
-                mappingItemView.$el.find('.mapping-target').select2({tags: this.targets, maximumSelectionSize: 1})
+                var select2TargetConfig = {};
+
+                if (this.targets.allowAddition) {
+                    select2TargetConfig.maximumSelectionSize = 1;
+                    select2TargetConfig.tags = this.targets.targets;
+                } else {
+                    select2TargetConfig.data        = this.targets.targets;
+                    select2TargetConfig.placeholder = __('pim_magento_connector.mapping.' + this.name + '.placeholder');
+                }
+
+                mappingItemView.$el.find('.mapping-source').select2({
+                    tags: this.sources.sources,
+                    maximumSelectionSize: 1
+                });
+
+                mappingItemView.$el.find('.mapping-target').select2(select2TargetConfig)
                     .enable(mappingItemView.model.get('deletable'));
             }
         });
