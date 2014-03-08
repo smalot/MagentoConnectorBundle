@@ -18,11 +18,26 @@ class MappingCollection extends ArrayCollection
      */
     public function add($value)
     {
+        $oldValue = $this->get($value['source']);
+
         if ($this->containsKey($value['source'])) {
-            $oldValue = $this->get($value['source']);
 
             $value['target']    = $value['target'] ? $value['target'] : $oldValue['target'];
             $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
+        } else {
+            $it           = $this->getIterator();
+            $elementFound = false;
+
+            while ($it->valid() && !$elementFound) {
+                if ($it->current()['target'] == $value['target'] &&
+                    (!$value['deletable'] || !$oldValue['deletable'])
+                ) {
+                    $this->remove($it->current()['source']);
+                    $elementFound = true;
+                }
+
+                $it->next();
+            }
         }
 
         $this->set($value['source'], $value);
