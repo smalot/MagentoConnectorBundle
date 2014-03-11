@@ -11,7 +11,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
-use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -126,7 +126,7 @@ class ProductCleanerSpec extends ObjectBehavior
 
         $webservice->deleteProduct('sku-001')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
     function it_shoulds_have_a_well_formed_form_configuration($channelManager)
@@ -162,26 +162,26 @@ class ProductCleanerSpec extends ObjectBehavior
                 'type'    => 'choice',
                 'options' => array(
                     'choices'  => array(
-                        'do_nothing' => 'pim_magento_connector.clean.do_nothing.label',
-                        'disable'    => 'pim_magento_connector.clean.disable.label',
-                        'delete'     => 'pim_magento_connector.clean.delete.label'
+                        'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
+                        'disable'    => 'pim_magento_connector.export.disable.label',
+                        'delete'     => 'pim_magento_connector.export.delete.label'
                     ),
                     'required' => true,
-                    'help'     => 'pim_magento_connector.clean.notInPimAnymoreAction.help',
-                    'label'    => 'pim_magento_connector.clean.notInPimAnymoreAction.label'
+                    'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
+                    'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
                 )
             ),
             'notCompleteAnymoreAction' => array(
                 'type'    => 'choice',
                 'options' => array(
                     'choices'  => array(
-                        'do_nothing' => 'pim_magento_connector.clean.do_nothing.label',
-                        'disable'    => 'pim_magento_connector.clean.disable.label',
-                        'delete'     => 'pim_magento_connector.clean.delete.label'
+                        'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
+                        'disable'    => 'pim_magento_connector.export.disable.label',
+                        'delete'     => 'pim_magento_connector.export.delete.label'
                     ),
                     'required' => true,
-                    'help'     => 'pim_magento_connector.clean.notCompleteAnymoreAction.help',
-                    'label'    => 'pim_magento_connector.clean.notCompleteAnymoreAction.label'
+                    'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
+                    'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label'
                 )
             ),
             'channel'      => array(

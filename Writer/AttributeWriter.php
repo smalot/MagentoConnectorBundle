@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
@@ -15,8 +15,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 class AttributeWriter extends AbstractWriter
 {
     const ATTRIBUTE_UPDATE_SIZE = 2;
-    const ATTRIBUTE_UPDATED     = 'attribute_updated';
-    const ATTRIBUTE_CREATED     = 'attribute_created';
+    const ATTRIBUTE_UPDATED     = 'Attributes updated';
+    const ATTRIBUTE_CREATED     = 'Attributes created';
 
     /**
      * {@inheritdoc}

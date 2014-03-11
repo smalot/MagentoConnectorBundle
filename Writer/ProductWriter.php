@@ -7,7 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product writer
@@ -18,9 +18,9 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductWriter extends AbstractWriter
 {
-    const PRODUCT_SENT             = 'product_sent';
-    const PRODUCT_IMAGE_SENT       = 'product_image_sent';
-    const PRODUCT_TRANSLATION_SENT = 'product_image_sent';
+    const PRODUCT_SENT             = 'Products sent';
+    const PRODUCT_IMAGE_SENT       = 'Products images sent';
+    const PRODUCT_TRANSLATION_SENT = 'Products images sent';
 
     /**
      * @var ChannelManager
@@ -93,15 +93,18 @@ class ProductWriter extends AbstractWriter
      */
     protected function computeProduct($product)
     {
-        $this->pruneImages($product);
+        $sku = $this->getProductSku($product);
+        $images = $this->webservice->getImages($sku);
+        $this->pruneImages($sku, $images);
 
         foreach (array_keys($product) as $storeViewCode) {
             try {
                 $this->createCall($product[$storeViewCode], $storeViewCode);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product));
+                throw new InvalidItemException($e->getMessage(), array($product[$storeViewCode]));
             }
         }
+
     }
 
     /**
@@ -148,15 +151,17 @@ class ProductWriter extends AbstractWriter
     /**
      * Clean old images on magento product
      *
-     * @param array $product
+     * @param string $sku
+     * @param array  $images
      */
-    protected function pruneImages($product)
+    protected function pruneImages($sku, array $images = array())
     {
-        $sku = $this->getProductSku($product);
-        $images = $this->webservice->getImages($sku);
-
         foreach ($images as $image) {
-            $this->webservice->deleteImage($sku, $image['file']);
+            try {
+                $this->webservice->deleteImage($sku, $image['file']);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), $image);
+            }
         }
     }
 

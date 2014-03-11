@@ -110,7 +110,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['create']
         );
 
-        if (count($images = $this->getNormalizedImages($object)) > 0) {
+        $images = $this->getNormalizedImages($object);
+
+        if (count($images) > 0) {
             $processedItem[Webservice::IMAGES] = $images;
         }
 
@@ -138,7 +140,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $processedItem[$storeView['code']] = array(
                     (string) $object->getIdentifier(),
                     $values,
-                    $storeView['code']
+                    $storeView['code'],
+                    'sku'
                 );
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
@@ -154,16 +157,21 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * Get all images of a product normalized
      *
      * @param ProductInterface $product
+     * @param string           $sku
      *
      * @return array
      */
-    public function getNormalizedImages(ProductInterface $product)
+    public function getNormalizedImages(ProductInterface $product, $sku = '')
     {
         $imageValues = $product->getValues()->filter(
             function ($value) {
                 return $value->getData() instanceof Media;
             }
         );
+
+        if ($sku === '') {
+            $sku = $product->getIdentifier();
+        }
 
         $images = array();
 
@@ -172,7 +180,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
             if ($imageData = $this->mediaManager->getBase64($data)) {
                 $images[] = array(
-                    (string) $product->getIdentifier(),
+                    (string) $sku,
                     array(
                         'file' => array(
                             'name'    => $data->getFilename(),
@@ -181,9 +189,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(Webservice::SMALL_IMAGE),
+                        'types'    => array(Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL),
                         'exclude'  => 0
-                    )
+                    ),
+                    0,
+                    'sku'
                 );
             }
         }
@@ -254,7 +264,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                Webservice::SOAP_DEFAULT_STORE_VIEW
+                Webservice::SOAP_DEFAULT_STORE_VIEW,
+                'sku'
             );
         }
 
@@ -389,8 +400,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         return array(
             $attributeMapping->getTarget(self::VISIBILITY) => $this->visibility,
             $attributeMapping->getTarget(self::ENABLED)    => (string) ($this->enabled) ? 1 : 2,
-            $attributeMapping->getTarget('created_at')     => (new \DateTime())->format(self::DATE_FORMAT),
-            $attributeMapping->getTarget('updated_at')     => (new \DateTime())->format(self::DATE_FORMAT),
+            $attributeMapping->getTarget('created_at')     => $product->getCreated(),
+            $attributeMapping->getTarget('updated_at')     => $product->getUpdated(),
             $attributeMapping->getTarget('categories')     => $this->getProductCategories(
                 $product,
                 $parameters['categoryMapping']

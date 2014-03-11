@@ -30,12 +30,19 @@ class MappingMerger
     protected $hasParametersSet = false;
 
     /**
-     * @param array  $mappers
-     * @param string $name
+     * @var boolean
      */
-    public function __construct(array $mappers, $name)
+    protected $allowAddition = true;
+
+    /**
+     * @param array   $mappers
+     * @param string  $name
+     * @param boolean $allowAddition
+     */
+    public function __construct(array $mappers, $name, $allowAddition)
     {
         $this->name = $name;
+        $this->allowAddition = $allowAddition;
 
         foreach ($mappers as $mapper) {
             if (!isset($this->mappers[$mapper->getPriority()])) {
@@ -108,6 +115,7 @@ class MappingMerger
                         'data-targets' => json_encode($this->getAllTargets()),
                         'data-name'    => $this->name
                     ),
+                    'label' => 'pim_magento_connector.export.' . $this->name . 'Mapping.label',
                     'help'  => 'pim_magento_connector.export.' . $this->name . 'Mapping.help'
                 )
             )
@@ -125,7 +133,7 @@ class MappingMerger
             $sources = array_merge($sources, $mapper->getAllSources());
         }
 
-        return $sources;
+        return array('sources' => $sources);
     }
 
     /**
@@ -142,7 +150,7 @@ class MappingMerger
             }
         }
 
-        return $targets;
+        return array('targets' => $targets, 'allowAddition' => $this->allowAddition);
     }
 
     /**

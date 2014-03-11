@@ -2,23 +2,21 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Currency;
+use Pim\Bundle\CatalogBundle\Entity\Repository\CurrencyRepository;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class CurrencyManagerSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager, EntityRepository $entityRepository)
+    function let(CurrencyRepository $currencyRepository)
     {
-        $this->beConstructedWith($objectManager);
-        $objectManager->getRepository('PimCatalogBundle:Currency')->willReturn($entityRepository);
+        $this->beConstructedWith($currencyRepository);
     }
 
-    function it_gives_currency_choices($entityRepository, Currency $currency)
+    function it_gives_currency_choices(CurrencyRepository $currencyRepository, Currency $currency)
     {
-        $entityRepository->findBy(array('activated' => true))->willReturn(array($currency));
+        $currencyRepository->findBy(array('activated' => true))->willReturn(array($currency));
         $currency->getCode()->willReturn('EUR');
 
         $this->getCurrencyChoices()->shouldReturn(array('EUR' => 'EUR'));

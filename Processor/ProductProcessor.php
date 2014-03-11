@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
@@ -115,6 +115,8 @@ class ProductProcessor extends AbstractProductProcessor
      */
     public function process($items)
     {
+        $items = is_array($items) ? $items : array($items);
+
         $this->beforeExecute();
 
         $processedItems = array();

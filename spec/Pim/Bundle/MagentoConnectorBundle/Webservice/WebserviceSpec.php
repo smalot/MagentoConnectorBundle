@@ -82,10 +82,10 @@ class WebserviceSpec extends ObjectBehavior
 
     function it_gets_association_status_for_a_given_product($magentoSoapClient, ProductInterface $product)
     {
-        $magentoSoapClient->call('catalog_product_link.list', array('up_sell', 'sku-012'))->willReturn('up_sell');
-        $magentoSoapClient->call('catalog_product_link.list', array('cross_sell', 'sku-012'))->willReturn('cross_sell');
-        $magentoSoapClient->call('catalog_product_link.list', array('related', 'sku-012'))->willReturn('related');
-        $magentoSoapClient->call('catalog_product_link.list', array('grouped', 'sku-012'))->willReturn('grouped');
+        $magentoSoapClient->call('catalog_product_link.list', array('up_sell', 'sku-012', 'sku'))->willReturn('up_sell');
+        $magentoSoapClient->call('catalog_product_link.list', array('cross_sell', 'sku-012', 'sku'))->willReturn('cross_sell');
+        $magentoSoapClient->call('catalog_product_link.list', array('related', 'sku-012', 'sku'))->willReturn('related');
+        $magentoSoapClient->call('catalog_product_link.list', array('grouped', 'sku-012', 'sku'))->willReturn('grouped');
 
         $product->getIdentifier()->willReturn('sku-012');
 

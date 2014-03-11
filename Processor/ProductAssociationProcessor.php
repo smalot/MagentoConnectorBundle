@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
@@ -163,6 +163,8 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     public function process($items)
     {
+        $items = is_array($items) ? $items : array($items);
+
         $this->beforeExecute();
 
         $productAssociationCalls = array('remove' => array(), 'create' => array());
@@ -171,7 +173,7 @@ class ProductAssociationProcessor extends AbstractProcessor
             try {
                 $associationsStatus = $this->webservice->getAssociationsStatus($product);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product));
+                throw new InvalidItemException($e->getMessage(), array($product->getIdentifier()));
             }
 
             $productAssociationCalls['remove'] = array_merge(
@@ -223,9 +225,10 @@ class ProductAssociationProcessor extends AbstractProcessor
         if (in_array($associationType, array_keys($this->getAssociationCodeMapping()))) {
             foreach ($association->getProducts() as $associatedProduct) {
                 $createAssociationCalls[] = array(
-                    'type'          => $this->getAssociationCodeMapping()[$associationType],
-                    'product'       => (string) $product->getIdentifier(),
-                    'linkedProduct' => (string) $associatedProduct->getIdentifier()
+                    'type'           => $this->getAssociationCodeMapping()[$associationType],
+                    'product'        => (string) $product->getIdentifier(),
+                    'linkedProduct'  => (string) $associatedProduct->getIdentifier(),
+                    'identifierType' => 'sku'
                 );
             }
         }
@@ -247,9 +250,10 @@ class ProductAssociationProcessor extends AbstractProcessor
         foreach ($associationStatus as $associationType => $associatedProducts) {
             foreach ($associatedProducts as $associatedProduct) {
                 $removeAssociationCalls[] = array(
-                    'type'          => $associationType,
-                    'product'       => (string) $product->getIdentifier(),
-                    'linkedProduct' => (string) $associatedProduct['sku']
+                    'type'           => $associationType,
+                    'product'        => (string) $product->getIdentifier(),
+                    'linkedProduct'  => (string) $associatedProduct['sku'],
+                    'identifierType' => 'sku'
                 );
             }
         }

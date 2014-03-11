@@ -218,7 +218,7 @@ class AttributeNormalizer implements NormalizerInterface
 
         return $attribute->getDefaultValue() instanceof ProductValueInterface ?
             $this->productValueNormalizer->normalize($attribute->getDefaultValue(), 'MagentoArray', $context) :
-            (null !== $attribute->getDefaultValue() ? $attribute->getDefaultValue() : '');
+            (null !== $attribute->getDefaultValue() ? (string) $attribute->getDefaultValue() : '');
     }
 
     /**

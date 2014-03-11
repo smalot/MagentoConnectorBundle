@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
-use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -62,14 +62,16 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
                     array(
                         'type'          => 'cross_sell',
                         'product'       => 'sku-012',
-                        'linkedProduct' => 'sku-011'
+                        'linkedProduct' => 'sku-011',
+                        'identifierType' => 'sku'
                     )
                 ),
                 'create' => array(
                     array(
                         'type'          => 'up_sell',
                         'product'       => 'sku-012',
-                        'linkedProduct' => 'sku-011'
+                        'linkedProduct' => 'sku-011',
+                        'identifierType' => 'sku'
                     )
                 )
             )

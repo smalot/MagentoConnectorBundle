@@ -1,127 +1,38 @@
 pim_magento_connector:
     jobs:
-        product_export:
-            title: Export products to Magento
-            export.title: Product export
-        category_export:
-            title: Export categories to Magento
-            export.title: Category export
-        attribute_export:
-            title: Export attributes to Magento
-            export.title: Attribute export
-        option_export:
-            title: Export attributes to Magento
-            export.title: Option export
-        attribute_clean:
-            clean:
-                title: Attribute cleaner
-        category_clean:
-            clean:
-                title: Category cleaner
-        product_clean:
-            clean:
-                title: Product cleaner
-        option_clean:
-            clean:
-                title: Option cleaner
-        configurable_clean:
-            clean:
-                title: Configurable cleaner
-    export:
-        soapUsername:
-            label: Soap Username
-            help: Your soap username on Magento
-        soapApiKey:
-            label: Soap api key
-            help: Your soap api key on Magento
-        soapUrl:
-            label: Soap url
-            help: Your Magento installation url
-        channel:
-            label: Channel
-            help:
-        defaultLocale:
-            label: Default locale
-            help: The default locale to apply on admin storeView
-        enabled:
-            label: Status on Magento
-            help:
-        visibility:
-            label: Visibility on Magento
-            help:
-        website:
-            label: Website
-            help: The website to which the products will be sent
-        currency:
-            label: Currency
-            help: The currency to send to Magento
-        storeviewMapping:
-            label: Storeview mapping
-            help:  You can map storeviews to locales in PIM
-        categoryMapping:
-            label: Category mapping
-            help:  Mapping between category on Magento and Pim categories
-        attributeMapping:
-            label: Category mapping
-            help:  Mapping between category on Magento and Pim categories
-        pimGrouped:
-            label: Association type for grouped products
-            help:  Association type corresponding to grouped products
-        pimUpSell:
-            label: Association type for up-sell products
-            help:  Association type corresponding to up-sell products
-        pimCrossSell:
-            label: Association type for cross-sell products
-            help:  Association type corresponding to cross-sell products
-        pimRelated:
-            label: Association type for related products
-            help:  Association type corresponding to related products
-        attributeMapping:
-            label: Attribute mapping
-            help: Map attribute code between Akeneo PIM and Magento
-    clean:
-        notInPimAnymoreAction:
-            label: Action for item not in PIM anymore
-            help:  What to do on Magento if an item is not in the Pim anymore ?
-        notCompleteAnymoreAction:
-            label: Action for item not complete anymore
-            help:  What to do on Magento if an item is not complete in Akeneo anymore ?
-        delete:
-            label: Delete it
-        do_nothing:
-            label: Do nothing
-        disable:
-            label: Disable it
+        product_export.title: Export products to Magento
+        category_export.title: Export categories to Magento
+        option_export.title: Export options to Magento
+        attribute_export.title: Export attributes to Magento
+    steps:
+        simple_product_export.export.title: Simple product export
+        configurable_product_export.export.title: Configurable product export
+        association_product_export.export.title: Product association export
+        simple_product_clean.clean.title: Simple product clean
+        configurable_product_clean.clean.title: Configurable product clean
+        category_export.export.title: Category export
+        category_clean.clean.title: Category clean
+        attribute_export.export.title: Attribute export
+        attribute_clean.clean.title: Attribute clean
+        option_export.export.title: Option export
+        option_clean.clean.title: Option clean
 
-pim_base_connector:
-    jobs:
-        product_export:
-            title: Export products to Magento
-            export.title: Product export
-        category_export:
-            title: Export categories to Magento
-            export.title: Category export
-        attribute_export:
-            title: Export attributes to Magento
-            export.title: Attribute export
-        option_export:
-            title: Export attributes to Magento
-            export.title: Option export
-        attribute_clean:
-            clean:
-                title: Attribute cleaner
-        category_clean:
-            clean:
-                title: Category cleaner
-        product_clean:
-            clean:
-                title: Product cleaner
-        option_clean:
-            clean:
-                title: Option cleaner
-        configurable_clean:
-            clean:
-                title: Configurable cleaner
+        product_processor.title: Product processor
+        attribute_processor.title: Attribute processor
+        category_processor.title: Category processor
+        configurable_processor.title: Configurable processor
+        option_processor.title: Option processor
+        product_association_processor.title: Product association processor
+        attribute_writer.title: Attribute writer
+        category_writer.title: Catgeory writer
+        option_writer.title: Option writer
+        product_association_writer.title: Product association writer
+        product_writer.title: Product writer
+        attribute_cleaner.title: Attribute cleaner
+        category_cleaner.title: Category cleaner
+        configurable_cleaner.title: Configurable cleaner
+        option_cleaner.title: Option cleaner
+        product_cleaner.title: Product cleaner
     export:
         soapUsername:
             label: Soap Username
@@ -156,9 +67,6 @@ pim_base_connector:
         categoryMapping:
             label: Category mapping
             help:  Mapping between category on Magento and Pim categories
-        attributeMapping:
-            label: Category mapping
-            help:  Mapping between category on Magento and Pim categories
         pimGrouped:
             label: Association type for grouped products
             help:  Association type corresponding to grouped products
@@ -174,19 +82,6 @@ pim_base_connector:
         attributeMapping:
             label: Attribute mapping
             help: Map attribute code between Akeneo PIM and Magento
-        notInPimAnymoreAction:
-            label: Action for item not in PIM anymore
-            help:  What to do on Magento if an item is not in the Pim anymore ?
-        notCompleteAnymoreAction:
-            label: Action for item not complete anymore
-            help:  What to do on Magento if an item is not complete in Akeneo anymore ?
-        delete:
-            label: Delete it
-        do_nothing:
-            label: Do nothing
-        disable:
-            label: Disable it
-    clean:
         notInPimAnymoreAction:
             label: Action for item not in PIM anymore
             help:  What to do on Magento if an item is not in the Pim anymore ?

@@ -44,6 +44,8 @@ class Webservice
     const IMAGES                                    = 'images';
     const SOAP_ATTRIBUTE_ID                         = 'attribute_id';
     const SMALL_IMAGE                               = 'small_image';
+    const BASE_IMAGE                                = 'image';
+    const THUMBNAIL                                 = 'thumbnail';
     const SELECT                                    = 'select';
     const MULTI_SELECT                              = 'multiselect';
 
@@ -213,7 +215,14 @@ class Webservice
     public function getImages($sku)
     {
         try {
-            $images = $this->client->call(self::SOAP_ACTION_PRODUCT_MEDIA_LIST, $sku);
+            $images = $this->client->call(
+                self::SOAP_ACTION_PRODUCT_MEDIA_LIST,
+                array(
+                    $sku,
+                    self::SOAP_DEFAULT_STORE_VIEW,
+                    'sku'
+                )
+            );
         } catch (\Exception $e) {
             $images = array();
         }
@@ -233,8 +242,7 @@ class Webservice
                 array(
                     self::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
                     $image
-                ),
-                self::MAXIMUM_CALLS
+                )
             );
         }
     }
@@ -251,8 +259,9 @@ class Webservice
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE,
             array(
-                'product' => $sku,
-                'file'    => $imageFilename
+                $sku,
+                $imageFilename,
+                'sku'
             )
         );
     }
@@ -264,11 +273,7 @@ class Webservice
     public function updateProductPart($productPart)
     {
         $this->client->addCall(
-            array(
-                self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-                $productPart,
-            ),
-            self::MAXIMUM_CALLS
+            array(self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart)
         );
     }
 
@@ -279,20 +284,15 @@ class Webservice
     public function sendProduct($productPart)
     {
         if (count($productPart) == self::CREATE_PRODUCT_SIZE ||
-            count($productPart) == self::CREATE_CONFIGURABLE_SIZE
+            count($productPart) == self::CREATE_CONFIGURABLE_SIZE &&
+            $productPart[self::CREATE_CONFIGURABLE_SIZE - 1] != 'sku'
         ) {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
         } else {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
         }
 
-        $this->client->addCall(
-            array(
-                $resource,
-                $productPart,
-            ),
-            self::MAXIMUM_CALLS
-        );
+        $this->client->addCall(array($resource, $productPart));
     }
 
     /**
@@ -424,7 +424,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'up_sell',
-                $sku
+                $sku,
+                'sku'
             )
         );
 
@@ -432,7 +433,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'cross_sell',
-                $sku
+                $sku,
+                'sku'
             )
         );
 
@@ -440,7 +442,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'related',
-                $sku
+                $sku,
+                'sku'
             )
         );
 
@@ -448,7 +451,8 @@ class Webservice
             self::SOAP_ACTION_LINK_LIST,
             array(
                 'grouped',
-                $sku
+                $sku,
+                'sku'
             )
         );
 

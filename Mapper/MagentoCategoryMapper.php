@@ -14,6 +14,8 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  */
 class MagentoCategoryMapper extends Mapper
 {
+    const ROOT_CATEGORY_ID = 1;
+
     /**
      * @var WebserviceGuesser
      */
@@ -44,7 +46,9 @@ class MagentoCategoryMapper extends Mapper
             $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
 
             foreach ($categories as $categoryId => $category) {
-                $targets[] = array('id' => $categoryId, 'text' => $category['name']);
+                if ($categoryId != self::ROOT_CATEGORY_ID) {
+                    $targets[] = array('id' => $categoryId, 'text' => $category['name']);
+                }
             }
         }
 

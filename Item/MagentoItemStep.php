@@ -3,13 +3,13 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Item;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Oro\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
+use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Oro\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
-use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 /**
  * Magento item step
@@ -211,8 +211,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected function afterConfigurationSet()
     {
     }
-
-
 
     /**
      * {@inheritdoc}

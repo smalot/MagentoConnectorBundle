@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
  * Magento product association writer
@@ -14,7 +14,7 @@ use Oro\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class ProductAssociationWriter extends AbstractWriter
 {
-    const PRODUCT_LINKED = 'product_linked';
+    const PRODUCT_LINKED = 'Product linked';
 
     /**
      * {@inheritdoc}
@@ -24,19 +24,8 @@ class ProductAssociationWriter extends AbstractWriter
         $this->beforeExecute();
 
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
-            try {
-                $this->handleProductAssociationCalls($productAssociationCalls);
-                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_LINKED);
-            } catch (SoapCallException $e) {
-                throw new InvalidItemException(
-                    sprintf(
-                        'An error occured during a product association call. This may be due to a linked ' .
-                        'product that doesn\'t exist on Magento side. Error message : %s',
-                        $e->getMessage()
-                    ),
-                    array()
-                );
-            }
+            $this->handleProductAssociationCalls($productAssociationCalls);
+            $this->stepExecution->incrementSummaryInfo(self::PRODUCT_LINKED);
         }
     }
 
@@ -49,11 +38,33 @@ class ProductAssociationWriter extends AbstractWriter
     protected function handleProductAssociationCalls(array $productAssociationCalls)
     {
         foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
-            $this->webservice->removeProductAssociation($productAssociationRemoveCall);
+            try {
+                $this->webservice->removeProductAssociation($productAssociationRemoveCall);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException(
+                    sprintf(
+                        'An error occured during a product association remove call. This may be due to a linked ' .
+                        'product that doesn\'t exist on Magento side. Error message : %s',
+                        $e->getMessage()
+                    ),
+                    $productAssociationRemoveCall
+                );
+            }
         }
 
         foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {
-            $this->webservice->createProductAssociation($productAssociationCreateCall);
+            try {
+                $this->webservice->createProductAssociation($productAssociationCreateCall);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException(
+                    sprintf(
+                        'An error occured during a product association add call. This may be due to a linked ' .
+                        'product that doesn\'t exist on Magento side. Error message : %s',
+                        $e->getMessage()
+                    ),
+                    $productAssociationCreateCall
+                );
+            }
         }
     }
 }

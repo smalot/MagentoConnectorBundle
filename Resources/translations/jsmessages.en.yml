@@ -9,5 +9,7 @@ pim_magento_connector:
         category:
             source: Akeneo category
             target: Magento category
+            placeholder: 'Please select a category'
+            empty: 'To start, please create a root category on Magento'
         add: Add
         not_blank: This field is required

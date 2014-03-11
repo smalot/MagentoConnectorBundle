@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -97,7 +97,7 @@ class AttributeCleanerSpec extends ObjectBehavior
 
         $webservice->deleteAttribute('foo')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $this->shouldThrow('Oro\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
     function it_shoulds_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
@@ -147,12 +147,12 @@ class AttributeCleanerSpec extends ObjectBehavior
                     'type'    => 'choice',
                     'options' => array(
                         'choices'  => array(
-                            'do_nothing' => 'pim_magento_connector.clean.do_nothing.label',
-                            'delete'     => 'pim_magento_connector.clean.delete.label'
+                            'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
+                            'delete'     => 'pim_magento_connector.export.delete.label'
                         ),
                         'required' => true,
-                        'help'     => 'pim_magento_connector.clean.notInPimAnymoreAction.help',
-                        'label'    => 'pim_magento_connector.clean.notInPimAnymoreAction.label'
+                        'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
+                        'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
                     )
                 ),
                 'attributeMapping' => array()

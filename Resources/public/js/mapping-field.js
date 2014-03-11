@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'backbone', 'underscore', 'oro/translator', 'oro/form-validation'],
-    function ($, Backbone, _, __, FormValidation) {
+    ['jquery', 'backbone', 'underscore', 'oro/translator', 'bootstrap-tooltip'],
+    function ($, Backbone, _, __) {
         'use strict';
         var MappingItem = Backbone.Model.extend({
             defaults: {
@@ -26,6 +26,7 @@ define(
                 '</td>' +
                 '<td>' +
                     '<input type="text" class="mapping-target" required="required" required="required" value="<%= mappingItem.target %>"/>' +
+                    '<i class="validation-tooltip" data-placement="right" data-toggle="tooltip" data-original-title="<%= notBlankError %>"></i>' +
                 '</td>' +
                 '<td>' +
                     '<a href="javascript:void(0);" class="btn remove-btn <% if (!mappingItem.deletable) { %>disabled<% } %>">' +
@@ -49,8 +50,8 @@ define(
                 this.render();
             },
             render: function() {
-                this.$el.html(this.template({mappingItem: this.model.toJSON(), __: __}));
-
+                this.$el.html(this.template({mappingItem: this.model.toJSON(), notBlankError: __('pim_magento_connector.mapping.not_blank')}));
+                this.$el.find('.validation-tooltip').hide();
                 return this;
             },
             updateSource: function(e) {
@@ -69,7 +70,7 @@ define(
         var MappingView = Backbone.View.extend({
             tagName: 'table',
             className: 'table table-bordered mapping-table',
-            template: _.template(
+            mappingTemplate: _.template(
                 '<thead>' +
                     '<tr>' +
                         '<td><%= sourceTitle %></td>' +
@@ -89,6 +90,13 @@ define(
                         '</td>' +
                     '</tr>' +
                 '</tfoot>'
+            ),
+            emptyTemplate: _.template(
+                '<thead>' +
+                    '<tr>' +
+                        '<td colspan="4"><%= emptyMessage %></td>' +
+                    '</tr>' +
+                '</thead>'
             ),
             events: {
                 'click a.add-btn': 'addMappingItem',
@@ -113,20 +121,28 @@ define(
             },
             render: function() {
                 this.$el.empty();
-                this.$el.html(this.template({
-                   sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
-                   targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target'),
-                   addButton   : __('pim_magento_connector.mapping.add')
-                }));
+
+                if (!this.targets.allowAddition && this.targets.targets.length === 0) {
+                    this.$el.html(this.emptyTemplate({
+                       emptyMessage : __('pim_magento_connector.mapping.' + this.name + '.empty')
+                    }));
+                } else {
+                    this.$el.html(this.mappingTemplate({
+                       sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
+                       targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target'),
+                       addButton   : __('pim_magento_connector.mapping.add')
+                    }));
+
+
+                    _.each(this.collection.models, function(mappingItem) {
+                        this.addMappingItem({mappingItem: mappingItem});
+                    }, this);
+                }
 
                 if (!this.$target.data('rendered')) {
                     this.$target.after(this.$el)
                     this.$target.hide();
                 }
-
-                _.each(this.collection.models, function(mappingItem) {
-                    this.addMappingItem({mappingItem: mappingItem});
-                }, this);
 
                 this.$target.data('rendered', true);
 
@@ -174,8 +190,22 @@ define(
 
                 this.$el.children('tbody').append(mappingItemView.$el);
 
-                mappingItemView.$el.find('.mapping-source').select2({tags: this.sources, maximumSelectionSize: 1});
-                mappingItemView.$el.find('.mapping-target').select2({tags: this.targets, maximumSelectionSize: 1})
+                var select2TargetConfig = {};
+
+                if (this.targets.allowAddition) {
+                    select2TargetConfig.maximumSelectionSize = 1;
+                    select2TargetConfig.tags = this.targets.targets;
+                } else {
+                    select2TargetConfig.data        = this.targets.targets;
+                    select2TargetConfig.placeholder = __('pim_magento_connector.mapping.' + this.name + '.placeholder');
+                }
+
+                mappingItemView.$el.find('.mapping-source').select2({
+                    tags: this.sources.sources,
+                    maximumSelectionSize: 1
+                });
+
+                mappingItemView.$el.find('.mapping-target').select2(select2TargetConfig)
                     .enable(mappingItemView.model.get('deletable'));
             }
         });
@@ -208,9 +238,11 @@ define(
 
             $element.parents('form').on('submit', function() {
                 var isValid = true;
+                var $error = $('<i class="validation-tooltip" data-placement="right" data-toggle="tooltip" ' +
+                            'data-original-title="' + __('pim_magento_connector.mapping.not_blank') + '"></i>').tooltip();
 
                 $('.mapping-row').each(function() {
-                    $(this).find('.validation-faled').remove();
+                    $(this).find('.validation-tooltip').hide();
 
                     var $source = $(this).find('input.mapping-source');
                     var $target = $(this).find('input.mapping-target')
@@ -218,10 +250,11 @@ define(
                     if (($source.val() == '') !=
                         ($target.val() == '')
                     ) {
+
                         if ($source.val() == '') {
-                            FormValidation.addFieldErrors($source, __('pim_magento_connector.mapping.not_blank'));
+                            $source.next('.validation-tooltip').show();
                         } else {
-                            FormValidation.addFieldErrors($target, __('pim_magento_connector.mapping.not_blank'));
+                            $target.next('.validation-tooltip').show();
                         }
 
                         isValid = false;

@@ -9,30 +9,36 @@ connector:
                 edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_simple_products:
-                    title:     pim_magento_connector.jobs.simple_product_export.export.title
+                    title:     pim_magento_connector.steps.simple_product_export.export.title
                     services:
-                        reader:    pim_magento_connector.reader.orm.bulk_simple_product
+                        reader:    pim_base_connector.reader.orm.product
                         processor: pim_magento_connector.processor.product
                         writer:    pim_magento_connector.writer.product
+                    parameters:
+                        batch_size: 100
                 export_configurable_product:
-                    title:     pim_magento_connector.jobs.configurable_product_export.export.title
+                    title:     pim_magento_connector.steps.configurable_product_export.export.title
                     services:
-                        reader:    pim_magento_connector.reader.orm.bulk_configurable_product
+                        reader:    pim_base_connector.reader.orm.product
                         processor: pim_magento_connector.processor.configurable
                         writer:    pim_magento_connector.writer.product
+                    parameters:
+                        batch_size: 100
                 export_product_association:
-                    title:     pim_magento_connector.jobs.association_product_export.export.title
+                    title:     pim_magento_connector.steps.association_product_export.export.title
                     services:
-                        reader:    pim_magento_connector.reader.orm.bulk_product_association
+                        reader:    pim_base_connector.reader.orm.product
                         processor: pim_magento_connector.processor.product_association
                         writer:    pim_magento_connector.writer.product_association
+                    parameters:
+                        batch_size: 100
                 prune_simple_products:
-                    title: pim_import_export.jobs.simple_product_clean.clean.title
+                    title: pim_magento_connector.steps.simple_product_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.product
                 prune_configurable_products:
-                    title: pim_import_export.jobs.configurable_product_clean.clean.title
+                    title: pim_magento_connector.steps.configurable_product_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.configurable
@@ -44,7 +50,7 @@ connector:
                 edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_categories:
-                    title:     pim_magento_connector.jobs.category_export.export.title
+                    title:     pim_magento_connector.steps.category_export.export.title
                     services:
                         reader:    pim_magento_connector.reader.orm.category
                         processor: pim_magento_connector.processor.category
@@ -52,7 +58,7 @@ connector:
                     parameters:
                         batch_size: 1
                 prune_categories:
-                    title: pim_import_export.jobs.category_clean.clean.title
+                    title: pim_magento_connector.steps.category_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.category
@@ -65,7 +71,7 @@ connector:
                 edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_attributes:
-                    title:     pim_magento_connector.jobs.attribute_export.export.title
+                    title:     pim_magento_connector.steps.attribute_export.export.title
                     services:
                         reader:    pim_magento_connector.reader.orm.attribute
                         processor: pim_magento_connector.processor.attribute
@@ -73,7 +79,7 @@ connector:
                     parameters:
                         batch_size: 1
                 prune_attributes:
-                    title: pim_import_export.jobs.attribute_clean.clean.title
+                    title: pim_magento_connector.steps.attribute_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.attribute
@@ -86,13 +92,13 @@ connector:
                 edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
             steps:
                 export_options:
-                    title:     pim_magento_connector.jobs.option_export.export.title
+                    title:     pim_magento_connector.steps.option_export.export.title
                     services:
                         reader:    pim_magento_connector.reader.orm.grouped_option
                         processor: pim_magento_connector.processor.option
                         writer:    pim_magento_connector.writer.option
                 prune_options:
-                    title: pim_import_export.jobs.option_clean.clean.title
+                    title: pim_magento_connector.steps.option_clean.clean.title
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.option

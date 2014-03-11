@@ -1,0 +1,63 @@
+show_configuration:
+    -
+        title: Connection
+        elements:
+            soapUrl:
+                type: 'url'
+            soapUsername: ~
+    -
+        title: General
+        elements:
+            channel: ~
+            defaultLocale:
+                class: 'label label-info'
+            currency:
+                class: 'label label-info'
+            enabled: ~
+            visibility: ~
+            website: ~
+    -
+        title: Associations mapping
+        elements:
+            pimGrouped: ~
+            pimUpSell: ~
+            pimCrossSell: ~
+            pimRelated: ~
+    -
+        title: Behaviors
+        elements:
+            notInPimAnymoreAction: ~
+            notCompleteAnymoreAction: ~
+edit_configuration:
+    -
+        title: Connection
+        elements:
+            soapUrl: ~
+            soapUsername: ~
+    -
+        title: General
+        elements:
+            channel: ~
+            defaultLocale: ~
+            currency: ~
+            enabled: ~
+            visibility: ~
+            website: ~
+    -
+        title: Associations mapping
+        elements:
+            pimGrouped: ~
+            pimUpSell: ~
+            pimCrossSell: ~
+            pimRelated: ~
+    -
+        title: Behaviors
+        elements:
+            notInPimAnymoreAction: ~
+            notCompleteAnymoreAction: ~
+    -
+        title: Mapping
+        elements:
+            storeviewMapping: ~
+            categoryMapping: ~
+            attributeMapping: ~

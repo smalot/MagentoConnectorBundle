@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle;
 
-use Oro\Bundle\BatchBundle\Connector\Connector;
+use Akeneo\Bundle\BatchBundle\Connector\Connector;
 
 /**
  * Pim Magento connector to import/export data from magento platform

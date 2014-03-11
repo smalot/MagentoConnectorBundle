@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Oro\Bundle\BatchBundle\Item\InvalidItemException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
@@ -16,10 +16,10 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  */
 class CategoryWriter extends AbstractWriter
 {
-    const CATEGORY_CREATED            = 'category_created';
-    const CATEGORY_UPDATED            = 'category_updated';
-    const CATEGORY_MOVED              = 'category_moved';
-    const CATEGORY_TRANSLATION_SENDED = 'category_translation_sended';
+    const CATEGORY_CREATED          = 'Categories created';
+    const CATEGORY_UPDATED          = 'Categories updated';
+    const CATEGORY_MOVED            = 'Categories moved';
+    const CATEGORY_TRANSLATION_SENT = 'Categories translations sent';
 
     /**
      * @var CategoryMappingManager
@@ -129,7 +129,7 @@ class CategoryWriter extends AbstractWriter
 
                 $this->webservice->sendUpdateCategory($magentoCategory);
 
-                $this->stepExecution->incrementSummaryInfo(self::CATEGORY_TRANSLATION_SENDED);
+                $this->stepExecution->incrementSummaryInfo(self::CATEGORY_TRANSLATION_SENT);
             }
         }
     }

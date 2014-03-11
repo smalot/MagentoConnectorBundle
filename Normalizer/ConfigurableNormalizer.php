@@ -70,7 +70,11 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['create']
         );
 
-        $processedItem[Webservice::IMAGES] = $this->productNormalizer->getNormalizedImages($products[0]);
+        $images = $this->productNormalizer->getNormalizedImages($products[0], $sku);
+
+        if (count($images) > 0) {
+            $processedItem[Webservice::IMAGES] = $images;
+        }
 
         //For each storeview, we update the group only with localized attributes
         foreach ($this->getPimLocales($context['channel']) as $locale) {

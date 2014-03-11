@@ -4,7 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Model\Media;
@@ -32,7 +32,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         MappingCollection $storeViewMapping,
         MappingCollection $categoryMapping,
         MappingCollection $attributeMapping,
-        ProductInterface $product,
+        Product $product,
         ProductValue $productValue,
         ProductValue $imageValue,
         Channel $channel,
@@ -64,7 +64,9 @@ class ProductNormalizerSpec extends ObjectBehavior
             'categoryMapping'          => $categoryMapping,
             'attributeMapping'         => $attributeMapping,
             'create'                   => true,
-            'pimGrouped'               => 'pim_grouped'
+            'pimGrouped'               => 'pim_grouped',
+            'created_date'             => (new \DateTime())->format('Y-m-d H:i:s'),
+            'updated_date'             => (new \DateTime())->format('Y-m-d H:i:s')
         );
 
         $attributeMapping->getTarget('visibility')->willReturn('visibility');
@@ -81,6 +83,8 @@ class ProductNormalizerSpec extends ObjectBehavior
 
         $product->getCategories()->willReturn(array($category));
         $product->getIdentifier()->willReturn('sku-000');
+        $product->getCreated()->willReturn($this->globalContext['created_date']);
+        $product->getUpdated()->willReturn($this->globalContext['updated_date']);
         $product->getValues()->willReturn(new ArrayCollection(array($productValue, $imageValue)));
         $storeViewMapping->getTarget('default_locale')->willReturn('default_locale');
         $storeViewMapping->getTarget('fr_FR')->willReturn('fr_fr');
@@ -100,9 +104,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'created_at' => $this->globalContext['created_date'],
                     'status'     => 1,
-                    'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'updated_at' => $this->globalContext['updated_date'],
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => array('website'),
@@ -113,13 +117,14 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'created_at' => $this->globalContext['created_date'],
                     'status'     => 1,
-                    'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'updated_at' => $this->globalContext['updated_date'],
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
-                'fr_fr'
+                'fr_fr',
+                'sku'
             )
         ));
     }
@@ -143,9 +148,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'created_at' => $this->globalContext['created_date'],
                     'status'     => 1,
-                    'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'updated_at' => $this->globalContext['updated_date'],
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => array('website'),
@@ -156,13 +161,14 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'created_at' => $this->globalContext['created_date'],
                     'status'     => 1,
-                    'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'updated_at' => $this->globalContext['updated_date'],
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
-                'fr_fr'
+                'fr_fr',
+                'sku'
             )
         ));
     }
@@ -197,9 +203,11 @@ class ProductNormalizerSpec extends ObjectBehavior
                     ),
                     'label'    => 'image_filename',
                     'position' => 0,
-                    'types'    => array('small_image'),
+                    'types'    => array('small_image', 'image', 'thumbnail'),
                     'exclude'  => 0
-                )
+                ),
+                0,
+                'sku'
             )
         ));
     }
@@ -213,26 +221,28 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'created_at' => $this->globalContext['created_date'],
                     'status'     => 1,
-                    'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'updated_at' => $this->globalContext['updated_date'],
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => array('website'),
                 ),
-                'default'
+                'default',
+                'sku'
             ),
             'fr_fr'  => array(
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'created_at' => $this->globalContext['created_date'],
                     'status'     => 1,
-                    'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'updated_at' => $this->globalContext['updated_date'],
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
-                'fr_fr'
+                'fr_fr',
+                'sku'
             )
         ));
     }

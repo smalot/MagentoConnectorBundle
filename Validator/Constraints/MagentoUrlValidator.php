@@ -41,6 +41,12 @@ class MagentoUrlValidator extends ConstraintValidator
         $output = curl_exec($curl);
         curl_close($curl);
 
-        return is_object(simplexml_load_string($output));
+        try {
+            $xml = simplexml_load_string($output);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return is_object($xml);
     }
 }
