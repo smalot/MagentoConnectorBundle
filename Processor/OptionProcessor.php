@@ -99,7 +99,7 @@ class OptionProcessor extends AbstractProcessor
     {
         $this->beforeExecute();
 
-        $attribute = $groupedOptions[0]->getAttribute();
+        $attribute     = $groupedOptions[0]->getAttribute();
         $attributeCode = $this->globalContext['attributeMapping']->getTarget($attribute->getCode());
 
         try {
