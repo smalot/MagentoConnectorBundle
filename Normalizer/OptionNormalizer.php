@@ -51,10 +51,6 @@ class OptionNormalizer extends AbstractNormalizer
             }
         }
 
-        var_dump($object->getCode());
-        var_dump($object->getSortOrder());
-        var_dump($object->isDefault());
-
         return array(
             $context['attributeCode'],
             array(
