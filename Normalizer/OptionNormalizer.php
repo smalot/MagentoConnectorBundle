@@ -52,8 +52,7 @@ class OptionNormalizer extends AbstractNormalizer
             $context['attributeCode'],
             array(
                 'label'      => $label,
-                'order'      => 0,
-                'is_default' => 0
+                'order'      => $object->getSortOrder()
             )
         );
     }

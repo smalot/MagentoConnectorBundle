@@ -8,6 +8,9 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameE
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 
 /**
  * A normalizer to transform a option entity into an array
@@ -28,6 +31,11 @@ class AttributeNormalizer implements NormalizerInterface
     protected $productValueNormalizer;
 
     /**
+     * @var ProductValueManager
+     */
+    protected $productValueManager;
+
+    /**
      * @var array
      */
     protected $supportedFormats = array(self::MAGENTO_FORMAT);
@@ -35,10 +43,14 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Constructor
      * @param ProductValueNormalizer $productValueNormalizer
+     * @param ProductValueManager    $productValueManager
      */
-    public function __construct(ProductValueNormalizer $productValueNormalizer)
-    {
+    public function __construct(
+        ProductValueNormalizer $productValueNormalizer,
+        ProductValueManager $productValueManager
+    ) {
         $this->productValueNormalizer = $productValueNormalizer;
+        $this->productValueManager    = $productValueManager;
     }
 
     /**
@@ -216,9 +228,19 @@ class AttributeNormalizer implements NormalizerInterface
             'currencyCode'             => ''
         );
 
-        return $attribute->getDefaultValue() instanceof ProductValueInterface ?
-            $this->productValueNormalizer->normalize($attribute->getDefaultValue(), 'MagentoArray', $context) :
-            (null !== $attribute->getDefaultValue() ? (string) $attribute->getDefaultValue() : '');
+        if ($attribute->getDefaultValue() instanceof ProductValueInterface) {
+            return reset(
+                $this->productValueNormalizer->normalize($attribute->getDefaultValue(), 'MagentoArray', $context)
+            );
+        } elseif ($attribute->getDefaultValue() instanceof AttributeOption) {
+            $productValue = $this->productValueManager->createProductValueForDefaultOption($attribute);
+
+            $normalizedOption = $this->productValueNormalizer->normalize($productValue, 'MagentoArray', $context);
+
+            return reset($normalizedOption);
+        } else {
+            return (null !== $attribute->getDefaultValue() ? (string) $attribute->getDefaultValue() : '');
+        }
     }
 
     /**

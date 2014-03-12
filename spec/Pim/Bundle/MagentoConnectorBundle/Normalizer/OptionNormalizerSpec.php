@@ -50,6 +50,8 @@ class OptionNormalizerSpec extends ObjectBehavior
 
         $option->getOptionValues()->willReturn(array($optionValueUS, $optionValueFR, $optionValueDE));
 
+        $option->getSortOrder()->willReturn(1);
+
         $option->setLocale('en_US')->willReturn($optionUS);
         $optionUS->getOptionValue()->willReturn($optionValueUS);
         $optionValueUS->getLocale()->willReturn('en_US');
@@ -95,8 +97,7 @@ class OptionNormalizerSpec extends ObjectBehavior
                         'value'    => 'Rot'
                     ),
                 ),
-                'order'      => 0,
-                'is_default' => 0
+                'order'      => 1
             )
         ));
     }

@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
@@ -24,9 +25,10 @@ class NormalizerGuesserSpec extends ObjectBehavior
         ProductValueNormalizer $productValueNormalizer,
         CategoryMappingManager $categoryMappingManager,
         AssociationTypeManager $associationTypeManager,
+        ProductValueManager $productValueManager,
         MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith($magentoSoapClientFactory, $channelManager, $mediaManager, $productValueNormalizer, $categoryMappingManager, $associationTypeManager);
+        $this->beConstructedWith($magentoSoapClientFactory, $channelManager, $mediaManager, $productValueNormalizer, $categoryMappingManager, $associationTypeManager, $productValueManager);
 
         $clientParameters->getSoapUrl()->willReturn('soap_url');
         $clientParameters->getSoapUsername()->willReturn('soap_username');

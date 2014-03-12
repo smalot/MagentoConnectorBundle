@@ -4,6 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
@@ -37,9 +38,9 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'create'                   => true
         );
 
-    function let(ProductValueNormalizer $productValueNormalizer, Attribute $attribute, MappingCollection $attributeMapping, MappingCollection $storeViewMapping)
+    function let(ProductValueNormalizer $productValueNormalizer, Attribute $attribute, MappingCollection $attributeMapping, MappingCollection $storeViewMapping, ProductValueManager $productValueManager)
     {
-        $this->beConstructedWith($productValueNormalizer);
+        $this->beConstructedWith($productValueNormalizer, $productValueManager);
         $attribute->isUnique()->willReturn(true);
         $attribute->isRequired()->willReturn(false);
         $attribute->isLocalizable()->willReturn(true);
@@ -202,7 +203,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attribute->getDefaultValue()->willReturn($productValue);
         $attribute->getCode()->willReturn('attribute_code');
 
-        $productValueNormalizer->normalize(Argument::cetera())->willReturn('defaultValue');
+        $productValueNormalizer->normalize(Argument::cetera())->willReturn(array('test' => 'defaultValue'));
 
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array_merge(
             array(
