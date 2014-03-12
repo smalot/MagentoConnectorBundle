@@ -15,6 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
@@ -54,6 +55,11 @@ class NormalizerGuesser extends AbstractGuesser
     protected $associationTypeManager;
 
     /**
+     * @var ProductValueManager
+     */
+    protected $productValueManager;
+
+    /**
      * Constructor
      * @param MagentoSoapClientFactory $magentoSoapClientFactory
      * @param ChannelManager           $channelManager
@@ -61,6 +67,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @param ProductValueNormalizer   $productValueNormalizer
      * @param CategoryMappingManager   $categoryMappingManager
      * @param AssociationTypeManager   $associationTypeManager
+     * @param AssociationTypeManager   $productValueManager
      */
     public function __construct(
         MagentoSoapClientFactory $magentoSoapClientFactory,
@@ -68,7 +75,8 @@ class NormalizerGuesser extends AbstractGuesser
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
         CategoryMappingManager $categoryMappingManager,
-        AssociationTypeManager $associationTypeManager
+        AssociationTypeManager $associationTypeManager,
+        ProductValueManager $productValueManager
     ) {
         $this->magentoSoapClientFactory = $magentoSoapClientFactory;
         $this->channelManager           = $channelManager;
@@ -76,6 +84,7 @@ class NormalizerGuesser extends AbstractGuesser
         $this->productValueNormalizer   = $productValueNormalizer;
         $this->categoryMappingManager   = $categoryMappingManager;
         $this->associationTypeManager   = $associationTypeManager;
+        $this->productValueManager      = $productValueManager;
     }
 
     /**
@@ -218,7 +227,7 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                return new AttributeNormalizer($this->productValueNormalizer);
+                return new AttributeNormalizer($this->productValueNormalizer, $this->productValueManager);
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
