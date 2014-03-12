@@ -28,6 +28,7 @@ services:
             - '@pim_magento_connector.normalizer.value'
             - '@pim_magento_connector.manager.category_mapping'
             - '@pim_magento_connector.manager.association_type'
+            - '@pim_magento_connector.manager.product_value'
 
     # validator
     pim_magento_connector.validator.has_valid_credentials:

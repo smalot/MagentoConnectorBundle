@@ -1,4 +1,16 @@
-# 1.0.0-alpha-2 -
+# 1.0.0-RC3 -
+
+## Features
+
+## Improvements
+
+- Option order on creation
+
+## Bug fixes
+
+- Attribute default value is now well normalized for simple and multi-selects
+
+## BC breaks# 1.0.0-alpha-2 -
 
 ## Features
 
