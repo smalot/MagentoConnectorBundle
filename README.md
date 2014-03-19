@@ -38,6 +38,12 @@ Install the MagentoConnector with composer:
 Enable the bundle in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
+    
+You can now update your database :
+
+    app/console doctrine:schema:update --force
+    app/console oro:search:create-index
+    app/console pim:search:reindex en_US
 
 ## Installation the Magento Connector in an Akeneo PIM developpement environnement
 
