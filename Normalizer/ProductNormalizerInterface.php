@@ -36,7 +36,7 @@ interface ProductNormalizerInterface
         $scopeCode,
         MappingCollection $categoryMapping,
         MappingCollection $attributeMapping,
-        $onlyLocalized = false
+        $onlyLocalized
     );
 
     /**

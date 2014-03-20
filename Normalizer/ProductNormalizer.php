@@ -310,7 +310,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $scopeCode,
         MappingCollection $categoryMapping,
         MappingCollection $attributeMapping,
-        $onlyLocalized = false
+        $onlyLocalized
     ) {
         $normalizedValues = array();
 
@@ -327,7 +327,6 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         foreach ($product->getValues() as $value) {
             $normalizedValue = $this->productValueNormalizer->normalize($value, 'MagentoArray', $context);
-
             if ($normalizedValue !== null) {
                 $normalizedValues = array_merge(
                     $normalizedValues,
@@ -400,8 +399,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         return array(
             $attributeMapping->getTarget(self::VISIBILITY) => $this->visibility,
             $attributeMapping->getTarget(self::ENABLED)    => (string) ($this->enabled) ? 1 : 2,
-            $attributeMapping->getTarget('created_at')     => $product->getCreated(),
-            $attributeMapping->getTarget('updated_at')     => $product->getUpdated(),
+            $attributeMapping->getTarget('created_at')     => $product->getCreated()->format(AbstractNormalizer::DATE_FORMAT),
+            $attributeMapping->getTarget('updated_at')     => $product->getUpdated()->format(AbstractNormalizer::DATE_FORMAT),
             $attributeMapping->getTarget('categories')     => $this->getProductCategories(
                 $product,
                 $parameters['categoryMapping']
