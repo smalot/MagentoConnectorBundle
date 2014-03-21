@@ -55,4 +55,14 @@ class ORMStoreViewMapper extends ORMMapper
 
         return $sources;
     }
+
+
+    /**
+     * Get all targets
+     * @return array
+     */
+    public function getAllTargets()
+    {
+        return array();
+    }
 }

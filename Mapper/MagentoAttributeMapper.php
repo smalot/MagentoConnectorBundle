@@ -49,7 +49,7 @@ class MagentoAttributeMapper extends Mapper
                     $mapping->add(
                         array(
                             'source'    => $attributeCode,
-                            'target'    => $attributeCode,
+                            'target'    => '',
                             'deletable' => false
                         )
                     );
@@ -61,12 +61,12 @@ class MagentoAttributeMapper extends Mapper
     }
 
     /**
-     * Get all targets
+     * Get all sources
      * @return array
      */
-    public function getAllTargets()
+    public function getAllSources()
     {
-        $targets = array();
+        $sources = array();
 
         if ($this->isValid()) {
             $attributeCodes = array_keys(
@@ -74,11 +74,11 @@ class MagentoAttributeMapper extends Mapper
             );
 
             foreach ($attributeCodes as $attributeCode) {
-                $targets[] = array('id' => $attributeCode, 'text' => $attributeCode);
+                $sources[] = array('id' => $attributeCode, 'text' => $attributeCode);
             }
         }
 
-        return $targets;
+        return $sources;
     }
 
     /**

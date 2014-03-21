@@ -38,21 +38,21 @@ class ORMAttributeMapper extends ORMMapper
     }
 
     /**
-     * Get all sources
+     * Get all targets
      * @return array
      */
-    public function getAllSources()
+    public function getAllTargets()
     {
-        $sources = array();
+        $targets = array();
 
         if ($this->isValid()) {
             $attributes = $this->attributeManager->getAttributes();
 
             foreach ($attributes as $attribute) {
-                $sources[] = array('id' => $attribute->getCode(), 'text' => $attribute->getCode());
+                $targets[] = array('id' => $attribute->getCode(), 'text' => $attribute->getCode());
             }
         }
 
-        return $sources;
+        return $targets;
     }
 }
