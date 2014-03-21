@@ -65,8 +65,8 @@ class ProductNormalizerSpec extends ObjectBehavior
             'attributeMapping'         => $attributeMapping,
             'create'                   => true,
             'pimGrouped'               => 'pim_grouped',
-            'created_date'             => (new \DateTime())->format('Y-m-d H:i:s'),
-            'updated_date'             => (new \DateTime())->format('Y-m-d H:i:s')
+            'created_date'             => (new \DateTime()),
+            'updated_date'             => (new \DateTime())
         );
 
         $attributeMapping->getTarget('visibility')->willReturn('visibility');
@@ -104,9 +104,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => $this->globalContext['created_date'],
+                    'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
-                    'updated_at' => $this->globalContext['updated_date'],
+                    'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => array('website'),
@@ -117,9 +117,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => $this->globalContext['created_date'],
+                    'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
-                    'updated_at' => $this->globalContext['updated_date'],
+                    'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
@@ -148,9 +148,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => $this->globalContext['created_date'],
+                    'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
-                    'updated_at' => $this->globalContext['updated_date'],
+                    'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => array('website'),
@@ -161,9 +161,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => $this->globalContext['created_date'],
+                    'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
-                    'updated_at' => $this->globalContext['updated_date'],
+                    'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
@@ -221,9 +221,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => $this->globalContext['created_date'],
+                    'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
-                    'updated_at' => $this->globalContext['updated_date'],
+                    'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => array('website'),
@@ -235,9 +235,9 @@ class ProductNormalizerSpec extends ObjectBehavior
                 'sku-000',
                 array(
                     'categories' => array(2),
-                    'created_at' => $this->globalContext['created_date'],
+                    'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
-                    'updated_at' => $this->globalContext['updated_date'],
+                    'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                 ),
