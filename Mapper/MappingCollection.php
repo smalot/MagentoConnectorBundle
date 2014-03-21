@@ -20,10 +20,10 @@ class MappingCollection extends ArrayCollection
     {
         $oldValue = $this->get($value['source']);
 
-        if ($this->containsKey($value['source'])) {
+        $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
 
-            $value['target']    = $value['target'] ? $value['target'] : $oldValue['target'];
-            $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
+        if ($this->containsKey($value['source'])) {
+            $value['target'] = $value['target'] ? $value['target'] : $oldValue['target'];
         } else {
             $it           = $this->getIterator();
             $elementFound = false;

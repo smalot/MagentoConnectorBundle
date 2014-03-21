@@ -38,7 +38,7 @@ Install the MagentoConnector with composer:
 Enable the bundle in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
-    
+
 You can now update your database :
 
     app/console doctrine:schema:update --force
@@ -73,7 +73,9 @@ To test the connector with the minimum data requirements, you can load the demo 
 
 # Notes
 
-The following Magento's attributes are mandatory for Mangeot and need to be created in Akeneo :
+## Mandatory attributes
+
+The following Magento's attributes are mandatory for Mangeot and need to be created or mapped in Akeneo :
 
 - name
 - price
