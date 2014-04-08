@@ -11,7 +11,7 @@ connector:
                 export_simple_products:
                     title:     pim_magento_connector.steps.simple_product_export.export.title
                     services:
-                        reader:    pim_base_connector.reader.orm.product
+                        reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.product
                         writer:    pim_magento_connector.writer.product
                     parameters:
@@ -19,7 +19,7 @@ connector:
                 export_configurable_product:
                     title:     pim_magento_connector.steps.configurable_product_export.export.title
                     services:
-                        reader:    pim_base_connector.reader.orm.product
+                        reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.configurable
                         writer:    pim_magento_connector.writer.product
                     parameters:
@@ -27,7 +27,7 @@ connector:
                 export_product_association:
                     title:     pim_magento_connector.steps.association_product_export.export.title
                     services:
-                        reader:    pim_base_connector.reader.orm.product
+                        reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.product_association
                         writer:    pim_magento_connector.writer.product_association
                     parameters:
