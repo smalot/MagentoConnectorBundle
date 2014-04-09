@@ -23,7 +23,7 @@ class ORMAttributeMapperSpec extends ObjectBehavior
         $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
     }
 
-    function it_shoulds_return_all_attributes_from_database_as_sources($attributeManager, $hasValidCredentialsValidator, Attribute $attribute)
+    function it_shoulds_return_all_attributes_from_database_as_targets($attributeManager, $hasValidCredentialsValidator, Attribute $attribute)
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
@@ -32,6 +32,6 @@ class ORMAttributeMapperSpec extends ObjectBehavior
 
         $attribute->getCode()->willReturn('foo');
 
-        $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
+        $this->getAllTargets()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
     }
 }
