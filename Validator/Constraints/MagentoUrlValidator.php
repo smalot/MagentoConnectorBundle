@@ -35,10 +35,6 @@ class MagentoUrlValidator extends ConstraintValidator
      */
     public function isValidMagentoUrl($url)
     {
-        if (substr($url, strlen($url)-1,1) != '/') {
-            return false;
-        }
-
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url . MagentoSoapClient::SOAP_WSDL_URL);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
