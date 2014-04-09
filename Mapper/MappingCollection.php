@@ -28,7 +28,7 @@ class MappingCollection extends ArrayCollection
 
             while ($iterator->valid() && !$elementFound) {
                 if ($iterator->current()['target'] == $value['target'] &&
-                    (!$value['deletable'] || !$oldValue['deletable'])
+                    (!$value['deletable'])
                 ) {
                     $this->remove($iterator->current()['source']);
                     $elementFound = true;
