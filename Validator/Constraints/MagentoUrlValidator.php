@@ -45,12 +45,7 @@ class MagentoUrlValidator extends ConstraintValidator
      */
     public function isValidMagentoUrl($url)
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url . MagentoSoapClient::SOAP_WSDL_URL);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-        $output = curl_exec($curl);
-        curl_close($curl);
+        $output = $this->curlCall($url);
 
         if ($output) {
             return true;
@@ -68,12 +63,7 @@ class MagentoUrlValidator extends ConstraintValidator
      */
     public function isValidXml($url)
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url . MagentoSoapClient::SOAP_WSDL_URL);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-        $xml = curl_exec($curl);
-        curl_close($curl);
+        $xml = $this->curlCall($url);
 
         $output = simplexml_load_string($xml, 'SimpleXmlElement', LIBXML_NOERROR);
 
@@ -98,5 +88,24 @@ class MagentoUrlValidator extends ConstraintValidator
         } else {
             throw new InvalidXmlObjectException();
         }
+    }
+
+    /*
+     * Curl call
+     *
+     * @param $url The given url
+     *
+     * @return String
+     */
+    private function curlCall($url)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url . MagentoSoapClient::SOAP_WSDL_URL);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
+        $output = curl_exec($curl);
+        curl_close($curl);
+
+        return $output;
     }
 }
