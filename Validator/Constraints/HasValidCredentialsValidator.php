@@ -8,6 +8,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Validator for Magento credentials
@@ -90,6 +91,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
                     $this->webserviceGuesser->getWebservice($clientParameters);
                     $this->valid = true;
                 } catch (InvalidCredentialException $e) {
+                    $this->valid = false;
+                } catch (SoapCallException $e) {
                     $this->valid = false;
                 }
             }
