@@ -94,3 +94,5 @@ pim_magento_connector:
             label: Do nothing
         disable:
             label: Disable it
+        error:
+            authentication_failed: The given magento api username is invalid or magento user has no rights to access the soap api
