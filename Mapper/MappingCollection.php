@@ -21,7 +21,7 @@ class MappingCollection extends ArrayCollection
         if ($this->containsKey($value['source'])) {
             $oldValue = $this->get($value['source']);
             $value['target'] = $value['target'] ? $value['target'] : $oldValue['target'];
-	    $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
+            $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
         } else {
             $iterator     = $this->getIterator();
             $elementFound = false;
