@@ -11,6 +11,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class MagentoSoapClientParameters
 {
+    const SOAP_WSDL_URL = '/api/soap/?wsdl';
+
     protected $soapUsername;
 
     protected $soapApiKey;
@@ -28,7 +30,7 @@ class MagentoSoapClientParameters
     {
         $this->soapUsername = $soapUsername;
         $this->soapApiKey   = $soapApiKey;
-        $this->soapUrl      = $soapUrl;
+        $this->soapUrl      = $soapUrl . self::SOAP_WSDL_URL ;
     }
 
     /**

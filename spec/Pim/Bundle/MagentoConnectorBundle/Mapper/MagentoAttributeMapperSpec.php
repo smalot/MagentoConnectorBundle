@@ -90,7 +90,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $identifier = sha1('attribute-soap_url');
+        $identifier = sha1('attribute-soap_url/api/soap/?wsdl');
 
         $this->getIdentifier()->shouldReturn($identifier);
     }

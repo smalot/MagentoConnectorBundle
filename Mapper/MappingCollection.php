@@ -19,7 +19,7 @@ class MappingCollection extends ArrayCollection
     public function add($value)
     {
         if ($this->containsKey($value['source'])) {
-	    $oldValue = $this->get($value['source']);
+            $oldValue = $this->get($value['source']);
             $value['target'] = $value['target'] ? $value['target'] : $oldValue['target'];
 	    $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
         } else {

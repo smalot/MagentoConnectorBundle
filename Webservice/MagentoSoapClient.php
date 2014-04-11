@@ -11,8 +11,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class MagentoSoapClient
 {
-    const SOAP_WSDL_URL = '/api/soap/?wsdl';
-
     protected $session;
 
     protected $client;
@@ -32,7 +30,7 @@ class MagentoSoapClient
         $this->clientParameters = $clientParameters;
 
         if (!$soapClient) {
-            $wsdlUrl     = $this->clientParameters->getSoapUrl() . self::SOAP_WSDL_URL;
+            $wsdlUrl     = $this->clientParameters->getSoapUrl();
             $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
 
             try {

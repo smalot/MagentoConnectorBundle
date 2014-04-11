@@ -17,7 +17,6 @@ class MagentoUrl extends Constraint
 {
     public $messageUrlNotValid = 'The given magento url is not valid';
     public $messageXmlNotValid = 'The given magento xml is not valid';
-    public $messageXmlObjectNotValid = 'The xml object is not valid';
 
     /**
      *{@inheritDoc}

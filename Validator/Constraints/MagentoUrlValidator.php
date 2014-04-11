@@ -5,8 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-
 /**
  * Validator for Magento url
  *
@@ -22,17 +20,12 @@ class MagentoUrlValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         try {
-            if (!$this->isValidMagentoUrl($value)) {
-                throw new InvalidMagentoUrlException();
-            }
-            $output = $this->isValidXml($value);
-            $this->isValidXMLObject($output);
+            $output = $this->checkValidMagentoUrl($value);
+            $this->checkValidXml($output);
         } catch (InvalidMagentoUrlException $e) {
             $this->context->addViolation($constraint->messageUrlNotValid, array('%string%' => $value));
         } catch (InvalidXmlException $e) {
             $this->context->addViolation($constraint->messageXmlNotValid, array('%string%' => $value));
-        } catch (InvalidXmlObjectException $e) {
-            $this->context->addViolation($constraint->messageXmlObjectNotValid, array('%string%' => $value));
         }
     }
 
@@ -45,49 +38,54 @@ class MagentoUrlValidator extends ConstraintValidator
      */
     public function isValidMagentoUrl($url)
     {
+        $result = true;
+        try {
+            $this->checkValidMagentoUrl($url);
+        } catch (InvalidMagentoUrlException $e) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check if the given base url leads to a valid wsdl url
+     *
+     * @param string $url The given url
+     *
+     * @return $output
+     *
+     * @throws InvalidMagentoUrlException
+     */
+    protected function checkValidMagentoUrl($url)
+    {
         $output = $this->curlCall($url);
 
-        if ($output) {
-            return true;
-        } else {
-            return false;
+        if (false === $output) {
+            throw new InvalidMagentoUrlException();
         }
+
+        return $output;
     }
 
     /**
-     * Test if the given url return a valid xml throw soap
+     * Check if the given url return a valid xml through soap
      *
-     * @param string $url the given url
+     * @param string $output from the curl call
      *
-     * @return Object SimpleXMLElement or throw an InvalidXmlException
+     * @return Object SimpleXMLElement
+     *
+     * @throws InvalidXmlException
      */
-    public function isValidXml($url)
+    protected function checkValidXml($output)
     {
-        $xml = $this->curlCall($url);
+        $xmlElement = simplexml_load_string($output, 'SimpleXmlElement', LIBXML_NOERROR);
 
-        $output = simplexml_load_string($xml, 'SimpleXmlElement', LIBXML_NOERROR);
-
-        if ($output) {
-            return $output;
-        } else {
+        if (false === $xmlElement) {
             throw new InvalidXmlException();
         }
-    }
 
-    /**
-     * Test if the given SimpleXMLObject is valid
-     *
-     * @param $xmlObj the given SimpleXMLElement
-     *
-     * @return Object SimpleXMLElement or throw an InvalidXmlObjectException
-     */
-    public function isValidXMLObject($xmlObj)
-    {
-        if (is_object($xmlObj)) {
-            return $xmlObj;
-        } else {
-            throw new InvalidXmlObjectException();
-        }
+        return $xmlElement;
     }
 
     /*
@@ -95,12 +93,11 @@ class MagentoUrlValidator extends ConstraintValidator
      *
      * @param $url The given url
      *
-     * @return String
+     * @return $output
      */
-    private function curlCall($url)
+    protected function curlCall($url)
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url . MagentoSoapClient::SOAP_WSDL_URL);
+        $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_FAILONERROR, 1);
         $output = curl_exec($curl);
