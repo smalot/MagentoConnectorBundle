@@ -63,7 +63,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $identifier = sha1('category-soap_url');
+        $identifier = sha1('category-soap_url'.MagentoSoapClientParameters::SOAP_WSDL_URL);
 
         $this->getIdentifier()->shouldReturn($identifier);
     }

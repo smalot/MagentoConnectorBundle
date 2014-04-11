@@ -49,7 +49,7 @@ class MagentoAttributeMapper extends Mapper
                     $mapping->add(
                         array(
                             'source'    => $attributeCode,
-                            'target'    => '',
+                            'target'    => $attributeCode,
                             'deletable' => false
                         )
                     );

@@ -41,7 +41,7 @@ pim_magento_connector:
             label: Soap api key
             help: Your soap api key on Magento
         soapUrl:
-            label: Soap url
+            label: Magento url
             help: Your Magento installation url
         channel:
             label: Channel
@@ -94,3 +94,5 @@ pim_magento_connector:
             label: Do nothing
         disable:
             label: Disable it
+        error:
+            authentication_failed: The given magento api username is invalid or magento user has no rights to access the soap api

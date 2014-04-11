@@ -15,7 +15,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class MagentoUrl extends Constraint
 {
-    public $message = 'The given magento url is not valid';
+    public $messageUrlNotValid = 'The given magento url is not valid';
+    public $messageXmlNotValid = 'The given magento xml is not valid';
 
     /**
      *{@inheritDoc}

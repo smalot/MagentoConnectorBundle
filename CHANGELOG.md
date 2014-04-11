@@ -1,3 +1,8 @@
+# 1.0.0-RC4 -
+
+## Improvements
+- compatibility with pim-community 1.1
+
 # 1.0.0-RC3 -
 
 ## Features
@@ -10,7 +15,9 @@
 
 - Attribute default value is now well normalized for simple and multi-selects
 
-## BC breaks# 1.0.0-alpha-2 -
+## BC breaks
+
+# 1.0.0-alpha-2 -
 
 ## Features
 
