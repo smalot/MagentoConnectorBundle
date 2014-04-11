@@ -73,13 +73,13 @@ class MagentoUrlValidator extends ConstraintValidator
      *
      * @param string $output from the curl call
      *
-     * @return Object SimpleXMLElement
+     * @return $xmlElement
      *
      * @throws InvalidXmlException
      */
     protected function checkValidXml($output)
     {
-        $xmlElement = simplexml_load_string($output, 'SimpleXmlElement', LIBXML_NOERROR);
+        $xmlElement = simplexml_load_string($output, 'SimpleXMLElement', LIBXML_NOERROR);
 
         if (false === $xmlElement) {
             throw new InvalidXmlException();
