@@ -277,7 +277,8 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                 'options' => array(
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
-                    'label'    => 'pim_magento_connector.export.wsdlUrl.label'
+                    'label'    => 'pim_magento_connector.export.wsdlUrl.label',
+                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
                 )
             )
         );
