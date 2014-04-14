@@ -18,7 +18,7 @@ class ORMMapperSpec extends ObjectBehavior
         SimpleMappingManager $simpleMappingManager
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'generic');
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
+        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
     }
 
     function it_shoulds_return_nothing_as_sources_if_it_is_not_well_configured()

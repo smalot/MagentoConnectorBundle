@@ -6,6 +6,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\CatalogBundle\Doctrine\ORM\ProductRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
@@ -156,6 +157,14 @@ class ProductCleanerSpec extends ObjectBehavior
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUrl.help',
                     'label'    => 'pim_magento_connector.export.soapUrl.label'
+                )
+            ),
+            'wsdlUrl' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.wsdlUrl.help',
+                    'label'    => 'pim_magento_connector.export.wsdlUrl.label',
+                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
                 )
             ),
             'notInPimAnymoreAction' => array(

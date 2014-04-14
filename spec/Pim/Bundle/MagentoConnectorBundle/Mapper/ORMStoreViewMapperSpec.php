@@ -20,7 +20,7 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         LocaleManager $localeManager
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'storeview', $localeManager);
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
+        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
     }
 
     function it_shoulds_return_all_locales_from_database_as_sources($localeManager, $hasValidCredentialsValidator, Locale $locale)

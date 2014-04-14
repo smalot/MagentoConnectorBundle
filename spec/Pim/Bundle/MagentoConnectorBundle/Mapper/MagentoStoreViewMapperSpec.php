@@ -21,7 +21,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
+        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
     }
 
     function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
@@ -62,9 +62,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
-
-        $identifier = sha1('storeview-soap_url'.MagentoSoapClientParameters::SOAP_WSDL_URL);
-
+        $identifier = sha1('storeview-soap_urlwsdl_url');
         $this->getIdentifier()->shouldReturn($identifier);
     }
 }
