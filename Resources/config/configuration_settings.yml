@@ -4,6 +4,7 @@ show_configuration:
         elements:
             soapUrl:
                 type: 'url'
+            wsdlUrl: ~
             soapUsername: ~
     -
         title: General
@@ -33,6 +34,7 @@ edit_configuration:
         title: Connection
         elements:
             soapUrl: ~
+            wsdlUrl: ~
             soapUsername: ~
     -
         title: General

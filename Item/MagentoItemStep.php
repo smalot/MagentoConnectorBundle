@@ -45,6 +45,12 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
+    protected $wsdlUrl;
+
+
+    /**
+     * @Assert\NotBlank(groups={"Execution"})
+     */
     protected $soapApiKey;
 
     /**
@@ -142,6 +148,30 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
+     * get wsdlUrl
+     *
+     * @return string mangeto soap url test
+     */
+    public function getWsdlUrl()
+    {
+        return $this->wsdlUrl;
+    }
+
+    /**
+     * Set wsdlUrl
+     *
+     * @param string $wsdlUrl mangeto soap url test
+     *
+     * @return MagentoItemStep
+     */
+    public function setWsdlUrl($wsdlUrl)
+    {
+        $this->wsdlUrl = $wsdlUrl;
+
+        return $this;
+    }
+
+    /**
      * @param StepExecution $stepExecution
      */
     public function setStepExecution(StepExecution $stepExecution)
@@ -160,7 +190,8 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
             $this->clientParameters = new MagentoSoapClientParameters(
                 $this->soapUsername,
                 $this->soapApiKey,
-                $this->soapUrl
+                $this->soapUrl,
+                $this->wsdlUrl
             );
         }
 
@@ -240,6 +271,13 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUrl.help',
                     'label'    => 'pim_magento_connector.export.soapUrl.label'
+                )
+            ),
+            'wsdlUrl' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.wsdlUrl.help',
+                    'label'    => 'pim_magento_connector.export.wsdlUrl.label'
                 )
             )
         );
