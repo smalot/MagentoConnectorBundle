@@ -64,7 +64,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
         $clientParameters = new MagentoSoapClientParameters(
             $protocol->getSoapUsername(),
             $protocol->getSoapApiKey(),
-            $protocol->getSoapUrl()
+            $protocol->getSoapUrl(),
+            $protocol->getWsdlUrl()
         );
 
         if (!$this->areValidSoapParameters($clientParameters)) {

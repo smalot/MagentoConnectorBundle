@@ -26,11 +26,11 @@ class MagentoSoapClientParameters
      * @param string $soapApiKey   Magento soap api key
      * @param string $soapUrl      Magento soap url (only the domain)
      */
-    public function __construct($soapUsername, $soapApiKey, $soapUrl)
+    public function __construct($soapUsername, $soapApiKey, $soapUrl, $wsdlUrl)
     {
         $this->soapUsername = $soapUsername;
         $this->soapApiKey   = $soapApiKey;
-        $this->soapUrl      = $soapUrl . self::SOAP_WSDL_URL ;
+        $this->soapUrl      = $soapUrl . $wsdlUrl;
     }
 
     /**
