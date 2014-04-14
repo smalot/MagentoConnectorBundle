@@ -45,7 +45,7 @@ pim_magento_connector:
             help: Your Magento installation url
         wsdlUrl:
             label: Wsdl url
-            help: Provide here your wsdl relative path. If you are not sure leave this field by default.
+            help: Provide here your wsdl relative path. If you are not sure leave this field by default (/api/soap/?wsdl)
         channel:
             label: Channel
             help:
