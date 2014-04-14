@@ -150,7 +150,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * get wsdlUrl
      *
-     * @return string mangeto soap url test
+     * @return string mangeto wsdl relative url
      */
     public function getWsdlUrl()
     {
@@ -160,7 +160,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Set wsdlUrl
      *
-     * @param string $wsdlUrl mangeto soap url test
+     * @param string $wsdlUrl wsdl relative url
      *
      * @return MagentoItemStep
      */
