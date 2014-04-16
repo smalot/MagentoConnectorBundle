@@ -58,8 +58,8 @@ class MappingMergerSpec extends ObjectBehavior
                 'deletable' => true
             )
         ));
-    }
 
+    }
     function it_gives_an_empty_mapping_collection_if_any_mapper_are_setted(MagentoSoapClientParameters $clientParameters)
     {
         $this->beConstructedWith(array(), 'generic', true);
