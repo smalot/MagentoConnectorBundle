@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraint;
 class HasValidApiUrl extends Constraint
 {
     public $messageMagentoUrl = 'Your Magento URL is not valid.';
-    public $messageApiUrl     = 'Your Magento URL could not end with a / if the WSDL URL begin with it';
+    public $messageApiUrl     = 'Your Magento URL should not end with a trailing slash if the WSDL URL begin with it';
 
     /**
      *{@inheritDoc}
