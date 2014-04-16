@@ -61,10 +61,9 @@ class HasValidApiUrlValidator extends ConstraintValidator
 
     /**
      * Test if the Api Url is valid
-     * @params string Magento URL
-     * @params string WSDL URL
-     *
-     * @return boolean validApiUrl
+     * @param $magentoUrl
+     * @param $wsdlUrl
+     * @return bool
      */
     public function isValidApiUrl($magentoUrl, $wsdlUrl)
     {
@@ -84,14 +83,15 @@ class HasValidApiUrlValidator extends ConstraintValidator
         return $this->isValidApiUrl;
     }
 
+    /**
+     * Check if the url is well formed
+     * @param $magentoUrl
+     * @param $wsdlUrl
+     * @return bool
+     */
     public function isWellFormedUrl($magentoUrl, $wsdlUrl)
     {
-        $result = false;
-        if ('/' === substr($magentoUrl, -1) xor '/' === substr($wsdlUrl, 0, 1)) {
-                $result = true;
-        }
-
-        return $result;
+        return ('/' === substr($magentoUrl, -1) xor '/' === substr($wsdlUrl, 0, 1));
     }
 
     /**
