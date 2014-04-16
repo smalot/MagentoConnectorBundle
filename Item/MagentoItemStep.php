@@ -266,7 +266,8 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      *
      * @return string Soap magento url
      */
-    public function getMagentoUrl() {
+    public function getMagentoUrl()
+    {
         return $this->magentoUrl;
     }
 
