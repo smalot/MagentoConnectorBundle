@@ -40,7 +40,7 @@ pim_magento_connector:
         soapApiKey:
             label: Soap api key
             help: Your soap api key on Magento
-        soapUrl:
+        magentoUrl:
             label: Magento url
             help: Your Magento installation url
         wsdlUrl:

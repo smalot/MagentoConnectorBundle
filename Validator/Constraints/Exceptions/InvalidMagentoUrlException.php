@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
+namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\Exceptions;
 
 /**
  * Exception thrown if the given url is not valid

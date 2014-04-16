@@ -2,7 +2,7 @@ show_configuration:
     -
         title: Connection
         elements:
-            soapUrl:
+            magentoUrl:
                 type: 'url'
             wsdlUrl: ~
             soapUsername: ~
@@ -33,7 +33,7 @@ edit_configuration:
     -
         title: Connection
         elements:
-            soapUrl: ~
+            magentoUrl: ~
             wsdlUrl: ~
             soapUsername: ~
     -

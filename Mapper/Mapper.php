@@ -108,7 +108,8 @@ class Mapper implements MapperInterface
      */
     public function isValid()
     {
+        //var_dump(debug_backtrace());die();
         return $this->clientParameters !== null &&
-            $this->hasValidCredentialsValidator->areValidSoapParameters($this->clientParameters);
+            $this->hasValidCredentialsValidator->areValidSoapCredentials($this->clientParameters);
     }
 }

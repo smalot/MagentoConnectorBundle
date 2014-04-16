@@ -22,11 +22,49 @@ class MagentoUrlValidator extends ConstraintValidator
         try {
             $output = $this->checkValidMagentoUrl($value);
             $this->checkValidXml($output);
-        } catch (InvalidMagentoUrlException $e) {
+        } catch (InvalidSoapUrlException $e) {
             $this->context->addViolation($constraint->messageUrlNotValid, array('%string%' => $value));
         } catch (InvalidXmlException $e) {
             $this->context->addViolation($constraint->messageXmlNotValid, array('%string%' => $value));
         }
+    }
+
+    /**
+     * Check if the given magento url is valid
+     * if the last character is '/' it's not valid
+     *
+     * @param string $url the given magento url
+     *
+     * @return boolean
+     *
+     * @throws invalidMagentoUrlException
+     */
+    public function checkValidMagentoUrl($url)
+    {
+        if ('/' === substr($url, 0, -1)){
+            throw new InvalidMagentoUrlException();
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if the given wsdl url is valid
+     * if the fist character isn't a '/' it's not valid
+     *
+     * @param string $wsdl
+     *
+     * @return boolean
+     *
+     * @throws invalidWsdlUrlException
+     */
+    public function checkValidWsdlUrl($wsdl)
+    {
+        if ('/' !== substr($wsdl, 0, 1) ){
+            throw new InvalidWsdlUrlException();
+        }
+
+        return true;
     }
 
     /**
@@ -36,12 +74,12 @@ class MagentoUrlValidator extends ConstraintValidator
      *
      * @return boolean
      */
-    public function isValidMagentoUrl($url)
+    public function isValidSoapUrl($url)
     {
         $result = true;
         try {
-            $this->checkValidMagentoUrl($url);
-        } catch (InvalidMagentoUrlException $e) {
+            $this->checkValidSoapUrl($url);
+        } catch (InvalidSoapUrlException $e) {
             $result = false;
         }
 
@@ -57,12 +95,12 @@ class MagentoUrlValidator extends ConstraintValidator
      *
      * @throws InvalidMagentoUrlException
      */
-    protected function checkValidMagentoUrl($url)
+    protected function checkValidSoapUrl($url)
     {
         $output = $this->curlCall($url);
 
         if (false === $output) {
-            throw new InvalidMagentoUrlException();
+            throw new InvalidSoapUrlException();
         }
 
         return $output;

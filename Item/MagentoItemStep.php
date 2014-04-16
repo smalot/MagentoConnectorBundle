@@ -5,9 +5,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Item;
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidSoapUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidApiUrl;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -18,6 +19,8 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
+ * @HasValidApiUrl(groups={"Execution"})
+ * @HasValidSoapUrl(groups={"Execution"})
  * @HasValidCredentials(groups={"Execution"})
  */
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
@@ -47,18 +50,16 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     protected $wsdlUrl;
 
+    /**
+     * @Assert\NotBlank(groups={"Execution"})
+     * @Assert\Url(groups={"Execution"})
+     */
+    protected $magentoUrl;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
     protected $soapApiKey;
-
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     * @Assert\Url(groups={"Execution"})
-     * @MagentoUrl(groups={"Execution"})
-     */
-    protected $soapUrl;
 
     /**
      * @var MagentoSoapClientParameters
@@ -74,129 +75,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      * @var boolean
      */
     protected $afterConfiguration = false;
-
-    /**
-     * get soapUsername
-     *
-     * @return string Soap mangeto soapUsername
-     */
-    public function getSoapUsername()
-    {
-        return $this->soapUsername;
-    }
-
-    /**
-     * Set soapUsername
-     *
-     * @param string $soapUsername Soap mangeto soapUsername
-     *
-     * @return MagentoItemStep
-     */
-    public function setSoapUsername($soapUsername)
-    {
-        $this->soapUsername = $soapUsername;
-
-        return $this;
-    }
-
-    /**
-     * get soapApiKey
-     *
-     * @return string Soap mangeto soapApiKey
-     */
-    public function getSoapApiKey()
-    {
-        return $this->soapApiKey;
-    }
-
-    /**
-     * Set soapApiKey
-     *
-     * @param string $soapApiKey Soap mangeto soapApiKey
-     *
-     * @return MagentoItemStep
-     */
-    public function setSoapApiKey($soapApiKey)
-    {
-        $this->soapApiKey = $soapApiKey;
-
-        return $this;
-    }
-
-    /**
-     * get soapUrl
-     *
-     * @return string mangeto soap url
-     */
-    public function getSoapUrl()
-    {
-        return $this->soapUrl;
-    }
-
-    /**
-     * Set soapUrl
-     *
-     * @param string $soapUrl mangeto soap url
-     *
-     * @return MagentoItemStep
-     */
-    public function setSoapUrl($soapUrl)
-    {
-        $this->soapUrl = $soapUrl;
-
-        return $this;
-    }
-
-    /**
-     * get wsdlUrl
-     *
-     * @return string mangeto wsdl relative url
-     */
-    public function getWsdlUrl()
-    {
-        return $this->wsdlUrl;
-    }
-
-    /**
-     * Set wsdlUrl
-     *
-     * @param string $wsdlUrl wsdl relative url
-     *
-     * @return MagentoItemStep
-     */
-    public function setWsdlUrl($wsdlUrl)
-    {
-        $this->wsdlUrl = $wsdlUrl;
-
-        return $this;
-    }
-
-    /**
-     * @param StepExecution $stepExecution
-     */
-    public function setStepExecution(StepExecution $stepExecution)
-    {
-        $this->stepExecution = $stepExecution;
-    }
-
-    /**
-     * Get the magento soap client parameters
-     *
-     * @return MagentoSoapClientParameters
-     */
-    protected function getClientParameters()
-    {
-        if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->soapUrl,
-                $this->wsdlUrl
-            );
-        }
-
-        return $this->clientParameters;
-    }
 
     /**
      * @param WebserviceGuesser $webserviceGuesser
@@ -221,6 +99,21 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
+     * Called after configuration set
+     */
+    protected function afterConfigurationSet()
+    {
+    }
+
+    /**
+     * @param StepExecution $stepExecution
+     */
+    public function setStepExecution(StepExecution $stepExecution)
+    {
+        $this->stepExecution = $stepExecution;
+    }
+
+    /**
      * Set the step element configuration
      *
      * @param array $config
@@ -237,10 +130,22 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Called after configuration set
+     * Get the magento soap client parameters
+     *
+     * @return MagentoSoapClientParameters
      */
-    protected function afterConfigurationSet()
+    protected function getClientParameters()
     {
+        if (!$this->clientParameters) {
+            $this->clientParameters = new MagentoSoapClientParameters(
+                $this->soapUsername,
+                $this->soapApiKey,
+                $this->magentoUrl,
+                $this->wsdlUrl
+            );
+        }
+
+        return $this->clientParameters;
     }
 
     /**
@@ -266,11 +171,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                     'label'    => 'pim_magento_connector.export.soapApiKey.label'
                 )
             ),
-            'soapUrl' => array(
+            'magentoUrl' => array(
                 'options' => array(
                     'required' => true,
-                    'help'     => 'pim_magento_connector.export.soapUrl.help',
-                    'label'    => 'pim_magento_connector.export.soapUrl.label'
+                    'help'     => 'pim_magento_connector.export.magentoUrl.help',
+                    'label'    => 'pim_magento_connector.export.magentoUrl.label'
                 )
             ),
             'wsdlUrl' => array(
@@ -282,5 +187,108 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                 )
             )
         );
+    }
+
+    /**
+     * get soapUsername
+     *
+     * @return string Soap magento soapUsername
+     */
+    public function getSoapUsername()
+    {
+        return $this->soapUsername;
+    }
+
+    /**
+     * Set soapUsername
+     *
+     * @param string $soapUsername Soap magento soapUsername
+     *
+     * @return MagentoItemStep
+     */
+    public function setSoapUsername($soapUsername)
+    {
+        $this->soapUsername = $soapUsername;
+
+        return $this;
+    }
+
+    /**
+     * get soapApiKey
+     *
+     * @return string Soap magento soapApiKey
+     */
+    public function getSoapApiKey()
+    {
+        return $this->soapApiKey;
+    }
+
+    /**
+     * Set soapApiKey
+     *
+     * @param string $soapApiKey Soap magento soapApiKey
+     *
+     * @return MagentoItemStep
+     */
+    public function setSoapApiKey($soapApiKey)
+    {
+        $this->soapApiKey = $soapApiKey;
+
+        return $this;
+    }
+
+    /**
+     * get wsdlUrl
+     *
+     * @return string magento wsdl relative url
+     */
+    public function getWsdlUrl()
+    {
+        return $this->wsdlUrl;
+    }
+
+    /**
+     * Set wsdlUrl
+     *
+     * @param string $wsdlUrl wsdl relative url
+     *
+     * @return MagentoItemStep
+     */
+    public function setWsdlUrl($wsdlUrl)
+    {
+        $this->wsdlUrl = $wsdlUrl;
+
+        return $this;
+    }
+
+    /**
+     * get magentoUrl
+     *
+     * @return string Soap magento url
+     */
+    public function getMagentoUrl() {
+        return $this->magentoUrl;
+    }
+
+    /**
+     * set magentoUrl
+     *
+     * @return MagentoItemStep
+     */
+    public function setMagentoUrl($magentoUrl)
+    {
+        $this->magentoUrl = $magentoUrl;
+
+        return $this;
+    }
+
+    /**
+     * get soapUrl
+     *
+     * @return string magento soap url
+     */
+    public function getSoapUrl()
+    {
+        return $this->magentoUrl . $this->wsdlUrl;
     }
 }
