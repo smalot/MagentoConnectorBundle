@@ -26,7 +26,7 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
     function it_shoulds_return_all_locales_from_database_as_sources($localeManager, $hasValidCredentialsValidator, Locale $locale)
     {
         $this->setParameters($this->clientParameters);
-        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $localeManager->getActiveCodes()->willReturn(array('foo'));
 

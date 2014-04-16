@@ -92,9 +92,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
         if (!$this->checked) {
             $this->checked = true;
 
-            if ($this->hasValidApiUrlValidator->isValidApiUrl($clientParameters->getMagentoUrl(), $clientParameters->getWsdlUrl())
-                && $this->hasValidSoapUrlValidator->isValidSoapUrl($clientParameters->getSoapUrl())) {
-
+            if ($this->areValidPreviousTests($clientParameters)) {
                 try {
                     $this->webserviceGuesser->getWebservice($clientParameters);
                     $this->valid = true;
@@ -107,5 +105,18 @@ class HasValidCredentialsValidator extends ConstraintValidator
         }
 
         return $this->valid;
+    }
+
+    /**
+     * Test if the Api Url and Soap Url are valid
+     *
+     * @param MagentoSoapClientParameters $params
+     *
+     * @return boolean
+     */
+    protected function areValidPreviousTests(MagentoSoapClientParameters $params)
+    {
+        return $this->hasValidApiUrlValidator->isValidApiUrl($params->getMagentoUrl(), $params->getWsdlUrl())
+                && $this->hasValidSoapUrlValidator->isValidSoapUrl($params->getSoapUrl());
     }
 }
