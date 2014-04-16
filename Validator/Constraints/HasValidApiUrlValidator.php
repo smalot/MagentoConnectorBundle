@@ -73,8 +73,9 @@ class HasValidApiUrlValidator extends ConstraintValidator
 
             if (!$this->isValidMagentoUrl($magentoUrl)) {
                 $this->isValidApiUrl = false;
-            // Verify if $magentoUrl doesn't end with a / and $wsdlUrl doesn't begin with a / together.
-            } elseif (!('/' === substr($magentoUrl, -1) XOR '/' === substr($wsdlUrl, 0, 1))) {
+
+                // Verify if $magentoUrl doesn't end with a / and $wsdlUrl doesn't begin with a / together.
+            } elseif (!('/' === substr($magentoUrl, -1) xor '/' === substr($wsdlUrl, 0, 1))) {
                 $this->isValidApiUrl = false;
             } else {
                 $this->isValidApiUrl = true;
@@ -89,7 +90,7 @@ class HasValidApiUrlValidator extends ConstraintValidator
      * @param string $magentoUrl
      * @return boolean $isValid
      */
-    public function isValidMagentoUrl($magentoUrl)
+    protected function isValidMagentoUrl($magentoUrl)
     {
         if (!$this->checkedMagentoUrl) {
             $this->checkedMagentoUrl = true;
