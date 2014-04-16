@@ -71,12 +71,12 @@ class CategoryWriter extends AbstractWriter
             foreach ($batch['create'] as $newCategory) {
                 $pimCategory       = $newCategory['pimCategory'];
                 $magentoCategoryId = $this->webservice->sendNewCategory($newCategory['magentoCategory']);
-                $magentoUrl        = $this->soapUrl;
+                $soapUrl           = $this->getSoapUrl();
 
                 $this->categoryMappingManager->registerCategoryMapping(
                     $pimCategory,
                     $magentoCategoryId,
-                    $magentoUrl
+                    $soapUrl
                 );
 
                 $this->stepExecution->incrementSummaryInfo(self::CATEGORY_CREATED);

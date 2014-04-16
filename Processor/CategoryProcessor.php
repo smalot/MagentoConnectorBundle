@@ -86,7 +86,7 @@ class CategoryProcessor extends AbstractProcessor
             $this->globalContext,
             array(
                 'magentoCategories'   => $magentoCategories,
-                'magentoUrl'          => $this->soapUrl,
+                'soapUrl'             => $this->getSoapUrl(),
                 'defaultLocale'       => $this->defaultLocale,
                 'magentoStoreViews'   => $magentoStoreViews,
                 'categoryMapping'     => $this->categoryMappingMerger->getMapping()
