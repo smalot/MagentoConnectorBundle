@@ -27,7 +27,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
     function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
     {
         $this->setParameters($this->clientParameters);
-        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getCategoriesStatus()->willReturn(array('category_id_1' => array(), 'categorie_id_2' => array()));
 
@@ -51,7 +51,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
     function it_shoulds_get_all_magento_categories_as_targets($hasValidCredentialsValidator, $webservice)
     {
         $this->setParameters($this->clientParameters);
-        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getCategoriesStatus()->willReturn(array('foo' => array('name' => 'Foo'), 'bar' => array('name' => 'Bar')));
 
@@ -61,7 +61,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
     function it_should_give_an_proper_identifier($hasValidCredentialsValidator)
     {
         $this->setParameters($this->clientParameters);
-        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $identifier = sha1('category-soap_urlwsdl_url');
 

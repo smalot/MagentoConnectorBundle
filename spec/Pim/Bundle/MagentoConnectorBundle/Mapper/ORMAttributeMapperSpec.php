@@ -26,7 +26,7 @@ class ORMAttributeMapperSpec extends ObjectBehavior
     function it_shoulds_return_all_attributes_from_database_as_targets($attributeManager, $hasValidCredentialsValidator, Attribute $attribute)
     {
         $this->setParameters($this->clientParameters);
-        $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $attributeManager->getAttributes()->willReturn(array($attribute));
 

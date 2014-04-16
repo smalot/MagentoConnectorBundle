@@ -137,11 +137,11 @@ class AttributeCleanerSpec extends ObjectBehavior
                         'label'    => 'pim_magento_connector.export.soapApiKey.label'
                     )
                 ),
-                'soapUrl' => array(
+                'magentoUrl' => array(
                     'options' => array(
                         'required' => true,
-                        'help'     => 'pim_magento_connector.export.soapUrl.help',
-                        'label'    => 'pim_magento_connector.export.soapUrl.label'
+                        'help'     => 'pim_magento_connector.export.magentoUrl.help',
+                        'label'    => 'pim_magento_connector.export.magentoUrl.label'
                     )
                 ),
                 'wsdlUrl' => array(
