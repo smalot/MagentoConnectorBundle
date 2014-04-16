@@ -89,7 +89,7 @@ class HasValidApiUrlValidator extends ConstraintValidator
      * @param string $magentoUrl
      * @return boolean $isValid
      */
-    public function isValidMagentoUrl($magentoUrl)
+    protected function isValidMagentoUrl($magentoUrl)
     {
         if (!$this->checkedMagentoUrl) {
             $this->checkedMagentoUrl = true;
