@@ -149,7 +149,9 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * {@inheritdoc}
+     * Get fields for the twig
+     *
+     * @return array
      */
     public function getConfigurationFields()
     {

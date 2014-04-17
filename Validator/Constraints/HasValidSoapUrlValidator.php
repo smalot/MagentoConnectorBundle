@@ -57,11 +57,11 @@ class HasValidSoapUrlValidator extends ConstraintValidator
     /**
      *{@inheritDoc}
      */
-    public function validate($params, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
-        $this->soapUrl    = $params->getSoapUrl();
-        $this->magentoUrl = $params->getMagentoUrl();
-        $this->wsdlUrl    = $params->getWsdlUrl();
+        $this->soapUrl    = $value->getSoapUrl();
+        $this->magentoUrl = $value->getMagentoUrl();
+        $this->wsdlUrl    = $value->getWsdlUrl();
 
         if ($this->hasValidApiUrlValidator->isValidApiUrl($this->magentoUrl, $this->wsdlUrl)) {
             try {
@@ -108,7 +108,7 @@ class HasValidSoapUrlValidator extends ConstraintValidator
      *
      * @throws InvalidMagentoUrlException
      */
-    public function checkValidSoapUrl($url)
+    protected function checkValidSoapUrl($url)
     {
         $output = $this->curlCall($url);
 

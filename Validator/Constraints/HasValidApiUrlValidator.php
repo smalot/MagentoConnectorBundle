@@ -45,12 +45,12 @@ class HasValidApiUrlValidator extends ConstraintValidator
     protected $isValidMagentoUrl = false;
 
     /**
-     *{@inheritDoc}
+     *{@inheritdoc}
      */
-    public function validate($params, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
-        $this->magentoUrl = $params->getMagentoUrl();
-        $this->wsdlUrl = $params->getWsdlUrl();
+        $this->magentoUrl = $value->getMagentoUrl();
+        $this->wsdlUrl = $value->getWsdlUrl();
 
         if (!$this->isValidMagentoUrl($this->magentoUrl)) {
             $this->context->addViolationAt('magentoUrl', $constraint->messageMagentoUrl);
@@ -61,9 +61,11 @@ class HasValidApiUrlValidator extends ConstraintValidator
 
     /**
      * Test if the Api Url is valid
+     *
      * @param $magentoUrl
      * @param $wsdlUrl
-     * @return bool
+     *
+     * @return boolean
      */
     public function isValidApiUrl($magentoUrl, $wsdlUrl)
     {
@@ -85,9 +87,11 @@ class HasValidApiUrlValidator extends ConstraintValidator
 
     /**
      * Check if the url is well formed
+     *
      * @param $magentoUrl
      * @param $wsdlUrl
-     * @return bool
+     *
+     * @return boolean
      */
     public function isWellFormedUrl($magentoUrl, $wsdlUrl)
     {
@@ -96,7 +100,9 @@ class HasValidApiUrlValidator extends ConstraintValidator
 
     /**
      * Test if the Magento URL return a 200 http status
+     *
      * @param string $magentoUrl
+     *
      * @return boolean $isValid
      */
     protected function isValidMagentoUrl($magentoUrl)
