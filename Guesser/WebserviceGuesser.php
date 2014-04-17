@@ -2,11 +2,14 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceAttributeManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceCategoryManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceOptionManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceProductManager;
 
 /**
  * A magento soap client to abstract interaction with the magento api
@@ -18,50 +21,67 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
 class WebserviceGuesser extends AbstractGuesser
 {
     /**
-     * @var Webservice
+     * @var WebserviceAttributeManager
      */
-    protected $webservice;
+    protected $webserviceAttributeManager;
 
     /**
-     * @var MagentoSoapClientFactory
+     * @var WebserviceProductManager
      */
-    protected $magentoSoapClientFactory;
+    protected $webserviceProductManager;
 
     /**
-     * Constructor
-     * @param MagentoSoapClientFactory $magentoSoapClientFactory
+     * @var WebserviceOptionManager
      */
-    public function __construct(MagentoSoapClientFactory $magentoSoapClientFactory)
-    {
-        $this->magentoSoapClientFactory = $magentoSoapClientFactory;
+    protected $webserviceOptionManager;
+
+    /**
+     * @var WebserviceCategoryManager
+     */
+    protected $webserviceCategoryManager;
+
+    /**
+     * @var string
+     */
+    protected $magentoVersion;
+
+    /**
+     * @var MagentoSoapClient
+     */
+    protected $MagentoSoapClient;
+
+    /*
+     *
+     */
+    public function __construct(
+        MagentoSoapClient $magentoSoapClient,
+        MagentoSoapClientParameters $clientParameters
+    ) {
+        $this->magentoSoapClient = $magentoSoapClient;
+        $this->magentoVersion = $this->getMagentoVersion($this->MagentoSoapClient);
     }
 
     /**
      * Get the Webservice corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
      *
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return Webservice
      */
-    public function getWebservice(MagentoSoapClientParameters $clientParameters)
+    public function getWebservice()
     {
-        if (!$this->webservice) {
-            $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
-            $magentoVersion = $this->getMagentoVersion($client);
-
-            switch ($magentoVersion) {
-                case AbstractGuesser::MAGENTO_VERSION_1_8:
-                case AbstractGuesser::MAGENTO_VERSION_1_7:
-                    $this->webservice = new Webservice($client);
-                    break;
-                case AbstractGuesser::MAGENTO_VERSION_1_6:
-                    $this->webservice = new Webservice16($client);
-                    break;
-                default:
-                    throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
-            }
+        switch ($this->magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_8:
+            case AbstractGuesser::MAGENTO_VERSION_1_7:
+                $this->webserviceCategoryManager = new WebserviceCategoryManager($this->MagentoSoapClient);
+                $this->webserviceOptionManager = new WebserviceOptionManager($this->MagentoSoapClient);
+                $this->webserviceProductManager = new WebserviceProductManager($this->MagentoSoapClient);
+                $this->webserviceAttributeManager = new WebserviceAttributeManager($this->MagentoSoapClient);
+                break;
+            case AbstractGuesser::MAGENTO_VERSION_1_6:
+                $this->webservice = new Webservice16($this->MagentoSoapClient);
+                break;
+            default:
+                throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
-
-        return $this->webservice;
     }
 }

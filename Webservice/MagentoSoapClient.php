@@ -19,13 +19,17 @@ class MagentoSoapClient
 
     protected $clientParameters;
 
+    protected static $instance;
+
     /**
      * Create and init the soap client
      *
-     * @param MagentoSoapClientParameters $clientParameters
-     * @param SoapClient                  $soapClient
+     * @param  MagentoSoapClientParameters $clientParameters
+     * @param  \SoapClient                 $soapClient
+     * @throws ConnectionErrorException
+     * @throws InvalidCredentialException
      */
-    public function __construct(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
+    protected function __construct(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
     {
         $this->clientParameters = $clientParameters;
 
@@ -47,6 +51,13 @@ class MagentoSoapClient
         }
 
         $this->connect();
+    }
+
+    /*
+     * Prevent the class to be cloned
+     */
+    protected function __clone()
+    {
     }
 
     /**
@@ -84,8 +95,10 @@ class MagentoSoapClient
      * Call soap api
      *
      * @param string $resource
-     * @param array  $params
+     * @param array $params
      *
+     * @throws SoapCallException
+     * @throws NotConnectedException
      * @return mixed
      */
     public function call($resource, $params = null)
@@ -160,5 +173,20 @@ class MagentoSoapClient
 
             $this->calls = array();
         }
+    }
+
+    /*
+     * Return the singleton class instance if it exists or create it and return it
+     * @param MagentoSoapClient $clientParameters The client parameters
+     * @param \SoapClient       $soapClient       The SoapClient class
+     * @return MagentoSoapClient
+     */
+    public static function getInstance(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new self($clientParameters, $soapClient);
+        }
+
+        return self::$instance;
     }
 }
