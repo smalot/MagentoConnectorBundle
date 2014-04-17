@@ -36,7 +36,7 @@ class MagentoSoapClientParameters
     /**
      * get soapUsername
      *
-     * @return string Soap mangeto soapUsername
+     * @return string Soap magento soapUsername
      */
     public function getSoapUsername()
     {
@@ -46,7 +46,7 @@ class MagentoSoapClientParameters
     /**
      * get soapApiKey
      *
-     * @return string Soap mangeto soapApiKey
+     * @return string Soap magento soapApiKey
      */
     public function getSoapApiKey()
     {
@@ -56,7 +56,7 @@ class MagentoSoapClientParameters
     /**
      * get soapUrl
      *
-     * @return string mangeto soap url
+     * @return string magento soap url
      */
     public function getSoapUrl()
     {
