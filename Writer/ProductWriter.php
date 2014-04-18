@@ -3,8 +3,8 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
@@ -35,14 +35,14 @@ class ProductWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser $webserviceGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
      * @param ChannelManager    $channelManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         ChannelManager $channelManager
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->channelManager = $channelManager;
     }
@@ -90,11 +90,13 @@ class ProductWriter extends AbstractWriter
      * Compute an individual product and all his parts (translations)
      *
      * @param array $product The product and his parts
+     * @throws \Akeneo\Bundle\BatchBundle\Item\InvalidItemException
      */
     protected function computeProduct($product)
     {
         $sku = $this->getProductSku($product);
-        $images = $this->webservice->getImages($sku);
+        $images = $this->webserviceGuesserFactory
+            ->getWebservice('product', $this->getClientParameters())->getImages($sku);
         $this->pruneImages($sku, $images);
 
         foreach (array_keys($product) as $storeViewCode) {
@@ -116,16 +118,19 @@ class ProductWriter extends AbstractWriter
     protected function createCall($productPart, $storeViewCode)
     {
         switch ($storeViewCode) {
-            case Webservice::SOAP_DEFAULT_STORE_VIEW:
-                $this->webservice->sendProduct($productPart);
+            case AbstractWebservice::SOAP_DEFAULT_STORE_VIEW:
+                $this->webserviceGuesserFactory
+                    ->getWebservice('product', $this->getClientParameters())->sendProduct($productPart);
                 $this->stepExecution->incrementSummaryInfo(self::PRODUCT_SENT);
                 break;
-            case Webservice::IMAGES:
-                $this->webservice->sendImages($productPart);
+            case AbstractWebservice::IMAGES:
+                $this->webserviceGuesserFactory
+                    ->getWebservice('product', $this->getClientParameters())->sendImages($productPart);
                 $this->stepExecution->incrementSummaryInfo(self::PRODUCT_IMAGE_SENT);
                 break;
             default:
-                $this->webservice->updateProductPart($productPart);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('product', $this->getClientParameters())->updateProductPart($productPart);
                 $this->stepExecution->incrementSummaryInfo(self::PRODUCT_TRANSLATION_SENT);
         }
     }
@@ -139,9 +144,9 @@ class ProductWriter extends AbstractWriter
      */
     protected function getProductSku($product)
     {
-        $defaultStoreviewProduct = $product[Webservice::SOAP_DEFAULT_STORE_VIEW];
+        $defaultStoreviewProduct = $product[AbstractWebservice::SOAP_DEFAULT_STORE_VIEW];
 
-        if (count($defaultStoreviewProduct) == Webservice::CREATE_PRODUCT_SIZE) {
+        if (count($defaultStoreviewProduct) == AbstractWebservice::CREATE_PRODUCT_SIZE) {
             return (string) $defaultStoreviewProduct[2];
         } else {
             return (string) $defaultStoreviewProduct[0];
@@ -152,13 +157,16 @@ class ProductWriter extends AbstractWriter
      * Clean old images on magento product
      *
      * @param string $sku
-     * @param array  $images
+     * @param array $images
+     * @throws \Akeneo\Bundle\BatchBundle\Item\InvalidItemException
+     * @throws \Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException
      */
     protected function pruneImages($sku, array $images = array())
     {
         foreach ($images as $image) {
             try {
-                $this->webservice->deleteImage($sku, $image['file']);
+                $this->webserviceGuesserFactory
+                     ->getWebservice('product', $this->getClientParameters())->deleteImage($sku, $image['file']);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), $image);
             }

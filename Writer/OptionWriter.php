@@ -26,7 +26,8 @@ class OptionWriter extends AbstractWriter
         foreach ($batches as $options) {
             foreach ($options as $option) {
                 try {
-                    $this->webservice->createOption($option);
+                    $this->webserviceGuesserFactory
+                        ->getWebservice('option', $this->getClientParameters())->createOption($option);
                     $this->stepExecution->incrementSummaryInfo(self::OPTION_CREATED);
                 } catch (SoapCallException $e) {
                     throw new InvalidItemException($e->getMessage(), array(json_encode($option)));

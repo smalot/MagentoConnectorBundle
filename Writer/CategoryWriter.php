@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -29,14 +29,14 @@ class CategoryWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser      $webserviceGuesser
-     * @param CategoryMappingManager $categoryMappingManager
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param CategoryMappingManager   $categoryMappingManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        CategoryMappingManager $categoryMappingManager
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        CategoryMappingManager   $categoryMappingManager
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }
@@ -70,7 +70,9 @@ class CategoryWriter extends AbstractWriter
         if (isset($batch['create'])) {
             foreach ($batch['create'] as $newCategory) {
                 $pimCategory       = $newCategory['pimCategory'];
-                $magentoCategoryId = $this->webservice->sendNewCategory($newCategory['magentoCategory']);
+                $magentoCategoryId = $this->webserviceGuesserFactory
+                    ->getWebservice('category', $this->getClientParameters())
+                    ->sendNewCategory($newCategory['magentoCategory']);
                 $magentoUrl        = $this->soapUrl;
 
                 $this->categoryMappingManager->registerCategoryMapping(
@@ -92,7 +94,8 @@ class CategoryWriter extends AbstractWriter
     {
         if (isset($batch['update'])) {
             foreach ($batch['update'] as $updateCategory) {
-                $this->webservice->sendUpdateCategory($updateCategory);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('category', $this->getClientParameters())->sendUpdateCategory($updateCategory);
 
                 $this->stepExecution->incrementSummaryInfo(self::CATEGORY_UPDATED);
             }
@@ -107,7 +110,8 @@ class CategoryWriter extends AbstractWriter
     {
         if (isset($batch['move'])) {
             foreach ($batch['move'] as $moveCategory) {
-                $this->webservice->sendMoveCategory($moveCategory);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('category', $this->getClientParameters())->sendMoveCategory($moveCategory);
 
                 $this->stepExecution->incrementSummaryInfo(self::CATEGORY_MOVED);
             }
@@ -127,7 +131,8 @@ class CategoryWriter extends AbstractWriter
                 $magentoCategory    = $variationCategory['magentoCategory'];
                 $magentoCategory[0] = $magentoCategoryId;
 
-                $this->webservice->sendUpdateCategory($magentoCategory);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('category', $this->getClientParameters())->sendUpdateCategory($magentoCategory);
 
                 $this->stepExecution->incrementSummaryInfo(self::CATEGORY_TRANSLATION_SENT);
             }

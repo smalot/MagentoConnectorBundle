@@ -28,10 +28,12 @@ class AttributeWriter extends AbstractWriter
         foreach ($attributes as $attribute) {
             try {
                 if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
-                    $this->webservice->updateAttribute($attribute);
+                    $this->webserviceGuesserFactory
+                        ->getWebservice('attribute', $this->getClientParameters())->updateAttribute($attribute);
                     $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
                 } else {
-                    $this->webservice->createAttribute($attribute);
+                    $this->webserviceGuesserFactory
+                        ->getWebservice('attribute', $this->getClientParameters())->createAttribute($attribute);
                     $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
                 }
             } catch (SoapCallException $e) {

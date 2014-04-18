@@ -33,13 +33,16 @@ class ProductAssociationWriter extends AbstractWriter
      * Handle product association calls
      * @param array $productAssociationCalls
      *
-     * @throws SopaCallException If a soap call fails
+     * @throws \Akeneo\Bundle\BatchBundle\Item\InvalidItemException
+     * @throws \Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException
      */
     protected function handleProductAssociationCalls(array $productAssociationCalls)
     {
         foreach ($productAssociationCalls['remove'] as $productAssociationRemoveCall) {
             try {
-                $this->webservice->removeProductAssociation($productAssociationRemoveCall);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('association', $this->getClientParameters())
+                    ->removeProductAssociation($productAssociationRemoveCall);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException(
                     sprintf(
@@ -54,7 +57,9 @@ class ProductAssociationWriter extends AbstractWriter
 
         foreach ($productAssociationCalls['create'] as $productAssociationCreateCall) {
             try {
-                $this->webservice->createProductAssociation($productAssociationCreateCall);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('association', $this->getClientParameters())
+                    ->createProductAssociation($productAssociationCreateCall);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException(
                     sprintf(
