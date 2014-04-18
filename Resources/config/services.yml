@@ -7,8 +7,6 @@ parameters:
     pim_magento_connector.checker.url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Checks\UrlChecker
     pim_magento_connector.checker.xml.class: Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker
     pim_magento_connector.checker.soap.class: Pim\Bundle\MagentoConnectorBundle\Validator\Checks\SoapChecker
-#    pim_magento_connector.validator.has_valid_soap_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidSoapUrlValidator
-#    pim_magento_connector.validator.has_valid_api_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidApiUrlValidator
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
@@ -42,20 +40,8 @@ services:
             - '@pim_magento_connector.checker.url'
             - '@pim_magento_connector.checker.soap'
             - '@pim_magento_connector.checker.xml'
-#            - '@pim_magento_connector.validator.has_valid_soap_url'
-#            - '@pim_magento_connector.validator.has_valid_api_url'
         tags:
             - { name: validator.constraint_validator, alias: has_valid_magento_credentials }
-#    pim_magento_connector.validator.has_valid_api_url:
-#        class: %pim_magento_connector.validator.has_valid_api_url.class%
-#        tags:
-#            - { name: validator.constraint_validator, alias: has_valid_api_url }
-#    pim_magento_connector.validator.has_valid_soap_url:
-#        class: %pim_magento_connector.validator.has_valid_soap_url.class%
-#        arguments:
-#            - '@pim_magento_connector.validator.has_valid_api_url'
-#        tags:
-#            - { name: validator.constraint_validator, alias: has_valid_soap_url }
     pim_magento_connector.validator.has_valid_currency:
         class: %pim_magento_connector.validator.has_valid_currency.class%
         arguments:

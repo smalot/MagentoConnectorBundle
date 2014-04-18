@@ -5,10 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Item;
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-//use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidSoapUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-//use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidApiUrl;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -19,8 +17,6 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
- * @ HasValidApiUrl(groups={"Execution"})
- * @ HasValidSoapUrl(groups={"Execution"})
  * @HasValidCredentials(groups={"Execution"})
  */
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
