@@ -16,7 +16,7 @@ use Pim\Bundle\CatalogBundle\Entity\Locale;
 class ProductNormalizer16 extends ProductNormalizer implements ProductNormalizerInterface
 {
     /**
-     * Get the corresponding storeview code for a givent locale
+     * Get the corresponding storeview code for a given locale
      * @param string            $locale
      * @param array             $magentoStoreViews
      * @param MappingCollection $storeViewMapping

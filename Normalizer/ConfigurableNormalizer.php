@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException;
@@ -53,9 +53,9 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $group    = $object['group'];
         $products = $object['products'];
 
-        $sku = sprintf(Webservice::CONFIGURABLE_IDENTIFIER_PATTERN, $group->getCode());
+        $sku = sprintf(AbstractWebservice::CONFIGURABLE_IDENTIFIER_PATTERN, $group->getCode());
 
-        $processedItem[Webservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultConfigurable(
+        $processedItem[AbstractWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultConfigurable(
             $group,
             $sku,
             $context['attributeSetId'],
@@ -72,8 +72,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
         $images = $this->productNormalizer->getNormalizedImages($products[0], $sku);
 
+        $processedItem[AbstractWebservice::IMAGES] = $images;
         if (count($images) > 0) {
-            $processedItem[Webservice::IMAGES] = $images;
         }
 
         //For each storeview, we update the group only with localized attributes

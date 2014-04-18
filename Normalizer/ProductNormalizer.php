@@ -113,7 +113,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $images = $this->getNormalizedImages($object);
 
         if (count($images) > 0) {
-            $processedItem[Webservice::IMAGES] = $images;
+            $processedItem[AbstractWebservice::IMAGES] = $images;
         }
 
         //For each storeview, we update the product only with localized attributes
@@ -189,7 +189,11 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         ),
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL),
+                        'types'    => array(
+                            AbstractWebservice::SMALL_IMAGE,
+                            AbstractWebservice::BASE_IMAGE,
+                            AbstractWebservice::THUMBNAIL
+                        ),
                         'exclude'  => 0
                     ),
                     0,
@@ -352,9 +356,10 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
     /**
      * Get categories for the given product
-     * @param ProductInterface  $product
+     * @param ProductInterface $product
      * @param MappingCollection $categoryMapping
      *
+     * @throws Exception\CategoryNotFoundException
      * @return array
      */
     protected function getProductCategories(ProductInterface $product, MappingCollection $categoryMapping)

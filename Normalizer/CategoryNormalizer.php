@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 
 /**
  * A normalizer to transform a category entity into an array
@@ -143,7 +143,7 @@ class CategoryNormalizer extends AbstractNormalizer
                     'available_sort_by' => 1,
                     'default_sort_by'   => 1
                 ),
-                Webservice::SOAP_DEFAULT_STORE_VIEW
+                AbstractWebservice::SOAP_DEFAULT_STORE_VIEW
             ),
             'pimCategory' => $category
         );
@@ -166,7 +166,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 'default_sort_by'   => 1,
                     'is_anchor'     => 1
             ),
-            Webservice::SOAP_DEFAULT_STORE_VIEW
+            AbstractWebservice::SOAP_DEFAULT_STORE_VIEW
         );
     }
 
