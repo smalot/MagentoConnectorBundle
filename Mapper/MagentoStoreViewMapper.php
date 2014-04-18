@@ -2,9 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 
 /**
  * Magento storeview mapper
@@ -16,21 +16,21 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 class MagentoStoreViewMapper extends Mapper
 {
     /**
-     * @var WebserviceGuesser
+     * @var WebserviceGuesserFactory
      */
-    protected $webserviceGuesser;
+    protected $webserviceGuesserFactory;
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param WebserviceGuesser            $webserviceGuesser
+     * @param WebserviceGuesserFactory     $webserviceGuesserFactory
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        WebserviceGuesser $webserviceGuesser
+        WebserviceGuesserFactory     $webserviceGuesserFactory
     ) {
         parent::__construct($hasValidCredentialsValidator);
 
-        $this->webserviceGuesser = $webserviceGuesser;
+        $this->webserviceGuesserFactory = $webserviceGuesserFactory;
     }
 
     /**
@@ -42,10 +42,11 @@ class MagentoStoreViewMapper extends Mapper
         $targets = array();
 
         if ($this->isValid()) {
-            $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
+            $storeViews = $this->webserviceGuesserFactory
+                ->getWebservice('storeviews', $this->getClientParameters())->getStoreViewsList();
 
             foreach ($storeViews as $storeView) {
-                if ($storeView['code'] !== Webservice::SOAP_DEFAULT_STORE_VIEW) {
+                if ($storeView['code'] !== AbstractWebservice::SOAP_DEFAULT_STORE_VIEW) {
                     $targets[] = array('id' => $storeView['code'], 'text' => $storeView['code']);
                 }
             }

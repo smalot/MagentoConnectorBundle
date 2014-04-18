@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
@@ -15,21 +15,21 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
 class MagentoAttributeMapper extends Mapper
 {
     /**
-     * @var WebserviceGuesser
+     * @var WebserviceGuesserFactory
      */
-    protected $webserviceGuesser;
+    protected $webserviceGuesserFactory;
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param WebserviceGuesser            $webserviceGuesser
+     * @param WebserviceGuesserFactory     $webserviceGuesserFactory
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        WebserviceGuesser $webserviceGuesser
+        WebserviceGuesserFactory $webserviceGuesserFactory
     ) {
         parent::__construct($hasValidCredentialsValidator);
 
-        $this->webserviceGuesser = $webserviceGuesser;
+        $this->webserviceGuesser = $webserviceGuesserFactory;
     }
 
     /**
@@ -41,7 +41,8 @@ class MagentoAttributeMapper extends Mapper
         if (!$this->isValid()) {
             return new MappingCollection();
         } else {
-            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            $attributes = $this->webserviceGuesserFactory
+                ->getWebservice('attribute', $this->getClientParameters())->getAllAttributes();
 
             $mapping = new MappingCollection();
             foreach (array_keys($attributes) as $attributeCode) {
@@ -70,7 +71,8 @@ class MagentoAttributeMapper extends Mapper
 
         if ($this->isValid()) {
             $attributeCodes = array_keys(
-                $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes()
+                $this->webserviceGuesserFactory
+                    ->getWebservice('attribute', $this->getClientParameters())->getAllAttributes()
             );
 
             foreach ($attributeCodes as $attributeCode) {

@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
@@ -17,21 +17,21 @@ class MagentoCategoryMapper extends Mapper
     const ROOT_CATEGORY_ID = 1;
 
     /**
-     * @var WebserviceGuesser
+     * @var WebserviceGuesserFactory
      */
-    protected $webserviceGuesser;
+    protected $webserviceGuesserFactory;
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param WebserviceGuesser            $webserviceGuesser
+     * @param WebserviceGuesserFactory     $webserviceGuesserFactory
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        WebserviceGuesser $webserviceGuesser
+        WebserviceGuesserFactory $webserviceGuesserFactory
     ) {
         parent::__construct($hasValidCredentialsValidator);
 
-        $this->webserviceGuesser = $webserviceGuesser;
+        $this->webserviceGuesserFactory = $webserviceGuesserFactory;
     }
 
     /**
@@ -43,7 +43,8 @@ class MagentoCategoryMapper extends Mapper
         $targets = array();
 
         if ($this->isValid()) {
-            $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
+            $categories = $this->webserviceGuesserFactory
+                ->getWebservice('category', $this->getClientParameters())->getCategoriesStatus();
 
             foreach ($categories as $categoryId => $category) {
                 if ($categoryId != self::ROOT_CATEGORY_ID) {
