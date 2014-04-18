@@ -3,13 +3,13 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceAttributeManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceCategoryManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceOptionManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceProductManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\CategoryWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AssociationWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\StoreViewsWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\OptionWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\ProductWebservice;
 
 /**
  * A magento soap client to abstract interaction with the magento api
@@ -29,53 +29,56 @@ class WebserviceGuesserFactory extends AbstractGuesser
     /**
      * @var MagentoSoapClient
      */
-    protected $MagentoSoapClient;
+    protected $magentoSoapClient;
 
     /*
      *
      */
-    public function __construct(
-        MagentoSoapClient $magentoSoapClient,
-        MagentoSoapClientParameters $clientParameters
-    ) {
-        $this->magentoSoapClient = $magentoSoapClient;
-        $this->magentoVersion = $this->getMagentoVersion($this->MagentoSoapClient);
+    public function __construct()
+    {
+        $this->magentoVersion = $this->getMagentoVersion($this->magentoSoapClient);
     }
 
     /**
      * Get the Webservice corresponding to the given Magento parameters
      *
-     * @param $webserviceName
+     * @param string                        $webserviceName
+     * @param                               $clientParameters
      * @throws NotSupportedVersionException
-     * @return Webservice
+     * @return string                       $webservice
      */
-    public function getWebservice($webserviceName)
+    public function getWebservice($webserviceName, $clientParameters)
     {
+        $this->magentoSoapClient = MagentoSoapClient::getInstance($clientParameters);
         $webservice = null;
         switch ($this->magentoVersion) {
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
-                switch ($webserviceName) {
-                    case 'category':
-                        $webservice = new WebserviceCategoryManager($this->MagentoSoapClient);
-                        break;
-                    case 'option':
-                        $webservice = new WebserviceOptionManager($this->MagentoSoapClient);
-                        break;
-                    case 'product':
-                        $webservice = new WebserviceProductManager($this->MagentoSoapClient);
-                        break;
-                    case 'attribute':
-                        $webservice = new WebserviceAttributeManager($this->MagentoSoapClient);
-                        break;
-                }
+                $webservice = $this->getInstance($webserviceName);
                 break;
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                $webservice = new Webservice16($this->MagentoSoapClient);
+                $webservice = new Webservice16($this->magentoSoapClient);
                 break;
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
         return $webservice;
+    }
+
+    /*
+     *
+     */
+    protected function getInstance($webserviceName)
+    {
+        $webServices = array(
+            'category'    => new CategoryWebservice($this->magentoSoapClient),
+            'option'      => new OptionWebservice($this->magentoSoapClient),
+            'product'     => new ProductWebservice($this->magentoSoapClient),
+            'attribute'   => new AttributeWebservice($this->magentoSoapClient),
+            'association' => new AssociationWebservice($this->magentoSoapClient),
+            'storeviews'  => new StoreViewsWebservice($this->magentoSoapClient)
+        );
+
+        return array_key_exists($webserviceName, $webServices) ? $webServices[$webserviceName] : null;
     }
 }
