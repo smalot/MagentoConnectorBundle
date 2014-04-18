@@ -6,7 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlException;
 
 /**
- * Check an url
+ * Check an url in different way
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)

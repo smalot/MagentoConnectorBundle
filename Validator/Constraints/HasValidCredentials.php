@@ -15,12 +15,11 @@ use Symfony\Component\Validator\Constraint;
  */
 class HasValidCredentials extends Constraint
 {
-    public $messageUrlSyntaxNotValid = 'Url syntax is not valid';
-    public $messageUrlNotReachable   = 'HTTP request not processed successfully';
-    public $messageSoapNotValid      = 'Api soap url is not valid';
-    public $messageXmlNotValid       = 'Magento XML is not valid';
-    public $messageUsername          = 'Authentication failed';
-    public $messageApikey            = 'The given magento api key is invalid';
+    public $messageUrlSyntaxNotValid = 'pim_magento_connector.export.validator.url_syntax_not_valid';
+    public $messageUrlNotReachable   = 'pim_magento_connector.export.validator.url_not_reachable';
+    public $messageSoapNotValid      = 'pim_magento_connector.export.validator.soap_url_not_valid';
+    public $messageXmlNotValid       = 'pim_magento_connector.export.validator.xml_not_valid';
+    public $messageUsername          = 'pim_magento_connector.export.validator.authentication_failed';
 
     /**
      *{@inheritDoc}
