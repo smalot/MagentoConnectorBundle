@@ -9,6 +9,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions;
 
 /**
  * Validator for Magento credentials
@@ -25,15 +27,19 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $webserviceGuesser;
 
     /**
-     * @var HasValidSoapUrlValidator
+     * @var UrlChecker
      */
-    protected $hasValidSoapUrlValidator;
+    protected $urlChecker;
 
     /**
-     * @var HasValidApiUrlValidator
+     * @var SoapChecker
      */
-    protected $hasValidApiUrlValidator;
+    protected $soapChecker;
 
+    /**
+     * @var XmlChecker
+     */
+    protected $xmlChecker;
     /**
      * @var boolean
      */
@@ -50,12 +56,15 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        HasValidSoapUrlValidator $hasValidSoapUrlValidator,
-        HasValidApiUrlValidator $hasValidApiUrlValidator
-    ) {
-        $this->webserviceGuesser        = $webserviceGuesser;
-        $this->hasValidSoapUrlValidator = $hasValidSoapUrlValidator;
-        $this->hasValidApiUrlValidator  = $hasValidApiUrlValidator;
+        Checks\UrlChecker $urlChecker,
+        Checks\SoapChecker $soapChecker,
+        Checks\XmlChecker $xmlChecker
+    )
+    {
+        $this->webserviceGuesser = $webserviceGuesser;
+        $this->urlChecker        = $urlChecker;
+        $this->soapChecker       = $soapChecker;
+        $this->xmlChecker        = $xmlChecker;
     }
 
     /**
@@ -75,14 +84,32 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getWsdlUrl()
         );
 
-        if (!$this->areValidSoapCredentials($clientParameters)) {
+        try {
+            $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
+            $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
+            $xml = $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
+            $this->xmlChecker->checkXml($xml);
+            $this->webserviceGuesser->getWebservice($clientParameters);
+        } catch (Exception\InvalidUrlException $e) {
+            $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
+        } catch (Exceptions\NotReachableUrlException $e) {
+            $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
+        } catch (Exceptions\InvalidSoapUrlException $e) {
+            $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
+        } catch (Exceptions\InvalidXmlException $e) {
+            $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
+        } catch (InvalidCredentialException $e) {
             $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
             $this->context->addViolationAt('soapApikey', $constraint->messageApikey, array());
+        } catch (SoapCallException $e) {
+            $this->context->addViolationAt('wsdlUrl', $e->getMessage(), array());
         }
+
     }
 
     /**
      * Are the given parameters valid ?
+     *
      * @param MagentoSoapClientParameters $clientParameters
      *
      * @return boolean
@@ -92,31 +119,28 @@ class HasValidCredentialsValidator extends ConstraintValidator
         if (!$this->checked) {
             $this->checked = true;
 
-            if ($this->areValidPreviousTests($clientParameters)) {
-                try {
-                    $this->webserviceGuesser->getWebservice($clientParameters);
-                    $this->valid = true;
-                } catch (InvalidCredentialException $e) {
-                    $this->valid = false;
-                } catch (SoapCallException $e) {
-                    $this->valid = false;
-                }
+            try {
+                $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
+                $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
+                $xml = $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
+                $this->xmlChecker->checkXml($xml);
+                $this->webserviceGuesser->getWebservice($clientParameters);
+                $this->valid = true;
+            } catch (Exception\InvalidUrlException $e) {
+                $this->valid = false;
+            } catch (Exceptions\NotReachableUrlException $e) {
+                $this->valid = false;
+            } catch (Exceptions\InvalidSoapUrlException $e) {
+                $this->valid = false;
+            } catch (Exceptions\InvalidXmlException $e) {
+                $this->valid = false;
+            } catch (InvalidCredentialException $e) {
+                $this->valid = false;
+            } catch (SoapCallException $e) {
+                $this->valid = false;
             }
         }
 
         return $this->valid;
-    }
-
-    /**
-     * Test if the Api Url and Soap Url are valid
-     *
-     * @param MagentoSoapClientParameters $params
-     *
-     * @return boolean
-     */
-    protected function areValidPreviousTests(MagentoSoapClientParameters $params)
-    {
-        return $this->hasValidApiUrlValidator->isValidApiUrl($params->getMagentoUrl(), $params->getWsdlUrl())
-                && $this->hasValidSoapUrlValidator->isValidSoapUrl($params->getSoapUrl());
     }
 }

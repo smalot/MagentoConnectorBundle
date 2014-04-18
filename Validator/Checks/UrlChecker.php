@@ -44,17 +44,20 @@ class UrlChecker
      */
     public function checkReachableUrl($url)
     {
-        //curl
-        $curl = curl_init($soapUrl);
+        $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_FAILONERROR, 1);
         curl_setopt($curl, CURLOPT_HEADER, 1);
         $output = curl_exec($curl);
         curl_close($curl);
 
-        if (false === $headers) {
+        if (false === $output) {
             throw new InvalidUrlException();
-        } elseif (false === strpos($headers[0], '200')) {
+        }
+
+        $header = explode('Date:', $output, 2);
+
+        if(false === strpos($header[0], '200')) {
             throw new NotReachableUrlException();
         }
 
