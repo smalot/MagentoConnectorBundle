@@ -8,7 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class WebserviceGuesserSpec extends ObjectBehavior
+class WebserviceGuesserFactorySpec extends ObjectBehavior
 {
     function let(MagentoSoapClientFactory $magentoSoapClientFactory, MagentoSoapClientParameters $clientParameters)
     {

@@ -2,9 +2,9 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\CategoryWebservice;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -14,14 +14,14 @@ use Prophecy\Argument;
 class CategoryWriterSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         CategoryMappingManager $categoryMappingManager,
-        Webservice $webservice,
+        CategoryWebservice $webservice,
         StepExecution $stepExecution
     ) {
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('category', Argument::any())->willReturn($webservice);
 
-        $this->beConstructedWith($webserviceGuesser, $categoryMappingManager);
+        $this->beConstructedWith($webserviceGuesserFactory, $categoryMappingManager);
         $this->setStepExecution($stepExecution);
     }
 

@@ -9,12 +9,13 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\StoreViewsWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\CategoryWebservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 class CategoryProcessorSpec extends ObjectBehavior
@@ -24,15 +25,16 @@ class CategoryProcessorSpec extends ObjectBehavior
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
         MappingMerger $categoryMappingMerger,
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         NormalizerGuesser $normalizerGuesser,
         CategoryMappingManager $categoryMappingManager,
-        Webservice $webservice,
+        CategoryWebservice $categoryWebservice,
         CategoryNormalizer $categoryNormalizer,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        StoreViewsWebservice $storeViewsWebservice
     ) {
         $this->beConstructedWith(
-            $webserviceGuesser,
+            $webserviceGuesserFactory,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
@@ -41,7 +43,8 @@ class CategoryProcessorSpec extends ObjectBehavior
         );
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('category', Argument::any())->willReturn($categoryWebservice);
+        $webserviceGuesserFactory->getWebservice('storeviews', Argument::any())->willReturn($storeViewsWebservice);
 
         $normalizerGuesser->getCategoryNormalizer(Argument::any(), Argument::any())->willReturn($categoryNormalizer);
     }
@@ -49,17 +52,17 @@ class CategoryProcessorSpec extends ObjectBehavior
     function it_normalizes_categories(
         Category $category,
         Category $parentCategory,
-        $webservice,
-        $categoryNormalizer,
-        $categoryMappingMerger
+        $storeViewsWebservice,
+        $categoryWebservice,
+        $categoryNormalizer
     ) {
-        $webservice->getCategoriesStatus()->willReturn(array(
+        $categoryWebservice->getCategoriesStatus()->willReturn(array(
             1 => array(
                 'category_id' => 1
             )
         ));
 
-        $webservice->getStoreViewsList()->willReturn(array(
+        $storeViewsWebservice->getStoreViewsList()->willReturn(array(
             array(
                 'store_id' => 10,
                 'code'     => 'fr_fr'

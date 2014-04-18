@@ -6,9 +6,10 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeWebservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\StoreViewsWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
@@ -24,14 +25,15 @@ class OptionProcessorSpec extends ObjectBehavior
         MappingMerger $storeViewMappingMerger,
         MappingMerger $attributeMappingMerger,
         MappingCollection $attributeMapping,
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         NormalizerGuesser $normalizerGuesser,
-        Webservice $webservice,
+        AttributeWebservice $attributeWebservice,
+        StoreViewsWebservice $storeViewsWebservice,
         OptionNormalizer $optionNormalizer,
         StepExecution $stepExecution
     ) {
         $this->beConstructedWith(
-            $webserviceGuesser,
+            $webserviceGuesserFactory,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
@@ -41,7 +43,8 @@ class OptionProcessorSpec extends ObjectBehavior
 
         $attributeMappingMerger->getMapping()->willReturn($attributeMapping);
         $attributeMapping->getTarget('color')->willReturn('color');
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('option', Argument::any())->willReturn($attributeWebservice);
+        $webserviceGuesserFactory->getWebservice('storeviews', Argument::any())->willReturn($storeViewsWebservice);
         $normalizerGuesser->getOptionNormalizer(Argument::cetera())->willReturn($optionNormalizer);
     }
 
@@ -50,7 +53,8 @@ class OptionProcessorSpec extends ObjectBehavior
         AttributeOption $optionBlue,
         Attribute $attribute,
         $optionNormalizer,
-        $webservice
+        $storeViewsWebservice,
+        $attributeWebservice
     ) {
         $optionRed->getAttribute()->willReturn($attribute);
         $attribute->getCode()->willReturn('color');
@@ -58,8 +62,8 @@ class OptionProcessorSpec extends ObjectBehavior
         $optionRed->getCode()->willReturn('red');
         $optionBlue->getCode()->willReturn('blue');
 
-        $webservice->getStoreViewsList()->shouldBeCalled();
-        $webservice->getAttributeOptions('color')->willReturn(array('red'));
+        $storeViewsWebservice->getStoreViewsList()->shouldBeCalled();
+        $attributeWebservice->getAttributeOptions('color')->willReturn(array('red'));
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(array('foo'));
         $optionNormalizer->normalize($optionBlue, Argument::cetera())->willReturn(array('bar'));
@@ -74,15 +78,16 @@ class OptionProcessorSpec extends ObjectBehavior
         AttributeOption $optionRed,
         Attribute $attribute,
         $optionNormalizer,
-        $webservice
+        $storeViewsWebservice,
+        $attributeWebservice
     ) {
         $optionRed->getAttribute()->willReturn($attribute);
         $attribute->getCode()->willReturn('color');
 
         $optionRed->getCode()->willReturn('red');
 
-        $webservice->getStoreViewsList()->shouldBeCalled();
-        $webservice->getAttributeOptions('color')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $storeViewsWebservice->getStoreViewsList()->shouldBeCalled();
+        $attributeWebservice->getAttributeOptions('color')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException');
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(array('foo'));
 
@@ -93,15 +98,16 @@ class OptionProcessorSpec extends ObjectBehavior
         AttributeOption $optionRed,
         Attribute $attribute,
         $optionNormalizer,
-        $webservice
+        $attributeWebservice,
+        $storeViewsWebservice
     ) {
         $optionRed->getAttribute()->willReturn($attribute);
         $attribute->getCode()->willReturn('color');
 
         $optionRed->getCode()->willReturn('red');
 
-        $webservice->getStoreViewsList()->shouldBeCalled();
-        $webservice->getAttributeOptions('color')->willReturn(array('red'));
+        $storeViewsWebservice->getStoreViewsList()->shouldBeCalled();
+        $attributeWebservice->getAttributeOptions('color')->willReturn(array('red'));
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException');
 

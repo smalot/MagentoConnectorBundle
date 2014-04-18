@@ -2,9 +2,9 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -15,33 +15,33 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
 
     function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        WebserviceGuesser $webserviceGuesser,
-        Webservice $webservice
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        AttributeWebservice $attributeWebservice
     ) {
-        $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
+        $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesserFactory);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('attribute', Argument::cetera())->willReturn($attributeWebservice);
         $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url');
     }
 
-    function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
+    function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $attributeWebservice)
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $webservice->getAllAttributes()->willReturn(array('attribute_foo' => array(), 'attribute_bar' => array()));
+        $attributeWebservice->getAllAttributes()->willReturn(array('attribute_foo' => array(), 'attribute_bar' => array()));
 
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
         $mapping->toArray()->shouldReturn(array());
     }
 
-    function it_shoulds_get_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $webservice)
+    function it_shoulds_get_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $attributeWebservice)
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $webservice->getAllAttributes()->willReturn(array('name' => array(), 'attribute_bar' => array()));
+        $attributeWebservice->getAllAttributes()->willReturn(array('name' => array(), 'attribute_bar' => array()));
 
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
@@ -60,12 +60,12 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->setMapping(array())->shouldReturn(null);
     }
 
-    function it_shoulds_get_all_magento_attributes_as_sources($hasValidCredentialsValidator, $webservice)
+    function it_shoulds_get_all_magento_attributes_as_sources($hasValidCredentialsValidator, $attributeWebservice)
     {
         $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapParameters(Argument::any())->willReturn(true);
 
-        $webservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
+        $attributeWebservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
 
         $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo'), array('id' => 'bar', 'text' => 'bar')));
     }

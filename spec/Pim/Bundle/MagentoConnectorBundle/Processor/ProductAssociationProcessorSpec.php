@@ -5,10 +5,10 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\ProductWebservice;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
@@ -23,14 +23,14 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         ChannelManager $channelManager,
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         NormalizerGuesser $normalizerGuesser,
         AssociationTypeManager $associationTypeManager,
-        Webservice $webservice,
+        ProductWebservice $productWebservice,
         StepExecution $stepExecution
     ) {
         $this->beConstructedWith(
-            $webserviceGuesser,
+            $webserviceGuesserFactory,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
@@ -38,13 +38,13 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         );
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('product', Argument::cetera())->willReturn($productWebservice);
         $this->setPimUpSell('UPSELL');
     }
 
-    function it_generated_association_calls_for_given_products(ProductInterface $product, ProductInterface $associatedProduct, Association $association, AssociationType $associationType, $webservice)
+    function it_generated_association_calls_for_given_products(ProductInterface $product, ProductInterface $associatedProduct, Association $association, AssociationType $associationType, $productWebservice)
     {
-        $webservice->getAssociationsStatus($product)->willReturn(array('up_sell' => array(), 'cross_sell' => array(array('sku' => 'sku-011')), 'related' => array()));
+        $productWebservice->getAssociationsStatus($product)->willReturn(array('up_sell' => array(), 'cross_sell' => array(array('sku' => 'sku-011')), 'related' => array()));
 
         $product->getIdentifier()->willReturn('sku-012');
         $product->getAssociations()->willReturn(array($association));

@@ -2,8 +2,8 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\OptionWebservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -11,13 +11,13 @@ use Prophecy\Argument;
 class OptionWriterSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser $webserviceGuesser,
-        Webservice $webservice,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        OptionWebservice $webservice,
         StepExecution $stepExecution
     ) {
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('option', Argument::any())->willReturn($webservice);
 
-        $this->beConstructedWith($webserviceGuesser);
+        $this->beConstructedWith($webserviceGuesserFactory);
         $this->setStepExecution($stepExecution);
     }
 

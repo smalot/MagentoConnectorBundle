@@ -6,10 +6,9 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
@@ -24,14 +23,14 @@ class AttributeProcessorSpec extends ObjectBehavior
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
         MappingMerger $attributeMappingMerger,
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         NormalizerGuesser $normalizerGuesser,
-        Webservice $webservice,
+        AttributeWebservice $attributeWebservice,
         AttributeNormalizer $attributeNormalizer,
         StepExecution $stepExecution
     ) {
         $this->beConstructedWith(
-            $webserviceGuesser,
+            $webserviceGuesserFactory,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
@@ -39,7 +38,7 @@ class AttributeProcessorSpec extends ObjectBehavior
         );
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('attribute'. Argument::any())->willReturn($attributeWebservice);
 
         $normalizerGuesser->getAttributeNormalizer(Argument::any(), Argument::any())->willReturn($attributeNormalizer);
 

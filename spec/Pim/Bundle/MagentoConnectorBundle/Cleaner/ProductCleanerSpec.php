@@ -3,9 +3,9 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\ProductWebservice;
 use Pim\Bundle\CatalogBundle\Doctrine\ORM\ProductRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
@@ -22,9 +22,9 @@ class ProductCleanerSpec extends ObjectBehavior
 
     function let(
         ChannelManager $channelManager,
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         ProductManager $productManager,
-        Webservice $webservice,
+        ProductWebservice $productWebservice,
         ProductRepository $productRepository,
         QueryBuilder $queryBuilder,
         AbstractQuery $query,
@@ -34,12 +34,12 @@ class ProductCleanerSpec extends ObjectBehavior
         Channel $channel,
         StepExecution $stepExecution
     ) {
-        $this->beConstructedWith($webserviceGuesser, $channelManager, $productManager);
+        $this->beConstructedWith($webserviceGuesserFactory, $channelManager, $productManager);
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('product', Argument::cetera())->willReturn($productWebservice);
 
-        $webservice->getProductsStatus()->willReturn(
+        $productWebservice->getProductsStatus()->willReturn(
             array(
                 array('sku' => 'sku-000'),
                 array('sku' => 'sku-001'),
@@ -64,7 +64,7 @@ class ProductCleanerSpec extends ObjectBehavior
         );
     }
 
-    function it_tells_magento_to_disable_deleted_products($webservice, $productRepository, $query)
+    function it_tells_magento_to_disable_deleted_products($productWebservice, $productRepository, $query)
     {
         $this->setNotCompleteAnymoreAction('do_nothing');
         $this->setNotInPimAnymoreAction('disable');
@@ -72,12 +72,12 @@ class ProductCleanerSpec extends ObjectBehavior
         $query->getResult()->willReturn(array($this->products[0], $this->products[1]));
         $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1]));
 
-        $webservice->disableProduct('sku-002')->shouldBeCalled();
+        $productWebservice->disableProduct('sku-002')->shouldBeCalled();
 
         $this->execute();
     }
 
-    function it_tells_magento_to_delete_deleted_products($webservice, $productRepository, $query)
+    function it_tells_magento_to_delete_deleted_products($productWebservice, $productRepository, $query)
     {
         $this->setNotCompleteAnymoreAction('do_nothing');
         $this->setNotInPimAnymoreAction('delete');
@@ -85,12 +85,12 @@ class ProductCleanerSpec extends ObjectBehavior
         $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
         $productRepository->findAll()->willReturn(array($this->products[0], $this->products[2]));
 
-        $webservice->deleteProduct('sku-001')->shouldBeCalled();
+        $productWebservice->deleteProduct('sku-001')->shouldBeCalled();
 
         $this->execute();
     }
 
-    function it_tells_magento_to_disable_incomplete_products($webservice, $productRepository, $query)
+    function it_tells_magento_to_disable_incomplete_products($productWebservice, $productRepository, $query)
     {
         $this->setNotCompleteAnymoreAction('disable');
         $this->setNotInPimAnymoreAction('do_nothing');
@@ -98,12 +98,12 @@ class ProductCleanerSpec extends ObjectBehavior
         $query->getResult()->willReturn(array($this->products[1], $this->products[2]));
         $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
 
-        $webservice->disableProduct('sku-000')->shouldBeCalled();
+        $productWebservice->disableProduct('sku-000')->shouldBeCalled();
 
         $this->execute();
     }
 
-    function it_tells_magento_to_delete_incomplete_products($webservice, $productRepository, $query)
+    function it_tells_magento_to_delete_incomplete_products($productWebservice, $productRepository, $query)
     {
         $this->setNotCompleteAnymoreAction('delete');
         $this->setNotInPimAnymoreAction('do_nothing');
@@ -111,12 +111,12 @@ class ProductCleanerSpec extends ObjectBehavior
         $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
         $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
 
-        $webservice->deleteProduct('sku-001')->shouldBeCalled();
+        $productWebservice->deleteProduct('sku-001')->shouldBeCalled();
 
         $this->execute();
     }
 
-    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api($webservice, $productRepository, $query)
+    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api($productWebservice, $productRepository, $query)
     {
         $this->setNotCompleteAnymoreAction('delete');
         $this->setNotInPimAnymoreAction('do_nothing');
@@ -124,7 +124,7 @@ class ProductCleanerSpec extends ObjectBehavior
         $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
         $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
 
-        $webservice->deleteProduct('sku-001')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $productWebservice->deleteProduct('sku-001')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException');
 
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }

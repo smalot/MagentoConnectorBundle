@@ -3,22 +3,24 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Webservice;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
 use PhpSpec\ObjectBehavior;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 class WebserviceSpec extends ObjectBehavior
 {
-    function let(MagentoSoapClient $magentoSoapClient)
+    function let(MagentoSoapClientParameters $clientParameters)
     {
-        $this->beConstructedWith($magentoSoapClient);
+        $clientParameters = new MagentoSoapClientParameters('gfd', 'grd', 'tre');
     }
 
-    function it_calls_soap_client_to_send_new_category($magentoSoapClient)
+    function it_calls_soap_client_to_send_new_category($clientParameters)
     {
-        $magentoSoapClient->call(
-            Webservice::SOAP_ACTION_CATEGORY_CREATE,
+        $clientParameters = new MagentoSoapClientParameters('gfd', 'grd', 'tre');
+        MagentoSoapClient::getInstance($clientParameters)->call(
+            AbstractWebservice::SOAP_ACTION_CATEGORY_CREATE,
             array('foo')
         )->willReturn(12);
 
@@ -28,7 +30,7 @@ class WebserviceSpec extends ObjectBehavior
     function it_calls_soap_client_to_send_category_update($magentoSoapClient)
     {
         $magentoSoapClient->call(
-            Webservice::SOAP_ACTION_CATEGORY_UPDATE,
+            AbstractWebservice::SOAP_ACTION_CATEGORY_UPDATE,
             array('foo')
         )->shouldBeCalled();
 
@@ -38,7 +40,7 @@ class WebserviceSpec extends ObjectBehavior
     function it_calls_soap_client_to_send_category_move($magentoSoapClient)
     {
         $magentoSoapClient->call(
-            Webservice::SOAP_ACTION_CATEGORY_MOVE,
+            AbstractWebservice::SOAP_ACTION_CATEGORY_MOVE,
             array('foo')
         )->shouldBeCalled();
 
@@ -74,7 +76,7 @@ class WebserviceSpec extends ObjectBehavior
         );
 
         $magentoSoapClient->call(
-            Webservice::SOAP_ACTION_CATEGORY_TREE
+            AbstractWebservice::SOAP_ACTION_CATEGORY_TREE
         )->willReturn($tree);
 
         $this->getCategoriesStatus()->shouldReturn($flattenTree);

@@ -2,26 +2,26 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\ProductWebservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class ProductAssociationWriterSpec extends ObjectBehavior
 {
-    function let(WebserviceGuesser $webserviceGuesser, Webservice $webservice, StepExecution $stepExecution)
+    function let(WebserviceGuesserFactory $webserviceGuesserFactory, ProductWebservice $productWebservice, StepExecution $stepExecution)
     {
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $webserviceGuesserFactory->getWebservice('product', Argument::cetera())->willReturn($productWebservice);
 
-        $this->beConstructedWith($webserviceGuesser);
+        $this->beConstructedWith($webserviceGuesserFactory);
         $this->setStepExecution($stepExecution);
     }
 
-    function it_sends_remove_and_create_calls_to_the_webservice($webservice)
+    function it_sends_remove_and_create_calls_to_the_webservice($productWebservice)
     {
-        $webservice->removeProductAssociation(array('foo'))->shouldBeCalled();
-        $webservice->createProductAssociation(array('bar'))->shouldBeCalled();
+        $productWebservice->removeProductAssociation(array('foo'))->shouldBeCalled();
+        $productWebservice->createProductAssociation(array('bar'))->shouldBeCalled();
 
         $this->write(
             array(
