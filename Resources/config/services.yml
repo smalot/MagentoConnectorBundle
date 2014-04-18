@@ -1,5 +1,5 @@
 parameters:
-    pim_magento_connector.guesser.magento_webservice.class: Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser
+    pim_magento_connector.guesser.magento_webservice.class: Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory
     pim_magento_connector.guesser.magento_normalizer.class: Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
     pim_magento_connector.validator.has_valid_currency.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrencyValidator
@@ -8,7 +8,6 @@ parameters:
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
-    pim_magento_connector.factory.magento_soap_client.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory
     pim_magento_connector.repository.currency.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CurrencyRepository
     pim_magento_connector.repository.category.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository
     pim_magento_connector.twig.configuration_extension.class: Pim\Bundle\MagentoConnectorBundle\Twig\ConfigurationExtension
@@ -17,12 +16,9 @@ services:
     # guesser
     pim_magento_connector.guesser.magento_webservice:
         class: %pim_magento_connector.guesser.magento_webservice.class%
-        arguments:
-            - '@pim_magento_connector.factory.magento_soap_client'
     pim_magento_connector.guesser.magento_normalizer:
         class: %pim_magento_connector.guesser.magento_normalizer.class%
         arguments:
-            - '@pim_magento_connector.factory.magento_soap_client'
             - '@pim_catalog.manager.channel'
             - '@pim_catalog.manager.media'
             - '@pim_magento_connector.normalizer.value'
@@ -77,9 +73,6 @@ services:
         arguments:
             name: %pim_catalog.entity.currency.class%
 
-
-    pim_magento_connector.factory.magento_soap_client:
-        class: %pim_magento_connector.factory.magento_soap_client.class%
 
     pim_magento_connector.twig.configuration_extension:
         class: '%pim_magento_connector.twig.configuration_extension.class%'

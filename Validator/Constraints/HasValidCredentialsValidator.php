@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -20,9 +20,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 class HasValidCredentialsValidator extends ConstraintValidator
 {
     /**
-     * @var WebserviceGuesser
+     * @var WebserviceGuesserFactory
      */
-    protected $webserviceGuesser;
+    protected $webserviceGuesserFactory;
 
     /**
      * @var MagentoUrlValidator
@@ -40,15 +40,15 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $valid = false;
 
     /**
-     * @param WebserviceGuesser   $webserviceGuesser
-     * @param MagentoUrlValidator $magentoUrlValidator
+     * @param WebserviceGuesserFactory   $webserviceGuesserFactory
+     * @param MagentoUrlValidator        $magentoUrlValidator
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        MagentoUrlValidator $magentoUrlValidator
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        MagentoUrlValidator      $magentoUrlValidator
     ) {
-        $this->webserviceGuesser   = $webserviceGuesser;
-        $this->magentoUrlValidator = $magentoUrlValidator;
+        $this->webserviceGuesserFactory   = $webserviceGuesserFactory;
+        $this->magentoUrlValidator        = $magentoUrlValidator;
     }
 
     /**
@@ -88,7 +88,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
                 $this->valid = false;
             } else {
                 try {
-                    $this->webserviceGuesser->getWebservice($clientParameters);
+                    $this->webserviceGuesserFactory->getWebservice('option', $clientParameters);
                     $this->valid = true;
                 } catch (InvalidCredentialException $e) {
                     $this->valid = false;

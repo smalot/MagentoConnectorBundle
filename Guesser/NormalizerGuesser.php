@@ -7,7 +7,6 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
@@ -29,11 +28,6 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
  */
 class NormalizerGuesser extends AbstractGuesser
 {
-    /**
-     * @var MagentoSoapClientFactory
-     */
-    protected $magentoSoapClientFactory;
-
     /**
      * @var ChannelManager
      */
@@ -61,24 +55,21 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Constructor
-     * @param MagentoSoapClientFactory $magentoSoapClientFactory
      * @param ChannelManager           $channelManager
      * @param MediaManager             $mediaManager
      * @param ProductValueNormalizer   $productValueNormalizer
      * @param CategoryMappingManager   $categoryMappingManager
      * @param AssociationTypeManager   $associationTypeManager
-     * @param AssociationTypeManager   $productValueManager
+     * @param ProductValueManager      $productValueManager
      */
     public function __construct(
-        MagentoSoapClientFactory $magentoSoapClientFactory,
-        ChannelManager $channelManager,
-        MediaManager $mediaManager,
+        ChannelManager         $channelManager,
+        MediaManager           $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
         CategoryMappingManager $categoryMappingManager,
         AssociationTypeManager $associationTypeManager,
-        ProductValueManager $productValueManager
+        ProductValueManager    $productValueManager
     ) {
-        $this->magentoSoapClientFactory = $magentoSoapClientFactory;
         $this->channelManager           = $channelManager;
         $this->mediaManager             = $mediaManager;
         $this->productValueNormalizer   = $productValueNormalizer;
@@ -103,7 +94,7 @@ class NormalizerGuesser extends AbstractGuesser
         $visibility,
         $currencyCode
     ) {
-        $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
+        $client         = MagentoSoapClient::getInstance($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
@@ -140,17 +131,18 @@ class NormalizerGuesser extends AbstractGuesser
     /**
      * Get the configurable normalizer corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
-     * @param ProductNormalizerInterface  $productNormalizer
-     * @param PriceMappingManager         $priceMappingManager
+     * @param ProductNormalizerInterface $productNormalizer
+     * @param PriceMappingManager $priceMappingManager
      *
-     * @return AbstractNormalizer
+     * @throws NotSupportedVersionException
+     * @return ConfigurableNormalizer
      */
     public function getConfigurableNormalizer(
         MagentoSoapClientParameters $clientParameters,
         ProductNormalizerInterface $productNormalizer,
         PriceMappingManager $priceMappingManager
     ) {
-        $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
+        $client         = MagentoSoapClient::getInstance($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
@@ -171,11 +163,12 @@ class NormalizerGuesser extends AbstractGuesser
      * Get the Category normalizer corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      *
-     * @return AbstractNormalizer
+     * @throws NotSupportedVersionException
+     * @return CategoryNormalizer
      */
     public function getCategoryNormalizer(MagentoSoapClientParameters $clientParameters)
     {
-        $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
+        $client         = MagentoSoapClient::getInstance($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
@@ -195,11 +188,12 @@ class NormalizerGuesser extends AbstractGuesser
      * Get the option normalizer corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      *
-     * @return AbstractNormalizer
+     * @throws NotSupportedVersionException
+     * @return OptionNormalizer
      */
     public function getOptionNormalizer(MagentoSoapClientParameters $clientParameters)
     {
-        $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
+        $client         = MagentoSoapClient::getInstance($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
@@ -216,11 +210,12 @@ class NormalizerGuesser extends AbstractGuesser
      * Get the attribute normalizer corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
      *
-     * @return AbstractNormalizer
+     * @throws NotSupportedVersionException
+     * @return AttributeNormalizer
      */
     public function getAttributeNormalizer(MagentoSoapClientParameters $clientParameters)
     {
-        $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
+        $client         = MagentoSoapClient::getInstance($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {

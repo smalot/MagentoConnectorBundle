@@ -4,10 +4,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Item;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -23,19 +23,14 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
 {
     /**
-     * @var Webservice
-     */
-    protected $webservice;
-
-    /**
      * @var StepExecution
      */
     protected $stepExecution;
 
     /**
-     * @var WebserviceGuesser
+     * @var WebserviceGuesserFactory
      */
-    protected $webserviceGuesser;
+    protected $webserviceGuesserFactory;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -72,7 +67,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * get soapUsername
      *
-     * @return string Soap mangeto soapUsername
+     * @return string Soap magento soapUsername
      */
     public function getSoapUsername()
     {
@@ -82,7 +77,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Set soapUsername
      *
-     * @param string $soapUsername Soap mangeto soapUsername
+     * @param string $soapUsername Soap magento soapUsername
      *
      * @return MagentoItemStep
      */
@@ -96,7 +91,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * get soapApiKey
      *
-     * @return string Soap mangeto soapApiKey
+     * @return string Soap magento soapApiKey
      */
     public function getSoapApiKey()
     {
@@ -106,7 +101,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Set soapApiKey
      *
-     * @param string $soapApiKey Soap mangeto soapApiKey
+     * @param string $soapApiKey Soap magento soapApiKey
      *
      * @return MagentoItemStep
      */
@@ -120,7 +115,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * get soapUrl
      *
-     * @return string mangeto soap url
+     * @return string magento soap url
      */
     public function getSoapUrl()
     {
@@ -130,7 +125,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Set soapUrl
      *
-     * @param string $soapUrl mangeto soap url
+     * @param string $soapUrl magneto soap url
      *
      * @return MagentoItemStep
      */
@@ -168,25 +163,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
      */
-    public function __construct(WebserviceGuesser $webserviceGuesser)
+    public function __construct(WebserviceGuesserFactory $webserviceGuesserFactory)
     {
-        $this->webserviceGuesser = $webserviceGuesser;
-    }
-
-    /**
-     * Function called before all item step execution
-     */
-    protected function beforeExecute()
-    {
-        if ($this->beforeExecute) {
-            return;
-        }
-
-        $this->beforeExecute = true;
-
-        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
+        $this->webserviceGuesserFactory = $webserviceGuesserFactory;
     }
 
     /**
