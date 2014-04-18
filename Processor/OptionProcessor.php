@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;

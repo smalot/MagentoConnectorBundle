@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**

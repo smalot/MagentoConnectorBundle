@@ -7,9 +7,8 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 

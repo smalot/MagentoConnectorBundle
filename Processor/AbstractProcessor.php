@@ -9,7 +9,7 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 

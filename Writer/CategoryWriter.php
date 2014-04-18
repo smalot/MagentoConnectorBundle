@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 
 /**
  * Magento category writer
@@ -46,7 +46,6 @@ class CategoryWriter extends AbstractWriter
      */
     public function write(array $batches)
     {
-        $this->beforeExecute();
 
         //creation for each product in the admin storeView (with default locale)
         foreach ($batches as $batch) {

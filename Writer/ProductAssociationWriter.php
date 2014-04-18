@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 /**
@@ -21,7 +21,6 @@ class ProductAssociationWriter extends AbstractWriter
      */
     public function write(array $productAssociationCallsBatchs)
     {
-        $this->beforeExecute();
 
         foreach ($productAssociationCallsBatchs as $productAssociationCalls) {
             $this->handleProductAssociationCalls($productAssociationCalls);

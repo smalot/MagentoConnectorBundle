@@ -54,7 +54,7 @@ class AttributeProcessor extends AbstractProcessor
 
     /**
      * @param WebserviceGuesserFactory $webserviceGuesserFactory
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param NormalizerGuesser        $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      * @param MappingMerger            $attributeMappingMerger

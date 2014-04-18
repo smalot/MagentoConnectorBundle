@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 
 /**
  * Magento attribute writer
@@ -23,7 +23,6 @@ class AttributeWriter extends AbstractWriter
      */
     public function write(array $attributes)
     {
-        $this->beforeExecute();
 
         foreach ($attributes as $attribute) {
             try {
