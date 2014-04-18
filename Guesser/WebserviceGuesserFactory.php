@@ -32,12 +32,9 @@ class WebserviceGuesserFactory extends AbstractGuesser
     protected $magentoSoapClient;
 
     /*
-     *
+     * @var array
      */
-    public function __construct()
-    {
-        $this->magentoVersion = $this->getMagentoVersion($this->magentoSoapClient);
-    }
+    protected $webserviceInstances = array();
 
     /**
      * Get the Webservice corresponding to the given Magento parameters
@@ -50,6 +47,7 @@ class WebserviceGuesserFactory extends AbstractGuesser
     public function getWebservice($webserviceName, $clientParameters)
     {
         $this->magentoSoapClient = MagentoSoapClient::getInstance($clientParameters);
+        $this->magentoVersion = $this->getMagentoVersion($this->magentoSoapClient);
         $webservice = null;
         switch ($this->magentoVersion) {
             case AbstractGuesser::MAGENTO_VERSION_1_8:
@@ -66,19 +64,64 @@ class WebserviceGuesserFactory extends AbstractGuesser
     }
 
     /*
-     *
+     * Get an instance of Webservice
+     * @param string $webserviceName The name of the webservice needed
+     * @return Webservice
      */
     protected function getInstance($webserviceName)
     {
-        $webServices = array(
-            'category'    => new CategoryWebservice($this->magentoSoapClient),
-            'option'      => new OptionWebservice($this->magentoSoapClient),
-            'product'     => new ProductWebservice($this->magentoSoapClient),
-            'attribute'   => new AttributeWebservice($this->magentoSoapClient),
-            'association' => new AssociationWebservice($this->magentoSoapClient),
-            'storeviews'  => new StoreViewsWebservice($this->magentoSoapClient)
-        );
+        $webservice = null;
+        switch ($webserviceName) {
+            case 'category':
+                if (array_key_exists($webserviceName, $this->webserviceInstances)) {
+                    $webservice = $this->webserviceInstances[$webserviceName];
+                } else {
+                    $webservice = new CategoryWebservice($this->magentoSoapClient);
+                    $this->webserviceInstances['category'] = $webservice;
+                }
+                break;
+            case 'option':
+                if (array_key_exists($webserviceName, $this->webserviceInstances)) {
+                    $webservice = $this->webserviceInstances[$webserviceName];
+                } else {
+                    $webservice = new OptionWebservice($this->magentoSoapClient);
+                    $this->webserviceInstances['option'] = $webservice;
+                }
+                break;
+            case 'product':
+                if (array_key_exists($webserviceName, $this->webserviceInstances)) {
+                    $webservice = $this->webserviceInstances[$webserviceName];
+                } else {
+                    $webservice = new ProductWebservice($this->magentoSoapClient);
+                    $this->webserviceInstances['product'] = $webservice;
+                }
+                break;
+            case 'attribute':
+                if (array_key_exists($webserviceName, $this->webserviceInstances)) {
+                    $webservice = $this->webserviceInstances[$webserviceName];
+                } else {
+                    $webservice = new AttributeWebservice($this->magentoSoapClient);
+                    $this->webserviceInstances['attribute'] = $webservice;
+                }
+                break;
+            case 'association':
+                if (array_key_exists($webserviceName, $this->webserviceInstances)) {
+                    $webservice = $this->webserviceInstances[$webserviceName];
+                } else {
+                    $webservice = new AssociationWebservice($this->magentoSoapClient);
+                    $this->webserviceInstances['association'] = $webservice;
+                }
+                break;
+            case 'storeviews':
+                if (array_key_exists($webserviceName, $this->webserviceInstances)) {
+                    $webservice = $this->webserviceInstances[$webserviceName];
+                } else {
+                    $webservice = new StoreViewsWebservice($this->magentoSoapClient);
+                    $this->webserviceInstances['storeviews'] = $webservice;
+                }
+                break;
+        }
 
-        return array_key_exists($webserviceName, $webServices) ? $webServices[$webserviceName] : null;
+        return $webservice;
     }
 }

@@ -44,6 +44,15 @@ class Mapper implements MapperInterface
     }
 
     /**
+     * Get mapper parameters
+     * @return MagentoSoapClientParameters $clientParameters
+     */
+    public function getClientParameters()
+    {
+        return $this->clientParameters;
+    }
+
+    /**
      * Get mapping
      * @return array
      */

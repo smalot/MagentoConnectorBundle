@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Entity\Repository;
 
 use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository as BaseGroupRepository;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 
 /**
  * Custom group repository
@@ -51,7 +51,7 @@ class GroupRepository extends BaseGroupRepository
         array_walk(
             $variantGroups,
             function (&$value) {
-                $value = sprintf(Webservice::CONFIGURABLE_IDENTIFIER_PATTERN, $value['code']);
+                $value = sprintf(AbstractWebservice::CONFIGURABLE_IDENTIFIER_PATTERN, $value['code']);
             }
         );
 

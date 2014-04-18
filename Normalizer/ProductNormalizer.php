@@ -6,7 +6,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException;
@@ -96,7 +96,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     {
         $processedItem = array();
 
-        $processedItem[Webservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+        $processedItem[AbstractWebservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
             $object,
             $context['magentoAttributes'],
             $context['magentoAttributesOptions'],
@@ -258,13 +258,14 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $attributeSetId,
                 $sku,
                 $defaultValues,
-                Webservice::SOAP_DEFAULT_STORE_VIEW
+                AbstractWebservice::SOAP_DEFAULT_STORE_VIEW
             );
+
         } else {
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                Webservice::SOAP_DEFAULT_STORE_VIEW,
+                AbstractWebservice::SOAP_DEFAULT_STORE_VIEW,
                 'sku'
             );
         }
@@ -399,8 +400,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         return array(
             $attributeMapping->getTarget(self::VISIBILITY) => $this->visibility,
             $attributeMapping->getTarget(self::ENABLED)    => (string) ($this->enabled) ? 1 : 2,
-            $attributeMapping->getTarget('created_at')     => $product->getCreated()->format(AbstractNormalizer::DATE_FORMAT),
-            $attributeMapping->getTarget('updated_at')     => $product->getUpdated()->format(AbstractNormalizer::DATE_FORMAT),
+            $attributeMapping->getTarget('created_at')     => $product->getCreated()->format(
+                AbstractNormalizer::DATE_FORMAT
+            ),
+            $attributeMapping->getTarget('updated_at')     => $product->getUpdated()->format(
+                AbstractNormalizer::DATE_FORMAT
+            ),
             $attributeMapping->getTarget('categories')     => $this->getProductCategories(
                 $product,
                 $parameters['categoryMapping']

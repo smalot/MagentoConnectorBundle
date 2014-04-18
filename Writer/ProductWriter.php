@@ -76,8 +76,6 @@ class ProductWriter extends AbstractWriter
      */
     public function write(array $products)
     {
-        $this->beforeExecute();
-
         //creation for each product in the admin storeView (with default locale)
         foreach ($products as $batch) {
             foreach ($batch as $product) {

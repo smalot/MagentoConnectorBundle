@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
+namespace Pim\Bundle\MagentoConnectorBundle\Webservice\Exception;
 
 /**
  * Exception thrown if the givent credential are not valid

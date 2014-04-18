@@ -174,8 +174,6 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      */
     protected function beforeExecute()
     {
-        parent::beforeExecute();
-
         $this->globalContext['defaultLocale']    = $this->defaultLocale;
         $this->globalContext['storeViewMapping'] = $this->storeViewMappingMerger->getMapping();
     }

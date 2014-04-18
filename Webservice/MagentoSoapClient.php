@@ -1,6 +1,10 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\ConnectionErrorException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\InvalidCredentialException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\NotConnectedException;
 
 /**
  * A magento soap client to handle connection with magento soap api

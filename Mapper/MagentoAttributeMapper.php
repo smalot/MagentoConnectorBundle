@@ -29,7 +29,7 @@ class MagentoAttributeMapper extends Mapper
     ) {
         parent::__construct($hasValidCredentialsValidator);
 
-        $this->webserviceGuesser = $webserviceGuesserFactory;
+        $this->webserviceGuesserFactory = $webserviceGuesserFactory;
     }
 
     /**
