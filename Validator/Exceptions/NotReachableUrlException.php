@@ -1,15 +1,15 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\Exceptions;
+namespace Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions;
 
 /**
- * Exception thrown if the given xml is not valid
+ * Exception thrown if the given url is not reachable
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class InvalidXmlException extends \Exception
+class NotReachableUrlException extends \Exception
 {
 }

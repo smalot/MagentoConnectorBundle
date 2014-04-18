@@ -4,8 +4,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\Exceptions\InvalidSoapUrlException;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\Exceptions\InvalidXmlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidSoapUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidXmlException;
 
 /**
  * Validator for SOAP URL
