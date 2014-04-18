@@ -1,6 +1,7 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
+
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\ConnectionErrorException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Exception\InvalidCredentialException;
@@ -175,7 +176,6 @@ class MagentoSoapClient
      * Return the singleton class instance if it exists or create it and return it
      *
      * @param MagentoSoapClient $clientParameters The client parameters
-     * @param \SoapClient       $soapClient       The SoapClient class
      * @return MagentoSoapClient
      */
     public static function getInstance(MagentoSoapClientParameters $clientParameters)
