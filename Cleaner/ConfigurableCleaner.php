@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
@@ -26,18 +26,18 @@ class ConfigurableCleaner extends ProductCleaner
     protected $groupManager;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param ChannelManager    $channelManager
-     * @param ProductManager    $productManager
-     * @param GroupManager      $groupManager
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param ChannelManager           $channelManager
+     * @param ProductManager           $productManager
+     * @param GroupManager             $groupManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         ChannelManager $channelManager,
         ProductManager $productManager,
         GroupManager $groupManager
     ) {
-        parent::__construct($webserviceGuesser, $channelManager, $productManager);
+        parent::__construct($webserviceGuesserFactory, $channelManager, $productManager);
 
         $this->groupManager = $groupManager;
     }
@@ -47,9 +47,8 @@ class ConfigurableCleaner extends ProductCleaner
      */
     public function execute()
     {
-        parent::beforeExecute();
-
-        $magentoProducts  = $this->webservice->getProductsStatus();
+        $magentoProducts  = $this->webserviceGuesserFactory
+            ->getWebservice('product', $this->getClientParameters())->getProductsStatus();
         $pimConfigurables = $this->getPimConfigurablesSkus();
 
         foreach ($magentoProducts as $product) {

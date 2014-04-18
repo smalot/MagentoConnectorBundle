@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\webserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
@@ -28,14 +28,14 @@ class CategoryCleaner extends Cleaner
     protected $categoryMappingManager;
 
     /**
-     * @param WebserviceGuesser      $webserviceGuesser
-     * @param CategoryMappingManager $categoryMappingManager
+     * @param webserviceGuesserFactory      $webserviceGuesserFactory
+     * @param CategoryMappingManager        $categoryMappingManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
+        webserviceGuesserFactory $webserviceGuesserFactory,
         CategoryMappingManager $categoryMappingManager
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }
@@ -45,9 +45,8 @@ class CategoryCleaner extends Cleaner
      */
     public function execute()
     {
-        parent::beforeExecute();
-
-        $magentoCategories = $this->webservice->getCategoriesStatus();
+        $magentoCategories = $this->webserviceGuesserFactory
+            ->getWebservice('category', $this->getClientParameters())->getCategoriesStatus();
 
         foreach ($magentoCategories as $category) {
             if (!$this->categoryMappingManager->magentoCategoryExists($category['category_id'], $this->soapUrl) &&
@@ -72,11 +71,13 @@ class CategoryCleaner extends Cleaner
     protected function handleCategoryNotInPimAnymore(array $category)
     {
         if ($this->notInPimAnymoreAction === self::DISABLE) {
-            $this->webservice->disableCategory($category['category_id']);
+            $this->webserviceGuesserFactory
+                ->getWebservice('category', $this->getClientParameters())->disableCategory($category['category_id']);
             $this->stepExecution->incrementSummaryInfo(self::CATEGORY_DISABLED);
         } elseif ($this->notInPimAnymoreAction === self::DELETE) {
             try {
-                $this->webservice->deleteCategory($category['category_id']);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('category', $this->getClientParameters())->deleteCategory($category['category_id']);
                 $this->stepExecution->incrementSummaryInfo(self::CATEGORY_DELETED);
             } catch (SoapCallException $e) {
                 //In any case, if deleteCategory fails, it is due to the parent category has allready been deleted.

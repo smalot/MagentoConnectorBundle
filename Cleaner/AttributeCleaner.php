@@ -2,8 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
@@ -65,18 +64,18 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param MappingMerger     $attributeMappingMerger
-     * @param EntityManager     $em
-     * @param string            $attributeClassName
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param MappingMerger            $attributeMappingMerger
+     * @param EntityManager            $em
+     * @param string                   $attributeClassName
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        MappingMerger $attributeMappingMerger,
-        EntityManager $em,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        MappingMerger            $attributeMappingMerger,
+        EntityManager            $em,
         $attributeClassName
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->attributeMappingMerger = $attributeMappingMerger;
         $this->em                     = $em;
@@ -88,9 +87,8 @@ class AttributeCleaner extends Cleaner
      */
     public function execute()
     {
-        parent::beforeExecute();
-
-        $magentoAttributes = $this->webservice->getAllAttributes();
+        $magentoAttributes = $this->webserviceGuesserFactory
+            ->getWebservice('attribute', $this->getClientParameters())->getAllAttributes();
 
         foreach ($magentoAttributes as $attribute) {
             $this->cleanAttribute($attribute, $magentoAttributes);
@@ -100,9 +98,9 @@ class AttributeCleaner extends Cleaner
     /**
      * Clean the given attribute
      * @param array $attribute
-     * @param array $magentoAttributes
+     * @throws \Akeneo\Bundle\BatchBundle\Item\InvalidItemException
      */
-    protected function cleanAttribute(array $attribute, array $magentoAttributes)
+    protected function cleanAttribute(array $attribute)
     {
         $magentoAttributeCode = $attribute['code'];
         $pimAttributeCode     = $this->attributeMappingMerger->getMapping()->getSource($magentoAttributeCode);
@@ -123,13 +121,14 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * Handle deletion or disableing of attributes which are not in PIM anymore
+     * Handle deletion or disabling of attributes which are not in PIM anymore
      * @param array $attribute
      */
     protected function handleAttributeNotInPimAnymore(array $attribute)
     {
         if ($this->notInPimAnymoreAction === self::DELETE) {
-            $this->webservice->deleteAttribute($attribute['code']);
+            $this->webserviceGuesserFactory->getWebservice('attribute', $this->getClientParameters())
+                ->deleteAttribute($attribute['code']);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_DELETED);
         }
     }

@@ -2,8 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
@@ -38,18 +37,18 @@ class OptionCleaner extends Cleaner
     protected $optionClassName;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param EntityManager     $em
-     * @param string            $attributeClassName
-     * @param string            $optionClassName
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param EntityManager            $em
+     * @param string                   $attributeClassName
+     * @param string                   $optionClassName
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         EntityManager $em,
         $attributeClassName,
         $optionClassName
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->em                 = $em;
         $this->attributeClassName = $attributeClassName;
@@ -61,9 +60,9 @@ class OptionCleaner extends Cleaner
      */
     public function execute()
     {
-        parent::beforeExecute();
 
-        $magentoOptions = $this->webservice->getAllAttributesOptions();
+        $magentoOptions = $this->webserviceGuesserFactory
+            ->getWebservice('option', $this->getClientParameters())->getAllAttributesOptions();
 
         foreach ($magentoOptions as $attributeCode => $options) {
             $attribute = $this->getAttribute($attributeCode);
@@ -96,15 +95,18 @@ class OptionCleaner extends Cleaner
     }
 
     /**
-     * Handle deletion or disableing of options which are not in PIM anymore
+     * Handle deletion or disabling of options which are not in PIM anymore
      * @param string $optionId
      * @param string $attributeCode
+     * @throws \Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException
+     * @throws \Akeneo\Bundle\BatchBundle\Item\InvalidItemException
      */
     protected function handleOptionNotInPimAnymore($optionId, $attributeCode)
     {
         if ($this->notInPimAnymoreAction === self::DELETE) {
             try {
-                $this->webservice->deleteOption($optionId, $attributeCode);
+                $this->webserviceGuesserFactory
+                    ->getWebservice('option', $this->getClientParameters())->deleteOption($optionId, $attributeCode);
                 $this->stepExecution->incrementSummaryInfo(self::OPTION_DELETED);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array($optionId));

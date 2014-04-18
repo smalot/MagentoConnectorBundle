@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
@@ -83,16 +83,16 @@ class ProductCleaner extends Cleaner
     }
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param ChannelManager    $channelManager
-     * @param ProductManager    $productManager
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param ChannelManager           $channelManager
+     * @param ProductManager           $productManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        ChannelManager $channelManager,
-        ProductManager $productManager
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        ChannelManager           $channelManager,
+        ProductManager           $productManager
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->channelManager = $channelManager;
         $this->productManager = $productManager;
@@ -103,9 +103,9 @@ class ProductCleaner extends Cleaner
      */
     public function execute()
     {
-        parent::beforeExecute();
 
-        $magentoProducts  = $this->webservice->getProductsStatus();
+        $magentoProducts  = $this->webserviceGuesserFactory
+            ->getWebservice('product', $this->getClientParameters())->getProductsStatus();
         $exportedProducts = $this->getExportedProductsSkus();
         $pimProducts      = $this->getPimProductsSkus();
 
@@ -188,10 +188,12 @@ class ProductCleaner extends Cleaner
     protected function handleProduct(array $product, $action)
     {
         if ($action === self::DISABLE) {
-            $this->webservice->disableProduct($product['sku']);
+            $this->webserviceGuesserFactory
+                ->getWebservice('product', $this->getClientParameters())->disableProduct($product['sku']);
             $this->stepExecution->incrementSummaryInfo(self::PRODUCT_DISABLED);
         } elseif ($action === self::DELETE) {
-            $this->webservice->deleteProduct($product['sku']);
+            $this->webserviceGuesserFactory
+                ->getWebservice('product', $this->getClientParameters())->deleteProduct($product['sku']);
             $this->stepExecution->incrementSummaryInfo(self::PRODUCT_DELETED);
         }
     }
