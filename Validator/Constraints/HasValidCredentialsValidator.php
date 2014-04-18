@@ -59,8 +59,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
         Checks\UrlChecker $urlChecker,
         Checks\SoapChecker $soapChecker,
         Checks\XmlChecker $xmlChecker
-    )
-    {
+    ) {
         $this->webserviceGuesser = $webserviceGuesser;
         $this->urlChecker        = $urlChecker;
         $this->soapChecker       = $soapChecker;
@@ -84,27 +83,29 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getWsdlUrl()
         );
 
-        try {
-            $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
-            $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
-            $xml = $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
-            $this->xmlChecker->checkXml($xml);
-            $this->webserviceGuesser->getWebservice($clientParameters);
-        } catch (Exception\InvalidUrlException $e) {
-            $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
-        } catch (Exceptions\NotReachableUrlException $e) {
-            $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
-        } catch (Exceptions\InvalidSoapUrlException $e) {
-            $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
-        } catch (Exceptions\InvalidXmlException $e) {
-            $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
-        } catch (InvalidCredentialException $e) {
-            $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
-            $this->context->addViolationAt('soapApikey', $constraint->messageApikey, array());
-        } catch (SoapCallException $e) {
-            $this->context->addViolationAt('wsdlUrl', $e->getMessage(), array());
-        }
+        if (!$this->valid) {
 
+            try {
+                $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
+                $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
+                $xml = $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
+                $this->xmlChecker->checkXml($xml);
+                $this->webserviceGuesser->getWebservice($clientParameters);
+            } catch (Exceptions\InvalidUrlException $e) {
+                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
+            } catch (Exceptions\NotReachableUrlException $e) {
+                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
+            } catch (Exceptions\InvalidSoapUrlException $e) {
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
+            } catch (Exceptions\InvalidXmlException $e) {
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
+            } catch (InvalidCredentialException $e) {
+                $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
+                $this->context->addViolationAt('soapApikey', $constraint->messageApikey, array());
+            } catch (SoapCallException $e) {
+                $this->context->addViolationAt('wsdlUrl', $e->getMessage(), array());
+            }
+        }
     }
 
     /**
@@ -126,7 +127,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
                 $this->xmlChecker->checkXml($xml);
                 $this->webserviceGuesser->getWebservice($clientParameters);
                 $this->valid = true;
-            } catch (Exception\InvalidUrlException $e) {
+            } catch (Exceptions\InvalidUrlException $e) {
                 $this->valid = false;
             } catch (Exceptions\NotReachableUrlException $e) {
                 $this->valid = false;

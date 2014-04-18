@@ -28,7 +28,7 @@ class SoapChecker
         $output = curl_exec($curl);
         curl_close($curl);
 
-        if (false === $output){
+        if (false === $output) {
             throw new InvalidSoapUrlException();
         }
 

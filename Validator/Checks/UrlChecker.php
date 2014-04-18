@@ -39,7 +39,6 @@ class UrlChecker
      *
      * @return true
      *
-     * @throws InvalidUrlException
      * @throws NotReachableUrlException
      */
     public function checkReachableUrl($url)
@@ -52,12 +51,12 @@ class UrlChecker
         curl_close($curl);
 
         if (false === $output) {
-            throw new InvalidUrlException();
+            throw new NotReachableUrlException();
         }
 
         $header = explode('Date:', $output, 2);
 
-        if(false === strpos($header[0], '200')) {
+        if (false === strpos($header[0], '200')) {
             throw new NotReachableUrlException();
         }
 
