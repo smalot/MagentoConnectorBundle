@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
 /**
- * A magento soap client to abstract interaction with the php soap client
+ * A magento soap client to handle connection with magento soap api
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
@@ -25,31 +25,23 @@ class MagentoSoapClient
      * Create and init the soap client
      *
      * @param  MagentoSoapClientParameters $clientParameters
-     * @param  \SoapClient                 $soapClient
      * @throws ConnectionErrorException
      * @throws InvalidCredentialException
      */
-    protected function __construct(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
+    protected function __construct(MagentoSoapClientParameters $clientParameters)
     {
         $this->clientParameters = $clientParameters;
-
-        if (!$soapClient) {
             $wsdlUrl     = $this->clientParameters->getSoapUrl();
             $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
-
-            try {
-                $this->client = new \SoapClient($wsdlUrl, $soapOptions);
-            } catch (\Exception $e) {
-                throw new ConnectionErrorException(
-                    'The soap connection could not be established',
-                    $e->getCode(),
-                    $e
-                );
-            }
-        } else {
-            $this->client = $soapClient;
+        try {
+            $this->client = new \SoapClient($wsdlUrl, $soapOptions);
+        } catch (\Exception $e) {
+            throw new ConnectionErrorException(
+                'The soap connection could not be established',
+                $e->getCode(),
+                $e
+            );
         }
-
         $this->connect();
     }
 
@@ -177,14 +169,15 @@ class MagentoSoapClient
 
     /*
      * Return the singleton class instance if it exists or create it and return it
+     *
      * @param MagentoSoapClient $clientParameters The client parameters
      * @param \SoapClient       $soapClient       The SoapClient class
      * @return MagentoSoapClient
      */
-    public static function getInstance(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
+    public static function getInstance(MagentoSoapClientParameters $clientParameters)
     {
         if (!isset(self::$instance)) {
-            self::$instance = new self($clientParameters, $soapClient);
+            self::$instance = new self($clientParameters);
         }
 
         return self::$instance;
