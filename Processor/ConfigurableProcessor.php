@@ -4,9 +4,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\AbstractWebservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
@@ -36,29 +36,29 @@ class ConfigurableProcessor extends AbstractProductProcessor
     protected $groupManager;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
-     * @param CurrencyManager          $currencyManager
-     * @param ChannelManager           $channelManager
-     * @param MappingMerger            $categoryMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
-     * @param GroupManager             $groupManager
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param NormalizerGuesser $normalizerGuesser
+     * @param LocaleManager $localeManager
+     * @param MappingMerger $storeViewMappingMerger
+     * @param CurrencyManager $currencyManager
+     * @param ChannelManager $channelManager
+     * @param MappingMerger $categoryMappingMerger
+     * @param MappingMerger $attributeMappingMerger
+     * @param GroupManager $groupManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        CurrencyManager $currencyManager,
-        ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger,
-        MappingMerger $attributeMappingMerger,
-        GroupManager $groupManager
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger,
+        CurrencyManager          $currencyManager,
+        ChannelManager           $channelManager,
+        MappingMerger            $categoryMappingMerger,
+        MappingMerger            $attributeMappingMerger,
+        GroupManager             $groupManager
     ) {
         parent::__construct(
-            $webserviceGuesser,
+            $webserviceGuesserFactory,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
@@ -99,7 +99,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
         $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
         $configurables        = $this->getProductsForGroups($items, $groupsIds);
-        $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
+        $magentoConfigurables = $this->webserviceGuesserFactory
+            ->getWebservice('product', $this->getClientParameters())->getConfigurablesStatus($configurables);
 
         foreach ($configurables as $configurable) {
             if (count($configurable['products']) == 0) {
@@ -170,7 +171,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
         foreach ($magentoConfigurables as $magentoConfigurable) {
 
             if ($magentoConfigurable['sku'] == sprintf(
-                Webservice::CONFIGURABLE_IDENTIFIER_PATTERN,
+                AbstractWebservice::CONFIGURABLE_IDENTIFIER_PATTERN,
                 $configurable['group']->getCode()
             )) {
                 return true;

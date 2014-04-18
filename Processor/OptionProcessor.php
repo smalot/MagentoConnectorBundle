@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
@@ -37,20 +37,20 @@ class OptionProcessor extends AbstractProcessor
     protected $attributeMapping;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param NormalizerGuesser        $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      * @param MappingMerger            $attributeMappingMerger
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        MappingMerger $attributeMappingMerger
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger,
+        MappingMerger            $attributeMappingMerger
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct($webserviceGuesserFactory, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->attributeMappingMerger = $attributeMappingMerger;
     }
@@ -86,7 +86,8 @@ class OptionProcessor extends AbstractProcessor
 
         $this->optionNormalizer = $this->normalizerGuesser->getOptionNormalizer($this->getClientParameters());
 
-        $magentoStoreViews = $this->webservice->getStoreViewsList();
+        $magentoStoreViews = $this->webserviceGuesserFactory
+            ->getWebservice('storeviews', $this->getClientParameters())->getStoreViewsList();
 
         $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
         $this->globalContext['attributeMapping']  = $this->attributeMappingMerger->getMapping();
@@ -103,7 +104,8 @@ class OptionProcessor extends AbstractProcessor
         $attributeCode = $this->globalContext['attributeMapping']->getTarget($attribute->getCode());
 
         try {
-            $optionsStatus = $this->webservice->getAttributeOptions($attributeCode);
+            $optionsStatus = $this->webserviceGuesserFactory
+                ->getWebservice('option', $this->getClientParameters())->getAttributeOptions($attributeCode);
         } catch (SoapCallException $e) {
             throw new InvalidItemException(
                 sprintf(
@@ -135,8 +137,9 @@ class OptionProcessor extends AbstractProcessor
     /**
      * Get the normalized
      * @param AttributeOption $option
-     * @param array           $context
+     * @param array $context
      *
+     * @throws \Akeneo\Bundle\BatchBundle\Item\InvalidItemException
      * @return array
      */
     protected function getNormalizedOption(AttributeOption $option, array $context)

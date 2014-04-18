@@ -7,7 +7,7 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
@@ -62,19 +62,19 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
-     * @param CurrencyManager          $currencyManager
-     * @param ChannelManager           $channelManager
-     * @param MappingMerger            $categoryMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
-     * @param MetricConverter          $metricConverter
-     * @param AssociationTypeManager   $associationTypeManager
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param NormalizerGuesser $normalizerGuesser
+     * @param LocaleManager $localeManager
+     * @param MappingMerger $storeViewMappingMerger
+     * @param CurrencyManager $currencyManager
+     * @param ChannelManager $channelManager
+     * @param MappingMerger $categoryMappingMerger
+     * @param MappingMerger $attributeMappingMerger
+     * @param MetricConverter $metricConverter
+     * @param AssociationTypeManager $associationTypeManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
+        WebserviceGuesserFactory $webserviceGuesserFactory,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
@@ -86,7 +86,7 @@ class ProductProcessor extends AbstractProductProcessor
         AssociationTypeManager $associationTypeManager
     ) {
         parent::__construct(
-            $webserviceGuesser,
+            $webserviceGuesserFactory,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
@@ -121,7 +121,8 @@ class ProductProcessor extends AbstractProductProcessor
 
         $processedItems = array();
 
-        $magentoProducts = $this->webservice->getProductsStatus($items);
+        $magentoProducts = $this->webserviceGuesserFactory
+            ->getWebservice('product', $this->getClientParameters())->getProductsStatus($items);
 
         $channel = $this->channelManager->getChannelByCode($this->channel);
 

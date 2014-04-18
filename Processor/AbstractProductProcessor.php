@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocale;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
@@ -83,8 +83,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $attributeMappingMerger;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param NormalizerGuesser        $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
@@ -93,16 +93,16 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      * @param MappingMerger            $attributeMappingMerger
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        CurrencyManager $currencyManager,
-        ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger,
-        MappingMerger $attributeMappingMerger
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger,
+        CurrencyManager          $currencyManager,
+        ChannelManager           $channelManager,
+        MappingMerger            $categoryMappingMerger,
+        MappingMerger            $attributeMappingMerger
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct($webserviceGuesserFactory, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->currencyManager        = $currencyManager;
         $this->channelManager         = $channelManager;
@@ -268,9 +268,12 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             $this->currency
         );
 
-        $magentoStoreViews        = $this->webservice->getStoreViewsList();
-        $magentoAttributes        = $this->webservice->getAllAttributes();
-        $magentoAttributesOptions = $this->webservice->getAllAttributesOptions();
+        $magentoStoreViews        = $this->webserviceGuesserFactory
+            ->getWebservice('storeviews', $this->getClientParameters())->getStoreViewsList();
+        $magentoAttributes        = $this->webserviceGuesserFactory
+            ->getWebservice('attribute', $this->getClientParameters())->getAllAttributes();
+        $magentoAttributesOptions = $this->webserviceGuesserFactory
+            ->getWebservice('attribute', $this->getClientParameters())->getAllAttributesOptions();
 
         $this->globalContext = array_merge(
             $this->globalContext,

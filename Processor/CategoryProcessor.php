@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
@@ -28,20 +28,20 @@ class CategoryProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param NormalizerGuesser        $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      * @param MappingMerger            $categoryMappingMerger
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        MappingMerger $categoryMappingMerger
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger,
+        MappingMerger            $categoryMappingMerger
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct($webserviceGuesserFactory, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->categoryMappingMerger = $categoryMappingMerger;
     }
@@ -79,8 +79,10 @@ class CategoryProcessor extends AbstractProcessor
 
         $this->categoryNormalizer = $this->normalizerGuesser->getCategoryNormalizer($this->getClientParameters());
 
-        $magentoStoreViews = $this->webservice->getStoreViewsList();
-        $magentoCategories = $this->webservice->getCategoriesStatus();
+        $magentoStoreViews = $this->webserviceGuesserFactory
+            ->getWebservice('storeviews', $this->getClientParameters())->getStoreViewsList();
+        $magentoCategories = $this->webserviceGuesserFactory
+            ->getWebservice('category', $this->getClientParameters())->getCategoriesStatus();
 
         $this->globalContext = array_merge(
             $this->globalContext,

@@ -2,12 +2,12 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
@@ -58,18 +58,18 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     protected $globalContext = array();
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param  NormalizerGuesser       $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesserFactory);
 
         $this->normalizerGuesser      = $normalizerGuesser;
         $this->localeManager          = $localeManager;
@@ -186,14 +186,14 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      * @param string $familyCode
      * @param mixed  $relatedItem
      *
-     * @throws InvalidItemException If The attribute set doesn't exist on Mangento
+     * @throws InvalidItemException If The attribute set doesn't exist on Magento
      * @return integer
      */
     protected function getAttributeSetId($familyCode, $relatedItem)
     {
         try {
-            return $this->webservice
-                ->getAttributeSetId(
+            return $this->webserviceGuesserFactory
+                ->getWebservice('attribute', $this->getClientParameters())->getAttributeSetId(
                     $familyCode
                 );
         } catch (AttributeSetNotFoundException $e) {

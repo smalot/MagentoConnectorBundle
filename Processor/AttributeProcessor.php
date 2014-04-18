@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
@@ -53,20 +53,20 @@ class AttributeProcessor extends AbstractProcessor
     }
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      * @param MappingMerger            $attributeMappingMerger
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        MappingMerger $attributeMappingMerger
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger,
+        MappingMerger            $attributeMappingMerger
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct($webserviceGuesserFactory, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->attributeMappingMerger = $attributeMappingMerger;
     }
@@ -78,11 +78,14 @@ class AttributeProcessor extends AbstractProcessor
     {
         parent::beforeExecute();
 
-        $magentoStoreViews = $this->webservice->getStoreViewsList();
+        $magentoStoreViews = $this->webserviceGuesserFactory
+            ->getWebservice('storeviews', $this->getClientParameters())->getStoreViewsList();
 
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
-        $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
-        $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
+        $this->globalContext['magentoAttributes']        = $this->webserviceGuesserFactory
+            ->getWebservice('attribute', $this->getClientParameters())->getAllAttributes();
+        $this->globalContext['magentoAttributesOptions'] = $this->webserviceGuesserFactory
+            ->getWebservice('attribute', $this->getClientParameters())->getAllAttributesOptions();
         $this->globalContext['attributeMapping']         = $this->attributeMappingMerger->getMapping();
         $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
     }
@@ -94,7 +97,8 @@ class AttributeProcessor extends AbstractProcessor
     {
         $this->beforeExecute();
 
-        $magentoAttributes = $this->webservice->getAllAttributes();
+        $magentoAttributes = $this->webserviceGuesserFactory
+            ->getWebservice('attribute', $this->getClientParameters())->getAllAttributes();
 
         $this->globalContext['create'] = !$this->magentoAttributeExists($attribute, $magentoAttributes);
 

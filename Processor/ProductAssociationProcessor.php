@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\Association;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesserFactory;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
@@ -52,20 +53,20 @@ class ProductAssociationProcessor extends AbstractProcessor
     protected $pimGrouped;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param WebserviceGuesserFactory $webserviceGuesserFactory
+     * @param NormalizerGuesser        $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MappingMerger            $storeViewMappingMerger
      * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        AssociationTypeManager $associationTypeManager
+        WebserviceGuesserFactory $webserviceGuesserFactory,
+        NormalizerGuesser        $normalizerGuesser,
+        LocaleManager            $localeManager,
+        MappingMerger            $storeViewMappingMerger,
+        AssociationTypeManager   $associationTypeManager
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct($webserviceGuesserFactory, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
         $this->associationTypeManager = $associationTypeManager;
     }
@@ -171,7 +172,8 @@ class ProductAssociationProcessor extends AbstractProcessor
 
         foreach ($items as $product) {
             try {
-                $associationsStatus = $this->webservice->getAssociationsStatus($product);
+                $associationsStatus = $this->webserviceGuesserFactory
+                    ->getWebservice('association', $this->getClientParameters())->getAssociationsStatus($product);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array($product->getIdentifier()));
             }
@@ -241,7 +243,7 @@ class ProductAssociationProcessor extends AbstractProcessor
      * @param ProductInterface $product
      * @param array            $associationStatus
      *
-     * @return return array
+     * @return array
      */
     protected function getRemoveCallsForProduct(ProductInterface $product, array $associationStatus)
     {
