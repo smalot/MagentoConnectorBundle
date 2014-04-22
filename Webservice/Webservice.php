@@ -613,7 +613,7 @@ class Webservice
      *
      * @return void
      */
-    protected function getAttributeSetList()
+    public function getAttributeSetList()
     {
         // On first call we get the magento attribute set list
         // (to bind them with our product's families)
@@ -640,7 +640,7 @@ class Webservice
      * @param boolean $sortOrder         Sort order (optional)
      * @return boolean                   True if the attribute is added to an attribute set
      */
-    protected function addAttributeToAttributeSet(
+    public function addAttributeToAttributeSet(
         $attributeId,
         $setId,
         $attributeGroupId = null,
@@ -665,7 +665,7 @@ class Webservice
      * @param  int $setId             Attribute set ID
      * @return boolean                True if the attribute is removed from an attribute set
      */
-    protected function removeAttributeFromAttributeSet(
+    public function removeAttributeFromAttributeSet(
         $attributeId,
         $setId
     ) {
@@ -686,7 +686,7 @@ class Webservice
      * @param int $skeletonSetId      Attribute set ID basing on which the new attribute set will be created
      * @return int                    ID of the created attribute set
      */
-    protected function createAttributeSet(
+    public function createAttributeSet(
         $attributeSetName,
         $skeletonSetId
     ) {
@@ -707,7 +707,7 @@ class Webservice
      * @param string $groupName        Group name
      * @return int                     ID of the created group
      */
-    protected function addAttributeGroupToAttributeSet(
+    public function addAttributeGroupToAttributeSet(
         $attributeSetId,
         $groupName
     ) {
@@ -727,7 +727,7 @@ class Webservice
      * @param int $attributeGroupId   Group ID
      * @return boolean                True (1) if the group is removed
      */
-    protected function removeAttributeGroupFromAttributeSet(
+    public function removeAttributeGroupFromAttributeSet(
         $attributeGroupId
     ) {
         $result = $this->client->call(
@@ -746,7 +746,7 @@ class Webservice
      * @param string $groupName          New name for the group
      * @return boolean                   True (1) if the group is renamed
      */
-    protected function renameAttributeGroupInAttributeSet(
+    public function renameAttributeGroupInAttributeSet(
         $attributeGroupId,
         $groupName
     ) {
@@ -767,7 +767,7 @@ class Webservice
      * @param string $forceProductsRemove  Force product remove flag (optional)
      * @return boolean                     True (1) if the attribute set is removed
      */
-    protected function removeAttributeSet(
+    public function removeAttributeSet(
         $attributeSetId,
         $forceProductsRemove = null
     ) {
