@@ -48,13 +48,10 @@ class SoapChecker
             throw new InvalidSoapUrlException();
         }
 
-        $contentType = $response->getContentType();
-        $result = strpbrk($contentType, 'text/xml');
-
-        if (false === $result) {
+        if (false === $response->isContentType('text/xml')) {
             throw new InvalidSoapUrlException();
         }
 
-        return $result;
+        return $response->getBody(true);
     }
 }
