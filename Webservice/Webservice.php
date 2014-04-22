@@ -616,7 +616,7 @@ class Webservice
     protected function getAttributeSetList()
     {
         // On first call we get the magento attribute set list
-        // (to bind them with our proctut's families)
+        // (to bind them with our product's families)
         if (!$this->magentoAttributeSets) {
             $attributeSets = $this->client->call(
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
