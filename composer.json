@@ -24,7 +24,8 @@
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "dev-master"
+        "akeneo/pim-community-dev": "dev-master",
+        "misd/guzzle-bundle": "~1.0"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",

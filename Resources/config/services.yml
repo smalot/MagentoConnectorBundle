@@ -58,10 +58,14 @@ services:
     # Checker
     pim_magento_connector.checker.url:
         class: %pim_magento_connector.checker.url.class%
+        arguments:
+            - '@pim_magento_connector.web_client.guzzle'
     pim_magento_connector.checker.xml:
         class: %pim_magento_connector.checker.xml.class%
     pim_magento_connector.checker.soap:
         class: %pim_magento_connector.checker.soap.class%
+        arguments:
+            - '@pim_magento_connector.web_client.guzzle'
 
     pim_magento_connector.repository.category:
         class: %pim_magento_connector.repository.category.class%
@@ -95,3 +99,8 @@ services:
             name: @file_locator
         tags:
             - { name: twig.extension }
+            
+    pim_magento_connector.web_client.guzzle:
+        class: '%guzzle.client.class%'
+        tags: 
+            - { name: guzzle.client }

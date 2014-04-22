@@ -3,6 +3,10 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidSoapUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlException;
+use Guzzle\Http\Exception\BadResponseException;
+use Guzzle\Http\Exception\CurlException;
+use Guzzle\Service\ClientInterface;
 
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
@@ -11,6 +15,17 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidSoapUrlExcepti
  */
 class SoapChecker
 {
+    /**
+     * @var \Guzzle\Service\Client
+     */
+    protected $client;
+
+    /**
+     * @param \Guzzle\Service\ClientInterface $client
+     */
+    public function __construct(ClientInterface $client) {
+        $this->client = $client;
+    }
     /**
      * Check the soap url
      *
@@ -22,16 +37,23 @@ class SoapChecker
      */
     public function checkSoapUrl($soapUrl)
     {
-        $curl = curl_init($soapUrl);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-        $output = curl_exec($curl);
-        curl_close($curl);
+        $request = $this->client->createRequest('GET', $soapUrl);
 
-        if (false === $output) {
+        try {
+            $response = $this->client->send($request);
+        } catch(CurlException $e) {
+            throw new NotReachableUrlException;
+        } catch(BadResponseException $ex) {
             throw new InvalidSoapUrlException();
         }
 
-        return $output;
+        $contentType = $response->getContentType();
+        $result = strpbrk($contentType, 'text/xml');
+
+        if (false === $result) {
+            throw new InvalidSoapUrlException();
+        }
+
+        return $result;
     }
 }

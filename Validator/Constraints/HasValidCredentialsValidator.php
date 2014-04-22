@@ -123,6 +123,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
                 $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
                 $this->webserviceGuesser->getWebservice($clientParameters);
                 $this->valid = true;
+            } catch (Exceptions\NotReachableUrlException $e) {
+                $this->valid = false;
             } catch (Exceptions\InvalidSoapUrlException $e) {
                 $this->valid = false;
             } catch (InvalidCredentialException $e) {

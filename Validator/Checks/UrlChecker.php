@@ -4,6 +4,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlException;
+use Guzzle\Service\ClientInterface;
+use Guzzle\Http\Exception\CurlException;
 
 /**
  * Check an url in different way
@@ -14,6 +16,18 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlExcept
  */
 class UrlChecker
 {
+    /**
+     * @var \Guzzle\Service\Client
+     */
+    protected $client;
+
+    /**
+     * @param \Guzzle\Service\ClientInterface $client
+     */
+    public function __construct(ClientInterface $client) {
+        $this->client = $client;
+    }
+
     /**
      * Check if the given string seems to be an url
      *
@@ -43,20 +57,11 @@ class UrlChecker
      */
     public function checkReachableUrl($url)
     {
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-        curl_setopt($curl, CURLOPT_HEADER, 1);
-        $output = curl_exec($curl);
-        curl_close($curl);
+        $request = $this->client->createRequest('GET', $url);
 
-        if (false === $output) {
-            throw new NotReachableUrlException();
-        }
-
-        $header = explode('Date:', $output, 2);
-
-        if (false === strpos($header[0], '200')) {
+        try {
+            $response = $this->client->send($request);
+        } catch(CurlException $ex) {
             throw new NotReachableUrlException();
         }
 

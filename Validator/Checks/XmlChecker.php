@@ -27,6 +27,7 @@ class XmlChecker
         if (false === $output) {
             throw new InvalidXMLException();
         }
+
         return $output;
     }
 }
