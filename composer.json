@@ -16,7 +16,7 @@
         {
             "type": "vcs",
             "url": "https://github.com/akeneo/pim-community-dev.git",
-            "branch": "1.0"
+            "branch": "1.1"
         },
         {
             "type": "vcs",
@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "dev-master"
+        "akeneo/pim-community-dev": "1.1.*@stable"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
