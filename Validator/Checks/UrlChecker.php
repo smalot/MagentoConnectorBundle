@@ -48,7 +48,7 @@ class UrlChecker
     }
 
     /**
-     * Check if the given URL return a 200 http status
+     * Check if the given URL is reachable
      *
      * @param string $url
      *

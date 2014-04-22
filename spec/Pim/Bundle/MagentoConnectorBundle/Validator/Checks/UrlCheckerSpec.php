@@ -5,6 +5,10 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlException;
 use PhpSpec\ObjectBehavior;
+use Guzzle\Service\ClientInterface;
+use Guzzle\Http\Exception\CurlException;
+use Guzzle\Http\Message\Request;
+use Guzzle\Http\Message\Response;
 
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
@@ -13,11 +17,16 @@ use PhpSpec\ObjectBehavior;
  */
 class UrlCheckerSpec extends ObjectBehavior
 {
+    function let(ClientInterface $client)
+    {
+        $this->beConstructedWith($client);
+    }
+
     function it_should_not_allow_invalid_url()
     {
-        $exception = new InvalidUrlException();
+        $e = new InvalidUrlException();
 
-        $this->shouldThrow($exception)->duringCheckAnUrl('notAnUrl', '\n0t/url@', 'http://n0turl4t4ll', 'myurl.url');
+        $this->shouldThrow($e)->duringCheckAnUrl('notAnUrl', '\n0t/url@', 'http://n0turl4t4ll', 'myurl.url');
     }
 
     function it_should_success_with_valid_url()
@@ -25,15 +34,22 @@ class UrlCheckerSpec extends ObjectBehavior
         $this->checkAnUrl('http://valid.url')->shouldReturn(true);
     }
 
-    function it_should_failed_if_url_not_return_200_http_status()
+    function it_should_fail_if_url_is_not_reachable(ClientInterface $client, Request $request)
     {
-        $exception = new NotReachableUrlException();
+        $curlException = new CurlException();
+        $notReachableException = new NotReachableUrlException();
 
-        $this->shouldThrow($exception)->duringCheckReachableUrl('notAnUrl', 'http://n0turl4t4ll', 'myurl.url', 'http://notfoundazerty.url');
+        $client->createRequest('GET', 'http://notvalidurl')->willReturn($request);
+        $client->send($request)->willThrow($curlException);
+
+        $this->shouldThrow($notReachableException)->duringCheckReachableUrl('http://notvalidurl');
     }
 
-    function it_should_success_with_reachable_200_http_status_url()
+    function it_should_success_if_url_is_reachable(ClientInterface $client, Request $request, Response $response)
     {
-        $this->checkReachableUrl('https://www.google.fr')->shouldReturn(true);
+        $client->createRequest('GET', 'http://valid.url')->willReturn($request);
+        $client->send($request)->willReturn($response);
+
+        $this->checkReachableUrl('http://valid.url')->shouldReturn(true);
     }
 }
