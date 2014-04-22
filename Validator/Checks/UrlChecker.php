@@ -24,7 +24,8 @@ class UrlChecker
     /**
      * @param \Guzzle\Service\ClientInterface $client
      */
-    public function __construct(ClientInterface $client) {
+    public function __construct(ClientInterface $client)
+    {
         $this->client = $client;
     }
 
@@ -60,8 +61,8 @@ class UrlChecker
         $request = $this->client->createRequest('GET', $url);
 
         try {
-            $response = $this->client->send($request);
-        } catch(CurlException $ex) {
+            $this->client->send($request);
+        } catch (CurlException $ex) {
             throw new NotReachableUrlException();
         }
 

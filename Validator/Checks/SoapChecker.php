@@ -23,7 +23,8 @@ class SoapChecker
     /**
      * @param \Guzzle\Service\ClientInterface $client
      */
-    public function __construct(ClientInterface $client) {
+    public function __construct(ClientInterface $client)
+    {
         $this->client = $client;
     }
     /**
@@ -41,9 +42,9 @@ class SoapChecker
 
         try {
             $response = $this->client->send($request);
-        } catch(CurlException $e) {
+        } catch (CurlException $e) {
             throw new NotReachableUrlException;
-        } catch(BadResponseException $ex) {
+        } catch (BadResponseException $ex) {
             throw new InvalidSoapUrlException();
         }
 
