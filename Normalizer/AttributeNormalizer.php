@@ -68,13 +68,6 @@ class AttributeNormalizer implements NormalizerInterface
     {
         $normalizedAttribute = array(
             'scope'                         => $this->getNormalizedScope($object),
-            'default_value'                 => $this->getNormalizedDefaultValue(
-                $object,
-                $context['defaultLocale'],
-                $context['magentoAttributes'],
-                $context['magentoAttributesOptions'],
-                $context['attributeMapping']
-            ),
             'is_unique'                     => $this->getNormalizedUnique($object),
             'is_required'                   => $this->getNormalizedRequired($object),
             'apply_to'                      => '',
@@ -106,7 +99,15 @@ class AttributeNormalizer implements NormalizerInterface
                 $normalizedAttribute
             );
         } else {
-            $magentoAttributeCode = $context['attributeMapping']->getTarget($object->getCode());
+            $normalizedAttribute['default_value'] = $this->getNormalizedDefaultValue(
+                $object,
+                $context['defaultLocale'],
+                $context['magentoAttributes'],
+                $context['magentoAttributesOptions'],
+                $context['attributeMapping']
+            );
+
+            $magentoAttributeCode = strtolower($context['attributeMapping']->getTarget($object->getCode()));
             $magentoAttributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
             if ($mappedAttributeType !== $magentoAttributeType &&
                 !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
@@ -161,7 +162,7 @@ class AttributeNormalizer implements NormalizerInterface
             'pim_catalog_boolean'          => 'boolean',
             'pim_catalog_date'             => 'date',
             'pim_catalog_file'             => 'text',
-            'pim_catalog_image'            => 'media_image',
+            'pim_catalog_image'            => 'text',
             'pim_catalog_metric'           => 'text'
         );
     }
@@ -178,11 +179,12 @@ class AttributeNormalizer implements NormalizerInterface
     {
         $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
 
-        if (preg_match('/^[a-z][a-z_0-9]{0,254}$/', $attributeCode) === 0) {
+        if (preg_match('/^[a-z][a-z_0-9]{0,30}$/', $attributeCode) === 0) {
             throw new InvalidAttributeNameException(
                 sprintf(
-                    'The attribute "%s" have a code that is not compatible with Magento. Please use only letters ' .
-                    '(a-z), numbers (0-9) or underscore(_). First caracter should also be a letter.',
+                    'The attribute "%s" have a code that is not compatible with Magento. Please use only lowercase letters ' .
+                    '(a-z), numbers (0-9) or underscore(_). First caracter should also be a letter and your attribute code' .
+                    'length must be under 30 caracters',
                     $attribute->getCode()
                 )
             );
@@ -219,12 +221,16 @@ class AttributeNormalizer implements NormalizerInterface
         array $magentoAttributesOptions,
         MappingCollection $attributeMapping
     ) {
+        $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
+
         $context = array(
             'identifier'               => null,
             'scopeCode'                => null,
             'localeCode'               => $defaultLocale,
             'onlyLocalized'            => false,
-            'magentoAttributes'        => $magentoAttributes,
+            'magentoAttributes'        => array($attributeCode => array(
+                'scope' => !$attribute->isLocalizable() ? ProductValueNormalizer::GLOBAL_SCOPE : ''
+            )),
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'attributeMapping'         => $attributeMapping,
             'currencyCode'             => ''
@@ -239,7 +245,7 @@ class AttributeNormalizer implements NormalizerInterface
 
             $normalizedOption = $this->productValueNormalizer->normalize($productValue, 'MagentoArray', $context);
 
-            return reset($normalizedOption);
+            return null != $normalizedOption ? reset($normalizedOption) : null;
         } else {
             return (null !== $attribute->getDefaultValue() ? (string) $attribute->getDefaultValue() : '');
         }
