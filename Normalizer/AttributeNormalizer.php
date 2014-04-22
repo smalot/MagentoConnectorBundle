@@ -176,7 +176,9 @@ class AttributeNormalizer implements NormalizerInterface
      */
     protected function getNormalizedCode(AbstractAttribute $attribute, MappingCollection $attributeMapping)
     {
-        if (preg_match('/^[a-z][0-9a-z_]*$/', $attribute->getCode()) === 0) {
+        $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
+
+        if (preg_match('/^[a-z][a-z_0-9]{0,254}$/', $attributeCode) === 0) {
             throw new InvalidAttributeNameException(
                 sprintf(
                     'The attribute "%s" have a code that is not compatible with Magento. Please use only letters ' .
@@ -186,7 +188,7 @@ class AttributeNormalizer implements NormalizerInterface
             );
         }
 
-        return $attributeMapping->getTarget($attribute->getCode());
+        return $attributeCode;
     }
 
     /**

@@ -397,11 +397,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         array $parameters = array()
     ) {
         return array(
-            $attributeMapping->getTarget(self::VISIBILITY) => $this->visibility,
-            $attributeMapping->getTarget(self::ENABLED)    => (string) ($this->enabled) ? 1 : 2,
-            $attributeMapping->getTarget('created_at')     => $product->getCreated()->format(AbstractNormalizer::DATE_FORMAT),
-            $attributeMapping->getTarget('updated_at')     => $product->getUpdated()->format(AbstractNormalizer::DATE_FORMAT),
-            $attributeMapping->getTarget('categories')     => $this->getProductCategories(
+            strtolower($attributeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
+            strtolower($attributeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
+            strtolower($attributeMapping->getTarget('created_at'))     => $product->getCreated()
+                ->format(AbstractNormalizer::DATE_FORMAT),
+            strtolower($attributeMapping->getTarget('updated_at'))     => $product->getUpdated()
+                ->format(AbstractNormalizer::DATE_FORMAT),
+            strtolower($attributeMapping->getTarget('categories'))     => $this->getProductCategories(
                 $product,
                 $parameters['categoryMapping']
             )
