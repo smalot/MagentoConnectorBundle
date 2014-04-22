@@ -611,7 +611,7 @@ class Webservice
     /**
      * Get the magento attributeSet list from the magento platform
      *
-     * @return void
+     * @return array Array of attribute sets
      */
     public function getAttributeSetList()
     {
