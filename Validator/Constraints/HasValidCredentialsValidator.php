@@ -10,7 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\UrlChecker;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\SoapChecker;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapExplorer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
@@ -37,9 +37,9 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $urlChecker;
 
     /**
-     * @var SoapChecker
+     * @var SoapExplorer
      */
-    protected $soapChecker;
+    protected $soapExplorer;
 
     /**
      * @var XmlChecker
@@ -62,12 +62,12 @@ class HasValidCredentialsValidator extends ConstraintValidator
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         UrlChecker $urlChecker,
-        SoapChecker $soapChecker,
+        SoapExplorer $soapExplorer,
         XmlChecker $xmlChecker
     ) {
         $this->webserviceGuesser = $webserviceGuesser;
         $this->urlChecker        = $urlChecker;
-        $this->soapChecker       = $soapChecker;
+        $this->soapExplorer      = $soapExplorer;
         $this->xmlChecker        = $xmlChecker;
     }
 
@@ -93,7 +93,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
             try {
                 $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
                 $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
-                $xml = $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
+                $xml = $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
                 $this->xmlChecker->checkXml($xml);
                 $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (InvalidUrlException $e) {
@@ -109,7 +109,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
             } catch (SoapCallException $e) {
                 $this->context->addViolationAt('soapUsername', $e->getMessage(), array());
             }
-            
+
         }
     }
 
@@ -126,7 +126,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $this->checked = true;
 
             try {
-                $this->soapChecker->checkSoapUrl($clientParameters->getSoapUrl());
+                $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
                 $this->webserviceGuesser->getWebservice($clientParameters);
                 $this->valid = true;
             } catch (NotReachableUrlException $e) {
