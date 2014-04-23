@@ -110,9 +110,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Set the step element configuration
-     *
-     * @param array $config
+     * {@inheritdoc}
      */
     public function setConfiguration(array $config)
     {
@@ -160,7 +158,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                 )
             ),
             'soapApiKey'   => array(
-                //Should be remplaced by a password formType but who doesn't
+                //Should be replaced by a password formType but which doesn't
                 //empty the field at each edit
                 'type'    => 'text',
                 'options' => array(
@@ -188,7 +186,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * get soapUsername
+     * Get SoapUsername
      *
      * @return string Soap magento soapUsername
      */
@@ -198,7 +196,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Set soapUsername
+     * Set SoapUsername
      *
      * @param string $soapUsername Soap magento soapUsername
      *
@@ -212,7 +210,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * get soapApiKey
+     * Get soapApiKey
      *
      * @return string Soap magento soapApiKey
      */
@@ -236,7 +234,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * get wsdlUrl
+     * Get wsdlUrl
      *
      * @return string magento wsdl relative url
      */
@@ -260,7 +258,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * get magentoUrl
+     * Get magentoUrl
      *
      * @return string Soap magento url
      */
@@ -270,7 +268,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * set magentoUrl
+     * Get magentoUrl
      *
      * @return MagentoItemStep
      */
@@ -282,7 +280,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * get soapUrl
+     * Get soapUrl
      *
      * @return string magento soap url
      */
