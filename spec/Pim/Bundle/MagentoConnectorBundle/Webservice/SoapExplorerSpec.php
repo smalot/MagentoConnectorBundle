@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
+namespace spec\Pim\Bundle\MagentoConnectorBundle\Webservice;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidSoapUrlException;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
 use PhpSpec\ObjectBehavior;
 
 use Guzzle\Service\ClientInterface;
@@ -17,7 +17,7 @@ use Guzzle\Http\Message\Response;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class SoapCheckerSpec extends ObjectBehavior
+class SoapExplorerSpec extends ObjectBehavior
 {
     function let(ClientInterface $client)
     {
@@ -32,7 +32,7 @@ class SoapCheckerSpec extends ObjectBehavior
         $response->isContentType('text/xml')->willReturn(true);
         $response->getBody(true)->willReturn('<xml>Some xml as a string</xml>');
 
-        $this->checkSoapUrl('http://myvalidsoap.url/api/soap/?wsdl')->shouldReturn('<xml>Some xml as a string</xml>');
+        $this->getSoapUrlContent('http://myvalidsoap.url/api/soap/?wsdl')->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
     function it_should_failed_with_invalid_url(ClientInterface $client, Request $request)
@@ -42,7 +42,7 @@ class SoapCheckerSpec extends ObjectBehavior
         $client->send($request)->willThrow($curlException);
 
         $notReachableException = new NotReachableUrlException();
-        $this->shouldThrow($notReachableException)->duringCheckSoapUrl('http://notvalidsoapurl/api/soap/?wsdl');
+        $this->shouldThrow($notReachableException)->duringGetSoapUrlContent('http://notvalidsoapurl/api/soap/?wsdl');
     }
 
     function it_should_fail_with_invalid_api_soap_url(ClientInterface $client, Request $request)
@@ -52,6 +52,6 @@ class SoapCheckerSpec extends ObjectBehavior
         $client->send($request)->willThrow($badResponseException);
 
         $invalidSoapUrlException = new InvalidSoapUrlException();
-        $this->shouldThrow($invalidSoapUrlException)->duringCheckSoapUrl('http://notvalidsoap.url/api/soap/?w');
+        $this->shouldThrow($invalidSoapUrlException)->duringGetSoapUrlContent('http://notvalidsoap.url/api/soap/?w');
     }
 }
