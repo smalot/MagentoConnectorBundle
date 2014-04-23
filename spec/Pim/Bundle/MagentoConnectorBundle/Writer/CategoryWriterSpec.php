@@ -42,8 +42,9 @@ class CategoryWriterSpec extends ObjectBehavior
             )
         );
         $webservice->sendNewCategory(array('foo'))->willReturn(12);
-        $categoryMappingManager->registerCategoryMapping($category, 12, 'bar'
-            .MagentoSoapClientParameters::SOAP_WSDL_URL)->shouldBeCalled();
+        $categoryMappingManager
+                ->registerCategoryMapping($category, 12, 'bar'. MagentoSoapClientParameters::SOAP_WSDL_URL)
+                ->shouldBeCalled();
 
         $this->setMagentoUrl('bar');
         $this->write($batches);
@@ -99,8 +100,9 @@ class CategoryWriterSpec extends ObjectBehavior
             )
         );
 
-        $categoryMappingManager->getIdFromCategory($category, 'bar'
-            .MagentoSoapClientParameters::SOAP_WSDL_URL)->willReturn(12);
+        $categoryMappingManager
+                ->getIdFromCategory($category, 'bar' .MagentoSoapClientParameters::SOAP_WSDL_URL)
+                ->willReturn(12);
 
         $webservice->sendUpdateCategory(array(12))->shouldBeCalled();
 
