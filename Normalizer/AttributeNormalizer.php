@@ -85,7 +85,8 @@ class AttributeNormalizer implements NormalizerInterface
                 $context['defaultLocale'],
                 $context['storeViewMapping'],
                 $context['attributeMapping']
-            )
+            ),
+            'default_value'                 => ''
         );
 
         $mappedAttributeType = $this->getNormalizedType($object);

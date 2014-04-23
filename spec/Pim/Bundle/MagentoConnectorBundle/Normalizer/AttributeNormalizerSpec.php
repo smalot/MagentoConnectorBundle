@@ -15,7 +15,6 @@ class AttributeNormalizerSpec extends ObjectBehavior
 {
     protected $baseNormalizedAttribute = array(
         'scope'                         => 'store',
-        'default_value'                 => '',
         'is_unique'                     => '1',
         'is_required'                   => '0',
         'apply_to'                      => '',
@@ -28,6 +27,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         'used_in_product_listing'       => '1',
         'additional_fields'             => array(),
         'frontend_label'                => array(array('store_id' => 0, 'label' => 'attribute_code_mapped')),
+        'default_value'                 => ''
     );
 
     protected $baseContext = array(
@@ -212,7 +212,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
             ),
             $this->baseNormalizedAttribute,
             array(
-                'default_value' => 'defaultValue'
+                'default_value' => ''
             )
         ));
     }
