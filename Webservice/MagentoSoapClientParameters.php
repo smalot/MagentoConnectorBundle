@@ -17,8 +17,6 @@ class MagentoSoapClientParameters
 
     protected $soapApiKey;
 
-    protected $soapUrl;
-
     protected $wsdlUrl;
 
     protected $magentoUrl;
@@ -28,7 +26,8 @@ class MagentoSoapClientParameters
      *
      * @param string $soapUsername Magento soap username
      * @param string $soapApiKey   Magento soap api key
-     * @param string $soapUrl      Magento url (only the domain)
+     * @param string $magentoUrl   Magento url (only the domain)
+     * @param string $wsdlUrl      Only wsdl soap api extension
      */
     public function __construct($soapUsername, $soapApiKey, $magentoUrl, $wsdlUrl)
     {
@@ -36,7 +35,6 @@ class MagentoSoapClientParameters
         $this->soapApiKey   = $soapApiKey;
         $this->magentoUrl   = $magentoUrl;
         $this->wsdlUrl      = $wsdlUrl;
-        $this->soapUrl      = $magentoUrl . $wsdlUrl;
     }
 
     /**
@@ -62,17 +60,17 @@ class MagentoSoapClientParameters
     /**
      * get soapUrl
      *
-     * @return string magento soap url
+     * @return string soap url
      */
     public function getSoapUrl()
     {
-        return $this->soapUrl;
+        return $this->magentoUrl . $this->wsdlUrl;
     }
 
     /**
      * get wsdlUrl
      *
-     * @return string magento wsdl url
+     * @return string wsdl url
      */
     public function getWsdlUrl()
     {
