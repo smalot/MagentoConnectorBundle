@@ -104,3 +104,19 @@ connector:
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.option
+
+        magento_attributeset_export:
+            title: pim_magento_connector.jobs.attributeset_export.title
+            type:  export
+            templates:
+               show: 'PimMagentoConnectorBundle:Export:show.html.twig'
+               edit: 'PimMagentoConnectorBundle:Export:edit.html.twig'
+            steps:
+                export_attributesets:
+                     title:     pim_magento_connector.steps.attributeset_export.export.title
+                     services:
+                         reader:    pim_magento_connector.reader.orm.family
+                         processor: pim_magento_connector.processor.family
+                         writer:    pim_magento_connector.writer.family
+                     parameters:
+                         batch_size: 1

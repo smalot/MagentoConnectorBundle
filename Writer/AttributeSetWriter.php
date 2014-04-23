@@ -2,8 +2,11 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Proxies\__CG__\Pim\Bundle\CatalogBundle\Entity\Family;
 
 /**
  * Magento attribute set writer
@@ -14,29 +17,20 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  */
 class AttributeSetWriter extends AbstractWriter
 {
-    const ATTRIBUTE_SET_UPDATE_SIZE = 2;
-    const ATTRIBUTE_SET_UPDATED     = 'Attributes set updated';
-    const ATTRIBUTE_SET_CREATED     = 'Attributes set created';
-
     /**
      * {@inheritdoc}
      */
-    public function write(array $attributesSet)
+    public function write(array $items)
     {
         $this->beforeExecute();
 
-        foreach ($attributesSet as $attributeSet) {
+        foreach ($items as $item) {
             try {
-                if (count($attributeSet) === self::ATTRIBUTE_UPDATE_SIZE) {
-                    $this->webservice->createAttributeSet($attributeSet);
-                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_SET_UPDATED);
-                } else {
-                    $this->webservice->createAttributeSet($attributeSet);
-                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_SET_CREATED);
-                }
+                $this->webservice->createAttributeSet($item['attributeSetName']);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array(json_encode($attributeSet)));
+                throw new InvalidItemException($e->getMessage(), array());
             }
         }
     }
+
 }

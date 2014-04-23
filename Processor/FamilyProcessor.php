@@ -3,13 +3,12 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
+use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
+use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
-use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\TransformBundle\Normalizer\FamilyNormalizer;
 
 /**
  * Magento family processor
@@ -21,55 +20,14 @@ use Pim\Bundle\CatalogBundle\Entity\Family;
 class FamilyProcessor extends AbstractProcessor
 {
     /**
-     * @var MappingMerger
+     * @var FamilyNormalizer
      */
-    protected $familyMappingMerger;
+    protected $familyNormalizer;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $familyMapping = '';
-
-    /**
-     * Set attribute set mapping
-     * @param $familyMapping
-     *
-     * @return FamilyProcessor
-     */
-    public function setAttributeSetMapping($familyMapping)
-    {
-        $this->attributeSetMappingMerger->setMapping(json_decode($familyMapping, true));
-
-        return $this;
-    }
-
-    /**
-     * Get attribute set mapping
-     * @return string
-     */
-    public function getAttributeSetMapping()
-    {
-        return json_encode($this->attributeSetMappingMerger->getMapping()->toArray());
-    }
-
-    /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param NormalizerGuesser $normalizerGuesser
-     * @param LocaleManager     $localeManager
-     * @param MappingMerger     $storeViewMappingMerger
-     * @param MappingMerger     $attributeSetMappingMerger
-     */
-    public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager     $localeManager,
-        MappingMerger     $storeViewMappingMerger,
-        MappingMerger     $attributeSetMappingMerger
-    ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
-
-        $this->attributeSetMappingMerger = $attributeSetMappingMerger;
-    }
+    protected $globalContext;
 
     /**
      * {@inheritdoc}
@@ -80,25 +38,24 @@ class FamilyProcessor extends AbstractProcessor
 
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
-        $this->familyNormalizer                        = $this->normalizerGuesser
+        $this->familyNormalizer = $this->normalizerGuesser
             ->getFamilyNormalizer($this->getClientParameters());
-        $this->globalContext['magentoFamilies']        = $this->webservice->getAttributeSetList();
-        $this->globalContext['familyMapping']          = $this->familyMappingMerger->getMapping();
-        $this->globalContext['magentoStoreViews']      = $magentoStoreViews;
+        $this->globalContext['magentoFamilies'] = $this->webservice->getAttributeSetList();
+        $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function process($attributeSet)
+    public function process($family)
     {
         $this->beforeExecute();
 
         $magentoAttributesSet = $this->webservice->getAttributeSetList();
 
-        $this->globalContext['create'] = !$this->magentoAttributeSetExists($attributeSet, $magentoAttributesSet);
+        $this->globalContext['create'] = !$this->magentoAttributeSetExists($family, $magentoAttributesSet);
 
-        return $this->normalizeFamily($attributeSet, $this->globalContext);
+        return $this->normalizeFamily($family, $this->globalContext);
     }
 
     /**
@@ -110,10 +67,7 @@ class FamilyProcessor extends AbstractProcessor
      */
     protected function magentoAttributeSetExists(Family $family, array $magentoAttributesSet)
     {
-        return array_key_exists(
-            $this->attributeSetMappingMerger->getMapping()->getTarget($family->getCode()),
-            $magentoAttributesSet
-        );
+        return array_key_exists($family->getCode(), $magentoAttributesSet);
     }
 
     /**
@@ -140,23 +94,10 @@ class FamilyProcessor extends AbstractProcessor
     }
 
     /**
-     * Called after the configuration is set
-     */
-    protected function afterConfigurationSet()
-    {
-        parent::afterConfigurationSet();
-
-        $this->attributeSetMappingMerger->setParameters($this->getClientParameters());
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()
     {
-        return array_merge(
-            parent::getConfigurationFields(),
-            $this->attributeSetMappingMerger->getConfigurationField()
-        );
+        return parent::getConfigurationFields();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
@@ -17,6 +18,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
 
@@ -58,6 +60,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @var ProductValueManager
      */
     protected $productValueManager;
+
 
     /**
      * Constructor
@@ -228,6 +231,28 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_7:
             case AbstractGuesser::MAGENTO_VERSION_1_6:
                 return new AttributeNormalizer($this->productValueNormalizer, $this->productValueManager);
+            default:
+                throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
+        }
+    }
+
+    /**
+     * Get the family normalizer corresponding to the given Magento parameters
+     * @param MagentoSoapClientParameters $clientParameters
+     *
+     * @throws NotSupportedVersionException
+     * @return FamilyNormalizer
+     */
+    public function getFamilyNormalizer(MagentoSoapClientParameters $clientParameters)
+    {
+        $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
+        $magentoVersion = $this->getMagentoVersion($client);
+
+        switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_8:
+            case AbstractGuesser::MAGENTO_VERSION_1_7:
+            case AbstractGuesser::MAGENTO_VERSION_1_6:
+                return new FamilyNormalizer();
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
