@@ -17,7 +17,7 @@ use Guzzle\Http\Exception\CurlException;
 class UrlChecker
 {
     /**
-     * @var \Guzzle\Service\Client
+     * @var \Guzzle\Service\ClientInterface
      */
     protected $client;
 
@@ -30,7 +30,7 @@ class UrlChecker
     }
 
     /**
-     * Check if the given string seems to be an url
+     * Check if the given string is an url
      *
      * @param string $url
      *
