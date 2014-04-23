@@ -9,7 +9,7 @@ use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\ClientInterface;
 
 /**
- * Tool in the goal to check your soap url
+ * Tool for check your soap url
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
