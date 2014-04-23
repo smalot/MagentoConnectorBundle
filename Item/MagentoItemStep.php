@@ -81,27 +81,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Function called before all item step execution
-     */
-    protected function beforeExecute()
-    {
-        if ($this->beforeExecute) {
-            return;
-        }
-
-        $this->beforeExecute = true;
-
-        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
-    }
-
-    /**
-     * Called after configuration set
-     */
-    protected function afterConfigurationSet()
-    {
-    }
-
-    /**
      * @param StepExecution $stepExecution
      */
     public function setStepExecution(StepExecution $stepExecution)
@@ -121,25 +100,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
 
             $this->afterConfiguration = true;
         }
-    }
-
-    /**
-     * Get the magento soap client parameters
-     *
-     * @return MagentoSoapClientParameters
-     */
-    protected function getClientParameters()
-    {
-        if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->magentoUrl,
-                $this->wsdlUrl
-            );
-        }
-
-        return $this->clientParameters;
     }
 
     /**
@@ -287,5 +247,45 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     public function getSoapUrl()
     {
         return $this->magentoUrl . $this->wsdlUrl;
+    }
+
+    /**
+     * Function called before all item step execution
+     */
+    protected function beforeExecute()
+    {
+        if ($this->beforeExecute) {
+            return;
+        }
+
+        $this->beforeExecute = true;
+
+        $this->webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
+    }
+
+    /**
+     * Called after configuration set
+     */
+    protected function afterConfigurationSet()
+    {
+    }
+
+    /**
+     * Get the magento soap client parameters
+     *
+     * @return MagentoSoapClientParameters
+     */
+    protected function getClientParameters()
+    {
+        if (!$this->clientParameters) {
+            $this->clientParameters = new MagentoSoapClientParameters(
+                $this->soapUsername,
+                $this->soapApiKey,
+                $this->magentoUrl,
+                $this->wsdlUrl
+            );
+        }
+
+        return $this->clientParameters;
     }
 }
