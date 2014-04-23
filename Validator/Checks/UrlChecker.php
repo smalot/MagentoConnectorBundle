@@ -34,7 +34,7 @@ class UrlChecker
      *
      * @param string $url
      *
-     * @return true
+     * @return null
      *
      * @throws InvalidUrlException
      */
@@ -43,8 +43,6 @@ class UrlChecker
         if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidUrlException();
         }
-
-        return true;
     }
 
     /**
@@ -52,7 +50,7 @@ class UrlChecker
      *
      * @param string $url
      *
-     * @return true
+     * @return null
      *
      * @throws NotReachableUrlException
      */
@@ -65,7 +63,5 @@ class UrlChecker
         } catch (CurlException $ex) {
             throw new NotReachableUrlException();
         }
-
-        return true;
     }
 }
