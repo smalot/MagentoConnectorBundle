@@ -101,7 +101,7 @@ class ProductWriter extends AbstractWriter
             try {
                 $this->createCall($product[$storeViewCode], $storeViewCode);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product[$storeViewCode]));
+                throw new InvalidItemException($e->getMessage(), array(json_encode($product[$storeViewCode])));
             }
         }
 
