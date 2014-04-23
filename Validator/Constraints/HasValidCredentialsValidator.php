@@ -45,15 +45,11 @@ class HasValidCredentialsValidator extends ConstraintValidator
      * @var XmlChecker
      */
     protected $xmlChecker;
-    /**
-     * @var boolean
-     */
-    protected $checked = false;
 
     /**
-     * @var boolean
+     * @var array
      */
-    protected $valid = false;
+    protected $valid;
 
     /**
      * @param WebserviceGuesser   $webserviceGuesser
@@ -88,7 +84,9 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getWsdlUrl()
         );
 
-        if (!$this->valid) {
+        $objectId = spl_object_hash($clientParameters);
+
+        if (!isset($this->valid[$objectId]) || false === $this->valid[$objectId]) {
 
             try {
                 $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
@@ -122,24 +120,25 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function areValidSoapCredentials(MagentoSoapClientParameters $clientParameters)
     {
-        if (!$this->checked) {
-            $this->checked = true;
+        $objectId = spl_object_hash($clientParameters);
+
+        if (!isset($this->valid[$objectId])) {
 
             try {
                 $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
                 $this->webserviceGuesser->getWebservice($clientParameters);
-                $this->valid = true;
+                $this->valid[$objectId] = true;
             } catch (NotReachableUrlException $e) {
-                $this->valid = false;
+                $this->valid[$objectId] = false;
             } catch (InvalidSoapUrlException $e) {
-                $this->valid = false;
+                $this->valid[$objectId] = false;
             } catch (InvalidCredentialException $e) {
-                $this->valid = false;
+                $this->valid[$objectId] = false;
             } catch (SoapCallException $e) {
-                $this->valid = false;
+                $this->valid[$objectId] = false;
             }
         }
 
-        return $this->valid;
+        return $this->valid[$objectId];
     }
 }
