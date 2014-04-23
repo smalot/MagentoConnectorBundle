@@ -185,7 +185,7 @@ class AttributeNormalizer implements NormalizerInterface
                 sprintf(
                     'The attribute "%s" have a code that is not compatible with Magento. Please use only' .
                     'lowercase letters (a-z), numbers (0-9) or underscore(_). First caracter should also' .
-                    ' be a letter and your attribute codelength must be under 30 caracters',
+                    ' be a letter and your attribute codelength must be under 30 characters',
                     $attribute->getCode()
                 )
             );

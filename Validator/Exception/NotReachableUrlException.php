@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions;
+namespace Pim\Bundle\MagentoConnectorBundle\Validator\Exception;
 
 /**
  * Exception thrown if the given url is not reachable

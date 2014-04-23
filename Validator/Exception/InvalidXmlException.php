@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions;
+namespace Pim\Bundle\MagentoConnectorBundle\Validator\Exception;
 
 /**
  * Exception thrown if the given xml is not valid
