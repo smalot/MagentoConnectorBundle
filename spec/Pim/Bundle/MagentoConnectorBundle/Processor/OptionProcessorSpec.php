@@ -165,7 +165,7 @@ class OptionProcessorSpec extends ObjectBehavior
                     'label'    => 'pim_magento_connector.export.website.label'
                 )
             ),
-           'fooo' => 'baar',
+            'fooo' => 'baar',
             'foo' => 'bar',
         ));
     }
