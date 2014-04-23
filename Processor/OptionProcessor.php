@@ -100,7 +100,7 @@ class OptionProcessor extends AbstractProcessor
         $this->beforeExecute();
 
         $attribute     = $groupedOptions[0]->getAttribute();
-        $attributeCode = $this->globalContext['attributeMapping']->getTarget($attribute->getCode());
+        $attributeCode = strtolower($this->globalContext['attributeMapping']->getTarget($attribute->getCode()));
 
         try {
             $optionsStatus = $this->webservice->getAttributeOptions($attributeCode);

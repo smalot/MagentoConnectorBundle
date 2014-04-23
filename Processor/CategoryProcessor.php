@@ -7,6 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
  * Magento category processor

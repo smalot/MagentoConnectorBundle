@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
  * Magento category writer
@@ -123,7 +124,11 @@ class CategoryWriter extends AbstractWriter
         if (isset($batch['variation'])) {
             foreach ($batch['variation'] as $variationCategory) {
                 $pimCategory        = $variationCategory['pimCategory'];
+<<<<<<< HEAD
                 $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->getSoapUrl());
+=======
+                $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->soapUrl . MagentoSoapClientParameters::SOAP_WSDL_URL);
+>>>>>>> master
                 $magentoCategory    = $variationCategory['magentoCategory'];
                 $magentoCategory[0] = $magentoCategoryId;
 

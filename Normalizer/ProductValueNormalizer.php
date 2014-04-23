@@ -177,7 +177,7 @@ class ProductValueNormalizer implements NormalizerInterface
     ) {
         $data          = $value->getData();
         $attribute     = $value->getAttribute();
-        $attributeCode = $attributeMapping->getTarget($attribute->getCode());
+        $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
 
         if (!isset($magentoAttributes[$attributeCode])) {
             throw new AttributeNotFoundException(
@@ -227,7 +227,7 @@ class ProductValueNormalizer implements NormalizerInterface
         $currencyCode,
         MappingCollection $attributeMapping
     ) {
-        $attributeCode = $attributeMapping->getTarget($attribute->getCode());
+        $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
 
         if (in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
             $this->scopeMatches($attribute, $attributeScope)
