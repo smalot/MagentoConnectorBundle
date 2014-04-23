@@ -2,8 +2,8 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidUrlException;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\NotReachableUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
 use PhpSpec\ObjectBehavior;
 use Guzzle\Service\ClientInterface;
 use Guzzle\Http\Exception\CurlException;

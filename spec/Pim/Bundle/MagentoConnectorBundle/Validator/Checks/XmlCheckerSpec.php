@@ -2,7 +2,7 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Validator\Checks;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Exceptions\InvalidXmlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidXmlException;
 use PhpSpec\ObjectBehavior;
 
 /**
