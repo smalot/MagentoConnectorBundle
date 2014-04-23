@@ -50,7 +50,7 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * get soapUsername
+     * Get soapUsername
      *
      * @return string Soap magento soapUsername
      */
@@ -60,7 +60,7 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * get soapApiKey
+     * Get the soap api key
      *
      * @return string Soap magento soapApiKey
      */
@@ -70,7 +70,7 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * get soapUrl
+     * Get the soap Url
      *
      * @return string Soap Url
      */
@@ -80,7 +80,7 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * get wsdlUrl
+     * Get the wsdl Url
      *
      * @return string Wsdl Url
      */
@@ -90,7 +90,7 @@ class MagentoSoapClientParameters
     }
 
     /**
-     * get magentoUrl
+     * Get the magento Url
      *
      * @return string Magento Domain Url
      */
