@@ -16,7 +16,7 @@ use Guzzle\Service\ClientInterface;
 class SoapChecker
 {
     /**
-     * @var \Guzzle\Service\Client
+     * @var Guzzle\Service\ClientInterface
      */
     protected $client;
 
@@ -32,8 +32,9 @@ class SoapChecker
      *
      * @param string $soapUrl
      *
-     * @return string
+     * @return string Xml as string
      *
+     * @throws NotReachableUrlException
      * @throws InvalidSoapUrl
      */
     public function checkSoapUrl($soapUrl)
