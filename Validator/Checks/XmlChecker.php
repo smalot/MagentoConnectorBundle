@@ -18,7 +18,7 @@ class XmlChecker
      *
      * @param string $xml
      *
-     * @return SimpleXMLElement
+     * @return null
      *
      * @throws InvalidXmlException
      */
@@ -29,7 +29,5 @@ class XmlChecker
         if (false === $output) {
             throw new InvalidXMLException();
         }
-
-        return $output;
     }
 }
