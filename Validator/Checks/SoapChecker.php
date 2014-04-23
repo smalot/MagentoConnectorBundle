@@ -9,6 +9,8 @@ use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\ClientInterface;
 
 /**
+ * Tool in the goal to check your soap url
+ *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
@@ -16,12 +18,12 @@ use Guzzle\Service\ClientInterface;
 class SoapChecker
 {
     /**
-     * @var Guzzle\Service\ClientInterface
+     * @var ClientInterface
      */
     protected $client;
 
     /**
-     * @param \Guzzle\Service\ClientInterface $client
+     * @param ClientInterface $client
      */
     public function __construct(ClientInterface $client)
     {
@@ -35,7 +37,7 @@ class SoapChecker
      * @return string Xml as string
      *
      * @throws NotReachableUrlException
-     * @throws InvalidSoapUrl
+     * @throws InvalidSoapUrlException
      */
     public function checkSoapUrl($soapUrl)
     {
@@ -45,7 +47,7 @@ class SoapChecker
             $response = $this->client->send($request);
         } catch (CurlException $e) {
             throw new NotReachableUrlException;
-        } catch (BadResponseException $ex) {
+        } catch (BadResponseException $e) {
             throw new InvalidSoapUrlException();
         }
 
