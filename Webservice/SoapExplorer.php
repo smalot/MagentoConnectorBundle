@@ -29,6 +29,7 @@ class SoapExplorer
     {
         $this->client = $client;
     }
+
     /**
      * Reaches soap url and get his content
      *
