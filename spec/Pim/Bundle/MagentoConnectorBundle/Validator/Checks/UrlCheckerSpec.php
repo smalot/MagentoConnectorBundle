@@ -31,7 +31,7 @@ class UrlCheckerSpec extends ObjectBehavior
 
     function it_should_success_with_valid_url()
     {
-        $this->checkAnUrl('http://valid.url')->shouldReturn(true);
+        $this->checkAnUrl('http://valid.url')->shouldReturn(null);
     }
 
     function it_should_fail_if_url_is_not_reachable(ClientInterface $client, Request $request)
@@ -50,6 +50,6 @@ class UrlCheckerSpec extends ObjectBehavior
         $client->createRequest('GET', 'http://valid.url')->willReturn($request);
         $client->send($request)->willReturn($response);
 
-        $this->checkReachableUrl('http://valid.url')->shouldReturn(true);
+        $this->checkReachableUrl('http://valid.url')->shouldReturn(null);
     }
 }

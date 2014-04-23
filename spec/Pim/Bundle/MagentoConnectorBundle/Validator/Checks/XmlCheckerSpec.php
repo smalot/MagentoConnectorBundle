@@ -24,6 +24,6 @@ class XmlCheckerSpec extends ObjectBehavior
     {
         $validXml = '<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don\'t forget me this weekend!</body></note>';
 
-        $this->checkXml($validXml)->shouldBeAnInstanceOf('\SimpleXMLElement');
+        $this->checkXml($validXml)->shouldReturn(null);
     }
 }
