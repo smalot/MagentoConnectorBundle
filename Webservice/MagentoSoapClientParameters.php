@@ -13,12 +13,24 @@ class MagentoSoapClientParameters
 {
     const SOAP_WSDL_URL = '/api/soap/?wsdl';
 
+    /**
+     * @var string Soap Username
+     */
     protected $soapUsername;
 
+    /**
+     * @var string Soap Api Key
+     */
     protected $soapApiKey;
 
+    /**
+     * @var string Wsdl extension
+     */
     protected $wsdlUrl;
 
+    /**
+     * @var string Magento Url (only the domain)
+     */
     protected $magentoUrl;
 
     /**
@@ -60,7 +72,7 @@ class MagentoSoapClientParameters
     /**
      * get soapUrl
      *
-     * @return string soap url
+     * @return string Soap Url
      */
     public function getSoapUrl()
     {
@@ -70,7 +82,7 @@ class MagentoSoapClientParameters
     /**
      * get wsdlUrl
      *
-     * @return string wsdl url
+     * @return string Wsdl Url
      */
     public function getWsdlUrl()
     {
@@ -80,7 +92,7 @@ class MagentoSoapClientParameters
     /**
      * get magentoUrl
      *
-     * @return string magento url
+     * @return string Magento Domain Url
      */
     public function getMagentoUrl()
     {
