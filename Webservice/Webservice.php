@@ -18,7 +18,6 @@ class Webservice
     const SOAP_ACTION_CATALOG_PRODUCT_DELETE        = 'catalog_product.delete';
     const SOAP_ACTION_CATALOG_PRODUCT_CURRENT_STORE = 'catalog_product.currentStore';
     const SOAP_ACTION_CATALOG_PRODUCT_LIST          = 'catalog_product.list';
-    const SOAP_ACTION_PRODUCT_ATTRIBUTE_OPTIONS     = 'catalog_product_attribute.options';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST    = 'product_attribute_set.list';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST        = 'catalog_product_attribute.list';
     const SOAP_ACTION_ATTRIBUTE_OPTION_LIST         = 'catalog_product_attribute.options';

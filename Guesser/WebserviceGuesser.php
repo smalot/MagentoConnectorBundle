@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceEE;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
@@ -50,6 +51,9 @@ class WebserviceGuesser extends AbstractGuesser
             $magentoVersion = $this->getMagentoVersion($client);
 
             switch ($magentoVersion) {
+                case AbstractGuesser::MAGENTO_VERSION_1_13:
+                    $this->webservice = new WebserviceEE($client);
+                    break;
                 case AbstractGuesser::MAGENTO_VERSION_1_8:
                 case AbstractGuesser::MAGENTO_VERSION_1_7:
                     $this->webservice = new Webservice($client);
