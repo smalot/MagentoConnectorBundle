@@ -623,8 +623,7 @@ class Webservice
             );
 
             foreach ($attributeSets as $attributeSet) {
-                $this->magentoAttributeSets[$attributeSet['name']] =
-                    $attributeSet['set_id'];
+                $this->magentoAttributeSets[$attributeSet['name']] = $attributeSet['set_id'];
             }
         }
 

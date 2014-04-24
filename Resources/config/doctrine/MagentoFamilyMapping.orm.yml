@@ -1,0 +1,23 @@
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoFamilyMapping:
+    type: entity
+    table: pim_magento_family_mapping
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        magentoUrl:
+            type: text
+            length: 255
+            column: magento_url
+        magentoFamilyId:
+            type: integer
+            column: magento_family_id
+    manyToOne:
+        family:
+            targetEntity: Pim\Bundle\CatalogBundle\Entity\Family
+            inversedBy: magentoFamilyMappings
+            joinColumn:
+                name: family_id
+                referencedColumnName: id
+                onDelete: 'CASCADE'
