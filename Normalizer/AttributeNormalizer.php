@@ -99,6 +99,7 @@ class AttributeNormalizer implements NormalizerInterface
                 ),
                 $normalizedAttribute
             );
+
         } else {
             $normalizedAttribute['default_value'] = $this->getNormalizedDefaultValue(
                 $object,
@@ -317,7 +318,7 @@ class AttributeNormalizer implements NormalizerInterface
             array(
                 array(
                     'store_id' => 0,
-                    'label'    => $attributeMapping->getTarget($attribute->getCode())
+                    'label'    => strtolower($attributeMapping->getTarget($attribute->getCode()))
                 )
             ),
             $localizedLabels
