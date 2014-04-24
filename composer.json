@@ -19,11 +19,16 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/akeneo/DeltaExportBundle.git"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/akeneo/platform.git"
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "1.1.*@stable"
+        "akeneo/pim-community-dev": "1.1.*@stable",
+        "akeneo/delta-export-bundle": "dev-master"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
