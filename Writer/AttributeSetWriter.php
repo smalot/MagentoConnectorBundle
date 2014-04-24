@@ -54,50 +54,34 @@ class AttributeSetWriter extends AbstractWriter
     public function write(array $items)
     {
         $this->beforeExecute();
+        try {
+            foreach ($items as $item) {
+                    $this->handleNewFamily($item);
 
-
-        foreach ($items as $item) {
-            try {
-                $this->handleNewFamily($item);
-                $this->handleAddingAttributeToAttributeSet($item);
-            } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array());
             }
+        } catch (SoapCallException $e) {
+            throw new InvalidItemException($e->getMessage(), array());
         }
     }
 
     /**
      * Handle family creation
      * @param array $item
+     * @throws InvalidItemException
      */
     protected function handleNewFamily(array $item)
     {
         if (isset($item['create'])) {
-            $pimFamily       = $item['family'];
-            $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
-            $magentoUrl      = $this->soapUrl;
-            var_dump($pimFamily->getId());
-            $this->familyMappingManager->registerFamilyMapping(
-                $pimFamily,
-                $magentoFamilyId,
-                $magentoUrl
-            );
-            $this->stepExecution->incrementSummaryInfo(self::FAMILY_CREATED);
-        }
-    }
-
-    /**
-     * Handle adding attribute to the attribute set
-     * @param array $item
-     */
-    protected function handleAddingAttributeToAttributeSet(array $item)
-    {
-        $familyMagentoId = $this->familyMappingManager->getIdFromFamily($item['family'], $this->soapUrl);
-        foreach ($item['attributes'] as $attribute) {
-            $attributeMagentoId = $this->attributeMappingManager->getIdFromAttribute($attribute, $this->soapUrl);
-            if ($attributeMagentoId !== null && $familyMagentoId !== null) {
-                $this->webservice->addAttributeToAttributeSet($attributeMagentoId, $familyMagentoId);
-            }
+                $pimFamily       = $item['family'];
+                $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
+                $magentoUrl      = $this->soapUrl;
+                var_dump($pimFamily->getId());
+                $this->familyMappingManager->registerFamilyMapping(
+                    $pimFamily,
+                    $magentoFamilyId,
+                    $magentoUrl
+                );
+                $this->stepExecution->incrementSummaryInfo(self::FAMILY_CREATED);
         }
     }
 }

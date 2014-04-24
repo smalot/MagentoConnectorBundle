@@ -5,8 +5,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\CatalogBundle\Entity\Family;
 
 /**
  * Magento attribute writer
@@ -26,21 +28,32 @@ class AttributeWriter extends AbstractWriter
      */
     protected $attributeMappingManager;
 
+    /**
+     * @var Attribute
+     */
     protected $attribute;
+
+    /**
+     * @var FamilyMappingManager
+     */
+    protected $familyMappingManager;
 
     /**
      * Constructor
      *
-     * @param WebserviceGuesser         $webserviceGuesser
-     * @param AttributeMappingManager   $attributeMappingManager
+     * @param WebserviceGuesser       $webserviceGuesser
+     * @param FamilyMappingManager    $familyMappingManager
+     * @param AttributeMappingManager $attributeMappingManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
+        FamilyMappingManager $familyMappingManager,
         AttributeMappingManager $attributeMappingManager
     ) {
         parent::__construct($webserviceGuesser);
 
         $this->attributeMappingManager = $attributeMappingManager;
+        $this->familyMappingManager    = $familyMappingManager;
     }
 
     /**
@@ -52,8 +65,8 @@ class AttributeWriter extends AbstractWriter
 
 
         foreach ($attributes as $attribute) {
-                $this->attribute = $attribute[0];
             try {
+                $this->attribute = $attribute[0];
                 $this->handleAttribute($attribute[1]);
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array(json_encode($attribute)));
@@ -72,13 +85,20 @@ class AttributeWriter extends AbstractWriter
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
             $pimAttribute = $this->attribute;
-            $magentaAttributeId = $this->webservice->createAttribute($attribute);
+            $magentoAttributeId = $this->webservice->createAttribute($attribute);
+            $families = $this->attribute->getFamilies();
+
+            foreach ($families as $family) {
+                $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->soapUrl);
+                $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $familyMagentoId);
+            }
+
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
             $magentoUrl      = $this->soapUrl;
 
             $this->attributeMappingManager->registerAttributeMapping(
                 $pimAttribute,
-                $magentaAttributeId,
+                $magentoAttributeId,
                 $magentoUrl
             );
         }
