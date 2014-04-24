@@ -89,5 +89,4 @@ class AttributeSetWriter extends AbstractWriter
             }
         }
     }
-
 }

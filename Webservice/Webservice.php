@@ -536,13 +536,15 @@ class Webservice
     /**
      * Create an attribute
      * @param array $attribute
+     * @return int ID of the created attribute
      */
     public function createAttribute($attribute)
     {
-        $this->client->call(
+        $result = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_CREATE,
             array($attribute)
         );
+        return $result;
     }
 
     /**

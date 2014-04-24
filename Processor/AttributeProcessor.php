@@ -93,12 +93,11 @@ class AttributeProcessor extends AbstractProcessor
     public function process($attribute)
     {
         $this->beforeExecute();
-
         $magentoAttributes = $this->webservice->getAllAttributes();
 
         $this->globalContext['create'] = !$this->magentoAttributeExists($attribute, $magentoAttributes);
-
-        return $this->normalizeAttribute($attribute, $this->globalContext);
+        $result = [$attribute, $this->normalizeAttribute($attribute, $this->globalContext)];
+        return $result;
     }
 
     /**
