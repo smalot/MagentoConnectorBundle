@@ -53,6 +53,8 @@ class DeltaProductWriter extends ProductWriter
      */
     protected function computeProduct($product)
     {
+        $sku = $this->getProductSku($product);
+
         parent::computeProduct($product);
 
         $this->productExportManager->updateProductExport($sku, $this->jobInstance);
