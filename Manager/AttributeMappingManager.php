@@ -85,7 +85,13 @@ class AttributeMappingManager
         $magentoAttributeId,
         $magentoUrl
     ) {
+        $attributeMapping = $this->getEntityRepository()->findOneByAttribute($pimAttribute->getId());
         $magentoAttributeMapping = new $this->className();
+
+        if ($attributeMapping) {
+            $magentoAttributeMapping = $attributeMapping;
+        }
+
         $magentoAttributeMapping->setAttribute($pimAttribute);
         $magentoAttributeMapping->setMagentoAttributeId($magentoAttributeId);
         $magentoAttributeMapping->setMagentoUrl($magentoUrl);

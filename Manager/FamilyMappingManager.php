@@ -86,7 +86,13 @@ class FamilyMappingManager
         $magentoFamilyId,
         $magentoUrl
     ) {
+        $familyMapping = $this->getEntityRepository()->findOneByFamily($pimFamily->getId());
         $magentoFamilyMapping = new $this->className();
+
+        if ($familyMapping) {
+            $magentoFamilyMapping = $familyMapping;
+        }
+
         $magentoFamilyMapping->setFamily($pimFamily);
         $magentoFamilyMapping->setMagentoFamilyId($magentoFamilyId);
         $magentoFamilyMapping->setMagentoUrl($magentoUrl);

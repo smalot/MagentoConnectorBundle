@@ -21,3 +21,4 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
                 name: category_id
                 referencedColumnName: id
                 onDelete: 'CASCADE'
+                unique: true

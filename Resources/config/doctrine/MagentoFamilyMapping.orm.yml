@@ -21,3 +21,4 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoFamilyMapping:
                 name: family_id
                 referencedColumnName: id
                 onDelete: 'CASCADE'
+                unique: true

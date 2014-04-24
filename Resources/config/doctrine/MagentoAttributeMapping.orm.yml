@@ -21,3 +21,4 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoAttributeMapping:
                 name: attribute_id
                 referencedColumnName: id
                 onDelete: 'CASCADE'
+                unique: true
