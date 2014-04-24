@@ -33,8 +33,8 @@ class AttributeSetWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param FamilyMappingManager $familyMappingManager
+     * @param WebserviceGuesser       $webserviceGuesser
+     * @param FamilyMappingManager    $familyMappingManager
      * @param AttributeMappingManager $attributeMappingManager
      */
     public function __construct(
@@ -54,13 +54,12 @@ class AttributeSetWriter extends AbstractWriter
     public function write(array $items)
     {
         $this->beforeExecute();
-        try {
-            foreach ($items as $item) {
-                    $this->handleNewFamily($item);
-
+        foreach ($items as $item) {
+            try {
+                $this->handleNewFamily($item);
+            } catch (SoapCallException $e) {
+                throw new InvalidItemException($e->getMessage(), array());
             }
-        } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), array());
         }
     }
 
@@ -75,7 +74,6 @@ class AttributeSetWriter extends AbstractWriter
                 $pimFamily       = $item['family'];
                 $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
                 $magentoUrl      = $this->soapUrl;
-                var_dump($pimFamily->getId());
                 $this->familyMappingManager->registerFamilyMapping(
                     $pimFamily,
                     $magentoFamilyId,
