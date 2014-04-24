@@ -67,11 +67,10 @@ class FamilyMappingManager
 
         $familyMapping = $this->getEntityRepository()->findOneBy(
             array(
-                'family'   => $family,
+                'family'     => $family,
                 'magentoUrl' => $magentoUrl
             )
         );
-        var_dump($familyMapping);
 
             return $familyMapping ? $familyMapping->getMagentoFamilyId() : null;
     }

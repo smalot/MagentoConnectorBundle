@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -25,17 +26,25 @@ class AttributeSetWriter extends AbstractWriter
     protected $familyMappingManager;
 
     /**
+     * @var AttributeMappingManager
+     */
+    protected $attributeMappingManager;
+
+    /**
      * Constructor
      *
-     * @param WebserviceGuesser      $webserviceGuesser
-     * @param FamilyMappingManager   $familyMappingManager
+     * @param WebserviceGuesser $webserviceGuesser
+     * @param FamilyMappingManager $familyMappingManager
+     * @param AttributeMappingManager $attributeMappingManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        FamilyMappingManager $familyMappingManager
+        FamilyMappingManager $familyMappingManager,
+        AttributeMappingManager $attributeMappingManager
     ) {
         parent::__construct($webserviceGuesser);
 
+        $this->attributeMappingManager = $attributeMappingManager;
         $this->familyMappingManager = $familyMappingManager;
     }
 
@@ -83,9 +92,11 @@ class AttributeSetWriter extends AbstractWriter
      */
     protected function handleAddingAttributeToAttributeSet(array $item)
     {
-        if (isset($item['create'])) {
-            foreach ($item['attributeIds'] as $attributeId) {
-                $this->webservice->addAttributeToAttributeSet($attributeId, $this->familyMappingManager->getIdFromFamily($item['family'],  $this->soapUrl));
+        $familyMagentoId = $this->familyMappingManager->getIdFromFamily($item['family'], $this->soapUrl);
+        foreach ($item['attributes'] as $attribute) {
+            $attributeMagentoId = $this->attributeMappingManager->getIdFromAttribute($attribute, $this->soapUrl);
+            if ($attributeMagentoId !== null && $familyMagentoId !== null) {
+                $this->webservice->addAttributeToAttributeSet($attributeMagentoId, $familyMagentoId);
             }
         }
     }

@@ -55,6 +55,7 @@ class FamilyProcessor extends AbstractProcessor
         $magentoAttributesSet  = $this->webservice->getAttributeSetList();
 
         $result['family'] = $family;
+        $result['attributes'] = $family->getAttributes();
         // AttributeSet
         if (!$this->magentoAttributeSetExists($family, $magentoAttributesSet)) {
             $result['create'] = $this->normalizeFamily($family, $this->globalContext);

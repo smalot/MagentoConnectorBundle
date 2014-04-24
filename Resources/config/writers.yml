@@ -36,3 +36,4 @@ services:
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_magento_connector.manager.family_mapping'
+            - '@pim_magento_connector.manager.attribute_mapping'

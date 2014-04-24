@@ -48,7 +48,7 @@ class AttributeMappingManager
         $magentoAttributeMapping = $this->getEntityRepository()->findOneBy(
             array(
                 'magentoAttributeId' => $id,
-                'magentoUrl'      => $magentoUrl
+                'magentoUrl'         => $magentoUrl
             )
         );
 
@@ -57,8 +57,8 @@ class AttributeMappingManager
 
     /**
      * Get id from attribute and Magento url
-     * @param Attribute            $attribute
-     * @param string            $magentoUrl
+     * @param Attribute $attribute
+     * @param string    $magentoUrl
      *
      * @return int
      */
@@ -68,19 +68,17 @@ class AttributeMappingManager
         $attributeMapping = $this->getEntityRepository()->findOneBy(
             array(
                 'attribute'   => $attribute,
-                'magentoUrl' => $magentoUrl
+                'magentoUrl'  => $magentoUrl
             )
         );
-        var_dump($attributeMapping);
-
             return $attributeMapping ? $attributeMapping->getMagentoAttributeId() : null;
     }
 
     /**
      * Register a new attribute mapping
      * @param Attribute   $pimAttribute
-     * @param int      $magentoAttributeId
-     * @param string   $magentoUrl
+     * @param int         $magentoAttributeId
+     * @param string      $magentoUrl
      */
     public function registerAttributeMapping(
         Attribute $pimAttribute,
