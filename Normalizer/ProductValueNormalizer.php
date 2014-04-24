@@ -466,8 +466,6 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getOptionId($attributeCode, $optionCode, $magentoAttributesOptions)
     {
-        $attributeCode = strtolower($attributeCode);
-
         if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {
             throw new InvalidOptionException(
                 sprintf(
