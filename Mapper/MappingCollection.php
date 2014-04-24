@@ -35,6 +35,10 @@ class MappingCollection extends ArrayCollection
 
             while ($it->valid() && !$elementFound) {
                 if ($it->current()['target'] == $value['target']) {
+                    if (!$it->current()['deletable']) {
+                        $value['deletable'] = false;
+                    }
+
                     $this->remove($it->current()['source']);
                     $elementFound = true;
                 }
