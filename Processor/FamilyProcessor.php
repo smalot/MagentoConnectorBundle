@@ -60,6 +60,7 @@ class FamilyProcessor extends AbstractProcessor
         if (!$this->magentoAttributeSetExists($family, $magentoAttributesSet)) {
             $result['create'] = $this->normalizeFamily($family, $this->globalContext);
         }
+
         return $result;
     }
 

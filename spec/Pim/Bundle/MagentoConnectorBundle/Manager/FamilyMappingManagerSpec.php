@@ -21,7 +21,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $mappingCollection->getTarget('default')->willReturn(12);
     }
 
-    function it_gets_family_from_id($entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
+    function it_gets_family_from_id(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
         $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
             ->willReturn($familyMapping);
@@ -31,7 +31,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getFamilyFromId(12, 'magento_url')->shouldReturn($family);
     }
 
-    function it_shoulds_gets_null_if_family_mapping_is_not_found($entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
+    function it_shoulds_gets_null_if_family_mapping_is_not_found(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
         $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
             ->willReturn(null);
@@ -57,7 +57,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getIdFromFamily($family, '', $mappingCollection)->shouldReturn(13);
     }
 
-    function it_returns_null_if_family_is_not_found(Family $family, $entityRepository, $mappingCollection)
+    function it_returns_null_if_family_is_not_found(Family $family, EntityRepository $entityRepository, $mappingCollection)
     {
         $entityRepository->findOneBy(
             array(
@@ -73,7 +73,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getIdFromFamily($family, '', $mappingCollection)->shouldReturn(null);
     }
 
-    function it_tests_if_a_family_exist_from_family_id($entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
+    function it_tests_if_a_family_exist_from_family_id(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
         $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
             ->willReturn($familyMapping);

@@ -19,9 +19,10 @@ use Pim\Bundle\CatalogBundle\Entity\Family;
  */
 class AttributeWriter extends AbstractWriter
 {
-    const ATTRIBUTE_UPDATE_SIZE    = 2;
-    const ATTRIBUTE_UPDATED        = 'Attributes updated';
-    const ATTRIBUTE_CREATED        = 'Attributes created';
+    const ATTRIBUTE_UPDATE_SIZE = 2;
+    const ATTRIBUTE_UPDATED     = 'Attributes updated';
+    const ATTRIBUTE_CREATED     = 'Attributes created';
+    const ATTRIBUTE_ALREADY     = 'Attribute already in magento';
 
     /**
      * @var AttributeMappingManager
@@ -107,6 +108,7 @@ class AttributeWriter extends AbstractWriter
     /**
      * Add attribute to corresponding attribute sets
      * @param int $magentoAttributeId ID of magento attribute
+     *
      * @return void
      */
     protected function addAttributeToAttributeSet($magentoAttributeId)
@@ -117,7 +119,7 @@ class AttributeWriter extends AbstractWriter
             try {
                 $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $familyMagentoId);
             } catch (SoapCallException $e) {
-                continue;
+                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_ALREADY);
             }
         }
     }

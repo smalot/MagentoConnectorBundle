@@ -17,8 +17,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
  */
 class AttributeSetWriter extends AbstractWriter
 {
-    const FAMILY_CREATED  = 'Families created';
-    const ATTRIBUTE_ADDED = 'Attribute added correctly';
+    const FAMILY_CREATED = 'Families created';
+    const FAMILY_ALREADY = 'Family already in magento';
 
     /**
      * @var FamilyMappingManager
@@ -58,7 +58,7 @@ class AttributeSetWriter extends AbstractWriter
             try {
                 $this->handleNewFamily($item);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array());
+                $this->stepExecution->incrementSummaryInfo(self::FAMILY_ALREADY);
             }
         }
     }
@@ -71,15 +71,15 @@ class AttributeSetWriter extends AbstractWriter
     protected function handleNewFamily(array $item)
     {
         if (isset($item['create'])) {
-                $pimFamily       = $item['family'];
-                $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
-                $magentoUrl      = $this->soapUrl;
-                $this->familyMappingManager->registerFamilyMapping(
-                    $pimFamily,
-                    $magentoFamilyId,
-                    $magentoUrl
-                );
-                $this->stepExecution->incrementSummaryInfo(self::FAMILY_CREATED);
+            $pimFamily       = $item['family'];
+            $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
+            $magentoUrl      = $this->soapUrl;
+            $this->familyMappingManager->registerFamilyMapping(
+                $pimFamily,
+                $magentoFamilyId,
+                $magentoUrl
+            );
+            $this->stepExecution->incrementSummaryInfo(self::FAMILY_CREATED);
         }
     }
 }

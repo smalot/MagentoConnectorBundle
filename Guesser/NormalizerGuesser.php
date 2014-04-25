@@ -61,7 +61,6 @@ class NormalizerGuesser extends AbstractGuesser
      */
     protected $productValueManager;
 
-
     /**
      * Constructor
      * @param MagentoSoapClientFactory $magentoSoapClientFactory

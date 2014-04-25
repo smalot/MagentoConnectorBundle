@@ -41,7 +41,7 @@ class FamilyMappingManager
      * @param int    $id
      * @param string $magentoUrl
      *
-     * @return Family
+     * @return Family|null
      */
     public function getFamilyFromId($id, $magentoUrl)
     {
@@ -57,10 +57,10 @@ class FamilyMappingManager
 
     /**
      * Get id from family and Magento url
-     * @param Family            $family
-     * @param string            $magentoUrl
+     * @param Family $family
+     * @param string $magentoUrl
      *
-     * @return int
+     * @return integer
      */
     public function getIdFromFamily(Family $family, $magentoUrl)
     {
@@ -72,14 +72,14 @@ class FamilyMappingManager
             )
         );
 
-            return $familyMapping ? $familyMapping->getMagentoFamilyId() : null;
+        return $familyMapping ? $familyMapping->getMagentoFamilyId() : null;
     }
 
     /**
      * Register a new family mapping
-     * @param Family   $pimFamily
-     * @param int      $magentoFamilyId
-     * @param string   $magentoUrl
+     * @param Family  $pimFamily
+     * @param integer $magentoFamilyId
+     * @param string  $magentoUrl
      */
     public function registerFamilyMapping(
         Family $pimFamily,

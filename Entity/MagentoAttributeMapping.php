@@ -1,8 +1,8 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
 /**
  * Magento attribute mapping
@@ -44,7 +44,7 @@ class MagentoAttributeMapping
     }
 
     /**
-     * Set magentoUrl
+     * Set magento url
      *
      * @param string $magentoUrl
      *
@@ -58,7 +58,7 @@ class MagentoAttributeMapping
     }
 
     /**
-     * Get magentoUrl
+     * Get magento url
      *
      * @return string
      */
@@ -68,7 +68,7 @@ class MagentoAttributeMapping
     }
 
     /**
-     * Set magentoAttributeId
+     * Set magento attribute id
      *
      * @param string $magentoAttributeId
      *
@@ -82,7 +82,7 @@ class MagentoAttributeMapping
     }
 
     /**
-     * Get magentoAttributeId
+     * Get magento attribute id
      *
      * @return string
      */

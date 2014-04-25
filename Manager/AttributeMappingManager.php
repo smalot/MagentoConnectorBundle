@@ -78,7 +78,6 @@ class AttributeMappingManager
      */
     public function getIdFromAttribute(Attribute $attribute, $magentoUrl)
     {
-
         $attributeMapping = $this->getEntityRepository()->findOneBy(
             array(
                 'attribute'   => $attribute,
@@ -90,9 +89,9 @@ class AttributeMappingManager
 
     /**
      * Register a new attribute mapping
-     * @param Attribute   $pimAttribute
-     * @param int         $magentoAttributeId
-     * @param string      $magentoUrl
+     * @param Attribute $pimAttribute
+     * @param integer   $magentoAttributeId
+     * @param string    $magentoUrl
      */
     public function registerAttributeMapping(
         Attribute $pimAttribute,
@@ -135,4 +134,3 @@ class AttributeMappingManager
         return $this->objectManager->getRepository($this->className);
     }
 }
-
