@@ -122,4 +122,3 @@ class FamilyMappingManager
         return $this->objectManager->getRepository($this->className);
     }
 }
-

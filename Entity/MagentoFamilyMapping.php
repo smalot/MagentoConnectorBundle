@@ -1,8 +1,8 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
-use Pim\Bundle\CatalogBundle\Entity\Family;
 
+use Pim\Bundle\CatalogBundle\Entity\Family;
 
 /**
  * Magento family mapping
