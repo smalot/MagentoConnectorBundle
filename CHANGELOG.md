@@ -1,4 +1,5 @@
 # 1.0.0-RC4 -
+- Attribute can be exported into families (AttributeSets)
 
 ## Improvements
 - compatibility with pim-community 1.1
