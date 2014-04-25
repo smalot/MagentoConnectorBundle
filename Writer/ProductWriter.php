@@ -93,15 +93,16 @@ class ProductWriter extends AbstractWriter
      */
     protected function computeProduct($product)
     {
-        $sku = $this->getProductSku($product);
+        $sku    = $this->getProductSku($product);
         $images = $this->webservice->getImages($sku);
+
         $this->pruneImages($sku, $images);
 
         foreach (array_keys($product) as $storeViewCode) {
             try {
                 $this->createCall($product[$storeViewCode], $storeViewCode);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product[$storeViewCode]));
+                throw new InvalidItemException($e->getMessage(), array(json_encode($product[$storeViewCode])));
             }
         }
 
