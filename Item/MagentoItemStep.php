@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Item;
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrl;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
@@ -45,14 +44,18 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
-    protected $soapApiKey;
+    protected $wsdlUrl = MagentoSoapClientParameters::SOAP_WSDL_URL;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
      * @Assert\Url(groups={"Execution"})
-     * @MagentoUrl(groups={"Execution"})
      */
-    protected $soapUrl;
+    protected $magentoUrl;
+
+    /**
+     * @Assert\NotBlank(groups={"Execution"})
+     */
+    protected $soapApiKey;
 
     /**
      * @var MagentoSoapClientParameters
@@ -70,75 +73,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $afterConfiguration = false;
 
     /**
-     * get soapUsername
-     *
-     * @return string Soap mangeto soapUsername
+     * @param WebserviceGuesser $webserviceGuesser
      */
-    public function getSoapUsername()
+    public function __construct(WebserviceGuesser $webserviceGuesser)
     {
-        return $this->soapUsername;
-    }
-
-    /**
-     * Set soapUsername
-     *
-     * @param string $soapUsername Soap mangeto soapUsername
-     *
-     * @return MagentoItemStep
-     */
-    public function setSoapUsername($soapUsername)
-    {
-        $this->soapUsername = $soapUsername;
-
-        return $this;
-    }
-
-    /**
-     * get soapApiKey
-     *
-     * @return string Soap mangeto soapApiKey
-     */
-    public function getSoapApiKey()
-    {
-        return $this->soapApiKey;
-    }
-
-    /**
-     * Set soapApiKey
-     *
-     * @param string $soapApiKey Soap mangeto soapApiKey
-     *
-     * @return MagentoItemStep
-     */
-    public function setSoapApiKey($soapApiKey)
-    {
-        $this->soapApiKey = $soapApiKey;
-
-        return $this;
-    }
-
-    /**
-     * get soapUrl
-     *
-     * @return string mangeto soap url
-     */
-    public function getSoapUrl()
-    {
-        return $this->soapUrl;
-    }
-
-    /**
-     * Set soapUrl
-     *
-     * @param string $soapUrl mangeto soap url
-     *
-     * @return MagentoItemStep
-     */
-    public function setSoapUrl($soapUrl)
-    {
-        $this->soapUrl = $soapUrl;
-
-        return $this;
+        $this->webserviceGuesser = $webserviceGuesser;
     }
 
     /**
@@ -150,29 +89,164 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get the magento soap client parameters
-     *
-     * @return MagentoSoapClientParameters
+     * {@inheritdoc}
      */
-    protected function getClientParameters()
+    public function setConfiguration(array $config)
     {
-        if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->soapUrl
-            );
-        }
+        parent::setConfiguration($config);
 
-        return $this->clientParameters;
+        if (!$this->afterConfiguration) {
+            $this->afterConfigurationSet();
+
+            $this->afterConfiguration = true;
+        }
     }
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
+     * Get fields for the twig
+     *
+     * @return array
      */
-    public function __construct(WebserviceGuesser $webserviceGuesser)
+    public function getConfigurationFields()
     {
-        $this->webserviceGuesser = $webserviceGuesser;
+        return array(
+            'soapUsername' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.soapUsername.help',
+                    'label'    => 'pim_magento_connector.export.soapUsername.label'
+                )
+            ),
+            'soapApiKey'   => array(
+                //Should be replaced by a password formType but which doesn't
+                //empty the field at each edit
+                'type'    => 'text',
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.soapApiKey.help',
+                    'label'    => 'pim_magento_connector.export.soapApiKey.label'
+                )
+            ),
+            'magentoUrl' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.magentoUrl.help',
+                    'label'    => 'pim_magento_connector.export.magentoUrl.label'
+                )
+            ),
+            'wsdlUrl' => array(
+                'options' => array(
+                    'required' => true,
+                    'help'     => 'pim_magento_connector.export.wsdlUrl.help',
+                    'label'    => 'pim_magento_connector.export.wsdlUrl.label',
+                    'data'     => $this->getWsdlUrl()
+                )
+            )
+        );
+    }
+
+    /**
+     * Get SoapUsername
+     *
+     * @return string Soap magento soapUsername
+     */
+    public function getSoapUsername()
+    {
+        return $this->soapUsername;
+    }
+
+    /**
+     * Set SoapUsername
+     *
+     * @param string $soapUsername Soap magento soapUsername
+     *
+     * @return MagentoItemStep
+     */
+    public function setSoapUsername($soapUsername)
+    {
+        $this->soapUsername = $soapUsername;
+
+        return $this;
+    }
+
+    /**
+     * Get soapApiKey
+     *
+     * @return string Soap magento soapApiKey
+     */
+    public function getSoapApiKey()
+    {
+        return $this->soapApiKey;
+    }
+
+    /**
+     * Set soapApiKey
+     *
+     * @param string $soapApiKey Soap magento soapApiKey
+     *
+     * @return MagentoItemStep
+     */
+    public function setSoapApiKey($soapApiKey)
+    {
+        $this->soapApiKey = $soapApiKey;
+
+        return $this;
+    }
+
+    /**
+     * Get wsdlUrl
+     *
+     * @return string magento wsdl relative url
+     */
+    public function getWsdlUrl()
+    {
+        return $this->wsdlUrl;
+    }
+
+    /**
+     * Set wsdlUrl
+     *
+     * @param string $wsdlUrl wsdl relative url
+     *
+     * @return MagentoItemStep
+     */
+    public function setWsdlUrl($wsdlUrl)
+    {
+        $this->wsdlUrl = $wsdlUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get magentoUrl
+     *
+     * @return string Soap magento url
+     */
+    public function getMagentoUrl()
+    {
+        return $this->magentoUrl;
+    }
+
+    /**
+     * Get magentoUrl
+     *
+     * @return MagentoItemStep
+     */
+    public function setMagentoUrl($magentoUrl)
+    {
+        $this->magentoUrl = $magentoUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get soapUrl
+     *
+     * @return string magento soap url
+     */
+    public function getSoapUrl()
+    {
+        return $this->magentoUrl . $this->wsdlUrl;
     }
 
     /**
@@ -190,22 +264,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Set the step element configuration
-     *
-     * @param array $config
-     */
-    public function setConfiguration(array $config)
-    {
-        parent::setConfiguration($config);
-
-        if (!$this->afterConfiguration) {
-            $this->afterConfigurationSet();
-
-            $this->afterConfiguration = true;
-        }
-    }
-
-    /**
      * Called after configuration set
      */
     protected function afterConfigurationSet()
@@ -213,35 +271,21 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * {@inheritdoc}
+     * Get the magento soap client parameters
+     *
+     * @return MagentoSoapClientParameters
      */
-    public function getConfigurationFields()
+    protected function getClientParameters()
     {
-        return array(
-            'soapUsername' => array(
-                'options' => array(
-                    'required' => true,
-                    'help'     => 'pim_magento_connector.export.soapUsername.help',
-                    'label'    => 'pim_magento_connector.export.soapUsername.label'
-                )
-            ),
-            'soapApiKey'   => array(
-                //Should be remplaced by a password formType but who doesn't
-                //empty the field at each edit
-                'type'    => 'text',
-                'options' => array(
-                    'required' => true,
-                    'help'     => 'pim_magento_connector.export.soapApiKey.help',
-                    'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                )
-            ),
-            'soapUrl' => array(
-                'options' => array(
-                    'required' => true,
-                    'help'     => 'pim_magento_connector.export.soapUrl.help',
-                    'label'    => 'pim_magento_connector.export.soapUrl.label'
-                )
-            )
-        );
+        if (!$this->clientParameters) {
+            $this->clientParameters = new MagentoSoapClientParameters(
+                $this->soapUsername,
+                $this->soapApiKey,
+                $this->magentoUrl,
+                $this->wsdlUrl
+            );
+        }
+
+        return $this->clientParameters;
     }
 }

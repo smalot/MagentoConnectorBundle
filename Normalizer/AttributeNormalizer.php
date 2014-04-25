@@ -85,7 +85,8 @@ class AttributeNormalizer implements NormalizerInterface
                 $context['defaultLocale'],
                 $context['storeViewMapping'],
                 $context['attributeMapping']
-            )
+            ),
+            'default_value'                 => ''
         );
 
         $mappedAttributeType = $this->getNormalizedType($object);
@@ -98,6 +99,7 @@ class AttributeNormalizer implements NormalizerInterface
                 ),
                 $normalizedAttribute
             );
+
         } else {
             $normalizedAttribute['default_value'] = $this->getNormalizedDefaultValue(
                 $object,
@@ -182,9 +184,9 @@ class AttributeNormalizer implements NormalizerInterface
         if (preg_match('/^[a-z][a-z_0-9]{0,30}$/', $attributeCode) === 0) {
             throw new InvalidAttributeNameException(
                 sprintf(
-                    'The attribute "%s" have a code that is not compatible with Magento. Please use only lowercase letters ' .
-                    '(a-z), numbers (0-9) or underscore(_). First caracter should also be a letter and your attribute code' .
-                    'length must be under 30 caracters',
+                    'The attribute "%s" have a code that is not compatible with Magento. Please use only' .
+                    ' lowercase letters (a-z), numbers (0-9) or underscore(_). First caracter should also' .
+                    ' be a letter and your attribute codelength must be under 30 characters',
                     $attribute->getCode()
                 )
             );
@@ -316,7 +318,7 @@ class AttributeNormalizer implements NormalizerInterface
             array(
                 array(
                     'store_id' => 0,
-                    'label'    => $attributeMapping->getTarget($attribute->getCode())
+                    'label'    => strtolower($attributeMapping->getTarget($attribute->getCode()))
                 )
             ),
             $localizedLabels

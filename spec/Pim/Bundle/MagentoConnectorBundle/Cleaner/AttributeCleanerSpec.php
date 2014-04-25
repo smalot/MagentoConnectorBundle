@@ -3,6 +3,7 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Doctrine\ORM\EntityManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
@@ -136,11 +137,19 @@ class AttributeCleanerSpec extends ObjectBehavior
                         'label'    => 'pim_magento_connector.export.soapApiKey.label'
                     )
                 ),
-                'soapUrl' => array(
+                'magentoUrl' => array(
                     'options' => array(
                         'required' => true,
-                        'help'     => 'pim_magento_connector.export.soapUrl.help',
-                        'label'    => 'pim_magento_connector.export.soapUrl.label'
+                        'help'     => 'pim_magento_connector.export.magentoUrl.help',
+                        'label'    => 'pim_magento_connector.export.magentoUrl.label'
+                    )
+                ),
+                'wsdlUrl' => array(
+                    'options' => array(
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.wsdlUrl.help',
+                        'label'    => 'pim_magento_connector.export.wsdlUrl.label',
+                        'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
                     )
                 ),
                 'notInPimAnymoreAction' => array(

@@ -72,7 +72,7 @@ class CategoryWriter extends AbstractWriter
             foreach ($batch['create'] as $newCategory) {
                 $pimCategory       = $newCategory['pimCategory'];
                 $magentoCategoryId = $this->webservice->sendNewCategory($newCategory['magentoCategory']);
-                $magentoUrl        = $this->soapUrl . MagentoSoapClientParameters::SOAP_WSDL_URL;
+                $magentoUrl        = $this->getSoapUrl();
 
                 $this->categoryMappingManager->registerCategoryMapping(
                     $pimCategory,
@@ -124,7 +124,7 @@ class CategoryWriter extends AbstractWriter
         if (isset($batch['variation'])) {
             foreach ($batch['variation'] as $variationCategory) {
                 $pimCategory        = $variationCategory['pimCategory'];
-                $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->soapUrl . MagentoSoapClientParameters::SOAP_WSDL_URL);
+                $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->getSoapUrl());
                 $magentoCategory    = $variationCategory['magentoCategory'];
                 $magentoCategory[0] = $magentoCategoryId;
 
