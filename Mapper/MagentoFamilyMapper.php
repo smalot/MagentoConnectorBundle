@@ -34,7 +34,7 @@ class MagentoFamilyMapper extends Mapper
 
     /**
      * Get mapping
-     * @return array
+     * @return MappingCollection|array
      */
     public function getMapping()
     {

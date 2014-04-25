@@ -2,8 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
+use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
@@ -16,20 +17,20 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
 class ORMFamilyMapper extends ORMMapper
 {
     /**
-     * @var FamilyManager
+     * @var FamilyMappingManager
      */
     protected $familyManager;
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      * @param SimpleMappingManager         $simpleMappingManager
+     * @param FamilyMappingManager         $familyManager
      * @param string                       $rootIdentifier
-     * @param FamilyManager                $familyManager
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager         $simpleMappingManager,
-        FamilyManager                $familyManager,
+        FamilyMappingManager         $familyManager,
         $rootIdentifier
     ) {
         parent::__construct($hasValidCredentialsValidator, $simpleMappingManager, $rootIdentifier);
@@ -54,5 +55,31 @@ class ORMFamilyMapper extends ORMMapper
         }
 
         return $targets;
+    }
+
+    /**
+     * Get all sources
+     * @param Family $family
+     *
+     * @return array
+     */
+    public function getAllSources(Family $family = null)
+    {
+        $sources = array();
+
+        if ($this->isValid()) {
+            $families = $family === null ? $this->familyManager->getTrees() : $family->getChildren();
+
+            foreach ($families as $family) {
+                $sources[] = array(
+                    'id'   => $family->getCode(),
+                    'text' => sprintf('%s (%s)', $family->getLabel(), $family->getCode())
+                );
+
+                $sources = array_merge($sources, $this->getAllSources($family));
+            }
+        }
+
+        return $sources;
     }
 }
