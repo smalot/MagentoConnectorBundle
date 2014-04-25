@@ -550,13 +550,15 @@ class Webservice
     /**
      * Update an attribute
      * @param array $attribute
+     * @return boolean
      */
     public function updateAttribute($attribute)
     {
-        $this->client->call(
+        $result = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_UPDATE,
             $attribute
         );
+        return $result;
     }
 
     /**

@@ -56,6 +56,20 @@ class AttributeMappingManager
     }
 
     /**
+     * Get attribute from  base id and Magento url
+     * @param Attribute $attribute
+     * @internal param string $magentoUrl
+     *
+     * @return Attribute
+     */
+    public function getAttributeFromBaseId($attribute)
+    {
+        $magentoAttributeMapping = $this->getEntityRepository()->findOneByAttribute($attribute);
+
+        return $magentoAttributeMapping ? $magentoAttributeMapping->getAttribute() : null;
+    }
+
+    /**
      * Get id from attribute and Magento url
      * @param Attribute $attribute
      * @param string    $magentoUrl
