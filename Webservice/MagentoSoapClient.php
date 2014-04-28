@@ -31,11 +31,11 @@ class MagentoSoapClient
 
         if (!$soapClient) {
             $wsdlUrl     = $this->clientParameters->getSoapUrl();
-            $soapOptions = array('encoding' => 'UTF-8', 'trace' => 1, 'exceptions' => true);
+            $soapOptions = array('encoding' => 'UTF-8', 'trace' => true, 'exceptions' => true);
 
             try {
                 $this->client = new \SoapClient($wsdlUrl, $soapOptions);
-            } catch (\Exception $e) {
+            } catch (\SoapFault $e) {
                 throw new ConnectionErrorException(
                     'The soap connection could not be established',
                     $e->getCode(),

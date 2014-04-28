@@ -4,6 +4,9 @@ namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
 use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Doctrine\ORM\EntityManager;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * ORM reader for product
@@ -14,6 +17,52 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
  */
 class AttributeReader extends EntityReader
 {
+    const IMAGE_ATTRIBUTE_TYPE = 'pim_catalog_image';
+
+    /**
+     * @var MappingMerger
+     */
+    protected $attributeMappingMerger;
+
+    /**
+     * @var string
+     */
+    protected $attributeMapping = '';
+
+    /**
+     * Set attribute mapping
+     * @param string $attributeMapping
+     *
+     * @return AttributeProcessor
+     */
+    public function setAttributeMapping($attributeMapping)
+    {
+        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+
+        return $this;
+    }
+
+    /**
+     * Get attribute mapping
+     * @return string
+     */
+    public function getAttributeMapping()
+    {
+        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+    }
+
+    /**
+     * @param EntityManager $em                     The entity manager
+     * @param string        $className              The entity class name used
+     * @param MappingMerger $attributeMappingMerger Attribute mapping merger
+     */
+    public function __construct(EntityManager $em, $className, MappingMerger $attributeMappingMerger)
+    {
+        parent::__construct($em, $className);
+
+        $this->attributeMappingMerger = $attributeMappingMerger;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -21,7 +70,9 @@ class AttributeReader extends EntityReader
     {
         $attribute = parent::read();
 
-        while ($attribute !== null && $this->isAttriguteIgnored($attribute)) {
+        $attributeMapping = $this->attributeMappingMerger->getMapping();
+
+        while ($attribute !== null && $this->isAttriguteIgnored($attribute, $attributeMapping)) {
             $attribute = parent::read();
         }
 
@@ -34,9 +85,10 @@ class AttributeReader extends EntityReader
      *
      * @return boolean
      */
-    protected function isAttriguteIgnored(Attribute $attribute)
+    protected function isAttriguteIgnored(Attribute $attribute, MappingCollection $attributeMapping)
     {
-        return in_array($attribute->getCode(), $this->getIgnoredAttributes());
+        return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes()) ||
+            $attribute->getAttributeType() == self::IMAGE_ATTRIBUTE_TYPE;
     }
 
     /**
@@ -64,7 +116,29 @@ class AttributeReader extends EntityReader
         return array(
             'sku',
             'name',
-            'description'
+            'description',
+            'collection'
+        );
+    }
+
+    /**
+     * Called after the configuration is set
+     */
+    protected function afterConfigurationSet()
+    {
+        parent::afterConfigurationSet();
+
+        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            $this->attributeMappingMerger->getConfigurationField()
         );
     }
 }

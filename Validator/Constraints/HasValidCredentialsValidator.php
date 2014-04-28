@@ -9,6 +9,13 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\UrlChecker;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapExplorer;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidXmlException;
 
 /**
  * Validator for Magento credentials
@@ -25,30 +32,39 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $webserviceGuesser;
 
     /**
-     * @var MagentoUrlValidator
+     * @var UrlChecker
      */
-    protected $magentoUrlValidator;
+    protected $urlChecker;
 
     /**
-     * @var boolean
+     * @var SoapExplorer
      */
-    protected $checked = false;
+    protected $soapExplorer;
 
     /**
-     * @var boolean
+     * @var XmlChecker
      */
-    protected $valid = false;
+    protected $xmlChecker;
+
+    /**
+     * @var array
+     */
+    protected $valid;
 
     /**
      * @param WebserviceGuesser   $webserviceGuesser
-     * @param MagentoUrlValidator $magentoUrlValidator
+     * @param HasValidSoapUrlValidator $hasValidSoapUrlValidator
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        MagentoUrlValidator $magentoUrlValidator
+        UrlChecker $urlChecker,
+        SoapExplorer $soapExplorer,
+        XmlChecker $xmlChecker
     ) {
-        $this->webserviceGuesser   = $webserviceGuesser;
-        $this->magentoUrlValidator = $magentoUrlValidator;
+        $this->webserviceGuesser = $webserviceGuesser;
+        $this->urlChecker        = $urlChecker;
+        $this->soapExplorer      = $soapExplorer;
+        $this->xmlChecker        = $xmlChecker;
     }
 
     /**
@@ -64,40 +80,65 @@ class HasValidCredentialsValidator extends ConstraintValidator
         $clientParameters = new MagentoSoapClientParameters(
             $protocol->getSoapUsername(),
             $protocol->getSoapApiKey(),
-            $protocol->getSoapUrl()
+            $protocol->getMagentoUrl(),
+            $protocol->getWsdlUrl()
         );
 
-        if (!$this->areValidSoapParameters($clientParameters)) {
-            $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
-            $this->context->addViolationAt('soapApikey', $constraint->messageApikey, array());
+        $objectId = spl_object_hash($clientParameters);
+
+        if (!isset($this->valid[$objectId]) || false === $this->valid[$objectId]) {
+
+            try {
+                $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
+                $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
+                $xml = $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
+                $this->xmlChecker->checkXml($xml);
+                $this->webserviceGuesser->getWebservice($clientParameters);
+            } catch (InvalidUrlException $e) {
+                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
+            } catch (NotReachableUrlException $e) {
+                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
+            } catch (InvalidSoapUrlException $e) {
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
+            } catch (InvalidXmlException $e) {
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
+            } catch (InvalidCredentialException $e) {
+                $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
+            } catch (SoapCallException $e) {
+                $this->context->addViolationAt('soapUsername', $e->getMessage(), array());
+            }
+
         }
     }
 
     /**
      * Are the given parameters valid ?
+     *
      * @param MagentoSoapClientParameters $clientParameters
      *
      * @return boolean
      */
-    public function areValidSoapParameters(MagentoSoapClientParameters $clientParameters)
+    public function areValidSoapCredentials(MagentoSoapClientParameters $clientParameters)
     {
-        if (!$this->checked) {
-            $this->checked = true;
+        $objectId = spl_object_hash($clientParameters);
 
-            if (!$this->magentoUrlValidator->isValidMagentoUrl($clientParameters->getSoapUrl())) {
-                $this->valid = false;
-            } else {
-                try {
-                    $this->webserviceGuesser->getWebservice($clientParameters);
-                    $this->valid = true;
-                } catch (InvalidCredentialException $e) {
-                    $this->valid = false;
-                } catch (SoapCallException $e) {
-                    $this->valid = false;
-                }
+        if (!isset($this->valid[$objectId])) {
+
+            try {
+                $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
+                $this->webserviceGuesser->getWebservice($clientParameters);
+                $this->valid[$objectId] = true;
+            } catch (NotReachableUrlException $e) {
+                $this->valid[$objectId] = false;
+            } catch (InvalidSoapUrlException $e) {
+                $this->valid[$objectId] = false;
+            } catch (InvalidCredentialException $e) {
+                $this->valid[$objectId] = false;
+            } catch (SoapCallException $e) {
+                $this->valid[$objectId] = false;
             }
         }
 
-        return $this->valid;
+        return $this->valid[$objectId];
     }
 }
