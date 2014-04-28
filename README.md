@@ -33,7 +33,7 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
-    $ php composer.phar require akeneo/magento-connector-bundle:v1.0.0-RC4
+    $ php composer.phar require akeneo/magento-connector-bundle:v1.0.0-RC3
 
 Enable the bundle in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
