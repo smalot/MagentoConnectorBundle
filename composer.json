@@ -27,7 +27,7 @@
         }
     ],
     "require": {
-        "misd/guzzle-bundle": "~1.0",
+        "guzzle/http": ">=3.6.0,<3.8.0@stable",
         "akeneo/pim-community-dev": "1.1.*@stable",
         "akeneo/delta-export-bundle": "dev-master"
     },
