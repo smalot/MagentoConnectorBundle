@@ -33,7 +33,7 @@ class ORMMapperSpec extends ObjectBehavior
 
     function it_shoulds_return_nothing_as_mapping_if_it_is_not_well_configured()
     {
-        $this->getMapping()->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
+        $this->getMapping()->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
     }
 
     function it_gets_mapping_from_database($simpleMappingManager, $hasValidCredentialsValidator, SimpleMapping $simpleMapping)
@@ -47,7 +47,7 @@ class ORMMapperSpec extends ObjectBehavior
 
         $mapping = $this->getMapping();
 
-        $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
+        $mapping->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
         $mapping->toArray()->shouldReturn(array(
             'generic_source' => array(
                 'source'    => 'generic_source',

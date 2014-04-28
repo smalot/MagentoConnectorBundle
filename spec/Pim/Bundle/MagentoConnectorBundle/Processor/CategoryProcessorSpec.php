@@ -8,7 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;

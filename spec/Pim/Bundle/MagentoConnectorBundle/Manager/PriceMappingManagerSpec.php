@@ -9,7 +9,7 @@ use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
