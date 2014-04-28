@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
  * Magento attribute mapper

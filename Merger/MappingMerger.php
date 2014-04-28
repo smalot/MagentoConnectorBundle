@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Merger;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
  * Mapping merger

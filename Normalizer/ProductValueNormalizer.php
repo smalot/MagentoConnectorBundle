@@ -7,7 +7,7 @@ use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Doctrine\Common\Collections\Collection;

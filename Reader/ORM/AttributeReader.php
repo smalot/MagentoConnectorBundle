@@ -6,7 +6,7 @@ use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Doctrine\ORM\EntityManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
  * ORM reader for product
