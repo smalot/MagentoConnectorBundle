@@ -38,8 +38,8 @@ class FamilyMappingManager
 
     /**
      * Get family from id and Magento url
-     * @param int    $id
-     * @param string $magentoUrl
+     * @param integer $id
+     * @param string  $magentoUrl
      *
      * @return Family|null
      */
@@ -64,7 +64,6 @@ class FamilyMappingManager
      */
     public function getIdFromFamily(Family $family, $magentoUrl)
     {
-
         $familyMapping = $this->getEntityRepository()->findOneBy(
             array(
                 'family'     => $family,
