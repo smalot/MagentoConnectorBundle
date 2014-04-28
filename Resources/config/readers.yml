@@ -38,3 +38,4 @@ services:
         arguments:
             - '@doctrine.orm.default_entity_manager'
             - %pim_catalog.entity.family.class%
+            - '@pim_magento_connector.merger.attribute_mapping'

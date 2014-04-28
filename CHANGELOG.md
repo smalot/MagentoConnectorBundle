@@ -2,7 +2,9 @@
 - Attribute can be exported into families (AttributeSets)
 
 ## Improvements
-- compatibility with pim-community 1.1
+- Compatibility with pim-community 1.1
+- Compatibility with magento enterprise edition
+- delta export for products
 
 # 1.0.0-RC3 -
 

@@ -37,15 +37,19 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
+        $attributeCode = strtolower($context['attributeMapping']->getTarget($object->getAttribute()->getCode()));
+
         if ($this->isValueNormalizable(
             $object,
             $context['identifier'],
+            $attributeCode,
             $context['scopeCode'],
             $context['localeCode'],
             $context['onlyLocalized']
         )) {
             return $this->getNormalizedValue(
                 $object,
+                $attributeCode,
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
                 $context['attributeMapping'],
@@ -73,6 +77,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * Is the given value normalizable
      * @param ProductValueInterface $value
      * @param string                $identifier
+     * @param string                $attributeCode
      * @param string                $scopeCode
      * @param string                $localeCode
      * @param boolean               $onlyLocalized
@@ -82,6 +87,7 @@ class ProductValueNormalizer implements NormalizerInterface
     protected function isValueNormalizable(
         ProductValueInterface $value,
         $identifier,
+        $attributeCode,
         $scopeCode,
         $localeCode,
         $onlyLocalized
@@ -95,8 +101,8 @@ class ProductValueNormalizer implements NormalizerInterface
                 (!$onlyLocalized && !$value->getAttribute()->isLocalizable()) ||
                 $value->getAttribute()->isLocalizable()
             ) &&
-            $this->forceLocalization($value, $onlyLocalized) &&
-            $this->attributeIsNotIgnored($value) &&
+            $this->forceLocalization($attributeCode, $onlyLocalized) &&
+            $this->attributeIsNotIgnored($attributeCode) &&
             !($value->getData() instanceof Media)
         );
     }
@@ -131,35 +137,36 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Should we normalize the given non localizable value even if we are in only_localizable mode
-     * @param ProductValueInterface $value
-     * @param boolean               $onlyLocalized
+     * @param string  $value
+     * @param boolean $onlyLocalized
      *
      * @return boolean
      */
-    protected function forceLocalization(ProductValueInterface $value, $onlyLocalized)
+    protected function forceLocalization($attributeCode, $onlyLocalized)
     {
         return !($onlyLocalized &&
             in_array(
-                $value->getAttribute()->getCode(),
+                $attributeCode,
                 $this->getIgnoredAttributesForLocalization()
             ));
     }
 
     /**
      * Is the attribute of the given value ignored
-     * @param ProductValueInterface $value
+     * @param string $attributeCode
      *
      * @return boolean
      */
-    protected function attributeIsNotIgnored(ProductValueInterface $value)
+    protected function attributeIsNotIgnored($attributeCode)
     {
-        return !in_array($value->getAttribute()->getCode(), $this->getIgnoredAttributes());
+        return !in_array($attributeCode, $this->getIgnoredAttributes());
     }
 
     /**
      * Get the normalized value
      *
      * @param ProductValueInterface $value
+     * @param string                $attributeCode
      * @param array                 $magentoAttributes
      * @param array                 $magentoAttributesOptions
      * @param MappingCollection     $attributeMapping
@@ -170,6 +177,7 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getNormalizedValue(
         ProductValueInterface $value,
+        $attributeCode,
         array $magentoAttributes,
         array $magentoAttributesOptions,
         MappingCollection $attributeMapping,
@@ -177,7 +185,6 @@ class ProductValueNormalizer implements NormalizerInterface
     ) {
         $data          = $value->getData();
         $attribute     = $value->getAttribute();
-        $attributeCode = $attributeMapping->getTarget($attribute->getCode());
 
         if (!isset($magentoAttributes[$attributeCode])) {
             throw new AttributeNotFoundException(
@@ -196,6 +203,7 @@ class ProductValueNormalizer implements NormalizerInterface
             $data,
             $normalizer,
             $attribute,
+            $attributeCode,
             $attributeScope,
             $magentoAttributesOptions,
             $currencyCode,
@@ -222,13 +230,12 @@ class ProductValueNormalizer implements NormalizerInterface
         $data,
         $normalizer,
         Attribute $attribute,
+        $attributeCode,
         $attributeScope,
         $magentoAttributesOptions,
         $currencyCode,
         MappingCollection $attributeMapping
     ) {
-        $attributeCode = $attributeMapping->getTarget($attribute->getCode());
-
         if (in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
             $this->scopeMatches($attribute, $attributeScope)
         ) {
@@ -459,8 +466,6 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getOptionId($attributeCode, $optionCode, $magentoAttributesOptions)
     {
-        $attributeCode = strtolower($attributeCode);
-
         if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {
             throw new InvalidOptionException(
                 sprintf(

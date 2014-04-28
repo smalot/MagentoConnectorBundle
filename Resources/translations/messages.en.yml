@@ -40,9 +40,12 @@ pim_magento_connector:
         soapApiKey:
             label: Soap api key
             help: Your soap api key on Magento
-        soapUrl:
+        magentoUrl:
             label: Magento url
             help: Your Magento installation url
+        wsdlUrl:
+            label: Wsdl url
+            help: Provide here your wsdl relative path. If you are not sure leave this field by default (/api/soap/?wsdl)
         channel:
             label: Channel
             help:
@@ -94,5 +97,9 @@ pim_magento_connector:
             label: Do nothing
         disable:
             label: Disable it
-        error:
+        validator:
+            url_syntax_not_valid: Url syntax is not valid
+            url_not_reachable: Url can not be resolved
+            soap_url_not_valid: Api soap url is not valid
+            xml_not_valid: Magento XML is not valid
             authentication_failed: The given magento api username is invalid or magento user has no rights to access the soap api

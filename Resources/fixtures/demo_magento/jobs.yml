@@ -8,7 +8,8 @@ jobs:
             channel:                  magento
             soapUsername:             soap
             soapApiKey:               magento1
-            soapUrl:                  http://magento.dev/
+            magentoUrl:               http://magento.local
+            wsdlUrl:                  /api/soap/?wsdl
             defaultLocale:            en_US
             website:                  base
             enabled:                  true
@@ -31,7 +32,8 @@ jobs:
             channel:               magento
             soapUsername:          soap
             soapApiKey:            magento1
-            soapUrl:               http://magento.dev/
+            magentoUrl:            http://magento.local
+            wsdlUrl:               /api/soap/?wsdl
             defaultLocale:         en_US
             website:               base
             storeviewMapping:      ''
@@ -47,7 +49,8 @@ jobs:
             channel:          magento
             soapUsername:     soap
             soapApiKey:       magento1
-            soapUrl:          http://magento.dev/
+            magentoUrl:       http://magento.local
+            wsdlUrl:          /api/soap/?wsdl
             defaultLocale:    en_US
             website:          base
             storeviewMapping: ''
@@ -61,7 +64,8 @@ jobs:
             channel:          magento
             soapUsername:     soap
             soapApiKey:       magento1
-            soapUrl:          http://magento.dev/
+            magentoUrl:       http://magento.local
+            wsdlUrl:          /api/soap/?wsdl
             defaultLocale:    en_US
             website:          base
             storeviewMapping: ''

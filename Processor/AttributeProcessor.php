@@ -111,7 +111,7 @@ class AttributeProcessor extends AbstractProcessor
     protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
     {
         return array_key_exists(
-            $this->attributeMappingMerger->getMapping()->getTarget($attribute->getCode()),
+            strtolower($this->attributeMappingMerger->getMapping()->getTarget($attribute->getCode())),
             $magentoAttributes
         );
     }

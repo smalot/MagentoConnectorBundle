@@ -104,6 +104,7 @@ class MagentoAttributeMapper extends Mapper
             'description',
             'short_description',
             'tax_class_id',
+            'weight'
         );
     }
 }

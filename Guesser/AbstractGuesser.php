@@ -13,9 +13,10 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
  */
 abstract class AbstractGuesser
 {
-    const MAGENTO_VERSION_1_8 = '1.8';
-    const MAGENTO_VERSION_1_7 = '1.7';
-    const MAGENTO_VERSION_1_6 = '1.6';
+    const MAGENTO_VERSION_1_13 = '1.13';
+    const MAGENTO_VERSION_1_8  = '1.8';
+    const MAGENTO_VERSION_1_7  = '1.7';
+    const MAGENTO_VERSION_1_6  = '1.6';
 
     const MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE = 'Your Magento version is not supported yet.';
 
@@ -43,7 +44,7 @@ abstract class AbstractGuesser
                 return self::MAGENTO_VERSION_1_6;
             }
 
-            $pattern = '/^(?P<version>[0-9]\.[0-9])/';
+            $pattern = '/^(?P<version>[0-9]\.[0-9]{1,2})/';
 
             if (preg_match($pattern, $magentoVersion, $matches)) {
                 $this->version = $matches['version'];

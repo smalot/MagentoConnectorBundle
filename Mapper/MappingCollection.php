@@ -18,23 +18,32 @@ class MappingCollection extends ArrayCollection
      */
     public function add($value)
     {
-        if ($this->containsKey($value['source'])) {
-            $oldValue = $this->get($value['source']);
-            $value['target'] = $value['target'] ? $value['target'] : $oldValue['target'];
+        $oldValue = $this->get($value['source']);
+
+        if ($oldValue['deletable'] !== null) {
             $value['deletable'] = $value['deletable'] === false ? $value['deletable'] : $oldValue['deletable'];
+        }
+
+        if ($this->containsKey($value['source'])) {
+            $value['target'] = $value['target'] !== null && $value['target'] !== '' ?
+                $value['target'] :
+                $oldValue['target']
+            ;
         } else {
-            $iterator     = $this->getIterator();
+            $it           = $this->getIterator();
             $elementFound = false;
 
-            while ($iterator->valid() && !$elementFound) {
-                if ($iterator->current()['target'] == $value['target'] &&
-                    (!$value['deletable'])
-                ) {
-                    $this->remove($iterator->current()['source']);
+            while ($it->valid() && !$elementFound) {
+                if ($it->current()['target'] == $value['target']) {
+                    if (!$it->current()['deletable']) {
+                        $value['deletable'] = false;
+                    }
+
+                    $this->remove($it->current()['source']);
                     $elementFound = true;
                 }
 
-                $iterator->next();
+                $it->next();
             }
         }
 
@@ -79,6 +88,8 @@ class MappingCollection extends ArrayCollection
 
         if ($check || $this->getTarget($target, true) == $target) {
             return $target;
+        } else {
+            return null;
         }
     }
 
@@ -97,6 +108,9 @@ class MappingCollection extends ArrayCollection
             return $target['target'];
         } elseif ($check || $this->getSource($source, true) == $source) {
             return $source;
+        } else {
+            return null;
         }
     }
 }
+

@@ -4,7 +4,9 @@ parameters:
     pim_magento_connector.validator.has_valid_credentials.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator
     pim_magento_connector.validator.has_valid_currency.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrencyValidator
     pim_magento_connector.validator.has_valid_default_locale.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocaleValidator
-    pim_magento_connector.validator.magento_url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoUrlValidator
+    pim_magento_connector.checker.url.class: Pim\Bundle\MagentoConnectorBundle\Validator\Checks\UrlChecker
+    pim_magento_connector.checker.xml.class: Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker
+    pim_magento_connector.webservice.soap_explorer.class: Pim\Bundle\MagentoConnectorBundle\Webservice\SoapExplorer
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
@@ -35,13 +37,11 @@ services:
         class: %pim_magento_connector.validator.has_valid_credentials.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
-            - '@pim_magento_connector.validator.magento_url'
+            - '@pim_magento_connector.checker.url'
+            - '@pim_magento_connector.webservice.soap_explorer'
+            - '@pim_magento_connector.checker.xml'
         tags:
             - { name: validator.constraint_validator, alias: has_valid_magento_credentials }
-    pim_magento_connector.validator.magento_url:
-        class: %pim_magento_connector.validator.magento_url.class%
-        tags:
-            - { name: validator.constraint_validator, alias: magento_url }
     pim_magento_connector.validator.has_valid_currency:
         class: %pim_magento_connector.validator.has_valid_currency.class%
         arguments:
@@ -54,6 +54,19 @@ services:
             - '@pim_catalog.manager.channel'
         tags:
             - { name: validator.constraint_validator, alias: has_valid_default_locale }
+
+    # Checker
+    pim_magento_connector.checker.url:
+        class: %pim_magento_connector.checker.url.class%
+        arguments:
+            - '@pim_magento_connector.web_client.guzzle'
+    pim_magento_connector.checker.xml:
+        class: %pim_magento_connector.checker.xml.class%
+
+    pim_magento_connector.webservice.soap_explorer:
+        class: %pim_magento_connector.webservice.soap_explorer.class%
+        arguments:
+            - '@pim_magento_connector.web_client.guzzle'
 
     pim_magento_connector.repository.category:
         class: %pim_magento_connector.repository.category.class%
@@ -87,3 +100,8 @@ services:
             name: @file_locator
         tags:
             - { name: twig.extension }
+            
+    pim_magento_connector.web_client.guzzle:
+        class: '%guzzle.client.class%'
+        tags: 
+            - { name: guzzle.client }
