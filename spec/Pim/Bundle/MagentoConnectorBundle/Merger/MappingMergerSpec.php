@@ -4,13 +4,13 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Merger;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\Mapper;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoMapper;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class MappingMergerSpec extends ObjectBehavior
 {
-    function let(Mapper $mapper1, Mapper $mapper2)
+    function let(MagentoMapper $mapper1, MagentoMapper $mapper2)
     {
         $mapper1->getPriority()->willReturn(0);
         $mapper2->getPriority()->willReturn(10);
