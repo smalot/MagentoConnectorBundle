@@ -15,7 +15,6 @@ use Symfony\Component\Validator\Constraint;
  */
 class HasValidCredentials extends Constraint
 {
-    public $messageUrlSyntaxNotValid = 'pim_magento_connector.export.validator.url_syntax_not_valid';
     public $messageUrlNotReachable   = 'pim_magento_connector.export.validator.url_not_reachable';
     public $messageSoapNotValid      = 'pim_magento_connector.export.validator.soap_url_not_valid';
     public $messageXmlNotValid       = 'pim_magento_connector.export.validator.xml_not_valid';
