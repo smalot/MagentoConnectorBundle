@@ -3,9 +3,9 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
+use Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping;
+use Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
