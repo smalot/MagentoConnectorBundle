@@ -12,7 +12,6 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\UrlChecker;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapExplorer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker;
-use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidXmlException;
@@ -32,11 +31,6 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $webserviceGuesser;
 
     /**
-     * @var UrlChecker
-     */
-    protected $urlChecker;
-
-    /**
      * @var SoapExplorer
      */
     protected $soapExplorer;
@@ -53,18 +47,15 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
     /**
      * @param WebserviceGuesser $webserviceGuesser
-     * @param UrlChecker        $urlChecker
      * @param SoapExplorer      $soapExplorer
      * @param XmlChecker        $xmlChecker
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        UrlChecker $urlChecker,
         SoapExplorer $soapExplorer,
         XmlChecker $xmlChecker
     ) {
         $this->webserviceGuesser = $webserviceGuesser;
-        $this->urlChecker        = $urlChecker;
         $this->soapExplorer      = $soapExplorer;
         $this->xmlChecker        = $xmlChecker;
     }
@@ -91,15 +82,11 @@ class HasValidCredentialsValidator extends ConstraintValidator
         if (!isset($this->valid[$objectId]) || false === $this->valid[$objectId]) {
 
             try {
-                $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
-                $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
                 $xml = $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
                 $this->xmlChecker->checkXml($xml);
                 $this->webserviceGuesser->getWebservice($clientParameters);
-            } catch (InvalidUrlException $e) {
-                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
             } catch (NotReachableUrlException $e) {
-                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
             } catch (InvalidSoapUrlException $e) {
                 $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
             } catch (InvalidXmlException $e) {
