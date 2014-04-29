@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\CatalogBundle\Entity\Group;
+use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
@@ -39,31 +39,12 @@ class ORMGroupMapper extends ORMMapper
     }
 
     /**
-     * Get all targets
-     * @return array
-     */
-    public function getAllTargets()
-    {
-        $targets = array();
-
-        if ($this->isValid()) {
-            $groups = $this->groupManager->getGroups();
-
-            foreach ($groups as $group) {
-                $targets[] = array('id' => $group->getCode(), 'name' => $group->getCode());
-            }
-        }
-
-        return $targets;
-    }
-
-    /**
      * Get all sources
-     * @param Group $group
+     * @param AttributeGroup $group
      *
      * @return array
      */
-    public function getAllSources(Group $group = null)
+    public function getAllSources(AttributeGroup $group = null)
     {
         $sources = array();
 

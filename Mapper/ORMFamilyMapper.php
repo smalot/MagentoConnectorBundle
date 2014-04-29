@@ -68,15 +68,10 @@ class ORMFamilyMapper extends ORMMapper
         $sources = array();
 
         if ($this->isValid()) {
-            $families = $family === null ? $this->familyManager->getTrees() : $family->getChildren();
+            $families = $this->familyManager->getFamilies();
 
             foreach ($families as $family) {
-                $sources[] = array(
-                    'id'   => $family->getCode(),
-                    'text' => sprintf('%s (%s)', $family->getLabel(), $family->getCode())
-                );
-
-                $sources = array_merge($sources, $this->getAllSources($family));
+                $sources[] = array('id' => $family->getCode(), 'name' => $family->getCode());
             }
         }
 

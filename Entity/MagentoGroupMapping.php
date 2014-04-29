@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
-use Pim\Bundle\CatalogBundle\Entity\Group;
+use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 
 /**
  * Magento group mapping
@@ -29,7 +29,7 @@ class MagentoGroupMapping
     protected $magentoGroupId;
 
     /**
-     * @var Group
+     * @var AttributeGroup
      */
     protected $group;
 
@@ -94,11 +94,11 @@ class MagentoGroupMapping
     /**
      * Set group
      *
-     * @param Group $group
+     * @param AttributeGroup $group
      *
      * @return MagentoGroupMapping
      */
-    public function setGroup(Group $group)
+    public function setGroup(AttributeGroup $group)
     {
         $this->group = $group;
 
@@ -108,7 +108,7 @@ class MagentoGroupMapping
     /**
      * Get group
      *
-     * @return Group
+     * @return AttributeGroup
      */
     public function getGroup()
     {

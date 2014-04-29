@@ -10,10 +10,10 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\CatalogBundle\Entity\Group;
+use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 
 /**
- * Magento attribute writer
+ * Magento attribute writer. Add attributes to groups ans attribute sets on magento side
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -76,7 +76,7 @@ class AttributeWriter extends AbstractWriter
                 $this->addGroupToAttributeSet();
                 $this->handleAttribute($attribute[1]);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array(json_encode($attribute)));
+                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_ALREADY);
             }
         }
     }
@@ -93,25 +93,15 @@ class AttributeWriter extends AbstractWriter
 
             $magentoAttributeId = $this->attributeMappingManager
                 ->getIdFromAttribute($this->attribute, $this->getSoapUrl());
-            $group = $this->attribute->getGroup();
-            if ($group !== null) {
-                $magentoGroupId = $this->groupMappingManager->getIdFromGroup($group, $this->getSoapUrl());
-            } else {
-                $magentoGroupId = null;
-            }
+            $magentoGroupId = $this->getGroupId();
             $this->addAttributeToAttributeSet($magentoAttributeId, $magentoGroupId);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
             $magentoAttributeId = $this->webservice->createAttribute($attribute);
-            $group = $this->attribute->getGroup();
-            if ($group !== null) {
-                $magentoGroupId = $this->groupMappingManager->getIdFromGroup($group, $this->getSoapUrl());
-            } else {
-                $magentoGroupId = null;
-            }
+            $magentoGroupId = $this->getGroupId($attribute);
             $this->addAttributeToAttributeSet($magentoAttributeId, $magentoGroupId);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
-            $magentoUrl = $this->soapUrl;
+            $magentoUrl = $this->getSoapUrl();
 
             $this->attributeMappingManager->registerAttributeMapping(
                 $this->attribute,
@@ -122,18 +112,36 @@ class AttributeWriter extends AbstractWriter
     }
 
     /**
+     * Get the magento group id
+     *
+     * @return int|null
+     */
+    protected function getGroupId()
+    {
+        $group = $this->attribute->getGroup();
+        if ($group !== null && ($group instanceof AttributeGroup)) {
+            $magentoGroupId = $this->groupMappingManager->getIdFromGroup($group, $this->getSoapUrl());
+        } else {
+            $magentoGroupId = null;
+        }
+
+        return $magentoGroupId;
+    }
+
+    /**
      * Add attribute to corresponding attribute sets
      * @param int $magentoAttributeId ID of magento attribute
+     * @param $groupId
      *
      * @return void
      */
-    protected function addAttributeToAttributeSet($magentoAttributeId)
+    protected function addAttributeToAttributeSet($magentoAttributeId, $groupId)
     {
         $families = $this->attribute->getFamilies();
         foreach ($families as $family) {
-            $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->soapUrl);
+            $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
             try {
-                $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $familyMagentoId);
+                $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $familyMagentoId, $groupId);
             } catch (SoapCallException $e) {
                 $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_ALREADY);
             }
@@ -152,41 +160,13 @@ class AttributeWriter extends AbstractWriter
         if (isset($group)) {
             $groupName = $group->getCode();
             foreach ($families as $family) {
-                $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->soapUrl);
+                $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
                 try {
                     $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
                     $this->groupMappingManager->registerGroupMapping(
                         $group,
                         $magentoGroupId,
-                        $this->soapUrl
-                    );
-                } catch (SoapCallException $e) {
-                    $this->stepExecution->incrementSummaryInfo(self::GROUP_ALREADY);
-                }
-            }
-        }
-    }
-
-    /**
-     * Create a group in an attribute set
-     *
-     * @return void
-     */
-    protected function addAttributeToGroup()
-    {
-        $families = $this->attribute->getFamilies();
-        $group = $this->attribute->getGroup();
-        if (isset($group)) {
-            $groupName = $group->getCode();
-            var_dump($groupName);
-            foreach ($families as $family) {
-                $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->soapUrl);
-                try {
-                    $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
-                    $this->groupMappingManager->registerGroupMapping(
-                        $group,
-                        $magentoGroupId,
-                        $this->soapUrl
+                        $this->getSoapUrl()
                     );
                 } catch (SoapCallException $e) {
                     $this->stepExecution->incrementSummaryInfo(self::GROUP_ALREADY);

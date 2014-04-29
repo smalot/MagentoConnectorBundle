@@ -21,7 +21,7 @@ class MagentoFamilyMapper extends Mapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param WebserviceGuesser            $webserviceGuesser
+     * @param WebserviceGuesser $webserviceGuesser
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
@@ -33,44 +33,22 @@ class MagentoFamilyMapper extends Mapper
     }
 
     /**
-     * Get mapping
-     * @return MappingCollection|array
-     */
-    public function getMapping()
-    {
-        if (!$this->isValid()) {
-            return new MappingCollection();
-        } else {
-            $families = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAttributeSetList();
-
-            $mapping = new MappingCollection();
-            foreach ($families as $attributeSetCode => $attributeSetName) {
-                $targets[] = array('id' => $attributeSetCode, 'name' => $attributeSetName);
-            }
-
-            return $mapping;
-        }
-    }
-
-    /**
-     * Get all sources
+     * Get all targets
      * @return array
      */
-    public function getAllSources()
+    public function getAllTargets()
     {
-        $sources = array();
+        $targets = array();
 
         if ($this->isValid()) {
-            $families = array_keys(
-                $this->webserviceGuesser->getWebservice($this->clientParameters)->getAttributeSetList()
-            );
+            $families = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAttributeSetList();
 
-            foreach ($families as $attributeSetCode => $attributeSetName) {
-                $sources[] = array('id' => $attributeSetCode, 'name' => $attributeSetName);
+            foreach ($families as $familyId => $family) {
+                $targets[] = array('id' => $familyId, 'name' => $family['name']);
             }
         }
 
-        return $sources;
+        return $targets;
     }
 
     /**

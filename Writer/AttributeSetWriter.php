@@ -73,7 +73,7 @@ class AttributeSetWriter extends AbstractWriter
         if (isset($item['create'])) {
             $pimFamily       = $item['family'];
             $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
-            $magentoUrl      = $this->soapUrl;
+            $magentoUrl      = $this->getSoapUrl();
             $this->familyMappingManager->registerFamilyMapping(
                 $pimFamily,
                 $magentoFamilyId,

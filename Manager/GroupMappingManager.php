@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Pim\Bundle\CatalogBundle\Entity\Group;
+use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -41,7 +41,7 @@ class GroupMappingManager
      * @param integer $id
      * @param string  $magentoUrl
      *
-     * @return Group|null
+     * @return AttributeGroup|null
      */
     public function getGroupFromId($id, $magentoUrl)
     {
@@ -57,12 +57,12 @@ class GroupMappingManager
 
     /**
      * Get id from group and Magento url
-     * @param Group  $group
+     * @param AttributeGroup  $group
      * @param string $magentoUrl
      *
      * @return integer
      */
-    public function getIdFromGroup(Group $group, $magentoUrl)
+    public function getIdFromGroup(AttributeGroup $group, $magentoUrl)
     {
         $groupMapping = $this->getEntityRepository()->findOneBy(
             array(
@@ -76,12 +76,12 @@ class GroupMappingManager
 
     /**
      * Register a new group mapping
-     * @param Group   $pimGroup
-     * @param integer $magentoGroupId
-     * @param string  $magentoUrl
+     * @param AttributeGroup   $pimGroup
+     * @param integer          $magentoGroupId
+     * @param string           $magentoUrl
      */
     public function registerGroupMapping(
-        Group $pimGroup,
+        AttributeGroup $pimGroup,
         $magentoGroupId,
         $magentoUrl
     ) {

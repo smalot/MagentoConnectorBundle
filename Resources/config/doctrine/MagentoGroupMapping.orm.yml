@@ -15,7 +15,7 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping:
             column: magento_group_id
     manyToOne:
         group:
-            targetEntity: Pim\Bundle\CatalogBundle\Entity\Group
+            targetEntity: Pim\Bundle\CatalogBundle\Entity\AttributeGroup
             inversedBy: magentoGroupMappings
             joinColumn:
                 name: group_id

@@ -33,6 +33,7 @@ services:
         arguments:
             - '@doctrine.orm.default_entity_manager'
             - %pim_catalog.entity.attribute.class%
+            - '@pim_magento_connector.merger.attribute_mapping'
     pim_magento_connector.reader.orm.family:
         class: %pim_base_connector.reader.orm.entity.class%
         arguments:
