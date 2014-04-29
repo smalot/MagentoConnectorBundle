@@ -4,6 +4,7 @@ parameters:
     pim_magento_connector.cleaner.category.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\CategoryCleaner
     pim_magento_connector.cleaner.option.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\OptionCleaner
     pim_magento_connector.cleaner.attribute.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\AttributeCleaner
+    pim_magento_connector.cleaner.family.class: Pim\Bundle\MagentoConnectorBundle\Cleaner\FamilyCleaner
 
 services:
     pim_magento_connector.cleaner.product:
@@ -38,3 +39,8 @@ services:
             - '@pim_magento_connector.merger.attribute_mapping'
             - '@doctrine.orm.entity_manager'
             - '%pim_catalog.entity.attribute.class%'
+    pim_magento_connector.cleaner.family:
+        class: %pim_magento_connector.cleaner.family.class%
+        arguments:
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.manager.family_mapping'

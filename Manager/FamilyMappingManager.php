@@ -109,7 +109,7 @@ class FamilyMappingManager
      */
     public function magentoFamilyExists($familyId, $magentoUrl)
     {
-        return $this->getFamilyFromId($familyId, $magentoUrl) !== null;
+        return null !== $this->getFamilyFromId($familyId, $magentoUrl);
     }
 
     /**

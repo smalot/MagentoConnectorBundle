@@ -25,7 +25,7 @@ class Webservice
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_ADD        = 'product_attribute_set.groupAdd';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE     = 'product_attribute_set.groupRemove';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_RENAME     = 'product_attribute_set.groupRename';
-    const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE           = 'product_attribute_set.remove ';
+    const SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE           = 'product_attribute_set.remove';
     const SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST                 = 'catalog_product_attribute.list';
     const SOAP_ACTION_ATTRIBUTE_OPTION_LIST                  = 'catalog_product_attribute.options';
     const SOAP_ACTION_ATTRIBUTE_OPTION_ADD                   = 'catalog_product_attribute.addOption';
@@ -781,7 +781,7 @@ class Webservice
         $forceProductsRemove = null
     ) {
         $result = $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE,
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE,
             array(
                 $attributeSetId,
                 $forceProductsRemove

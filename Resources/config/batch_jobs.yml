@@ -161,3 +161,8 @@ connector:
                          writer:    pim_magento_connector.writer.family
                      parameters:
                          batch_size: 1
+                prune_attributeset:
+                    title: pim_magento_connector.steps.family_clean.clean.title
+                    class: "%pim_magento_connector.step.prune.class%"
+                    services:
+                        cleaner: pim_magento_connector.cleaner.family
