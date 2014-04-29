@@ -42,9 +42,10 @@ class AttributeSetWriterSpec extends ObjectBehavior
         );
 
         $webservice->createAttributeSet('family_code')->willReturn(12);
-        $familyMappingManager->registerFamilyMapping($family, 12, 'bar')->shouldBeCalled();
+        $familyMappingManager->registerFamilyMapping($family, 12, 'barfoo')->shouldBeCalled();
 
-        $this->setSoapUrl('bar');
+        $this->setMagentoUrl('bar');
+        $this->setWsdlUrl('foo');
 
         $this->write($batches);
     }
