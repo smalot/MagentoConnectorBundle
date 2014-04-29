@@ -236,8 +236,8 @@ class PriceMappingManager
 
     /**
      * Get all products with the given option value
-     * @param array             $products
-     * @param AttributeOption   $option
+     * @param array           $products
+     * @param AttributeOption $option
      *
      * @return array
      */

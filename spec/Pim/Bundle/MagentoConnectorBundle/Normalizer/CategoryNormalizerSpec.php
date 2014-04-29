@@ -180,7 +180,6 @@ class CategoryNormalizerSpec extends ObjectBehavior
         $category->setLocale('fr_FR')->shouldBeCalled();
         $category->getLabel()->willReturn('Libélé de la catégorie');
 
-
         $categoryMappingManager->getIdFromCategory($category, 'soap_url')->willReturn(null);
         $categoryMappingManager->getIdFromCategory($parentCategory, 'soap_url', $categoryMapping)->willReturn(3);
 

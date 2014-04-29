@@ -228,7 +228,9 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get magentoUrl
+     * Set magentoUrl
+     *
+     * @param string $magentoUrl
      *
      * @return MagentoItemStep
      */
