@@ -20,4 +20,5 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping:
             joinColumn:
                 name: group_id
                 referencedColumnName: id
+                onDelete: 'CASCADE'
                 unique: true

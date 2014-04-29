@@ -124,6 +124,11 @@ connector:
                     class: "%pim_magento_connector.step.prune.class%"
                     services:
                         cleaner: pim_magento_connector.cleaner.attribute
+                prune_atrribute_groups:
+                    title: pim_magento_connector.steps.group_clean.clean.title
+                    class: "%pim_magento_connector.step.prune.class%"
+                    services:
+                        cleaner: pim_magento_connector.cleaner.group
 
         magento_option_export:
             title: pim_magento_connector.jobs.option_export.title

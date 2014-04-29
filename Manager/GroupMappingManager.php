@@ -109,7 +109,7 @@ class GroupMappingManager
      */
     public function magentoGroupExists($groupId, $magentoUrl)
     {
-        return $this->getGroupFromId($groupId, $magentoUrl) !== null;
+        return null !== $this->getGroupFromId($groupId, $magentoUrl);
     }
 
     /**
