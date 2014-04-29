@@ -2,12 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\DeltaExportBundle\Manager\ProductExportManager;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -33,8 +29,9 @@ class DeltaProductWriter extends ProductWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param ChannelManager    $channelManager
+     * @param WebserviceGuesser    $webserviceGuesser
+     * @param ChannelManager       $channelManager
+     * @param ProductExportManager $productExportManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,

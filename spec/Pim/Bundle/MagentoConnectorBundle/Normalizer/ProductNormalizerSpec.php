@@ -179,8 +179,6 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', array($product, 'MagentoArray', $this->globalContext));
     }
 
-
-
     function it_normalizes_images_for_given_product($product, $imageValue, Media $image, ArrayCollection $productValues, $mediaManager)
     {
         $product->getValues()->willReturn($productValues);

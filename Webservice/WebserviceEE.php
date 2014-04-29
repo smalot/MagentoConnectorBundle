@@ -2,8 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-
 /**
  * A magento soap client to abstract interaction with the magento ee api
  *

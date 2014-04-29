@@ -52,8 +52,10 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $valid;
 
     /**
-     * @param WebserviceGuesser   $webserviceGuesser
-     * @param HasValidSoapUrlValidator $hasValidSoapUrlValidator
+     * @param WebserviceGuesser $webserviceGuesser
+     * @param UrlChecker        $urlChecker
+     * @param SoapExplorer      $soapExplorer
+     * @param XmlChecker        $xmlChecker
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,

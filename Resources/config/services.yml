@@ -101,8 +101,8 @@ services:
             name: @file_locator
         tags:
             - { name: twig.extension }
-            
+
     pim_magento_connector.web_client.guzzle:
         class: '%pim_magento_connector.service.guzzle.client.class%'
-        tags: 
+        tags:
             - { name: guzzle.client }

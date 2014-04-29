@@ -5,4 +5,3 @@ services:
     # normalizers
     pim_magento_connector.normalizer.value:
         class: %pim_magento_connector.normalizer.value.class%
-
