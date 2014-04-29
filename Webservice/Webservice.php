@@ -734,7 +734,7 @@ class Webservice
      *  Allows you to remove a group from an attribute set.
      *
      * @param int $attributeGroupId Group ID
-     * @return boolean              rue (1) if the group is removed
+     * @return boolean              true (1) if the group is removed
      */
     public function removeAttributeGroupFromAttributeSet(
         $attributeGroupId
