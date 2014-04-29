@@ -46,7 +46,7 @@ class Webservice
     const SOAP_ACTION_LINK_REMOVE                            = 'catalog_product_link.remove';
     const SOAP_ACTION_LINK_CREATE                            = 'catalog_product_link.assign';
 
-    const SOAP_DEFAULT_STORE_VIEW                            = 'default';
+    const SOAP_DEFAULT_STORE_VIEW                            = 'fr_fr';
     const IMAGES                                             = 'images';
     const SOAP_ATTRIBUTE_ID                                  = 'attribute_id';
     const SMALL_IMAGE                                        = 'small_image';

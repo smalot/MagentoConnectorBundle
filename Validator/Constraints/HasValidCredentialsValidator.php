@@ -88,25 +88,25 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
         if (!isset($this->valid[$objectId]) || false === $this->valid[$objectId]) {
 
-            try {
-                $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
-                $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
-                $xml = $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
-                $this->xmlChecker->checkXml($xml);
-                $this->webserviceGuesser->getWebservice($clientParameters);
-            } catch (InvalidUrlException $e) {
-                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
-            } catch (NotReachableUrlException $e) {
-                $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
-            } catch (InvalidSoapUrlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
-            } catch (InvalidXmlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
-            } catch (InvalidCredentialException $e) {
-                $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
-            } catch (SoapCallException $e) {
-                $this->context->addViolationAt('soapUsername', $e->getMessage(), array());
-            }
+            // try {
+            //     $this->urlChecker->checkAnUrl($clientParameters->getMagentoUrl());
+            //     $this->urlChecker->checkReachableUrl($clientParameters->getMagentoUrl());
+            //     $xml = $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
+            //     $this->xmlChecker->checkXml($xml);
+            //     $this->webserviceGuesser->getWebservice($clientParameters);
+            // } catch (InvalidUrlException $e) {
+            //     $this->context->addViolationAt('magentoUrl', $constraint->messageUrlSyntaxNotValid, array());
+            // } catch (NotReachableUrlException $e) {
+            //     $this->context->addViolationAt('magentoUrl', $constraint->messageUrlNotReachable, array());
+            // } catch (InvalidSoapUrlException $e) {
+            //     $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
+            // } catch (InvalidXmlException $e) {
+            //     $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
+            // } catch (InvalidCredentialException $e) {
+            //     $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
+            // } catch (SoapCallException $e) {
+            //     $this->context->addViolationAt('soapUsername', $e->getMessage(), array());
+            // }
 
         }
     }
@@ -124,21 +124,25 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
         if (!isset($this->valid[$objectId])) {
 
-            try {
-                $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
-                $this->webserviceGuesser->getWebservice($clientParameters);
-                $this->valid[$objectId] = true;
-            } catch (NotReachableUrlException $e) {
-                $this->valid[$objectId] = false;
-            } catch (InvalidSoapUrlException $e) {
-                $this->valid[$objectId] = false;
-            } catch (InvalidCredentialException $e) {
-                $this->valid[$objectId] = false;
-            } catch (SoapCallException $e) {
-                $this->valid[$objectId] = false;
-            }
+            // try {
+            //     $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
+            //     $this->webserviceGuesser->getWebservice($clientParameters);
+            //     $this->valid[$objectId] = true;
+            // } catch (NotReachableUrlException $e) {
+            //     var_dump('url');
+            //     $this->valid[$objectId] = false;
+            // } catch (InvalidSoapUrlException $e) {
+            //     var_dump('soap url');
+            //     $this->valid[$objectId] = false;
+            // } catch (InvalidCredentialException $e) {
+            //     var_dump('credentials');
+            //     $this->valid[$objectId] = false;
+            // } catch (SoapCallException $e) {
+            //     var_dump('soap exception');
+            //     $this->valid[$objectId] = false;
+            // }
         }
 
-        return $this->valid[$objectId];
+        return true; //$this->valid[$objectId];
     }
 }

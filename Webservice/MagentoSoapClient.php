@@ -31,7 +31,6 @@ class MagentoSoapClient
 
         if (!$soapClient) {
             $wsdlUrl     = $this->clientParameters->getSoapUrl();
-            $soapOptions = array('encoding' => 'UTF-8', 'trace' => true, 'exceptions' => true);
 
             try {
                 $this->client = new \SoapClient($wsdlUrl, $soapOptions);
