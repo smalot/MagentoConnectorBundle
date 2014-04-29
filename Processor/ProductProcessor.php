@@ -122,7 +122,7 @@ class ProductProcessor extends AbstractProductProcessor
         $processedItems = array();
 
         $magentoProducts = $this->webservice->getProductsStatus($items);
-
+        var_dump($magentoProducts);
         $channel = $this->channelManager->getChannelByCode($this->channel);
 
         foreach ($items as $product) {
@@ -140,7 +140,6 @@ class ProductProcessor extends AbstractProductProcessor
                         array($product)
                     );
                 }
-
                 $context['create'] = false;
             } else {
                 $context['create'] = true;

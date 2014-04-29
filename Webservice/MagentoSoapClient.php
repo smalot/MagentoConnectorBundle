@@ -91,7 +91,10 @@ class MagentoSoapClient
     {
         if ($this->isConnected()) {
             try {
+                // var_dump($resource);
+                // var_dump($params);
                 $response = $this->client->call($this->session, $resource, $params);
+                // var_dump($response);
             } catch (\SoapFault $e) {
                 throw new SoapCallException(
                     sprintf(

@@ -125,7 +125,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             );
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($storeView) {
+            if ($storeView && $storeView['code'] != Webservice::SOAP_DEFAULT_STORE_VIEW) {
                 $values = $this->getValues(
                     $object,
                     $context['magentoAttributes'],
