@@ -88,6 +88,22 @@ class AttributeMappingManager
     }
 
     /**
+     * Get all attribute mapping for a given magento
+     * @param string $magentoUrl
+     *
+     * @return array
+     */
+    public function getAllMagentoAttribute($magentoUrl)
+    {
+        $attributeMapping = $this->getEntityRepository()->findAll(
+            array(
+                'magentoUrl'  => $magentoUrl
+            )
+        );
+        return $attributeMapping;
+    }
+
+    /**
      * Register a new attribute mapping
      * @param Attribute $pimAttribute
      * @param integer   $magentoAttributeId

@@ -8,6 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
@@ -43,24 +44,32 @@ class AttributeWriter extends AbstractWriter
     protected $familyMappingManager;
 
     /**
+     * @var MagentoGroupManager
+     */
+    protected $magentoGroupManager;
+
+    /**
      * Constructor
      *
      * @param WebserviceGuesser       $webserviceGuesser
      * @param FamilyMappingManager    $familyMappingManager
      * @param AttributeMappingManager $attributeMappingManager
      * @param GroupMappingManager     $groupMappingManager
+     * @param MagentoGroupManager     $magentoGroupManager
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        FamilyMappingManager $familyMappingManager,
+        WebserviceGuesser       $webserviceGuesser,
+        FamilyMappingManager    $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
-        GroupMappingManager $groupMappingManager
+        GroupMappingManager     $groupMappingManager,
+        MagentoGroupManager     $magentoGroupManager
     ) {
         parent::__construct($webserviceGuesser);
 
         $this->attributeMappingManager = $attributeMappingManager;
         $this->familyMappingManager    = $familyMappingManager;
         $this->groupMappingManager     = $groupMappingManager;
+        $this->magentoGroupManager     = $magentoGroupManager;
     }
 
     /**
@@ -90,10 +99,12 @@ class AttributeWriter extends AbstractWriter
     {
         if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
             $this->webservice->updateAttribute($attribute);
-
             $magentoAttributeId = $this->attributeMappingManager
                 ->getIdFromAttribute($this->attribute, $this->getSoapUrl());
             $magentoGroupId = $this->getGroupId();
+            if (!empty($magentoGroupId)) {
+                $this->magentoGroupManager->registerMagentoGroup($magentoGroupId, $this->getSoapUrl());
+            }
             $this->addAttributeToAttributeSet($magentoAttributeId, $magentoGroupId);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
@@ -168,6 +179,7 @@ class AttributeWriter extends AbstractWriter
                         $magentoGroupId,
                         $this->getSoapUrl()
                     );
+                    $this->magentoGroupManager->registerMagentoGroup($magentoGroupId, $this->getSoapUrl());
                 } catch (SoapCallException $e) {
                     $this->stepExecution->incrementSummaryInfo(self::GROUP_ALREADY);
                 }

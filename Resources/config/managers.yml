@@ -1,5 +1,6 @@
 parameters:
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
+    pim_magento_connector.manager.magento.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager
     pim_magento_connector.manager.locale.class: Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager
     pim_magento_connector.manager.currency.class: Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager
     pim_magento_connector.manager.category_mapping.class: Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager
@@ -20,6 +21,12 @@ services:
             - %pim_catalog.entity.product.class%
             - %pim_catalog.entity.attribute.class%
             - %pim_catalog.entity.group.class%
+
+    pim_magento_connector.manager.magento.group:
+        class: %pim_magento_connector.manager.magento.group.class%
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - %pim_magento_connector.entity.magento.group.class%
 
     pim_magento_connector.manager.category_mapping:
         class: %pim_magento_connector.manager.category_mapping.class%

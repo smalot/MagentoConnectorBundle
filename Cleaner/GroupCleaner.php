@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 
@@ -27,15 +28,23 @@ class GroupCleaner extends Cleaner
     protected $groupMappingManager;
 
     /**
-     * @param WebserviceGuesser    $webserviceGuesser
+     * @var MagentoGroupManager
+     */
+    protected $magentoGroupManager;
+
+    /**
+     * @param WebserviceGuesser   $webserviceGuesser
+     * @param MagentoGroupManager $magentoGroupManager
      * @param GroupMappingManager $groupMappingManager
      */
     public function __construct(
         WebserviceGuesser    $webserviceGuesser,
-        GroupMappingManager $groupMappingManager
+        MagentoGroupManager  $magentoGroupManager,
+        GroupMappingManager  $groupMappingManager
     ) {
         parent::__construct($webserviceGuesser);
 
+        $this->magentoGroupManager = $magentoGroupManager;
         $this->groupMappingManager = $groupMappingManager;
     }
 
@@ -46,11 +55,11 @@ class GroupCleaner extends Cleaner
     {
         parent::beforeExecute();
 
-        $magentoGroups = $this->webservice->getAttributeSetList();
+        $magentoGroups = $this->magentoGroupManager->getAllMagentoGroups();
 
         foreach ($magentoGroups as $group) {
             try {
-                $this->handleGroupNotInPimAnymore($group);
+                $this->handleGroupNotInPimAnymore($group->getMagentoGroupId());
             } catch (SoapCallException $e) {
                 throw new InvalidItemException($e->getMessage(), array(json_encode($group)));
             }
@@ -59,14 +68,16 @@ class GroupCleaner extends Cleaner
 
     /**
      * Handle deletion of groups that are not in PIM anymore
-     * @param array $group
+     * @param int $groupId
      */
-    protected function handleGroupNotInPimAnymore($group)
+    protected function handleGroupNotInPimAnymore($groupId)
     {
         try {
-            if (!$this->groupMappingManager->magentoGroupExists($group, $this->getSoapUrl())) {
-                $this->webservice->removeAttributeGroupFromAttributeSet($group);
-                $this->groupMappingManager->removeGroupFromMapping($group->getId(), $this->getSoapUrl());
+            if (!$this->groupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
+            && !in_array($groupId, $this->getIgnoredCleaner())
+            ) {
+                $this->webservice->removeAttributeGroupFromAttributeSet($groupId);
+                $this->magentoGroupManager->removeMagentoGroup($groupId, $this->getSoapUrl());
                 $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
             }
         } catch (SoapCallException $e) {
@@ -74,24 +85,14 @@ class GroupCleaner extends Cleaner
         }
     }
 
-    public function getConfigurationFields()
+    /**
+     * Get all ignored cleaners
+     * @return array
+     */
+    protected function getIgnoredCleaner()
     {
-        return array_merge(
-            parent::getConfigurationFields(),
-            array(
-                'notInPimAnymoreAction' => array(
-                    'type'    => 'choice',
-                    'options' => array(
-                        'choices'  => array(
-                            Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
-                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
-                        ),
-                        'required' => true,
-                        'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
-                        'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
-                    )
-                )
-            )
+        return array(
+            'Default',
         );
     }
 }

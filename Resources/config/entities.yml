@@ -4,3 +4,4 @@ parameters:
     pim_magento_connector.entity.group_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping
     pim_magento_connector.entity.attribute_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoAttributeMapping
     pim_magento_connector.entity.simple_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping
+    pim_magento_connector.entity.magento.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroup
