@@ -2,6 +2,7 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
+use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
@@ -16,10 +17,11 @@ use Prophecy\Argument;
 class AttributeWriterSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser $webserviceGuesser,
-        FamilyMappingManager $familyMappingManager,
+        WebserviceGuesser       $webserviceGuesser,
+        FamilyMappingManager    $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
-        GroupMappingManager $groupMappingManager,
+        GroupMappingManager     $groupMappingManager,
+        MagentoGroupManager            $magentoGroupManager,
         Webservice $webservice,
         StepExecution $stepExecution
     ) {
@@ -29,7 +31,8 @@ class AttributeWriterSpec extends ObjectBehavior
             $webserviceGuesser,
             $familyMappingManager,
             $attributeMappingManager,
-            $groupMappingManager
+            $groupMappingManager,
+            $magentoGroupManager
         );
         $this->setStepExecution($stepExecution);
     }
