@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocale;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 
 /**
@@ -68,7 +68,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $categoryMapping;
 
     /**
-     * @var MappingMerger
+     * @var MagentoConnectorMappingMerger
      */
     protected $categoryMappingMerger;
 
@@ -78,29 +78,29 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $attributeMapping;
 
     /**
-     * @var MappingMerger
+     * @var MagentoConnectorMappingMerger
      */
     protected $attributeMappingMerger;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
-     * @param CurrencyManager          $currencyManager
-     * @param ChannelManager           $channelManager
-     * @param MappingMerger            $categoryMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
+     * @param WebserviceGuesser             $webserviceGuesser
+     * @param ProductNormalizerGuesser      $normalizerGuesser
+     * @param LocaleManager                 $localeManager
+     * @param MagentoConnectorMappingMerger $storeViewMappingMerger
+     * @param CurrencyManager               $currencyManager
+     * @param ChannelManager                $channelManager
+     * @param MagentoConnectorMappingMerger $categoryMappingMerger
+     * @param MagentoConnectorMappingMerger $attributeMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
+        MagentoConnectorMappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger,
-        MappingMerger $attributeMappingMerger
+        MagentoConnectorMappingMerger $categoryMappingMerger,
+        MagentoConnectorMappingMerger $attributeMappingMerger
     ) {
         parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 

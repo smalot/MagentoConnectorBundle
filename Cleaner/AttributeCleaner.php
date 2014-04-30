@@ -2,10 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Doctrine\ORM\EntityManager;
 
@@ -23,7 +22,7 @@ class AttributeCleaner extends Cleaner
     const ATTRIBUTE_DELETED = 'Attribute deleted';
 
     /**
-     * @var MappingMerger
+     * @var MagentoConnectorMappingMerger
      */
     protected $attributeMappingMerger;
 
@@ -65,14 +64,14 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param MappingMerger     $attributeMappingMerger
-     * @param EntityManager     $em
-     * @param string            $attributeClassName
+     * @param WebserviceGuesser                 $webserviceGuesser
+     * @param MagentoConnectorMappingMerger     $attributeMappingMerger
+     * @param EntityManager                     $em
+     * @param string                            $attributeClassName
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        MappingMerger $attributeMappingMerger,
+        MagentoConnectorMappingMerger $attributeMappingMerger,
         EntityManager $em,
         $attributeClassName
     ) {

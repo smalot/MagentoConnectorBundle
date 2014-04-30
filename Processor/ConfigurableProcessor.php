@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
@@ -36,25 +36,25 @@ class ConfigurableProcessor extends AbstractProductProcessor
     protected $groupManager;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
-     * @param CurrencyManager          $currencyManager
-     * @param ChannelManager           $channelManager
-     * @param MappingMerger            $categoryMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
-     * @param GroupManager             $groupManager
+     * @param WebserviceGuesser             $webserviceGuesser
+     * @param ProductNormalizerGuesser      $normalizerGuesser
+     * @param LocaleManager                 $localeManager
+     * @param MagentoConnectorMappingMerger $storeViewMappingMerger
+     * @param CurrencyManager               $currencyManager
+     * @param ChannelManager                $channelManager
+     * @param MagentoConnectorMappingMerger $categoryMappingMerger
+     * @param MagentoConnectorMappingMerger $attributeMappingMerger
+     * @param GroupManager                 $groupManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
+        MagentoConnectorMappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger,
-        MappingMerger $attributeMappingMerger,
+        MagentoConnectorMappingMerger $categoryMappingMerger,
+        MagentoConnectorMappingMerger $attributeMappingMerger,
         GroupManager $groupManager
     ) {
         parent::__construct(

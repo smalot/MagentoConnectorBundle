@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Doctrine\ORM\EntityManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
@@ -20,7 +20,7 @@ class AttributeReader extends EntityReader
     const IMAGE_ATTRIBUTE_TYPE = 'pim_catalog_image';
 
     /**
-     * @var MappingMerger
+     * @var MagentoConnectorMappingMerger
      */
     protected $attributeMappingMerger;
 
@@ -52,11 +52,11 @@ class AttributeReader extends EntityReader
     }
 
     /**
-     * @param EntityManager $em                     The entity manager
-     * @param string        $className              The entity class name used
-     * @param MappingMerger $attributeMappingMerger Attribute mapping merger
+     * @param EntityManager                 $em                     The entity manager
+     * @param string                        $className              The entity class name used
+     * @param MagentoConnectorMappingMerger $attributeMappingMerger Attribute mapping merger
      */
-    public function __construct(EntityManager $em, $className, MappingMerger $attributeMappingMerger)
+    public function __construct(EntityManager $em, $className, MagentoConnectorMappingMerger $attributeMappingMerger)
     {
         parent::__construct($em, $className);
 

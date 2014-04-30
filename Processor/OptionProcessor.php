@@ -10,7 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
 
 /**
  * Magento option processor
@@ -27,7 +27,7 @@ class OptionProcessor extends AbstractProcessor
     protected $optionNormalizer;
 
     /**
-     * @var MappingMerger
+     * @var MagentoConnectorMappingMerger
      */
     protected $attributeMappingMerger;
 
@@ -37,18 +37,18 @@ class OptionProcessor extends AbstractProcessor
     protected $attributeMapping;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
+     * @param WebserviceGuesser             $webserviceGuesser
+     * @param ProductNormalizerGuesser      $normalizerGuesser
+     * @param LocaleManager                 $localeManager
+     * @param MagentoConnectorMappingMerger $storeViewMappingMerger
+     * @param MagentoConnectorMappingMerger $attributeMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        MappingMerger $attributeMappingMerger
+        MagentoConnectorMappingMerger $storeViewMappingMerger,
+        MagentoConnectorMappingMerger $attributeMappingMerger
     ) {
         parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
