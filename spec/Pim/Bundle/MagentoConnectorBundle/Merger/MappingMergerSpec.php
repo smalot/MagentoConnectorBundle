@@ -8,7 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoMapper;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class MappingMergerSpec extends ObjectBehavior
+class MagentoConnectorMappingMergerSpec extends ObjectBehavior
 {
     function let(MagentoMapper $mapper1, MagentoMapper $mapper2)
     {
