@@ -9,7 +9,7 @@ use Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ORMMapperSpec extends ObjectBehavior
+class ORMPimMapperSpec extends ObjectBehavior
 {
     protected $clientParameters;
 
