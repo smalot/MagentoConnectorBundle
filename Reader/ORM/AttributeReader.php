@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
 use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Doctrine\ORM\EntityManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
@@ -81,12 +81,12 @@ class AttributeReader extends EntityReader
 
     /**
      * Is the given attribute ignored ?
-     * @param Attribute         $attribute
+     * @param AbstractAttribute $attribute
      * @param MappingCollection $attributeMapping
      *
      * @return boolean
      */
-    protected function isAttriguteIgnored(Attribute $attribute, MappingCollection $attributeMapping)
+    protected function isAttriguteIgnored(AbstractAttribute $attribute, MappingCollection $attributeMapping)
     {
         return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes())
             || $attribute->getAttributeType() == self::IMAGE_ATTRIBUTE_TYPE;
