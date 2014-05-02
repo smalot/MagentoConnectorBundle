@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
  * Magento attribute mapper
@@ -12,7 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoAttributeMapper extends Mapper
+class MagentoAttributeMapper extends MagentoMapper
 {
     /**
      * @var WebserviceGuesser

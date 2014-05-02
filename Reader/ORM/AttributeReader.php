@@ -3,10 +3,10 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
 use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Doctrine\ORM\EntityManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
  * ORM reader for product
@@ -20,7 +20,7 @@ class AttributeReader extends EntityReader
     const IMAGE_ATTRIBUTE_TYPE = 'pim_catalog_image';
 
     /**
-     * @var MappingMerger
+     * @var MagentoMappingMerger
      */
     protected $attributeMappingMerger;
 
@@ -52,11 +52,11 @@ class AttributeReader extends EntityReader
     }
 
     /**
-     * @param EntityManager $em                     The entity manager
-     * @param string        $className              The entity class name used
-     * @param MappingMerger $attributeMappingMerger Attribute mapping merger
+     * @param EntityManager        $em                     The entity manager
+     * @param string               $className              The entity class name used
+     * @param MagentoMappingMerger $attributeMappingMerger Attribute mapping merger
      */
-    public function __construct(EntityManager $em, $className, MappingMerger $attributeMappingMerger)
+    public function __construct(EntityManager $em, $className, MagentoMappingMerger $attributeMappingMerger)
     {
         parent::__construct($em, $className);
 
@@ -81,14 +81,16 @@ class AttributeReader extends EntityReader
 
     /**
      * Is the given attribute ignored ?
-     * @param Attribute $attribute
+     * 
+     * @param AbstractAttribute $attribute
+     * @param MappingCollection $attributeMapping
      *
      * @return boolean
      */
-    protected function isAttriguteIgnored(Attribute $attribute, MappingCollection $attributeMapping)
+    protected function isAttriguteIgnored(AbstractAttribute $attribute, MappingCollection $attributeMapping)
     {
-        return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes()) ||
-            $attribute->getAttributeType() == self::IMAGE_ATTRIBUTE_TYPE;
+        return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes())
+            || $attribute->getAttributeType() === self::IMAGE_ATTRIBUTE_TYPE;
     }
 
     /**

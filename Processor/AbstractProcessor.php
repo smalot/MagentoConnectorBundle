@@ -11,7 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 
 /**
  * Magento product processor
@@ -43,7 +43,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     protected $website = 'base';
 
     /**
-     * @var MappingMerger
+     * @var MagentoMappingMerger
      */
     protected $storeViewMappingMerger;
 
@@ -61,13 +61,13 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
+     * @param MagentoMappingMerger     $storeViewMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger
+        MagentoMappingMerger $storeViewMappingMerger
     ) {
         parent::__construct($webserviceGuesser);
 

@@ -6,8 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 
 /**
  * Magento category processor
@@ -24,7 +23,7 @@ class CategoryProcessor extends AbstractProcessor
     protected $categoryMapping;
 
     /**
-     * @var MappingMerger
+     * @var MagentoMappingMerger
      */
     protected $categoryMappingMerger;
 
@@ -32,15 +31,15 @@ class CategoryProcessor extends AbstractProcessor
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
-     * @param MappingMerger            $categoryMappingMerger
+     * @param MagentoMappingMerger     $storeViewMappingMerger
+     * @param MagentoMappingMerger     $categoryMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
-        MappingMerger $categoryMappingMerger
+        MagentoMappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $categoryMappingMerger
     ) {
         parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 

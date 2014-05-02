@@ -5,7 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Entity\CategoryTranslation;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -179,7 +179,6 @@ class CategoryNormalizerSpec extends ObjectBehavior
         $storeViewMapping->getTarget('fr_FR')->willReturn('fr_fr');
         $category->setLocale('fr_FR')->shouldBeCalled();
         $category->getLabel()->willReturn('Libélé de la catégorie');
-
 
         $categoryMappingManager->getIdFromCategory($category, 'soap_url')->willReturn(null);
         $categoryMappingManager->getIdFromCategory($parentCategory, 'soap_url', $categoryMapping)->willReturn(3);

@@ -7,7 +7,7 @@ use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
  * Price mapping manager
@@ -236,8 +236,8 @@ class PriceMappingManager
 
     /**
      * Get all products with the given option value
-     * @param array             $products
-     * @param AttributeOption   $option
+     * @param array           $products
+     * @param AttributeOption $option
      *
      * @return array
      */

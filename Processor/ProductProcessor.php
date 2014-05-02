@@ -13,7 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 
 /**
  * Magento product processor
@@ -40,36 +40,14 @@ class ProductProcessor extends AbstractProductProcessor
     protected $pimGrouped;
 
     /**
-     * Get pimGrouped
-     * @return string
-     */
-    public function getPimGrouped()
-    {
-        return $this->pimGrouped;
-    }
-
-    /**
-     * Set pimGrouped
-     * @param string $pimGrouped
-     *
-     * @return ProductProcessor
-     */
-    public function setPimGrouped($pimGrouped)
-    {
-        $this->pimGrouped = $pimGrouped;
-
-        return $this;
-    }
-
-    /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
+     * @param MagentoMappingMerger     $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
-     * @param MappingMerger            $categoryMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
+     * @param MagentoMappingMerger     $categoryMappingMerger
+     * @param MagentoMappingMerger     $attributeMappingMerger
      * @param MetricConverter          $metricConverter
      * @param AssociationTypeManager   $associationTypeManager
      */
@@ -77,11 +55,11 @@ class ProductProcessor extends AbstractProductProcessor
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger,
-        MappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $categoryMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
@@ -98,6 +76,28 @@ class ProductProcessor extends AbstractProductProcessor
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;
+    }
+
+    /**
+     * Get pim grouped
+     * @return string
+     */
+    public function getPimGrouped()
+    {
+        return $this->pimGrouped;
+    }
+
+    /**
+     * Set pim grouped
+     * @param string $pimGrouped
+     *
+     * @return ProductProcessor
+     */
+    public function setPimGrouped($pimGrouped)
+    {
+        $this->pimGrouped = $pimGrouped;
+
+        return $this;
     }
 
     /**

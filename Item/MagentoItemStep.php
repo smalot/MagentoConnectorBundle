@@ -147,7 +147,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get SoapUsername
+     * Get soap username
      *
      * @return string Soap magento soapUsername
      */
@@ -157,7 +157,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Set SoapUsername
+     * Set soap username
      *
      * @param string $soapUsername Soap magento soapUsername
      *
@@ -171,7 +171,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get soapApiKey
+     * Get soap api key
      *
      * @return string Soap magento soapApiKey
      */
@@ -181,7 +181,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Set soapApiKey
+     * Set soap api key
      *
      * @param string $soapApiKey Soap magento soapApiKey
      *
@@ -195,7 +195,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get wsdlUrl
+     * Get wsdl url
      *
      * @return string magento wsdl relative url
      */
@@ -205,7 +205,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Set wsdlUrl
+     * Set wsdl url
      *
      * @param string $wsdlUrl wsdl relative url
      *
@@ -219,7 +219,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get magentoUrl
+     * Get magento url
      *
      * @return string Soap magento url
      */
@@ -229,7 +229,9 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get magentoUrl
+     * Set magento url
+     *
+     * @param string $magentoUrl
      *
      * @return MagentoItemStep
      */
@@ -241,7 +243,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get soapUrl
+     * Get soap url
      *
      * @return string magento soap url
      */

@@ -11,7 +11,7 @@ use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Locale;
@@ -178,8 +178,6 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->globalContext['magentoStoreViews'] = array();
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', array($product, 'MagentoArray', $this->globalContext));
     }
-
-
 
     function it_normalizes_images_for_given_product($product, $imageValue, Media $image, ArrayCollection $productValues, $mediaManager)
     {

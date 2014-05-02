@@ -6,10 +6,9 @@ use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -37,7 +36,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         ProductValue $productValuePrice3,
         ProductPrice $productPrice3,
         MappingCollection $attributeMapping
-    ){
+    ) {
         $this->beConstructedWith('locale', 'currency');
 
         $group->getAttributes()->willReturn(array($attribute1, $attribute2));
@@ -134,7 +133,6 @@ class PriceMappingManagerSpec extends ObjectBehavior
 
         $product3->getValue('attribute_1', 'locale')->willReturn($productValueOption12);
         $product3->getValue('attribute_2', 'locale')->willReturn($productValueOption22);
-
 
         $priceMapping = $this->getPriceMapping($group, $products, $attributeMapping)->shouldReturn(
             array(

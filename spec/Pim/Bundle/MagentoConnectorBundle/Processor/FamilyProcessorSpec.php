@@ -7,8 +7,9 @@ use Prophecy\Argument;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Merger\MappingMerger;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
@@ -23,7 +24,7 @@ class FamilyProcessorSpec extends ObjectBehavior
         ChannelManager $channelManager,
         LocaleManager $localeManager,
         MappingMerger $storeViewMappingMerger,
-        MappingMerger $familyMappingMerger,
+        MagentoMappingMerger $familyMappingMerger,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         FamilyMappingManager $familyMappingManager,
@@ -35,8 +36,8 @@ class FamilyProcessorSpec extends ObjectBehavior
             $webserviceGuesser,
             $normalizerGuesser,
             $localeManager,
-            $storeViewMappingMerger,
             $familyMappingMerger,
+            $storeViewMappingMerger,
             $familyMappingManager
         );
         $this->setStepExecution($stepExecution);

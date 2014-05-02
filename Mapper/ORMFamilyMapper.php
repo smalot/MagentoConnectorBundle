@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
+use Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
@@ -14,7 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ORMFamilyMapper extends ORMMapper
+class ORMFamilyMapper extends ORMPimMapper
 {
     /**
      * @var FamilyMappingManager

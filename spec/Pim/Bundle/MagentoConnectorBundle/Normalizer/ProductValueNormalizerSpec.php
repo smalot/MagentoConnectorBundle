@@ -3,10 +3,10 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\CatalogBundle\Model\Metric;
@@ -17,7 +17,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext;
 
-    function let(ProductValue $value, MappingCollection $attributeMapping, Attribute $attribute)
+    function let(ProductValue $value, MappingCollection $attributeMapping, AbstractAttribute $attribute)
     {
         $this->globalContext = array(
             'identifier'               => 'identifier',
