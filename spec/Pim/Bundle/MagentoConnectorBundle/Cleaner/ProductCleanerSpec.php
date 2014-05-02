@@ -52,7 +52,7 @@ class ProductCleanerSpec extends ObjectBehavior
 
         $queryBuilder->getQuery()->willReturn($query);
         $productRepository->buildByChannelAndCompleteness(Argument::any())->willReturn($queryBuilder);
-        $productManager->getFlexibleRepository()->willReturn($productRepository);
+        $productManager->getProductRepository()->willReturn($productRepository);
 
         $firstProduct->getIdentifier()->willReturn('sku-000');
         $secondProduct->getIdentifier()->willReturn('sku-001');

@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
@@ -39,22 +39,22 @@ class ConfigurableProcessor extends AbstractProductProcessor
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
-     * @param MappingMerger            $storeViewMappingMerger
+     * @param MagentoMappingMerger     $storeViewMappingMerger
      * @param CurrencyManager          $currencyManager
      * @param ChannelManager           $channelManager
-     * @param MappingMerger            $categoryMappingMerger
-     * @param MappingMerger            $attributeMappingMerger
+     * @param MagentoMappingMerger     $categoryMappingMerger
+     * @param MagentoMappingMerger     $attributeMappingMerger
      * @param GroupManager             $groupManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
-        MappingMerger $categoryMappingMerger,
-        MappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $categoryMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
         GroupManager $groupManager
     ) {
         parent::__construct(

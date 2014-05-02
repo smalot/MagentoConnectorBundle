@@ -4,10 +4,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Doctrine\Common\Collections\Collection;
@@ -217,7 +217,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * Normalize the given data
      * @param mixed             $data
      * @param callable          $normalizer
-     * @param Attribute         $attribute
+     * @param AbstractAttribute $attribute
      * @param string            $attributeCode
      * @param string            $attributeScope
      * @param array             $magentoAttributesOptions
@@ -230,7 +230,7 @@ class ProductValueNormalizer implements NormalizerInterface
     protected function normalizeData(
         $data,
         $normalizer,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         $attributeCode,
         $attributeScope,
         $magentoAttributesOptions,
@@ -270,7 +270,7 @@ class ProductValueNormalizer implements NormalizerInterface
      *
      * @return boolean
      */
-    protected function scopeMatches(Attribute $attribute, $attributeScope)
+    protected function scopeMatches(AbstractAttribute $attribute, $attributeScope)
     {
         return (
             $attributeScope !== self::GLOBAL_SCOPE &&

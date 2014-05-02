@@ -6,8 +6,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Doctrine\ORM\EntityManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
@@ -18,7 +18,7 @@ class AttributeCleanerSpec extends ObjectBehavior
 {
     function let(
         WebserviceGuesser $webserviceGuesser,
-        MappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
         EntityManager $em,
         Webservice $webservice,
         EntityRepository $entityRepository,

@@ -128,7 +128,7 @@ class ProductCleaner extends Cleaner
      */
     protected function getExportedProductsSkus()
     {
-        $products = $this->productManager->getFlexibleRepository()
+        $products = $this->productManager->getProductRepository()
             ->buildByChannelAndCompleteness($this->channelManager->getChannelByCode($this->channel))
             ->getQuery()
             ->getResult();
@@ -142,7 +142,7 @@ class ProductCleaner extends Cleaner
      */
     protected function getPimProductsSkus()
     {
-        return $this->getProductsSkus($this->productManager->getFlexibleRepository()->findAll());
+        return $this->getProductsSkus($this->productManager->getProductRepository()->findAll());
     }
 
     /**

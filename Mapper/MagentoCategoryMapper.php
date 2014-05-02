@@ -12,7 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoCategoryMapper extends Mapper
+class MagentoCategoryMapper extends MagentoMapper
 {
     const ROOT_CATEGORY_ID = 1;
 

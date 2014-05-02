@@ -4,18 +4,17 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper;
 
 /**
- * Abstract mapper
+ * Magento mapper
  *
- * @author    Julien Sanchez <julien@akeneo.com>
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class Mapper implements MapperInterface
+class MagentoMapper extends Mapper
 {
-    const IDENTIFIER_FORMAT = '%s-%s';
-
     /**
      * @var MagentoSoapClientParameters
      */
@@ -41,50 +40,6 @@ class Mapper implements MapperInterface
     public function setParameters(MagentoSoapClientParameters $clientParameters)
     {
         $this->clientParameters = $clientParameters;
-    }
-
-    /**
-     * Get mapping
-     * @return array
-     */
-    public function getMapping()
-    {
-        return new MappingCollection();
-    }
-
-    /**
-     * Set mapping
-     * @param array $mapping
-     */
-    public function setMapping(array $mapping)
-    {
-    }
-
-    /**
-     * Get all targets
-     * @return array
-     */
-    public function getAllTargets()
-    {
-        return array();
-    }
-
-    /**
-     * Get all sources
-     * @return array
-     */
-    public function getAllSources()
-    {
-        return array();
-    }
-
-    /**
-     * Get mapper priority
-     * @return integer
-     */
-    public function getPriority()
-    {
-        return 0;
     }
 
     /**
