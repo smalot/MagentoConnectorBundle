@@ -7,7 +7,7 @@ use Prophecy\Argument;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
@@ -23,8 +23,8 @@ class CategoryProcessorSpec extends ObjectBehavior
     function let(
         ChannelManager $channelManager,
         LocaleManager $localeManager,
-        MagentoConnectorMappingMerger $storeViewMappingMerger,
-        MagentoConnectorMappingMerger $categoryMappingMerger,
+        MagentoMappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $categoryMappingMerger,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         CategoryMappingManager $categoryMappingManager,

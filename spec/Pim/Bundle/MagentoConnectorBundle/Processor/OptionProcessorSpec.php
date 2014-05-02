@@ -4,7 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
@@ -22,8 +22,8 @@ class OptionProcessorSpec extends ObjectBehavior
     function let(
         ChannelManager $channelManager,
         LocaleManager $localeManager,
-        MagentoConnectorMappingMerger $storeViewMappingMerger,
-        MagentoConnectorMappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
         MappingCollection $attributeMapping,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
