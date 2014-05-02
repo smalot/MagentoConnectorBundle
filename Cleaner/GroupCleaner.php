@@ -38,9 +38,9 @@ class GroupCleaner extends Cleaner
      * @param GroupMappingManager $groupMappingManager
      */
     public function __construct(
-        WebserviceGuesser    $webserviceGuesser,
-        MagentoGroupManager  $magentoGroupManager,
-        GroupMappingManager  $groupMappingManager
+        WebserviceGuesser   $webserviceGuesser,
+        MagentoGroupManager $magentoGroupManager,
+        GroupMappingManager $groupMappingManager
     ) {
         parent::__construct($webserviceGuesser);
 
@@ -73,15 +73,19 @@ class GroupCleaner extends Cleaner
     protected function handleGroupNotInPimAnymore($groupId)
     {
         try {
+            $groupName = $this->groupMappingManager->getGroupFromId($groupId, $this->getSoapUrl());
+            if (isset($groupName)) {
+                $groupName = $groupName->getCode();
+            }
             if (!$this->groupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
-            && !in_array($groupId, $this->getIgnoredCleaner())
+            && !in_array($groupName, $this->getIgnoredCleaner())
             ) {
                 $this->webservice->removeAttributeGroupFromAttributeSet($groupId);
                 $this->magentoGroupManager->removeMagentoGroup($groupId, $this->getSoapUrl());
                 $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
             }
         } catch (SoapCallException $e) {
-            var_dump($e->getMessage());
+
         }
     }
 
