@@ -81,6 +81,7 @@ class AttributeReader extends EntityReader
 
     /**
      * Is the given attribute ignored ?
+     * 
      * @param AbstractAttribute $attribute
      * @param MappingCollection $attributeMapping
      *
