@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Merger;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\ConnectorMappingBundle\Merger\MappingMerger;
 
 /**
@@ -13,7 +12,8 @@ use Pim\Bundle\ConnectorMappingBundle\Merger\MappingMerger;
  */
 class MagentoConnectorMappingMerger extends MappingMerger
 {
-    public function __construct(array $mappers, $name, $allowAddition) {
+    public function __construct(array $mappers, $name, $allowAddition)
+    {
         $direction = 'export';
 
         parent::__construct($mappers, $name, $direction, $allowAddition);

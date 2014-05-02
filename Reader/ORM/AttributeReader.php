@@ -88,8 +88,8 @@ class AttributeReader extends EntityReader
      */
     protected function isAttriguteIgnored(Attribute $attribute, MappingCollection $attributeMapping)
     {
-        return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes()) ||
-            $attribute->getAttributeType() == self::IMAGE_ATTRIBUTE_TYPE;
+        return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes())
+            || $attribute->getAttributeType() == self::IMAGE_ATTRIBUTE_TYPE;
     }
 
     /**
