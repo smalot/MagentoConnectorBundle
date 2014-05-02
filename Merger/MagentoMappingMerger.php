@@ -17,9 +17,9 @@ class MagentoMappingMerger extends MappingMerger
     /**
      * Construct a MagentoMappingMerger
      *
-     * @param array $mappers
-     * @param string $name
-     * @param type $allowAddition
+     * @param array   $mappers
+     * @param string  $name
+     * @param boolean $allowAddition
      */
     public function __construct(array $mappers, $name, $allowAddition)
     {

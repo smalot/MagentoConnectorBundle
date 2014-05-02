@@ -79,7 +79,7 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
-     * Get pimGrouped
+     * Get pim grouped
      * @return string
      */
     public function getPimGrouped()
@@ -88,7 +88,7 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
-     * Set pimGrouped
+     * Set pim grouped
      * @param string $pimGrouped
      *
      * @return ProductProcessor
