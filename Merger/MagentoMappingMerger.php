@@ -15,20 +15,6 @@ use Pim\Bundle\ConnectorMappingBundle\Merger\MappingMerger;
 class MagentoMappingMerger extends MappingMerger
 {
     /**
-     * Construct a MagentoMappingMerger
-     *
-     * @param array   $mappers
-     * @param string  $name
-     * @param boolean $allowAddition
-     */
-    public function __construct(array $mappers, $name, $allowAddition)
-    {
-        $direction = 'export';
-
-        parent::__construct($mappers, $name, $direction, $allowAddition);
-    }
-
-    /**
      * Set parameters of all mappers
      * @param MagentoSoapClientParameters $clientParameters
      */

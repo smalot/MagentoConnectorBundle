@@ -9,16 +9,19 @@ services:
         arguments:
             - ['@pim_magento_connector.mapper.magento_attribute', '@pim_magento_connector.mapper.orm_attribute']
             - 'attribute'
+            - 'export'
             - %pim_magento_connector.merger.addition_allowed%
     pim_magento_connector.merger.storeview_mapping:
         class: %pim_magento_connector.merger.mapping.class%
         arguments:
             - ['@pim_magento_connector.mapper.magento_storeview', '@pim_magento_connector.mapper.orm_storeview']
             - 'storeview'
+            - 'export'
             - %pim_magento_connector.merger.addition_allowed%
     pim_magento_connector.merger.category_mapping:
         class: %pim_magento_connector.merger.mapping.class%
         arguments:
             - ['@pim_magento_connector.mapper.magento_category', '@pim_magento_connector.mapper.orm_category']
             - 'category'
+            - 'export'
             - %pim_magento_connector.merger.addition_not_allowed%
