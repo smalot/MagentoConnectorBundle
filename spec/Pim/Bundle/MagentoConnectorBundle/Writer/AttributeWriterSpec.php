@@ -21,9 +21,9 @@ class AttributeWriterSpec extends ObjectBehavior
         FamilyMappingManager    $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
         GroupMappingManager     $groupMappingManager,
-        MagentoGroupManager            $magentoGroupManager,
-        Webservice $webservice,
-        StepExecution $stepExecution
+        MagentoGroupManager     $magentoGroupManager,
+        Webservice              $webservice,
+        StepExecution           $stepExecution
     ) {
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
