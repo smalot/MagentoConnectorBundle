@@ -14,7 +14,7 @@ use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 
 /**
- * Magento attribute writer. Add attributes to groups ans attribute sets on magento side
+ * Magento attribute writer. Add attributes to groups and attribute sets on magento side
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
