@@ -5,6 +5,7 @@
 - Compatibility with magento enterprise edition
 - delta export for products
 - now use connector mapping bundle
+- you can separately inform your magento url and wsdl url in export edit mode
 
 # 1.0.0-RC3 -
 
