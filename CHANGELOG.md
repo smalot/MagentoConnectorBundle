@@ -4,6 +4,7 @@
 - Compatibility with pim-community 1.1
 - Compatibility with magento enterprise edition
 - delta export for products
+- now use connector mapping bundle
 
 # 1.0.0-RC3 -
 
