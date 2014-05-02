@@ -10,7 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 
 /**
  * Magento product processor
@@ -52,17 +52,17 @@ class ProductAssociationProcessor extends AbstractProcessor
     protected $pimGrouped;
 
     /**
-     * @param WebserviceGuesser             $webserviceGuesser
-     * @param ProductNormalizerGuesser      $normalizerGuesser
-     * @param LocaleManager                 $localeManager
-     * @param MagentoConnectorMappingMerger $storeViewMappingMerger
-     * @param AssociationTypeManager        $associationTypeManager
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MagentoMappingMerger     $storeViewMappingMerger
+     * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MagentoConnectorMappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $storeViewMappingMerger,
         AssociationTypeManager $associationTypeManager
     ) {
         parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);

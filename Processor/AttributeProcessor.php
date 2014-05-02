@@ -8,7 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 
 /**
@@ -21,7 +21,7 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 class AttributeProcessor extends AbstractProcessor
 {
     /**
-     * @var MagentoConnectorMappingMerger
+     * @var MagentoMappingMerger
      */
     protected $attributeMappingMerger;
 
@@ -29,6 +29,25 @@ class AttributeProcessor extends AbstractProcessor
      * @var string
      */
     protected $attributeMapping = '';
+
+    /**
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MagentoMappingMerger     $storeViewMappingMerger
+     * @param MagentoMappingMerger     $attributeMappingMerger
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MagentoMappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger
+    ) {
+        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+
+        $this->attributeMappingMerger = $attributeMappingMerger;
+    }
 
     /**
      * Set attribute mapping
@@ -50,25 +69,6 @@ class AttributeProcessor extends AbstractProcessor
     public function getAttributeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
-    }
-
-    /**
-     * @param WebserviceGuesser             $webserviceGuesser
-     * @param ProductNormalizerGuesser      $normalizerGuesser
-     * @param LocaleManager                 $localeManager
-     * @param MagentoConnectorMappingMerger $storeViewMappingMerger
-     * @param MagentoConnectorMappingMerger $attributeMappingMerger
-     */
-    public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MagentoConnectorMappingMerger $storeViewMappingMerger,
-        MagentoConnectorMappingMerger $attributeMappingMerger
-    ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
-
-        $this->attributeMappingMerger = $attributeMappingMerger;
     }
 
     /**

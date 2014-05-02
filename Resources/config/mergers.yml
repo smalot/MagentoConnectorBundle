@@ -1,5 +1,5 @@
 parameters:
-    pim_magento_connector.merger.mapping.class: Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger
+    pim_magento_connector.merger.mapping.class: Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger
     pim_magento_connector.merger.addition_not_allowed: false
     pim_magento_connector.merger.addition_allowed: true
 

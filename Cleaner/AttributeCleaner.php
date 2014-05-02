@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Doctrine\ORM\EntityManager;
@@ -23,7 +23,7 @@ class AttributeCleaner extends Cleaner
     const ATTRIBUTE_DELETED = 'Attribute deleted';
 
     /**
-     * @var MagentoConnectorMappingMerger
+     * @var MagentoMappingMerger
      */
     protected $attributeMappingMerger;
 
@@ -41,6 +41,25 @@ class AttributeCleaner extends Cleaner
      * @var string
      */
     protected $attributeMapping;
+
+    /**
+     * @param WebserviceGuesser    $webserviceGuesser
+     * @param MagentoMappingMerger $attributeMappingMerger
+     * @param EntityManager        $em
+     * @param string               $attributeClassName
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        MagentoMappingMerger $attributeMappingMerger,
+        EntityManager $em,
+        $attributeClassName
+    ) {
+        parent::__construct($webserviceGuesser);
+
+        $this->attributeMappingMerger = $attributeMappingMerger;
+        $this->em                     = $em;
+        $this->attributeClassName     = $attributeClassName;
+    }
 
     /**
      * Set attribute mapping
@@ -62,25 +81,6 @@ class AttributeCleaner extends Cleaner
     public function getAttributeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
-    }
-
-    /**
-     * @param WebserviceGuesser             $webserviceGuesser
-     * @param MagentoConnectorMappingMerger $attributeMappingMerger
-     * @param EntityManager                 $em
-     * @param string                        $attributeClassName
-     */
-    public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        MagentoConnectorMappingMerger $attributeMappingMerger,
-        EntityManager $em,
-        $attributeClassName
-    ) {
-        parent::__construct($webserviceGuesser);
-
-        $this->attributeMappingMerger = $attributeMappingMerger;
-        $this->em                     = $em;
-        $this->attributeClassName     = $attributeClassName;
     }
 
     /**

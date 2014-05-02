@@ -13,7 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoConnectorMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 
 /**
  * Magento product processor
@@ -40,26 +40,26 @@ class ProductProcessor extends AbstractProductProcessor
     protected $pimGrouped;
 
     /**
-     * @param WebserviceGuesser             $webserviceGuesser
-     * @param ProductNormalizerGuesser      $normalizerGuesser
-     * @param LocaleManager                 $localeManager
-     * @param MagentoConnectorMappingMerger $storeViewMappingMerger
-     * @param CurrencyManager               $currencyManager
-     * @param ChannelManager                $channelManager
-     * @param MagentoConnectorMappingMerger $categoryMappingMerger
-     * @param MagentoConnectorMappingMerger $attributeMappingMerger
-     * @param MetricConverter               $metricConverter
-     * @param AssociationTypeManager        $associationTypeManager
+     * @param WebserviceGuesser        $webserviceGuesser
+     * @param ProductNormalizerGuesser $normalizerGuesser
+     * @param LocaleManager            $localeManager
+     * @param MagentoMappingMerger     $storeViewMappingMerger
+     * @param CurrencyManager          $currencyManager
+     * @param ChannelManager           $channelManager
+     * @param MagentoMappingMerger     $categoryMappingMerger
+     * @param MagentoMappingMerger     $attributeMappingMerger
+     * @param MetricConverter          $metricConverter
+     * @param AssociationTypeManager   $associationTypeManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MagentoConnectorMappingMerger $storeViewMappingMerger,
+        MagentoMappingMerger $storeViewMappingMerger,
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
-        MagentoConnectorMappingMerger $categoryMappingMerger,
-        MagentoConnectorMappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $categoryMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager
     ) {
