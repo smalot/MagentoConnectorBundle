@@ -35,8 +35,9 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
     }
 
-    function it_shoulds_return_nothing_as_sources_if_it_is_not_well_configured()
+    function it_shoulds_return_nothing_as_sources_if_it_is_not_well_configured($localeManager)
     {
+        $localeManager->getActiveCodes()->willReturn(array());
         $this->getAllSources()->shouldReturn(array());
     }
 }
