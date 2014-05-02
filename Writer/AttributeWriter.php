@@ -130,7 +130,7 @@ class AttributeWriter extends AbstractWriter
     protected function getGroupId()
     {
         $group = $this->attribute->getGroup();
-        if ($group !== null && ($group instanceof AttributeGroup)) {
+        if ($group !== null) {
             $magentoGroupId = $this->groupMappingManager->getIdFromGroup($group, $this->getSoapUrl());
         } else {
             $magentoGroupId = null;
