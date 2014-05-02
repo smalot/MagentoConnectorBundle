@@ -65,10 +65,10 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * @param WebserviceGuesser                 $webserviceGuesser
-     * @param MagentoConnectorMappingMerger     $attributeMappingMerger
-     * @param EntityManager                     $em
-     * @param string                            $attributeClassName
+     * @param WebserviceGuesser             $webserviceGuesser
+     * @param MagentoConnectorMappingMerger $attributeMappingMerger
+     * @param EntityManager                 $em
+     * @param string                        $attributeClassName
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,

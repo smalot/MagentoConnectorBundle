@@ -40,28 +40,6 @@ class ProductProcessor extends AbstractProductProcessor
     protected $pimGrouped;
 
     /**
-     * Get pimGrouped
-     * @return string
-     */
-    public function getPimGrouped()
-    {
-        return $this->pimGrouped;
-    }
-
-    /**
-     * Set pimGrouped
-     * @param string $pimGrouped
-     *
-     * @return ProductProcessor
-     */
-    public function setPimGrouped($pimGrouped)
-    {
-        $this->pimGrouped = $pimGrouped;
-
-        return $this;
-    }
-
-    /**
      * @param WebserviceGuesser             $webserviceGuesser
      * @param ProductNormalizerGuesser      $normalizerGuesser
      * @param LocaleManager                 $localeManager
@@ -98,6 +76,28 @@ class ProductProcessor extends AbstractProductProcessor
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;
+    }
+
+    /**
+     * Get pimGrouped
+     * @return string
+     */
+    public function getPimGrouped()
+    {
+        return $this->pimGrouped;
+    }
+
+    /**
+     * Set pimGrouped
+     * @param string $pimGrouped
+     *
+     * @return ProductProcessor
+     */
+    public function setPimGrouped($pimGrouped)
+    {
+        $this->pimGrouped = $pimGrouped;
+
+        return $this;
     }
 
     /**

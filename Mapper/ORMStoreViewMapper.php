@@ -49,7 +49,6 @@ class ORMStoreViewMapper extends ORMPimMapper
             $codes = $this->localeManager->getActiveCodes();
 
             if (is_array($codes)) {
-                
                 foreach ($codes as $code) {
                     $sources[] = array('id' => $code, 'text' => $code);
                 }

@@ -6,12 +6,21 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\ConnectorMappingBundle\Merger\MappingMerger;
 
 /**
+ * Magento mapping merger
+ *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class MagentoConnectorMappingMerger extends MappingMerger
 {
+    /**
+     * Construct a MagentoMappingMerger
+     *
+     * @param array $mappers
+     * @param string $name
+     * @param type $allowAddition
+     */
     public function __construct(array $mappers, $name, $allowAddition)
     {
         $direction = 'export';
