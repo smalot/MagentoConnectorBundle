@@ -73,7 +73,9 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getSoapUsername(),
             $protocol->getSoapApiKey(),
             $protocol->getMagentoUrl(),
-            $protocol->getWsdlUrl()
+            $protocol->getWsdlUrl(),
+            $protocol->getHttpLogin(),
+            $protocol->getHttpPassword
         );
 
         $objectId = spl_object_hash($clientParameters);

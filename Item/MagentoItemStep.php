@@ -354,7 +354,9 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                 $this->soapUsername,
                 $this->soapApiKey,
                 $this->magentoUrl,
-                $this->wsdlUrl
+                $this->wsdlUrl,
+                $this->httpLogin,
+                $this->httpPassword
             );
         }
 
