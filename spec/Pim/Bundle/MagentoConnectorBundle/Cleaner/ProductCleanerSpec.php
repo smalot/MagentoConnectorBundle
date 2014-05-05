@@ -167,6 +167,20 @@ class ProductCleanerSpec extends ObjectBehavior
                     'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
                 )
             ),
+            'httpLogin' => array(
+                'options' => array(
+                    'required' => false,
+                    'help'     => 'pim_magento_connector.export.httpLogin.help',
+                    'label'    => 'pim_magento_connector.export.httpLogin.label'
+                )
+            ),
+            'httpPassword' => array(
+                'options' => array(
+                    'required' => false,
+                    'help'     => 'pim_magento_connector.export.httpPassword.help',
+                    'label'    => 'pim_magento_connector.export.httpPassword.label'
+                )
+            ),
             'notInPimAnymoreAction' => array(
                 'type'    => 'choice',
                 'options' => array(
