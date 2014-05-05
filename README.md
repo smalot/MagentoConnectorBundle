@@ -33,11 +33,13 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
-    $ php composer.phar require akeneo/magento-connector-bundle:v1.0.0-RC3
+    $ php composer.phar require akeneo/magento-connector-bundle:v1.0.0-RC4
 
-Enable the bundle in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
+Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
+    $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
+    $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
 
 You can now update your database :
 
@@ -51,9 +53,11 @@ The following installation instructions are meant for developement on the Magent
 
 To install the magento connector for developpement purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
 
-After that, add the PimMagentoConnectorBundle to your `AppKernel.php` :
+After that, add bundles to your `AppKernel.php` :
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
+    $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
+    $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
 
 # Configuration
 
