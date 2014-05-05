@@ -75,7 +75,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getMagentoUrl(),
             $protocol->getWsdlUrl(),
             $protocol->getHttpLogin(),
-            $protocol->getHttpPassword
+            $protocol->getHttpPassword()
         );
 
         $objectId = spl_object_hash($clientParameters);
@@ -83,7 +83,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
         if (!isset($this->valid[$objectId]) || false === $this->valid[$objectId]) {
 
             try {
-                $xml = $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
+                $xml = $this->soapExplorer->getSoapUrlContent($clientParameters);
                 $this->xmlChecker->checkXml($xml);
                 $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (NotReachableUrlException $e) {
@@ -115,7 +115,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
         if (!isset($this->valid[$objectId])) {
 
             try {
-                $this->soapExplorer->getSoapUrlContent($clientParameters->getSoapUrl());
+                $this->soapExplorer->getSoapUrlContent($clientParameters);
                 $this->webserviceGuesser->getWebservice($clientParameters);
                 $this->valid[$objectId] = true;
             } catch (NotReachableUrlException $e) {
