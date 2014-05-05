@@ -33,7 +33,7 @@
         }
     ],
     "require": {
-        "guzzle/guzzle": ">=3.6.0,<3.8.0@stable",
+        "guzzle/guzzle": ">=3.6.0,<3.8.0",
         "akeneo/pim-community-dev": "1.1.*@stable",
         "akeneo/delta-export-bundle": "1.0.*@stable",
         "akeneo/connector-mapping-bundle": "1.0.*@stable"
