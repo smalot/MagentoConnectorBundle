@@ -96,7 +96,7 @@ class OptionCleaner extends Cleaner
     }
 
     /**
-     * Handle deletion or disableing of options which are not in PIM anymore
+     * Handle deletion or disabling of options which are not in PIM anymore
      * @param string $optionId
      * @param string $attributeCode
      */
