@@ -1,6 +1,6 @@
-Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping:
     type: entity
-    table: pim_magento_category_mapping
+    table: pim_magento_group_mapping
     id:
         id:
             type: integer
@@ -10,15 +10,15 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
             type: text
             length: 255
             column: magento_url
-        magentoCategoryId:
+        magentoGroupId:
             type: integer
-            column: magento_category_id
+            column: magento_group_id
     manyToOne:
-        category:
-            targetEntity: Pim\Bundle\CatalogBundle\Entity\Category
-            inversedBy: magentoCategoryMappings
+        group:
+            targetEntity: Pim\Bundle\CatalogBundle\Entity\AttributeGroup
+            inversedBy: magentoGroupMappings
             joinColumn:
-                name: category_id
+                name: group_id
                 referencedColumnName: id
                 onDelete: 'CASCADE'
                 unique: true

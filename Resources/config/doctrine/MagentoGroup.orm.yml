@@ -1,0 +1,16 @@
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroup:
+    type: entity
+    table: pim_magento_group
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        magentoUrl:
+            type: text
+            length: 255
+            column: magento_url
+        magentoGroupId:
+            type: integer
+            column: magento_group_id
+            unique: true

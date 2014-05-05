@@ -92,7 +92,13 @@ class CategoryMappingManager
         $magentoCategoryId,
         $magentoUrl
     ) {
+        $categoryMapping = $this->getEntityRepository()->findOneByCategory($pimCategory->getId());
         $magentoCategoryMapping = new $this->className();
+
+        if ($categoryMapping) {
+            $magentoCategoryMapping = $categoryMapping;
+        }
+
         $magentoCategoryMapping->setCategory($pimCategory);
         $magentoCategoryMapping->setMagentoCategoryId($magentoCategoryId);
         $magentoCategoryMapping->setMagentoUrl($magentoUrl);

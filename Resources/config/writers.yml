@@ -5,6 +5,7 @@ parameters:
     pim_magento_connector.writer.product_association.class: Pim\Bundle\MagentoConnectorBundle\Writer\ProductAssociationWriter
     pim_magento_connector.writer.option.class: Pim\Bundle\MagentoConnectorBundle\Writer\OptionWriter
     pim_magento_connector.writer.attribute.class: Pim\Bundle\MagentoConnectorBundle\Writer\AttributeWriter
+    pim_magento_connector.writer.family.class: Pim\Bundle\MagentoConnectorBundle\Writer\AttributeSetWriter
 
 services:
     # writers
@@ -36,3 +37,13 @@ services:
         class: %pim_magento_connector.writer.attribute.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.manager.family_mapping'
+            - '@pim_magento_connector.manager.attribute_mapping'
+            - '@pim_magento_connector.manager.group_mapping'
+            - '@pim_magento_connector.manager.magento.group'
+    pim_magento_connector.writer.family:
+        class: %pim_magento_connector.writer.family.class%
+        arguments:
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.manager.family_mapping'
+            - '@pim_magento_connector.manager.attribute_mapping'

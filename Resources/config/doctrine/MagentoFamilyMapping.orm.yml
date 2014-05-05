@@ -1,6 +1,6 @@
-Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoFamilyMapping:
     type: entity
-    table: pim_magento_category_mapping
+    table: pim_magento_family_mapping
     id:
         id:
             type: integer
@@ -10,15 +10,15 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping:
             type: text
             length: 255
             column: magento_url
-        magentoCategoryId:
+        magentoFamilyId:
             type: integer
-            column: magento_category_id
+            column: magento_family_id
     manyToOne:
-        category:
-            targetEntity: Pim\Bundle\CatalogBundle\Entity\Category
-            inversedBy: magentoCategoryMappings
+        family:
+            targetEntity: Pim\Bundle\CatalogBundle\Entity\Family
+            inversedBy: magentoFamilyMappings
             joinColumn:
-                name: category_id
+                name: family_id
                 referencedColumnName: id
                 onDelete: 'CASCADE'
                 unique: true

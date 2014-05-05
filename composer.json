@@ -10,16 +10,6 @@
             "name":     "Julien Sanchez",
             "email":    "julien@akeneo.com",
             "homepage": "http://www.akeneo.com/"
-        },
-        {
-            "name":     "Willy Mesnage",
-            "email":    "willy.mesnage@akeneo.com",
-            "homepage": "http://www.akeneo.com/"
-        },
-        {
-            "name":     "Olivier Soulet",
-            "email":    "olivier.soulet@akeneo.com",
-            "homepage": "http://www.akeneo.com/"
         }
     ],
     "repositories": [
@@ -29,13 +19,21 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/akeneo/DeltaExportBundle.git"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/akeneo/platform.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/akeneo/ConnectorMappingBundle.git"
         }
     ],
     "require": {
-        "guzzle/service": ">=3.6.0,<3.8.0",
+        "guzzle/guzzle": ">=3.6.0,<3.8.0@stable",
         "akeneo/pim-community-dev": "1.1.*@stable",
-        "akeneo/delta-export-bundle": "1.0.*@stable",
+        "akeneo/delta-export-bundle": "dev-master",
         "akeneo/connector-mapping-bundle": "1.0.*@stable"
     },
     "require-dev": {
