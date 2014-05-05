@@ -58,6 +58,16 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $soapApiKey;
 
     /**
+     * @var string Http login
+     */
+    protected $httpLogin;
+
+    /**
+     * @var string Http password
+     */
+    protected $httpPassword;
+
+    /**
      * @var MagentoSoapClientParameters
      */
     protected $clientParameters;
@@ -140,6 +150,20 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                     'data'     => $this->getWsdlUrl()
+                )
+            ),
+            'httpLogin' => array(
+                'options' => array(
+                    'required' => false,
+                    'help'     => 'pim_magento_connector.export.httpLogin.help',
+                    'label'    => 'pim_magento_connector.export.httpLogin.label'
+                )
+            ),
+            'httpPassword' => array(
+                'options' => array(
+                    'required' => false,
+                    'help'     => 'pim_magento_connector.export.httpPassword.help',
+                    'label'    => 'pim_magento_connector.export.httpPassword.label'
                 )
             )
         );
@@ -249,6 +273,52 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     public function getSoapUrl()
     {
         return $this->magentoUrl . $this->wsdlUrl;
+    }
+
+    /**
+     * Set http login
+     *
+     * @param string $httpLogin
+     * @return MagentoItemStep
+     */
+    public function setHttpLogin($httpLogin)
+    {
+        $this->httpLogin = $httpLogin;
+
+        return $this;
+    }
+
+    /**
+     * Get http login
+     *
+     * @return string Http login
+     */
+    public function getHttpLogin()
+    {
+        return $this->httpLogin;
+    }
+
+    /**
+     * Set http password
+     *
+     * @param string $httpPassword
+     * @return MagentoItemStep
+     */
+    public function setHttpPassword($httpPassword)
+    {
+        $this->httpPassword = $httpPassword;
+
+        return $this;
+    }
+
+    /**
+     * Get http password
+     *
+     * @return string Http password
+     */
+    public function getHttpPassword()
+    {
+        return $this->httpPassword;
     }
 
     /**
