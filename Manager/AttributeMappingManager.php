@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Entity\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -41,7 +41,7 @@ class AttributeMappingManager
      * @param integer $id
      * @param string  $magentoUrl
      *
-     * @return Attribute
+     * @return AbstractAttribute
      */
     public function getAttributeFromId($id, $magentoUrl)
     {
@@ -62,7 +62,7 @@ class AttributeMappingManager
      *
      * @return integer
      */
-    public function getIdFromAttribute(Attribute $attribute, $magentoUrl)
+    public function getIdFromAttribute(AbstractAttribute $attribute, $magentoUrl)
     {
         $attributeMapping = $this->getEntityRepository()->findOneBy(
             array(
@@ -98,7 +98,7 @@ class AttributeMappingManager
      * @param string            $magentoUrl
      */
     public function registerAttributeMapping(
-        Attribute $pimAttribute,
+        AbstractAttribute $pimAttribute,
         $magentoAttributeId,
         $magentoUrl
     ) {

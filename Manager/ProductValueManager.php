@@ -2,8 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractProductValue;
 
 /**
  * ProductValue manager
@@ -30,11 +30,11 @@ class ProductValueManager
 
     /**
      * Create a product value from a attribute default option
-     * @param Attribute $attribute
+     * @param AbstractAttribute $attribute
      *
-     * @return ProductValue
+     * @return AbstractProductValue
      */
-    public function createProductValueForDefaultOption(Attribute $attribute)
+    public function createProductValueForDefaultOption(AbstractAttribute $attribute)
     {
         $productValue = new $this->className();
         $productValue->setAttribute($attribute);

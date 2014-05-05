@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 
 /**
  * Magento attribute mapping
@@ -29,7 +29,7 @@ class MagentoAttributeMapping
     protected $magentoAttributeId;
 
     /**
-     * @var Attribute
+     * @var AbstractAttribute
      */
     protected $attribute;
 
@@ -94,11 +94,11 @@ class MagentoAttributeMapping
     /**
      * Set attribute
      *
-     * @param Attribute $attribute
+     * @param AbstractAttribute $attribute
      *
      * @return MagentoAttributeMapping
      */
-    public function setAttribute(Attribute $attribute)
+    public function setAttribute(AbstractAttribute $attribute)
     {
         $this->attribute = $attribute;
 
@@ -108,7 +108,7 @@ class MagentoAttributeMapping
     /**
      * Get attribute
      *
-     * @return Attribute
+     * @return AbstractAttribute
      */
     public function getAttribute()
     {

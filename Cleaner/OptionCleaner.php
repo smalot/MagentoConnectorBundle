@@ -6,7 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -74,12 +74,12 @@ class OptionCleaner extends Cleaner
 
     /**
      * Clean options
-     * @param array     $options
-     * @param Attribute $attribute
+     * @param array             $options
+     * @param AbstractAttribute $attribute
      *
      * @throws InvalidItemException If clean doesn't goes well
      */
-    protected function cleanOptions(array $options, Attribute $attribute = null)
+    protected function cleanOptions(array $options, AbstractAttribute $attribute = null)
     {
         foreach ($options as $optionLabel => $optionValue) {
             if ($attribute != null &&
@@ -125,12 +125,12 @@ class OptionCleaner extends Cleaner
 
     /**
      * Get option for option label and attribute
-     * @param string    $optionLabel
-     * @param Attribute $attribute
+     * @param string            $optionLabel
+     * @param AbstractAttribute $attribute
      *
      * @return mixed
      */
-    protected function getOption($optionLabel, Attribute $attribute)
+    protected function getOption($optionLabel, AbstractAttribute $attribute)
     {
         return $this->em->getRepository($this->optionClassName)->findOneBy(
             array('code' => $optionLabel, 'attribute' => $attribute)
