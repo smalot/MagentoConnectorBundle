@@ -6,6 +6,7 @@
 - delta export for products
 - now use connector mapping bundle
 - you can separately inform your magento url and wsdl url in export edit mode
+- Added possibility to provide credential in edit mode for http authentication
 
 # 1.0.0-RC3 -
 
