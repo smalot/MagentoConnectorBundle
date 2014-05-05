@@ -34,19 +34,33 @@ class MagentoSoapClientParameters
     protected $magentoUrl;
 
     /**
+     * @var string Login for http authentication
+     */
+    protected $httpLogin;
+
+    /**
+     * @var string Password for http authentication
+     */
+    protected $httpPassword;
+
+    /**
      * Constructor
      *
      * @param string $soapUsername Magento soap username
      * @param string $soapApiKey   Magento soap api key
      * @param string $magentoUrl   Magento url (only the domain)
      * @param string $wsdlUrl      Only wsdl soap api extension
+     * @param string $httpLogin    Login http authentication
+     * @param string $httpPassword Password http authentication
      */
-    public function __construct($soapUsername, $soapApiKey, $magentoUrl, $wsdlUrl)
+    public function __construct($soapUsername, $soapApiKey, $magentoUrl, $wsdlUrl, $httpLogin = null, $httpPassword = null)
     {
         $this->soapUsername = $soapUsername;
         $this->soapApiKey   = $soapApiKey;
         $this->magentoUrl   = $magentoUrl;
         $this->wsdlUrl      = $wsdlUrl;
+        $this->httpLogin    = $httpLogin;
+        $this->httpPassword = $httpPassword;
     }
 
     /**
@@ -97,5 +111,25 @@ class MagentoSoapClientParameters
     public function getMagentoUrl()
     {
         return $this->magentoUrl;
+    }
+
+    /**
+     * Get the http authentication login
+     *
+     * @return string  Http login
+     */
+    public function getHttpLogin()
+    {
+        return $this->httpLogin;
+    }
+
+    /**
+     * Get the http authentication password
+     *
+     * @return string Http password
+     */
+    public function getHttpPassword()
+    {
+        return $this->httpPassword;
     }
 }
