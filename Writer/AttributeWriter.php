@@ -186,7 +186,9 @@ class AttributeWriter extends AbstractWriter
                     );
                     $this->magentoGroupManager->registerMagentoGroup($magentoGroupId, $this->getSoapUrl());
                 } catch (SoapCallException $e) {
-                    $this->stepExecution->incrementSummaryInfo(self::GROUP_EXISTS);
+                    if (strpos($e->getMessage(), 'already') !== false) {
+                        $this->stepExecution->incrementSummaryInfo(self::GROUP_EXISTS);
+                    }
                 }
 
             }
