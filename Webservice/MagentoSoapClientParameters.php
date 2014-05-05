@@ -53,8 +53,14 @@ class MagentoSoapClientParameters
      * @param string $httpLogin    Login http authentication
      * @param string $httpPassword Password http authentication
      */
-    public function __construct($soapUsername, $soapApiKey, $magentoUrl, $wsdlUrl, $httpLogin = null, $httpPassword = null)
-    {
+    public function __construct(
+        $soapUsername,
+        $soapApiKey,
+        $magentoUrl,
+        $wsdlUrl,
+        $httpLogin = null,
+        $httpPassword = null
+    ) {
         $this->soapUsername = $soapUsername;
         $this->soapApiKey   = $soapApiKey;
         $this->magentoUrl   = $magentoUrl;
