@@ -16,7 +16,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class FamilyMappingManager
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
+     * @var ObjectManager
      */
     protected $objectManager;
 

@@ -7,13 +7,13 @@ use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Group mapping manager
+ * Attribute group mapping manager
  *
  * @author    Olivier Soulet <olivier.soulet@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class GroupMappingManager
+class AttributeGroupMappingManager
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectManager
@@ -56,9 +56,19 @@ class GroupMappingManager
     }
 
     /**
+     * Get all groups
+     *
+     * @return AttributeGroup
+     */
+    public function getAllGroups()
+    {
+        return $this->getEntityRepository()->findAll();
+    }
+
+    /**
      * Get id from group and Magento url
-     * @param AttributeGroup  $group
-     * @param string $magentoUrl
+     * @param AttributeGroup $group
+     * @param string         $magentoUrl
      *
      * @return integer
      */

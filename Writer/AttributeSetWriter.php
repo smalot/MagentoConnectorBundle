@@ -18,7 +18,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 class AttributeSetWriter extends AbstractWriter
 {
     const FAMILY_CREATED = 'Families created';
-    const FAMILY_ALREADY = 'Family already in magento';
+    const FAMILY_EXISTS  = 'Family already in magento';
 
     /**
      * @var FamilyMappingManager
@@ -58,7 +58,7 @@ class AttributeSetWriter extends AbstractWriter
             try {
                 $this->handleNewFamily($item);
             } catch (SoapCallException $e) {
-                $this->stepExecution->incrementSummaryInfo(self::FAMILY_ALREADY);
+                $this->stepExecution->incrementSummaryInfo(self::FAMILY_EXISTS);
             }
         }
     }
@@ -70,9 +70,9 @@ class AttributeSetWriter extends AbstractWriter
      */
     protected function handleNewFamily(array $item)
     {
-        if (isset($item['create'])) {
-            $pimFamily       = $item['family'];
-            $magentoFamilyId = $this->webservice->createAttributeSet($item['create']['attributeSetName']);
+        if (isset($item['families_to_create'])) {
+            $pimFamily       = $item['family_object'];
+            $magentoFamilyId = $this->webservice->createAttributeSet($item['families_to_create']['attributeSetName']);
             $magentoUrl      = $this->getSoapUrl();
             $this->familyMappingManager->registerFamilyMapping(
                 $pimFamily,

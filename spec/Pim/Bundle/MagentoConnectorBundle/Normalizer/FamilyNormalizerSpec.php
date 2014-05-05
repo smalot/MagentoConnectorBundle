@@ -12,8 +12,8 @@ class FamilyNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext;
 
-    function let(
-    ) {
+    function let()
+    {
         $this->globalContext = array(
             'magentoFamilies' => array(),
             'magentoUrl'        => 'soap_url',

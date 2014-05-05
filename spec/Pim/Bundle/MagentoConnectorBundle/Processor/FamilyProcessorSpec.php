@@ -63,9 +63,9 @@ class FamilyProcessorSpec extends ObjectBehavior
         $webservice->getAttributeSetList()->willReturn(array());
         $webservice->getStoreViewsList()->willReturn(array());
         $this->process($family)->shouldReturn(array(
-            'family'     => $family,
-            'attributes' => null,
-            'create'     => array('attributeSetName' => 'family_code')
+            'family_object'        => $family,
+            'attributes_in_family' => null,
+            'families_to_create'   => array('attributeSetName' => 'family_code')
         ));
     }
 }

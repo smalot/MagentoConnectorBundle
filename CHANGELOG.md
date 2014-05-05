@@ -1,5 +1,9 @@
 # 1.0.0-RC4 -
 - Attribute can be exported into families (AttributeSets)
+- Groups can be added into AttributeSets
+- Groups can be deleted
+- Attribute can be removed from AttributeSets and groups
+- AttributeSets can be deleted
 
 ## Improvements
 - Compatibility with pim-community 1.1

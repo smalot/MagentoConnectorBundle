@@ -8,7 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
@@ -20,13 +20,13 @@ use Prophecy\Prophet;
 class AttributeWriterSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser       $webserviceGuesser,
-        FamilyMappingManager    $familyMappingManager,
-        AttributeMappingManager $attributeMappingManager,
-        GroupMappingManager     $groupMappingManager,
-        MagentoGroupManager     $magentoGroupManager,
-        Webservice              $webservice,
-        StepExecution           $stepExecution
+        WebserviceGuesser            $webserviceGuesser,
+        FamilyMappingManager         $familyMappingManager,
+        AttributeMappingManager      $attributeMappingManager,
+        AttributeGroupMappingManager $attributeGroupMappingManager,
+        MagentoGroupManager          $magentoGroupManager,
+        Webservice                   $webservice,
+        StepExecution                $stepExecution
     ) {
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
@@ -34,7 +34,7 @@ class AttributeWriterSpec extends ObjectBehavior
             $webserviceGuesser,
             $familyMappingManager,
             $attributeMappingManager,
-            $groupMappingManager,
+            $attributeGroupMappingManager,
             $magentoGroupManager
         );
         $this->setStepExecution($stepExecution);
@@ -68,12 +68,12 @@ class AttributeWriterSpec extends ObjectBehavior
     function it_sends_attribute_with_group_and_family_to_create_on_magento_webservice(
         Attribute $attribute,
         $webservice,
-        AttributeMappingManager $attributeMappingManager,
-        GroupMappingManager     $groupMappingManager,
-        FamilyMappingManager    $familyMappingManager,
-        MagentoGroupManager     $magentoGroupManager,
-        AttributeGroup          $group,
-        Family                  $family
+        AttributeMappingManager      $attributeMappingManager,
+        AttributeGroupMappingManager $attributeGroupMappingManager,
+        FamilyMappingManager         $familyMappingManager,
+        MagentoGroupManager          $magentoGroupManager,
+        AttributeGroup               $group,
+        Family                       $family
     ) {
         $attributes = array(
             array(
@@ -93,11 +93,11 @@ class AttributeWriterSpec extends ObjectBehavior
         $group->getCode()->willReturn('group_name');
         $familyMappingManager->getIdFromFamily(Argument::any(), 'barfoo')->willReturn(414);
         $webservice->addAttributeGroupToAttributeSet(414, 'group_name')->shouldBeCalled()->willReturn(797);
-        $groupMappingManager->registerGroupMapping($group, 797, 'barfoo')->shouldBeCalled();
+        $attributeGroupMappingManager->registerGroupMapping($group, 797, 'barfoo')->shouldBeCalled();
         $magentoGroupManager->registerMagentoGroup(797, 'barfoo')->shouldBeCalled();
 
         $webservice->createAttribute(Argument::any())->willReturn(12);
-        $groupMappingManager->getIdFromGroup(Argument::any(), 'barfoo')->willReturn(797);
+        $attributeGroupMappingManager->getIdFromGroup(Argument::any(), 'barfoo')->willReturn(797);
         $webservice->addAttributeToAttributeSet(12, 414, 797)->shouldBeCalled();
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 

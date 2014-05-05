@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
@@ -17,25 +17,25 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
 class ORMGroupMapper extends ORMMapper
 {
     /**
-     * @var GroupMappingManager
+     * @var AttributeGroupMappingManager
      */
-    protected $groupManager;
+    protected $attributeGroupManager;
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      * @param SimpleMappingManager         $simpleMappingManager
-     * @param GroupMappingManager         $groupManager
+     * @param AttributeGroupMappingManager $attributeGroupManager
      * @param string                       $rootIdentifier
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager         $simpleMappingManager,
-        GroupMappingManager          $groupManager,
+        AttributeGroupMappingManager $attributeGroupManager,
         $rootIdentifier
     ) {
         parent::__construct($hasValidCredentialsValidator, $simpleMappingManager, $rootIdentifier);
 
-        $this->groupManager = $groupManager;
+        $this->groupManager = $attributeGroupManager;
     }
 
     /**
@@ -49,15 +49,10 @@ class ORMGroupMapper extends ORMMapper
         $sources = array();
 
         if ($this->isValid()) {
-            $groups = $group === null ? $this->groupManager->getTrees() : $group->getChildren();
+            $groups = $this->attributeGroupManager->getAllGroups();
 
             foreach ($groups as $group) {
-                $sources[] = array(
-                    'id'   => $group->getCode(),
-                    'text' => sprintf('%s (%s)', $group->getLabel(), $group->getCode())
-                );
-
-                $sources = array_merge($sources, $this->getAllSources($group));
+                $sources[] = array('id' => $group->getCode(), 'name' => $group->getCode());
             }
         }
 

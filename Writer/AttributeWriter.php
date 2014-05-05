@@ -6,7 +6,7 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -25,8 +25,8 @@ class AttributeWriter extends AbstractWriter
     const ATTRIBUTE_UPDATE_SIZE = 2;
     const ATTRIBUTE_UPDATED     = 'Attributes updated';
     const ATTRIBUTE_CREATED     = 'Attributes created';
-    const ATTRIBUTE_ALREADY     = 'Attribute already in magento';
-    const GROUP_ALREADY         = 'Group was already in attribute set on magento';
+    const ATTRIBUTE_EXISTS      = 'Attribute already in magento';
+    const GROUP_EXISTS          = 'Group was already in attribute set on magento';
 
     /**
      * @var AttributeMappingManager
@@ -51,24 +51,24 @@ class AttributeWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser       $webserviceGuesser
-     * @param FamilyMappingManager    $familyMappingManager
-     * @param AttributeMappingManager $attributeMappingManager
-     * @param GroupMappingManager     $groupMappingManager
-     * @param MagentoGroupManager     $magentoGroupManager
+     * @param WebserviceGuesser            $webserviceGuesser
+     * @param FamilyMappingManager         $familyMappingManager
+     * @param AttributeMappingManager      $attributeMappingManager
+     * @param AttributeGroupMappingManager $attributeGroupMappingManager
+     * @param MagentoGroupManager          $magentoGroupManager
      */
     public function __construct(
-        WebserviceGuesser       $webserviceGuesser,
-        FamilyMappingManager    $familyMappingManager,
-        AttributeMappingManager $attributeMappingManager,
-        GroupMappingManager     $groupMappingManager,
-        MagentoGroupManager     $magentoGroupManager
+        WebserviceGuesser            $webserviceGuesser,
+        FamilyMappingManager         $familyMappingManager,
+        AttributeMappingManager      $attributeMappingManager,
+        AttributeGroupMappingManager $attributeGroupMappingManager,
+        MagentoGroupManager          $magentoGroupManager
     ) {
         parent::__construct($webserviceGuesser);
 
         $this->attributeMappingManager = $attributeMappingManager;
         $this->familyMappingManager    = $familyMappingManager;
-        $this->groupMappingManager     = $groupMappingManager;
+        $this->groupMappingManager     = $attributeGroupMappingManager;
         $this->magentoGroupManager     = $magentoGroupManager;
     }
 
@@ -85,7 +85,7 @@ class AttributeWriter extends AbstractWriter
                 $this->addGroupToAttributeSet();
                 $this->handleAttribute($attribute[1]);
             } catch (SoapCallException $e) {
-                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_ALREADY);
+                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
             }
         }
     }
@@ -154,7 +154,7 @@ class AttributeWriter extends AbstractWriter
             try {
                 $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $familyMagentoId, $groupId);
             } catch (SoapCallException $e) {
-                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_ALREADY);
+                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
             }
         }
     }
@@ -167,11 +167,14 @@ class AttributeWriter extends AbstractWriter
     protected function addGroupToAttributeSet()
     {
         $families = $this->attribute->getFamilies();
+
         $group = $this->attribute->getGroup();
         if (isset($group)) {
             $groupName = $group->getCode();
+
             foreach ($families as $family) {
                 $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
+
                 try {
                     $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
                     $this->groupMappingManager->registerGroupMapping(
@@ -181,8 +184,9 @@ class AttributeWriter extends AbstractWriter
                     );
                     $this->magentoGroupManager->registerMagentoGroup($magentoGroupId, $this->getSoapUrl());
                 } catch (SoapCallException $e) {
-                    $this->stepExecution->incrementSummaryInfo(self::GROUP_ALREADY);
+                    $this->stepExecution->incrementSummaryInfo(self::GROUP_EXISTS);
                 }
+
             }
         }
     }

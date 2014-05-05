@@ -31,7 +31,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getFamilyFromId(12, 'magento_url')->shouldReturn($family);
     }
 
-    function it_shoulds_gets_null_if_family_mapping_is_not_found(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
+    function it_returns_null_if_family_mapping_is_not_found(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
         $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
             ->willReturn(null);

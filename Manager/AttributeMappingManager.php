@@ -38,8 +38,8 @@ class AttributeMappingManager
 
     /**
      * Get attribute from id and Magento url
-     * @param int    $id
-     * @param string $magentoUrl
+     * @param integer $id
+     * @param string  $magentoUrl
      *
      * @return Attribute
      */
@@ -56,27 +56,13 @@ class AttributeMappingManager
     }
 
     /**
-     * Get attribute from  base id and Magento url
-     * @param Attribute $attribute
-     * @internal param string $magentoUrl
-     *
-     * @return Attribute
-     */
-    public function getAttributeFromBaseId($attribute)
-    {
-        $magentoAttributeMapping = $this->getEntityRepository()->findOneByAttribute($attribute);
-
-        return $magentoAttributeMapping ? $magentoAttributeMapping->getAttribute() : null;
-    }
-
-    /**
      * Get id from attribute and Magento url
-     * @param Attribute $attribute
-     * @param string    $magentoUrl
+     * @param AbstractAttribute $attribute
+     * @param string            $magentoUrl
      *
-     * @return int
+     * @return integer
      */
-    public function getIdFromAttribute(Attribute $attribute, $magentoUrl)
+    public function getIdFromAttribute(AbstractAttribute $attribute, $magentoUrl)
     {
         $attributeMapping = $this->getEntityRepository()->findOneBy(
             array(
@@ -84,7 +70,8 @@ class AttributeMappingManager
                 'magentoUrl'  => $magentoUrl
             )
         );
-            return $attributeMapping ? $attributeMapping->getMagentoAttributeId() : null;
+
+        return $attributeMapping ? $attributeMapping->getMagentoAttributeId() : null;
     }
 
     /**
@@ -100,14 +87,15 @@ class AttributeMappingManager
                 'magentoUrl'  => $magentoUrl
             )
         );
+
         return $attributeMapping;
     }
 
     /**
      * Register a new attribute mapping
-     * @param Attribute $pimAttribute
-     * @param integer   $magentoAttributeId
-     * @param string    $magentoUrl
+     * @param AbstractAttribute $pimAttribute
+     * @param integer           $magentoAttributeId
+     * @param string            $magentoUrl
      */
     public function registerAttributeMapping(
         Attribute $pimAttribute,
@@ -142,7 +130,7 @@ class AttributeMappingManager
     }
 
     /**
-     * Get the entity manager
+     * Get the entity repository
      * @return EntityRepository
      */
     protected function getEntityRepository()

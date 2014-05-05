@@ -96,7 +96,7 @@ class MagentoGroupManager extends BaseGroupManager
     }
 
     /**
-     * Gives all the magento group ids
+     * Gives all the magento groups
      *
      * @return array
      */

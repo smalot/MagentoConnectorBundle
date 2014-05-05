@@ -38,10 +38,9 @@ class FamilyProcessor extends AbstractProcessor
 
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
-        $this->familyNormalizer = $this->normalizerGuesser
-            ->getFamilyNormalizer($this->getClientParameters());
-        $this->globalContext['magentoFamilies'] = $this->webservice->getAttributeSetList();
-        $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
+        $this->familyNormalizer = $this->normalizerGuesser->getFamilyNormalizer($this->getClientParameters());
+        $this->globalContext['magentoFamilies']   = $this->webservice->getAttributeSetList();
+        $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
     }
 
     /**
@@ -52,13 +51,13 @@ class FamilyProcessor extends AbstractProcessor
         $this->beforeExecute();
         $result = array();
 
-        $magentoAttributesSet  = $this->webservice->getAttributeSetList();
+        $magentoAttributeSets  = $this->webservice->getAttributeSetList();
 
-        $result['family'] = $family;
-        $result['attributes'] = $family->getAttributes();
+        $result['family_object']        = $family;
+        $result['attributes_in_family'] = $family->getAttributes();
         // AttributeSet
-        if (!$this->magentoAttributeSetExists($family, $magentoAttributesSet)) {
-            $result['create'] = $this->normalizeFamily($family, $this->globalContext);
+        if (!$this->magentoAttributeSetExists($family, $magentoAttributeSets)) {
+            $result['families_to_create'] = $this->normalizeFamily($family, $this->globalContext);
         }
 
         return $result;
@@ -97,13 +96,5 @@ class FamilyProcessor extends AbstractProcessor
         }
 
         return $processedItem;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigurationFields()
-    {
-        return parent::getConfigurationFields();
     }
 }

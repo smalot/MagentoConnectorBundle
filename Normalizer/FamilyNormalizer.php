@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -43,6 +43,6 @@ class FamilyNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractAttribute && in_array($format, $this->supportedFormats);
+        return $data instanceof Family && in_array($format, $this->supportedFormats);
     }
 }

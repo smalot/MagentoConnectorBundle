@@ -34,10 +34,10 @@ class AttributeSetWriterSpec extends ObjectBehavior
     ) {
         $batches = array(
             array(
-                'create' => array(
+                'families_to_create' => array(
                     'attributeSetName' => 'family_code'
                 ),
-                'family' => $family,
+                'family_object' => $family,
             )
         );
 

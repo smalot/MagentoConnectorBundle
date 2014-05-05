@@ -30,10 +30,8 @@ class FamilyCleaner extends Cleaner
      * @param WebserviceGuesser    $webserviceGuesser
      * @param FamilyMappingManager $familyMappingManager
      */
-    public function __construct(
-        WebserviceGuesser    $webserviceGuesser,
-        FamilyMappingManager $familyMappingManager
-    ) {
+    public function __construct(WebserviceGuesser    $webserviceGuesser, FamilyMappingManager $familyMappingManager)
+    {
         parent::__construct($webserviceGuesser);
 
         $this->familyMappingManager = $familyMappingManager;
@@ -69,7 +67,7 @@ class FamilyCleaner extends Cleaner
                 $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
             }
         } catch (SoapCallException $e) {
-            var_dump($e->getMessage());
+
         }
     }
 

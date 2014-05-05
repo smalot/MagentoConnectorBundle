@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Manager\GroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
@@ -20,12 +20,13 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class GroupCleaner extends Cleaner
 {
-    const GROUP_DELETED  = 'Group deleted';
+    const GROUP_DELETED    = 'Group deleted';
+    const CONNECTION_ERROR = 'SOAP connection error';
 
     /**
-     * @var GroupMappingManager
+     * @var AttributeGroupMappingManager
      */
-    protected $groupMappingManager;
+    protected $attributeGroupMappingManager;
 
     /**
      * @var MagentoGroupManager
@@ -33,19 +34,19 @@ class GroupCleaner extends Cleaner
     protected $magentoGroupManager;
 
     /**
-     * @param WebserviceGuesser   $webserviceGuesser
-     * @param MagentoGroupManager $magentoGroupManager
-     * @param GroupMappingManager $groupMappingManager
+     * @param WebserviceGuesser            $webserviceGuesser
+     * @param MagentoGroupManager          $magentoGroupManager
+     * @param AttributeGroupMappingManager $attributeGroupMappingManager
      */
     public function __construct(
-        WebserviceGuesser   $webserviceGuesser,
-        MagentoGroupManager $magentoGroupManager,
-        GroupMappingManager $groupMappingManager
+        WebserviceGuesser            $webserviceGuesser,
+        MagentoGroupManager          $magentoGroupManager,
+        AttributeGroupMappingManager $attributeGroupMappingManager
     ) {
         parent::__construct($webserviceGuesser);
 
         $this->magentoGroupManager = $magentoGroupManager;
-        $this->groupMappingManager = $groupMappingManager;
+        $this->attributeGroupMappingManager = $attributeGroupMappingManager;
     }
 
     /**
@@ -73,19 +74,19 @@ class GroupCleaner extends Cleaner
     protected function handleGroupNotInPimAnymore($groupId)
     {
         try {
-            $groupName = $this->groupMappingManager->getGroupFromId($groupId, $this->getSoapUrl());
+            $groupName = $this->attributeGroupMappingManager->getGroupFromId($groupId, $this->getSoapUrl());
             if (isset($groupName)) {
                 $groupName = $groupName->getCode();
             }
-            if (!$this->groupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
-            && !in_array($groupName, $this->getIgnoredCleaner())
+            if (!$this->attributeGroupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
+                && !in_array($groupName, $this->getIgnoredCleaners())
             ) {
                 $this->webservice->removeAttributeGroupFromAttributeSet($groupId);
                 $this->magentoGroupManager->removeMagentoGroup($groupId, $this->getSoapUrl());
                 $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
             }
         } catch (SoapCallException $e) {
-
+            $this->stepExecution->incrementSummaryInfo(self::CONNECTION_ERROR);
         }
     }
 
@@ -93,7 +94,7 @@ class GroupCleaner extends Cleaner
      * Get all ignored cleaners
      * @return array
      */
-    protected function getIgnoredCleaner()
+    protected function getIgnoredCleaners()
     {
         return array(
             'Default',

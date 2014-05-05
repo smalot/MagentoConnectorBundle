@@ -640,9 +640,9 @@ class Webservice
     /**
      *  Add an attribute to the attribute set.
      *
-     * @param int     $attributeId       Attribute ID
-     * @param int     $setId             Attribute set ID
-     * @param int     $attributeGroupId  Group ID (optional)
+     * @param integer $attributeId       Attribute ID
+     * @param integer $setId             Attribute set ID
+     * @param integer $attributeGroupId  Group ID (optional)
      * @param boolean $sortOrder         Sort order (optional)
      *
      * @return boolean                   True if the attribute is added to an attribute set
@@ -653,7 +653,7 @@ class Webservice
         $attributeGroupId = null,
         $sortOrder = false
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_ATTRIBUTE_ADD,
             array(
                 $attributeId,
@@ -662,29 +662,26 @@ class Webservice
                 $sortOrder
             )
         );
-
-        return $result;
     }
 
     /**
      *  Allows you to remove an existing attribute from an attribute set.
      *
-     * @param  int $attributeId Attribute ID
-     * @param  int $setId       Attribute set ID
+     * @param  integer $attributeId Attribute ID
+     * @param  integer $setId       Attribute set ID
      * @return boolean          True if the attribute is removed from an attribute set
      */
     public function removeAttributeFromAttributeSet(
         $attributeId,
         $setId
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_ATTRIBUTE_REMOVE,
             array(
                 $attributeId,
                 $setId,
             )
         );
-        return $result;
     }
 
     /**
@@ -698,96 +695,91 @@ class Webservice
         $attributeSetName,
         $skeletonSetId = 4
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_CREATE,
             array(
                 $attributeSetName,
                 $skeletonSetId,
             )
         );
-        return $result;
     }
 
     /**
      *  Allows you to add a new group for attributes to the attribute set.
      *
-     * @param int    $attributeSetId Attribute set Id
-     * @param string $groupName      Group name
+     * @param integer $attributeSetId Attribute set Id
+     * @param string  $groupName      Group name
      *
-     * @return integer               ID of the created group
+     * @return integer                ID of the created group
      */
     public function addAttributeGroupToAttributeSet(
         $attributeSetId,
         $groupName
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_ADD,
             array(
                 $attributeSetId,
                 $groupName,
             )
         );
-        return $result;
     }
 
     /**
      *  Allows you to remove a group from an attribute set.
      *
-     * @param int $attributeGroupId Group ID
-     * @return boolean              true (1) if the group is removed
+     * @param integer $attributeGroupId Group ID
+     * @return boolean                  true (1) if the group is removed
      */
     public function removeAttributeGroupFromAttributeSet(
         $attributeGroupId
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE,
             array(
                 $attributeGroupId,
             )
         );
-        return $result;
     }
 
     /**
      *  Allows you to rename a group in the attribute set.
      *
-     * @param int    $attributeGroupId Group ID
-     * @param string $groupName        New name for the group
-     * @return boolean                 True (1) if the group is renamed
+     * @param integer $attributeGroupId Group ID
+     * @param string  $groupName        New name for the group
+     * @return boolean                  True (1) if the group is renamed
      */
     public function renameAttributeGroupInAttributeSet(
         $attributeGroupId,
         $groupName
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE,
             array(
                 $attributeGroupId,
                 $groupName
             )
         );
-        return $result;
     }
 
     /**
      *  Allows you to remove an existing attribute set.
      *
-     * @param integer$attributeSetId      Attribute set ID
-     * @param string $forceProductsRemove Force product remove flag (optional)
+     * @param integer $attributeSetId      Attribute set ID
+     * @param string  $forceProductsRemove Force product remove flag (optional)
      * @return boolean                    True (1) if the attribute set is removed
      */
     public function removeAttributeSet(
         $attributeSetId,
         $forceProductsRemove = null
     ) {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE,
             array(
                 $attributeSetId,
                 $forceProductsRemove
             )
         );
-        return $result;
     }
 
     /**
