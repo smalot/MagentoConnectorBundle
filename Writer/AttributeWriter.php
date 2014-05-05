@@ -141,8 +141,8 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Add attribute to corresponding attribute sets
-     * @param int $magentoAttributeId ID of magento attribute
-     * @param $groupId
+     * @param integer $magentoAttributeId ID of magento attribute
+     * @param integer $groupId
      *
      * @return void
      */
@@ -154,7 +154,9 @@ class AttributeWriter extends AbstractWriter
             try {
                 $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $familyMagentoId, $groupId);
             } catch (SoapCallException $e) {
-                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                if (strpos($e->getMessage(), 'already') !== false) {
+                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                }
             }
         }
     }

@@ -62,7 +62,7 @@ class AttributeMappingManager
      *
      * @return integer
      */
-    public function getIdFromAttribute(AbstractAttribute $attribute, $magentoUrl)
+    public function getIdFromAttribute(Attribute $attribute, $magentoUrl)
     {
         $attributeMapping = $this->getEntityRepository()->findOneBy(
             array(
