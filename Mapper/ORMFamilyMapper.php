@@ -39,25 +39,6 @@ class ORMFamilyMapper extends ORMPimMapper
     }
 
     /**
-     * Get all targets
-     * @return array
-     */
-    public function getAllTargets()
-    {
-        $targets = array();
-
-        if ($this->isValid()) {
-            $families = $this->familyManager->getFamilies();
-
-            foreach ($families as $family) {
-                $targets[] = array('id' => $family->getCode(), 'name' => $family->getCode());
-            }
-        }
-
-        return $targets;
-    }
-
-    /**
      * Get all sources
      * @param Family $family
      *
