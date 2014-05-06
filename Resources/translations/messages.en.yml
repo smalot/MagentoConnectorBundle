@@ -55,6 +55,9 @@ pim_magento_connector:
         httpPassword:
             label: Http password
             help: If you have an http authentication on your server, provide here your http password
+        defaultStoreView:
+            label: Default store iew
+            help: Provide here your default store view
         channel:
             label: Channel
             help:
