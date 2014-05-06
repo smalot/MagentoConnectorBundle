@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Pim\Bundle\CatalogBundle\Entity\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
