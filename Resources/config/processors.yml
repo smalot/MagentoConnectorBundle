@@ -5,6 +5,7 @@ parameters:
     pim_magento_connector.processor.category.class: Pim\Bundle\MagentoConnectorBundle\Processor\CategoryProcessor
     pim_magento_connector.processor.attribute.class: Pim\Bundle\MagentoConnectorBundle\Processor\AttributeProcessor
     pim_magento_connector.processor.option.class: Pim\Bundle\MagentoConnectorBundle\Processor\OptionProcessor
+    pim_magento_connector.processor.family.class: Pim\Bundle\MagentoConnectorBundle\Processor\FamilyProcessor
 
 services:
     # processors
@@ -67,3 +68,10 @@ services:
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
             - '@pim_magento_connector.merger.attribute_mapping'
+    pim_magento_connector.processor.family:
+        class: %pim_magento_connector.processor.family.class%
+        arguments:
+            - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.guesser.magento_normalizer'
+            - '@pim_magento_connector.manager.locale'
+            - '@pim_magento_connector.merger.storeview_mapping'

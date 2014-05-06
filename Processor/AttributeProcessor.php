@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 
 /**
  * Magento attributes processor
@@ -93,22 +93,22 @@ class AttributeProcessor extends AbstractProcessor
     public function process($attribute)
     {
         $this->beforeExecute();
-
         $magentoAttributes = $this->webservice->getAllAttributes();
 
         $this->globalContext['create'] = !$this->magentoAttributeExists($attribute, $magentoAttributes);
+        $result = [$attribute, $this->normalizeAttribute($attribute, $this->globalContext)];
 
-        return $this->normalizeAttribute($attribute, $this->globalContext);
+        return $result;
     }
 
     /**
      * Test if an attribute exist on magento
-     * @param Attribute $attribute
-     * @param array     $magentoAttributes
+     * @param AbstractAttribute $attribute
+     * @param array             $magentoAttributes
      *
      * @return boolean
      */
-    protected function magentoAttributeExists(Attribute $attribute, array $magentoAttributes)
+    protected function magentoAttributeExists(AbstractAttribute $attribute, array $magentoAttributes)
     {
         return array_key_exists(
             strtolower($this->attributeMappingMerger->getMapping()->getTarget($attribute->getCode())),
@@ -118,13 +118,13 @@ class AttributeProcessor extends AbstractProcessor
 
     /**
      * Normalize the given attribute
-     * @param Attribute $attribute
-     * @param array     $context
+     * @param AbstractAttribute $attribute
+     * @param array             $context
      *
-     * @throws InvalidItemException If a problem occured with the normalizer
+     * @throws InvalidItemException If a problem occurred with the normalizer
      * @return array
      */
-    protected function normalizeAttribute(Attribute $attribute, array $context)
+    protected function normalizeAttribute(AbstractAttribute $attribute, array $context)
     {
         try {
             $processedItem = $this->attributeNormalizer->normalize(

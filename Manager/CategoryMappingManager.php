@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Pim\Bundle\CatalogBundle\Entity\Category;
+use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
@@ -41,7 +41,7 @@ class CategoryMappingManager
      * @param int    $id
      * @param string $magentoUrl
      *
-     * @return Category
+     * @return CategoryInterface
      */
     public function getCategoryFromId($id, $magentoUrl)
     {
@@ -57,14 +57,17 @@ class CategoryMappingManager
 
     /**
      * Get id from category and Magento url
-     * @param Category          $category
+     * @param CategoryInterface $category
      * @param string            $magentoUrl
      * @param MappingCollection $categoryMapping
      *
      * @return int
      */
-    public function getIdFromCategory(Category $category, $magentoUrl, MappingCollection $categoryMapping = null)
-    {
+    public function getIdFromCategory(
+        CategoryInterface $category,
+        $magentoUrl,
+        MappingCollection $categoryMapping = null
+    ) {
         if ($categoryMapping &&
             ($categoryId = $categoryMapping->getTarget($category->getCode())) != $category->getCode()
         ) {
@@ -83,16 +86,22 @@ class CategoryMappingManager
 
     /**
      * Register a new category mapping
-     * @param Category $pimCategory
-     * @param int      $magentoCategoryId
-     * @param string   $magentoUrl
+     * @param CategoryInterface $pimCategory
+     * @param int               $magentoCategoryId
+     * @param string            $magentoUrl
      */
     public function registerCategoryMapping(
-        Category $pimCategory,
+        CategoryInterface $pimCategory,
         $magentoCategoryId,
         $magentoUrl
     ) {
+        $categoryMapping = $this->getEntityRepository()->findOneByCategory($pimCategory->getId());
         $magentoCategoryMapping = new $this->className();
+
+        if ($categoryMapping) {
+            $magentoCategoryMapping = $categoryMapping;
+        }
+
         $magentoCategoryMapping->setCategory($pimCategory);
         $magentoCategoryMapping->setMagentoCategoryId($magentoCategoryId);
         $magentoCategoryMapping->setMagentoUrl($magentoUrl);
