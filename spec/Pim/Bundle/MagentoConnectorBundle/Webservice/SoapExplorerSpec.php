@@ -25,7 +25,7 @@ class SoapExplorerSpec extends ObjectBehavior
         $this->beConstructedWith($client);
     }
 
-    function it_should_success_with_valid_soap_url(ClientInterface $client, Request $request, Response $response)
+    function it_success_with_valid_soap_url(ClientInterface $client, Request $request, Response $response)
     {
         $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
         $client->send($request)->willReturn($response);
@@ -37,7 +37,7 @@ class SoapExplorerSpec extends ObjectBehavior
         $this->getSoapUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
-    function it_should_success_with_valid_http_authentication_credentials(ClientInterface $client, Request $request, Response $response)
+    function it_success_with_valid_http_authentication_credentials(ClientInterface $client, Request $request, Response $response)
     {
         $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
         $request->setAuth('user', 'valid_credential')->willReturn($request);
@@ -51,7 +51,7 @@ class SoapExplorerSpec extends ObjectBehavior
         $this->getSoapUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
-    function it_should_failed_with_invalid_url(ClientInterface $client, Request $request)
+    function it_fails_with_invalid_url(ClientInterface $client, Request $request)
     {
         $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl')->willReturn($request);
         $curlException = new CurlException();
@@ -62,7 +62,7 @@ class SoapExplorerSpec extends ObjectBehavior
         $this->shouldThrow($notReachableException)->duringGetSoapUrlContent($clientParameters);
     }
 
-    function it_should_fail_with_invalid_api_soap_url(ClientInterface $client, Request $request)
+    function it_fails_with_invalid_api_soap_url(ClientInterface $client, Request $request)
     {
         $client->createRequest('GET', 'http://notvalidsoap.url/api/soap/?w')->willReturn($request);
         $badResponseException = new BadResponseException();
@@ -73,7 +73,7 @@ class SoapExplorerSpec extends ObjectBehavior
         $this->shouldThrow($invalidSoapUrlException)->duringGetSoapUrlContent($clientParameters);
     }
 
-    function it_should_fail_with_invalid_http_authentication_credentials(ClientInterface $client, Request $request)
+    function it_fails_with_invalid_http_authentication_credentials(ClientInterface $client, Request $request)
     {
         $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
         $request->setAuth('user', 'bad_credential')->willReturn($request);
