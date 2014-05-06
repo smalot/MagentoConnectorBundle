@@ -181,6 +181,14 @@ class ProductCleanerSpec extends ObjectBehavior
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
                 )
             ),
+            'defaultStoreView' => array(
+                    'options' => array(
+                        'required' => false,
+                        'help'     => 'pim_magento_connector.export.defaultStoreView.help',
+                        'label'    => 'pim_magento_connector.export.defaultStoreView.label',
+                        'data'     => $this->getDefaultStoreView(),
+                    )
+                ),
             'notInPimAnymoreAction' => array(
                 'type'    => 'choice',
                 'options' => array(
