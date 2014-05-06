@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
@@ -197,7 +197,7 @@ class PriceMappingManager
 
     /**
      * Get price mapping for an attribute
-     * @param Attribute         $attribute
+     * @param AbstractAttribute $attribute
      * @param int               $basePrice
      * @param array             $products
      * @param array             $priceChanges
@@ -207,7 +207,7 @@ class PriceMappingManager
      * @return array
      */
     protected function getAttributePriceMapping(
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         $basePrice,
         array $products,
         array $priceChanges,

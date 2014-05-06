@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
@@ -34,7 +34,7 @@ class AttributeWriter extends AbstractWriter
     protected $attributeMappingManager;
 
     /**
-     * @var Attribute
+     * @var AbstractAttribute
      */
     protected $attribute;
 
