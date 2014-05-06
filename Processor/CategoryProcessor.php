@@ -89,7 +89,8 @@ class CategoryProcessor extends AbstractProcessor
                 'magentoUrl'          => $this->getSoapUrl(),
                 'defaultLocale'       => $this->defaultLocale,
                 'magentoStoreViews'   => $magentoStoreViews,
-                'categoryMapping'     => $this->categoryMappingMerger->getMapping()
+                'categoryMapping'     => $this->categoryMappingMerger->getMapping(),
+                'defaultStoreView'    => $this->getDefaultLocale()
             )
         );
     }

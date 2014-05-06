@@ -88,7 +88,11 @@ class CategoryNormalizer extends AbstractNormalizer
                 $normalizedCategory['move'][] = $this->getNormalizedMoveCategory($category, $context);
             }
         } else {
-            $normalizedCategory['create'][] = $this->getNormalizedNewCategory($category, $context);
+            $normalizedCategory['create'][] = $this->getNormalizedNewCategory(
+                $category,
+                $context,
+                $context['defaultStoreView']
+            );
         }
 
         return $normalizedCategory;
