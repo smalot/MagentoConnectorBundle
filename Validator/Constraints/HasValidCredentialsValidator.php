@@ -70,7 +70,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function validate($protocol, Constraint $constraint)
     {
-        if (!($protocol instanceof MagentoItemStep)) {
+        if (!$protocol instanceof MagentoItemStep) {
             return null;
         }
 
