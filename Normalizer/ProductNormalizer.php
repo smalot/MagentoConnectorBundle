@@ -96,7 +96,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     {
         $processedItem = array();
 
-        $processedItem[Webservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultProduct(
+        $processedItem[$context['defaultStoreView']] = $this->getDefaultProduct(
             $object,
             $context['magentoAttributes'],
             $context['magentoAttributesOptions'],
@@ -107,7 +107,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['categoryMapping'],
             $context['attributeMapping'],
             $context['pimGrouped'],
-            $context['create']
+            $context['create'],
+            $context['defaultStoreView']
         );
 
         $images = $this->getNormalizedImages($object);
@@ -125,7 +126,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             );
 
             //If a locale for this storeview exist in PIM, we create a translated product in this locale
-            if ($storeView && $storeView['code'] != Webservice::SOAP_DEFAULT_STORE_VIEW) {
+            if ($storeView && $storeView['code'] != $context['defaultStoreView']) {
                 $values = $this->getValues(
                     $object,
                     $context['magentoAttributes'],
@@ -215,6 +216,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param MappingCollection $attributeMapping         Attribute mapping
      * @param string            $pimGrouped               Pim grouped association code
      * @param bool              $create                   Is it a creation ?
+     * @param array             $context                  Context
      *
      * @return array The default product data
      */
@@ -229,7 +231,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         MappingCollection $categoryMapping,
         MappingCollection $attributeMapping,
         $pimGrouped,
-        $create
+        $create,
+        $defaultStoreValue
     ) {
         $sku           = (string) $product->getIdentifier();
         $defaultValues = $this->getValues(
@@ -258,13 +261,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $attributeSetId,
                 $sku,
                 $defaultValues,
-                Webservice::SOAP_DEFAULT_STORE_VIEW
+                $defaultStoreValue
             );
         } else {
             $defaultProduct = array(
                 $sku,
                 $defaultValues,
-                Webservice::SOAP_DEFAULT_STORE_VIEW,
+                $defaultStoreValue,
                 'sku'
             );
         }

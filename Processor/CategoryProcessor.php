@@ -90,7 +90,7 @@ class CategoryProcessor extends AbstractProcessor
                 'defaultLocale'       => $this->defaultLocale,
                 'magentoStoreViews'   => $magentoStoreViews,
                 'categoryMapping'     => $this->categoryMappingMerger->getMapping(),
-                'defaultStoreView'    => $this->getDefaultLocale()
+                'defaultStoreView'    => $this->getDefaultStoreView()
             )
         );
     }
@@ -133,7 +133,7 @@ class CategoryProcessor extends AbstractProcessor
     {
         parent::afterConfigurationSet();
 
-        $this->categoryMappingMerger->setParameters($this->getClientParameters());
+        $this->categoryMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**

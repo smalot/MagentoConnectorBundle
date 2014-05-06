@@ -18,10 +18,10 @@ class MagentoMappingMerger extends MappingMerger
      * Set parameters of all mappers
      * @param MagentoSoapClientParameters $clientParameters
      */
-    public function setParameters(MagentoSoapClientParameters $clientParameters)
+    public function setParameters(MagentoSoapClientParameters $clientParameters, $defaultStoreView)
     {
         foreach ($this->getOrderedMappers() as $mapper) {
-            $mapper->setParameters($clientParameters);
+            $mapper->setParameters($clientParameters, $defaultStoreView);
         }
 
         $this->hasParametersSet = true;

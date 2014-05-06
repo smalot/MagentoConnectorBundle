@@ -45,7 +45,7 @@ class MagentoStoreViewMapper extends MagentoMapper
             $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
 
             foreach ($storeViews as $storeView) {
-                if ($storeView['code'] !== Webservice::SOAP_DEFAULT_STORE_VIEW) {
+                if ($storeView['code'] !== $this->defaultStoreView) {
                     $targets[] = array('id' => $storeView['code'], 'text' => $storeView['code']);
                 }
             }

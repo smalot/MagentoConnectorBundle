@@ -94,7 +94,7 @@ class ProductWriter extends AbstractWriter
     protected function computeProduct($product)
     {
         $sku    = $this->getProductSku($product);
-        $images = $this->webservice->getImages($sku);
+        $images = $this->webservice->getImages($sku, $this->defaultStoreView);
 
         $this->pruneImages($sku, $images);
 
@@ -117,7 +117,7 @@ class ProductWriter extends AbstractWriter
     protected function createCall($productPart, $storeViewCode)
     {
         switch ($storeViewCode) {
-            case Webservice::SOAP_DEFAULT_STORE_VIEW:
+            case $this->getDefaultStoreView():
                 $this->webservice->sendProduct($productPart);
                 $this->stepExecution->incrementSummaryInfo(self::PRODUCT_SENT);
                 break;
@@ -140,7 +140,7 @@ class ProductWriter extends AbstractWriter
      */
     protected function getProductSku($product)
     {
-        $defaultStoreviewProduct = $product[Webservice::SOAP_DEFAULT_STORE_VIEW];
+        $defaultStoreviewProduct = $product[$this->getDefaultStoreView()];
 
         if (count($defaultStoreviewProduct) == Webservice::CREATE_PRODUCT_SIZE) {
             return (string) $defaultStoreviewProduct[2];

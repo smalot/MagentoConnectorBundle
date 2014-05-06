@@ -41,6 +41,7 @@ class FamilyProcessor extends AbstractProcessor
         $this->familyNormalizer = $this->normalizerGuesser->getFamilyNormalizer($this->getClientParameters());
         $this->globalContext['magentoFamilies']   = $this->webservice->getAttributeSetList();
         $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
+        $this->globalContext['defaultStoreView']  = $this->getDefaultStoreView();
     }
 
     /**
