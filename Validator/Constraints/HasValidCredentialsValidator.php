@@ -14,6 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidXmlException;
+use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 
 /**
  * Validator for Magento credentials
@@ -69,6 +70,10 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function validate($protocol, Constraint $constraint)
     {
+        if (!($protocol instanceof MagentoItemStep)) {
+            return null;
+        }
+
         $clientParameters = new MagentoSoapClientParameters(
             $protocol->getSoapUsername(),
             $protocol->getSoapApiKey(),
@@ -87,7 +92,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
                 $this->xmlChecker->checkXml($xml);
                 $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (NotReachableUrlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageUrlNotReachable, array());
             } catch (InvalidSoapUrlException $e) {
                 $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
             } catch (InvalidXmlException $e) {
