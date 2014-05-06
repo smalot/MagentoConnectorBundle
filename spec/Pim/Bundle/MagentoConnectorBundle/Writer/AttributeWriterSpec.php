@@ -10,7 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 use PhpSpec\ObjectBehavior;
@@ -41,7 +41,7 @@ class AttributeWriterSpec extends ObjectBehavior
     }
 
     function it_sends_attribute_to_create_on_magento_webservice(
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         $webservice,
         AttributeMappingManager $attributeMappingManager
     ) {
@@ -66,7 +66,7 @@ class AttributeWriterSpec extends ObjectBehavior
     }
 
     function it_sends_attribute_with_group_and_family_to_create_on_magento_webservice(
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         $webservice,
         AttributeMappingManager      $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
