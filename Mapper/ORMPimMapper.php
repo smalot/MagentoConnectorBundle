@@ -43,4 +43,30 @@ class ORMPimMapper extends ORMMapper
     {
         $this->clientParameters = $clientParameters;
     }
+
+    /**
+     * Get mapper identifier
+     * @param string $rootIdentifier
+     *
+     * @return string
+     */
+    public function getIdentifier($rootIdentifier = 'generic')
+    {
+        if ($this->isValid()) {
+            return sha1(sprintf(self::IDENTIFIER_FORMAT, $rootIdentifier, $this->clientParameters->getSoapUrl()));
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Is the mapper valid ?
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return $this->clientParameters !== null &&
+            $this->hasValidCredentialsValidator->areValidSoapParameters($this->clientParameters);
+    }
+
 }
