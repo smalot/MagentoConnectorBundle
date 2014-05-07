@@ -24,9 +24,9 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
     }
 
-    function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
+    function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters, Argument::Any());
+        $this->setParameters($this->clientParameters, Argument::any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getAllAttributes()->willReturn(array('attribute_foo' => array(), 'attribute_bar' => array()));
@@ -36,9 +36,9 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn(array());
     }
 
-    function it_shoulds_get_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $webservice)
+    function it_returns_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters, Argument::Any());
+        $this->setParameters($this->clientParameters, Argument::any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getAllAttributes()->willReturn(array('name' => array(), 'attribute_bar' => array()));
@@ -55,14 +55,14 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn(array());
     }
 
-    function it_shoulds_do_nothing_to_save_mapping()
+    function it_returns__nothing_to_save_mapping()
     {
         $this->setMapping(array())->shouldReturn(null);
     }
 
-    function it_shoulds_get_all_magento_attributes_as_sources($hasValidCredentialsValidator, $webservice)
+    function it_returns_all_magento_attributes_as_sources($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters, Argument::Any());
+        $this->setParameters($this->clientParameters, Argument::any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
@@ -75,7 +75,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->getAllTargets()->shouldReturn(array());
     }
 
-    function it_shoulds_return_an_empty_array_as_sources()
+    function it_returns_an_empty_array_as_sources()
     {
         $this->getAllSources()->shouldReturn(array());
     }
@@ -85,9 +85,9 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->getPriority()->shouldReturn(0);
     }
 
-    function it_should_give_an_proper_identifier($hasValidCredentialsValidator)
+    function it_returns_an_proper_identifier($hasValidCredentialsValidator)
     {
-        $this->setParameters($this->clientParameters, Argument::Any());
+        $this->setParameters($this->clientParameters, Argument::any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $identifier = sha1('attribute-soap_urlwsdl_url');
@@ -95,7 +95,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->getIdentifier()->shouldReturn($identifier);
     }
 
-    function it_should_give_an_empty_identifier_if_the_mapper_is_not_configured()
+    function it_returns_an_empty_identifier_if_the_mapper_is_not_configured()
     {
         $this->getIdentifier()->shouldReturn('');
     }
