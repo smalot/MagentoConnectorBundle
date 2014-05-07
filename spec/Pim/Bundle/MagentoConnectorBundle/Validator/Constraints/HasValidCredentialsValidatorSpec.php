@@ -69,10 +69,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
     ) {
         $constraint->messageUrlNotReachable = 'pim_magento_connector.export.validator.url_not_reachable';
         $soapExplorer->getSoapUrlContent(Argument::any())->willThrow('\Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException');
-        $context->addViolationAt(
-                    'wsdlUrl',
-                    'pim_magento_connector.export.validator.url_not_reachable')
-                ->shouldBeCalled();
+        $context->addViolationAt('wsdlUrl', 'pim_magento_connector.export.validator.url_not_reachable')->shouldBeCalled();
 
         $this->validate($step, $constraint);
     }
@@ -85,10 +82,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
     ) {
         $constraint->messageSoapNotValid = 'pim_magento_connector.export.validator.soap_url_not_valid';
         $soapExplorer->getSoapUrlContent(Argument::any())->willThrow('\Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException');
-        $context->addViolationAt(
-                    'wsdlUrl',
-                    'pim_magento_connector.export.validator.soap_url_not_valid')
-                ->shouldBeCalled();
+        $context->addViolationAt('wsdlUrl', 'pim_magento_connector.export.validator.soap_url_not_valid')->shouldBeCalled();
 
         $this->validate($step, $constraint);
     }
@@ -101,10 +95,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
     ) {
         $constraint->messageXmlNotValid = 'pim_magento_connector.export.validator.xml_not_valid';
         $xmlChecker->checkXml(Argument::any())->willThrow('\Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidXmlException');
-        $context->addViolationAt(
-                    'wsdlUrl',
-                    'pim_magento_connector.export.validator.xml_not_valid')
-                ->shouldBeCalled();
+        $context->addViolationAt('wsdlUrl', 'pim_magento_connector.export.validator.xml_not_valid')->shouldBeCalled();
 
         $this->validate($step, $constraint);
     }
@@ -117,10 +108,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
     ) {
         $constraint->messageUsername = 'pim_magento_connector.export.validator.authentication_failed';
         $webserviceGuesser->getWebservice(Argument::any())->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException');
-        $context->addViolationAt(
-                    'soapUsername',
-                    'pim_magento_connector.export.validator.authentication_failed')
-                ->shouldBeCalled();
+        $context->addViolationAt('soapUsername', 'pim_magento_connector.export.validator.authentication_failed')->shouldBeCalled();
 
         $this->validate($step, $constraint);
     }
@@ -132,10 +120,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         HasValidCredentials $constraint
     ) {
         $webserviceGuesser->getWebservice(Argument::any())->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
-        $context->addViolationAt(
-                    'soapUsername',
-                    Argument::any())
-                ->shouldBeCalled();
+        $context->addViolationAt('soapUsername', Argument::any())->shouldBeCalled();
 
         $this->validate($step, $constraint);
     }
