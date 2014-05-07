@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class HasValidDefaultLocale extends Constraint
 {
-    public $message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales)';
+    public $message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales';
 
     /**
      *{@inheritDoc}
