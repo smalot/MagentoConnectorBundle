@@ -48,7 +48,7 @@ class HasValidDefaultLocaleValidator extends ConstraintValidator
         if ($channel = $this->channelManager->getChannelByCode($value->getChannel())) {
             foreach ($channel->getLocales() as $locale) {
                 if ($locale->getCode() === $value->getDefaultLocale()) {
-                    return true;
+                    return null;
                 }
             }
         }

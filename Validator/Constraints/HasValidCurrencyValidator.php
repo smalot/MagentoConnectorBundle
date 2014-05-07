@@ -47,7 +47,7 @@ class HasValidCurrencyValidator extends ConstraintValidator
         if ($channel = $this->channelManager->getChannelByCode($value->getChannel())) {
             foreach ($channel->getCurrencies() as $currency) {
                 if ($currency->getCode() === $value->getCurrency()) {
-                    return true;
+                    return null;
                 }
             }
         }
