@@ -92,15 +92,15 @@ class HasValidCredentialsValidator extends ConstraintValidator
                 $this->xmlChecker->checkXml($xml);
                 $this->webserviceGuesser->getWebservice($clientParameters);
             } catch (NotReachableUrlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageUrlNotReachable, array());
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageUrlNotReachable);
             } catch (InvalidSoapUrlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid, array());
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid);
             } catch (InvalidXmlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid, array());
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid);
             } catch (InvalidCredentialException $e) {
-                $this->context->addViolationAt('soapUsername', $constraint->messageUsername, array());
+                $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
             } catch (SoapCallException $e) {
-                $this->context->addViolationAt('soapUsername', $e->getMessage(), array());
+                $this->context->addViolationAt('soapUsername', $e->getMessage());
             }
 
         }
