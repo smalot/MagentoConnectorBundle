@@ -17,15 +17,16 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
     function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
-        LocaleManager $localeManager
+        LocaleManager $localeManager,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'storeview', $localeManager);
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
+
+        $this->setParameters($clientParameters, '');
     }
 
     function it_shoulds_return_all_locales_from_database_as_sources($localeManager, $hasValidCredentialsValidator, Locale $locale)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $localeManager->getActiveCodes()->willReturn(array('foo'));
