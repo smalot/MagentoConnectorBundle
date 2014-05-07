@@ -69,9 +69,9 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
         $locale->getCode()->willReturn('fr_FR');
         $value->getDefaultLocale()->willReturn('us_US');
 
-        $constraint->message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales';
+        $constraint->message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales)';
 
-        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales', array('defaultLocale'))->shouldBeCalled();
+        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales)', array('defaultLocale'))->shouldBeCalled();
 
         $this->validate($value, $constraint);
     }
@@ -86,9 +86,9 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
         $value->getChannel()->willReturn('channel');
         $channelManager->getChannelByCode('channel')->willReturn(false);
 
-        $constraint->message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales';
+        $constraint->message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales)';
 
-        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales', array('defaultLocale'))->shouldBeCalled();
+        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales)', array('defaultLocale'))->shouldBeCalled();
 
         $this->validate($value, $constraint);
     }

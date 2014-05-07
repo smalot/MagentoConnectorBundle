@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class HasValidCurrency extends Constraint
 {
-    public $message = 'The given currency is not valid (check that the selected currency is in channel\'s currencies';
+    public $message = 'The given currency is not valid (check that the selected currency is in channel\'s currencies)';
 
     /**
      *{@inheritDoc}
