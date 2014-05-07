@@ -16,17 +16,17 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
     function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser,
-        Webservice $webservice
+        Webservice $webservice,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
 
         $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
+        $this->setParameters($clientParameters, '');
     }
 
     function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
@@ -50,7 +50,6 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
 
     function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
@@ -58,10 +57,10 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $this->getAllTargets()->shouldReturn(array(array('id' => 'attribute_code', 'text' => 'attribute_code')));
     }
 
-    function it_should_give_an_proper_identifier($hasValidCredentialsValidator)
+    function it_should_give_an_proper_identifier($hasValidCredentialsValidator, $clientParameters)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $clientParameters->getSoapUrl()->willReturn('soap_urlwsdl_url');
         $identifier = sha1('storeview-soap_urlwsdl_url');
         $this->getIdentifier()->shouldReturn($identifier);
     }

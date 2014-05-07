@@ -173,7 +173,7 @@ class AttributeCleaner extends Cleaner
      */
     protected function afterConfigurationSet()
     {
-        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**

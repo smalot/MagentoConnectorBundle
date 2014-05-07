@@ -215,17 +215,18 @@ class Webservice
      * Get all images attached to a product
      *
      * @param string $sku The product sku
+     * @param string $defaultLocalStore
      *
      * @return array
      */
-    public function getImages($sku)
+    public function getImages($sku, $defaultLocalStore)
     {
         try {
             $images = $this->client->call(
                 self::SOAP_ACTION_PRODUCT_MEDIA_LIST,
                 array(
                     $sku,
-                    self::SOAP_DEFAULT_STORE_VIEW,
+                    $defaultLocalStore,
                     'sku'
                 )
             );

@@ -15,10 +15,11 @@ class ORMPimMapperSpec extends ObjectBehavior
 
     function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
-        SimpleMappingManager $simpleMappingManager
+        SimpleMappingManager $simpleMappingManager,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'generic');
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
+        $this->setParameters($clientParameters, '');
     }
 
     function it_shoulds_return_nothing_as_sources_if_it_is_not_well_configured()
@@ -38,7 +39,6 @@ class ORMPimMapperSpec extends ObjectBehavior
 
     function it_gets_mapping_from_database($simpleMappingManager, $hasValidCredentialsValidator, SimpleMapping $simpleMapping)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $simpleMapping->getSource()->willReturn('generic_source');
@@ -59,7 +59,6 @@ class ORMPimMapperSpec extends ObjectBehavior
 
     function it_shoulds_store_mapping_in_database($simpleMappingManager, $hasValidCredentialsValidator)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $simpleMappingManager->setMapping(array('mapping'), $this->getIdentifier('generic'))->shouldBeCalled();
@@ -76,7 +75,6 @@ class ORMPimMapperSpec extends ObjectBehavior
 
     function it_shoulds_return_all_items_from_database_as_sources($simpleMappingManager, $hasValidCredentialsValidator, SimpleMapping $simpleMapping)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $simpleMappingManager->getMapping($this->getIdentifier('generic'))->willReturn(array($simpleMapping));
@@ -88,7 +86,6 @@ class ORMPimMapperSpec extends ObjectBehavior
 
     function it_shoulds_return_all_items_from_database_as_targets($simpleMappingManager, $hasValidCredentialsValidator, SimpleMapping $simpleMapping)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $simpleMappingManager->getMapping($this->getIdentifier('generic'))->willReturn(array($simpleMapping));
