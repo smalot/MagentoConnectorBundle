@@ -55,7 +55,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
         $sku = sprintf(Webservice::CONFIGURABLE_IDENTIFIER_PATTERN, $group->getCode());
 
-        $processedItem[Webservice::SOAP_DEFAULT_STORE_VIEW] = $this->getDefaultConfigurable(
+        $processedItem[$context['magentoStoreView']] = $this->getDefaultConfigurable(
             $group,
             $sku,
             $context['attributeSetId'],

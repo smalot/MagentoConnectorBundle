@@ -123,7 +123,8 @@ class CategoryWriter extends AbstractWriter
         if (isset($batch['variation'])) {
             foreach ($batch['variation'] as $variationCategory) {
                 $pimCategory        = $variationCategory['pimCategory'];
-                $magentoCategoryId  = $this->categoryMappingManager->getIdFromCategory($pimCategory, $this->getSoapUrl());
+                $magentoCategoryId  = $this->categoryMappingManager
+                    ->getIdFromCategory($pimCategory, $this->getSoapUrl());
                 $magentoCategory    = $variationCategory['magentoCategory'];
                 $magentoCategory[0] = $magentoCategoryId;
 

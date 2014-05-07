@@ -28,7 +28,8 @@ class CategoryNormalizerSpec extends ObjectBehavior
             'defaultLocale'     => 'default_locale',
             'magentoStoreViews' => array(),
             'categoryMapping'   => $categoryMapping,
-            'storeViewMapping'  => $storeViewMapping
+            'storeViewMapping'  => $storeViewMapping,
+            'defaultStoreView'  => 'default'
         );
     }
 
@@ -75,7 +76,8 @@ class CategoryNormalizerSpec extends ObjectBehavior
             array(
                 'magentoCategories' => array(
                     4 => array('parent_id' => 3)
-                )
+                ),
+                'magentoStoreView' => 'default'
             )
         );
 
@@ -117,7 +119,8 @@ class CategoryNormalizerSpec extends ObjectBehavior
             array(
                 'magentoCategories' => array(
                     4 => array('parent_id' => 5)
-                )
+                ),
+                'magentoStoreView' => 'default'
             )
         );
 
@@ -164,7 +167,8 @@ class CategoryNormalizerSpec extends ObjectBehavior
             array(
                 'magentoStoreViews' => array(
                     array('code' => 'fr_fr')
-                )
+                ),
+                'magentoStoreView' => 'default'
             )
         );
 

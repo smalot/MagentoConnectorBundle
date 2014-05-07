@@ -66,7 +66,8 @@ class ProductNormalizerSpec extends ObjectBehavior
             'create'                   => true,
             'pimGrouped'               => 'pim_grouped',
             'created_date'             => (new \DateTime()),
-            'updated_date'             => (new \DateTime())
+            'updated_date'             => (new \DateTime()),
+            'defaultStoreView'         => 'default'
         );
 
         $attributeMapping->getTarget('visibility')->willReturn('visibility');
@@ -176,6 +177,7 @@ class ProductNormalizerSpec extends ObjectBehavior
     function it_raises_an_exception_if_a_storeview_is_missing($product)
     {
         $this->globalContext['magentoStoreViews'] = array();
+        $this->globalContext['magentoStoreView']  = 'default';
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', array($product, 'MagentoArray', $this->globalContext));
     }
 
@@ -213,6 +215,7 @@ class ProductNormalizerSpec extends ObjectBehavior
     function it_normalizes_the_given_updated_product($product)
     {
         $this->globalContext['create'] = false;
+        $this->globalContext['defaultStoreView'] = 'default';
 
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn(array(
             'default' => array(

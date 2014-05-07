@@ -26,7 +26,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
 
     function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters);
+        $this->setParameters($this->clientParameters, Argument::Any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
@@ -50,7 +50,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
 
     function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice)
     {
-        $this->setParameters($this->clientParameters);
+        $this->setParameters($this->clientParameters, Argument::Any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
@@ -60,7 +60,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
 
     function it_should_give_an_proper_identifier($hasValidCredentialsValidator)
     {
-        $this->setParameters($this->clientParameters);
+        $this->setParameters($this->clientParameters, Argument::Any());
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
         $identifier = sha1('storeview-soap_urlwsdl_url');
         $this->getIdentifier()->shouldReturn($identifier);

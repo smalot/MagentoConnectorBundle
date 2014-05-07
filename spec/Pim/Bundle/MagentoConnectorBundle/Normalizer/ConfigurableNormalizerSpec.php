@@ -43,7 +43,8 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'channel'                  => 'channel',
             'categoryMapping'          => $categoryMapping,
             'attributeMapping'         => $attributeMapping,
-            'create'                   => true
+            'create'                   => true,
+            'magentoStoreView'         => 'default'
         );
 
         $productNormalizer->getNormalizedImages($product, 'conf-group_code')->willReturn(array());
@@ -95,6 +96,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
     function it_normalizes_a_updated_configurable_product($group, $product, $priceMappingManager, $attributeMapping)
     {
         $this->globalContext['create'] = false;
+        $this->globalContext['defaultStoreView'] = 'default';
 
         $products = array($product);
 
@@ -126,6 +128,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
     {
         $this->globalContext['create']            = false;
         $this->globalContext['magentoStoreViews'] = array();
+        $this->globalContext['magentoStoreView']  = 'default';
 
         $products = array($product);
 
@@ -141,6 +144,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
     function it_raises_an_expcetion_if_the_price_mapping_is_not_valid($group, $product, $priceMappingManager, $attributeMapping)
     {
         $this->globalContext['create'] = false;
+        $this->globalContext['magentoStoreView'] = 'default';
 
         $products = array($product);
 
