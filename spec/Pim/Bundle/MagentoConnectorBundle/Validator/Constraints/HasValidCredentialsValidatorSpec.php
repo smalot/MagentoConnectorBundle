@@ -44,8 +44,8 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
     function it_does_nothing_with_something_else_than_magento_item_step(
         $context,
         AbstractConfigurableStepElement $step,
-        Constraint $constraint)
-    {
+        Constraint $constraint
+    ) {
         $context->addViolationAt(Argument::cetera())->shouldNotBeCalled();
 
         $this->validate($step, $constraint);
