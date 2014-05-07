@@ -20,66 +20,109 @@ use Guzzle\Http\Message\Response;
  */
 class SoapExplorerSpec extends ObjectBehavior
 {
-    function let(ClientInterface $client)
+    function let(
+        ClientInterface $client,
+        MagentoSoapClientParameters $clientParameters
+    )
     {
         $this->beConstructedWith($client);
     }
 
-    function it_success_with_valid_soap_url(ClientInterface $client, Request $request, Response $response)
-    {
+    function it_success_with_valid_soap_url(
+        ClientInterface $client,
+        Request $request,
+        Response $response,
+        MagentoSoapClientParameters $clientParameters
+    ){
         $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
         $client->send($request)->willReturn($response);
         $response->setHeader('ContentType', 'text/xml');
         $response->isContentType('text/xml')->willReturn(true);
         $response->getBody(true)->willReturn('<xml>Some xml as a string</xml>');
-        $clientParameters = new MagentoSoapClientParameters('soapUsername', 'soapApiKey', 'http://myvalidsoap.url', '/api/soap/?wsdl');
+        $clientParameters->getSoapUsername()->willReturn('soapUsername');
+        $clientParameters->getSoapApiKey()->willReturn('soapApiKey');
+        $clientParameters->getMagentoUrl()->willReturn('http://myvalidsoap.url');
+        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
+        $clientParameters->getHttpLogin()->willReturn('');
+        $clientParameters->getHttpPassword()->willReturn('');
 
         $this->getSoapUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
-    function it_success_with_valid_http_authentication_credentials(ClientInterface $client, Request $request, Response $response)
-    {
+    function it_success_with_valid_http_authentication_credentials(
+        ClientInterface $client,
+        Request $request,
+        Response $response,
+        MagentoSoapClientParameters $clientParameters
+    ){
         $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
         $request->setAuth('user', 'valid_credential')->willReturn($request);
         $client->send($request)->willReturn($response);
         $response->setHeader('ContentType', 'text/xml');
         $response->isContentType('text/xml')->willReturn(true);
         $response->getBody(true)->willReturn('<xml>Some xml as a string</xml>');
-        $clientParameters = new MagentoSoapClientParameters('soapUsername', 'soapApiKey', 'http://myvalidsoap.url', '/api/soap/?wsdl', 'user', 'valid_credential');
+        $clientParameters->getSoapUsername()->willReturn('soapUsername');
+        $clientParameters->getSoapApiKey()->willReturn('soapApiKey');
+        $clientParameters->getMagentoUrl()->willReturn('http://myvalidsoap.url');
+        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
+        $clientParameters->getHttpLogin()->willReturn('user');
+        $clientParameters->getHttpPassword()->willReturn('valid_credential');
 
 
         $this->getSoapUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
-    function it_fails_with_invalid_url(ClientInterface $client, Request $request)
+    function it_fails_with_invalid_url(ClientInterface $client, Request $request, MagentoSoapClientParameters $clientParameters)
     {
         $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl')->willReturn($request);
         $curlException = new CurlException();
         $client->send($request)->willThrow($curlException);
-        $clientParameters = new MagentoSoapClientParameters('soapUsername', 'soapApiKey', 'http://notvalidsoapurl', '/api/soap/?wsdl');
+        $clientParameters->getSoapUsername()->willReturn('soapUsername');
+        $clientParameters->getSoapApiKey()->willReturn('soapApiKey');
+        $clientParameters->getMagentoUrl()->willReturn('http://notvalidsoapurl');
+        $clientParameters->getSoapUrl()->willReturn('http://notvalidsoapurl/api/soap/?wsdl');
+        $clientParameters->getHttpLogin()->willReturn('');
+        $clientParameters->getHttpPassword()->willReturn('');
 
         $notReachableException = new NotReachableUrlException();
         $this->shouldThrow($notReachableException)->duringGetSoapUrlContent($clientParameters);
     }
 
-    function it_fails_with_invalid_api_soap_url(ClientInterface $client, Request $request)
-    {
-        $client->createRequest('GET', 'http://notvalidsoap.url/api/soap/?w')->willReturn($request);
+    function it_fails_with_invalid_api_soap_url(
+        ClientInterface $client,
+        Request $request,
+        MagentoSoapClientParameters $clientParameters
+    ){
+        $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl')->willReturn($request);
         $badResponseException = new BadResponseException();
         $client->send($request)->willThrow($badResponseException);
-        $clientParameters = new MagentoSoapClientParameters('soapUsername', 'soapApiKey', 'http://notvalidsoap.url', '/api/soap/?w');
+        $clientParameters->getSoapUsername()->willReturn('soapUsername');
+        $clientParameters->getSoapApiKey()->willReturn('soapApiKey');
+        $clientParameters->getMagentoUrl()->willReturn('http://notvalidsoapurl');
+        $clientParameters->getSoapUrl()->willReturn('http://notvalidsoapurl/api/soap/?wsdl');
+        $clientParameters->getHttpLogin()->willReturn('');
+        $clientParameters->getHttpPassword()->willReturn('');
 
         $invalidSoapUrlException = new InvalidSoapUrlException();
         $this->shouldThrow($invalidSoapUrlException)->duringGetSoapUrlContent($clientParameters);
     }
 
-    function it_fails_with_invalid_http_authentication_credentials(ClientInterface $client, Request $request)
-    {
+    function it_fails_with_invalid_http_authentication_credentials(
+        ClientInterface $client,
+        Request $request,
+        MagentoSoapClientParameters $clientParameters
+    ){
         $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
         $request->setAuth('user', 'bad_credential')->willReturn($request);
         $badResponseException = new BadResponseException();
         $client->send($request)->willThrow($badResponseException);
-        $clientParameters = new MagentoSoapClientParameters('soapUsername', 'soapApiKey', 'http://myvalidsoap.url', '/api/soap/?wsdl', 'user', 'bad_credential');
+        $clientParameters->getSoapUsername()->willReturn('soapUsername');
+        $clientParameters->getSoapApiKey()->willReturn('soapApiKey');
+        $clientParameters->getMagentoUrl()->willReturn('http://myvalidsoap.url');
+        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
+        $clientParameters->getHttpLogin()->willReturn('user');
+        $clientParameters->getHttpPassword()->willReturn('bad_credential');
+
 
         $invalidSoapUrlException = new InvalidSoapUrlException();
         $this->shouldThrow($invalidSoapUrlException)->duringGetSoapUrlContent($clientParameters);

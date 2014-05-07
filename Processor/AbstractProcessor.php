@@ -208,7 +208,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     {
         parent::afterConfigurationSet();
 
-        $this->storeViewMappingMerger->setParameters($this->getClientParameters());
+        $this->storeViewMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**

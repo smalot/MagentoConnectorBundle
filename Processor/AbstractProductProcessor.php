@@ -293,8 +293,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     {
         parent::afterConfigurationSet();
 
-        $this->categoryMappingMerger->setParameters($this->getClientParameters());
-        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+        $this->categoryMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**
