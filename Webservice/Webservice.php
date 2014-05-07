@@ -215,7 +215,7 @@ class Webservice
      * Get all images attached to a product
      *
      * @param string $sku The product sku
-     * @param $defaultLocalStore
+     * @param string $defaultLocalStore
      *
      * @return array
      */

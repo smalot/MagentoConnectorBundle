@@ -148,13 +148,13 @@ class CategoryProcessorSpec extends ObjectBehavior
                 )
             ),
             'defaultStoreView' => array(
-                    'options' => array(
-                        'required' => false,
-                        'help'     => 'pim_magento_connector.export.defaultStoreView.help',
-                        'label'    => 'pim_magento_connector.export.defaultStoreView.label',
-                        'data'     => $this->getDefaultStoreView(),
-                    )
-                ),
+                'options' => array(
+                    'required' => false,
+                    'help'     => 'pim_magento_connector.export.defaultStoreView.help',
+                    'label'    => 'pim_magento_connector.export.defaultStoreView.label',
+                    'data'     => $this->getDefaultStoreView(),
+                )
+            ),
             'defaultLocale' => array(
                 'type' => 'choice',
                 'options' => array(
