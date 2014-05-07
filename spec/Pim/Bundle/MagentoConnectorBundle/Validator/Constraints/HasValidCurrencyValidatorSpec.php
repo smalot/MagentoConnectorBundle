@@ -12,7 +12,6 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Currency;
 
-
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
