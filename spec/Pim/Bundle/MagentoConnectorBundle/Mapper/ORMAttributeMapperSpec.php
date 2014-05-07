@@ -17,15 +17,15 @@ class ORMAttributeMapperSpec extends ObjectBehavior
     function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
-        AttributeManager $attributeManager
+        AttributeManager $attributeManager,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'attribute', $attributeManager);
-        $this->clientParameters = new MagentoSoapClientParameters('soap_user', 'soap_password', 'soap_url', 'wsdl_url');
+        $this->setParameters($clientParameters, '');
     }
 
     function it_shoulds_return_all_attributes_from_database_as_targets($attributeManager, $hasValidCredentialsValidator, Attribute $attribute)
     {
-        $this->setParameters($this->clientParameters);
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
 
         $attributeManager->getAttributes()->willReturn(array($attribute));
