@@ -37,7 +37,7 @@ class HasValidDefaultLocaleValidator extends ConstraintValidator
      *
      * @api
      *
-     * @return mixed
+     * @return null
      */
     public function validate($value, Constraint $constraint)
     {

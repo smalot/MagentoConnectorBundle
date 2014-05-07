@@ -36,7 +36,7 @@ class HasValidCurrencyValidator extends ConstraintValidator
      * @param Constraint   $constraint The constraint for the validation
      *
      * @api
-     * @return mixed
+     * @return null
      */
     public function validate($value, Constraint $constraint)
     {
