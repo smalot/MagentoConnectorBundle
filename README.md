@@ -44,8 +44,6 @@ Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` functio
 You can now update your database :
 
     app/console doctrine:schema:update --force
-    app/console oro:search:create-index
-    app/console pim:search:reindex en_US
 
 ## Installation the Magento Connector in an Akeneo PIM developpement environnement
 

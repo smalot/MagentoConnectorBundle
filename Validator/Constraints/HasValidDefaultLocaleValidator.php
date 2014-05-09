@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\MagentoConnectorBundle\Processor\AbstractProductProcessor;
 
 /**
  * Validator for default locale
@@ -31,19 +32,23 @@ class HasValidDefaultLocaleValidator extends ConstraintValidator
     /**
      * Checks if the passed value is valid.
      *
-     * @param AbstractConfigurableStepElement $protocol   The value that should be validated
-     * @param Constraint                      $constraint The constraint for the validation
+     * @param mixed      $value      The value that should be validated
+     * @param Constraint $constraint The constraint for the validation
      *
      * @api
      *
-     * @return mixed
+     * @return null
      */
-    public function validate($protocol, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
-        if ($channel = $this->channelManager->getChannelByCode($protocol->getChannel())) {
+        if (!$value instanceof AbstractProductProcessor) {
+            return null;
+        }
+
+        if ($channel = $this->channelManager->getChannelByCode($value->getChannel())) {
             foreach ($channel->getLocales() as $locale) {
-                if ($locale->getCode() === $protocol->getDefaultLocale()) {
-                    return true;
+                if ($locale->getCode() === $value->getDefaultLocale()) {
+                    return null;
                 }
             }
         }
