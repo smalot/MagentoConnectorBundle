@@ -17,6 +17,11 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
 class ORMPimMapper extends ORMMapper
 {
     /**
+     * @var MagentoSoapClientParameters
+     */
+    protected $clientParameters
+
+    /**
      * @var HasValidCredentialsValidator
      */
     protected $hasValidCredentialsValidator;
