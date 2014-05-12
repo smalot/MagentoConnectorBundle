@@ -87,6 +87,27 @@ class ProductWriter extends AbstractWriter
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFields()
+    {
+        return array_merge(
+            parent::getConfigurationFields(),
+            array(
+                'channel' => array(
+                    'type'    => 'choice',
+                    'options' => array(
+                        'choices'  => $this->channelManager->getChannelChoices(),
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.channel.help',
+                        'label'    => 'pim_magento_connector.export.channel.label'
+                    )
+                )
+            )
+        );
+    }
+
+    /**
      * Compute an individual product and all his parts (translations)
      *
      * @param array $product The product and his parts
@@ -105,7 +126,6 @@ class ProductWriter extends AbstractWriter
                 throw new InvalidItemException($e->getMessage(), array(json_encode($product[$storeViewCode])));
             }
         }
-
     }
 
     /**
@@ -164,26 +184,5 @@ class ProductWriter extends AbstractWriter
                 throw new InvalidItemException($e->getMessage(), $image);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigurationFields()
-    {
-        return array_merge(
-            parent::getConfigurationFields(),
-            array(
-                'channel' => array(
-                    'type'    => 'choice',
-                    'options' => array(
-                        'choices'  => $this->channelManager->getChannelChoices(),
-                        'required' => true,
-                        'help'     => 'pim_magento_connector.export.channel.help',
-                        'label'    => 'pim_magento_connector.export.channel.label'
-                    )
-                )
-            )
-        );
     }
 }
