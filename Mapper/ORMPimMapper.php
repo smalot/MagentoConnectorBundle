@@ -19,7 +19,7 @@ class ORMPimMapper extends ORMMapper
     /**
      * @var MagentoSoapClientParameters
      */
-    protected $clientParameters
+    protected $clientParameters;
 
     /**
      * @var HasValidCredentialsValidator
