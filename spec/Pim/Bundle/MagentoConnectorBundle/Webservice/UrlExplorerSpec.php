@@ -18,7 +18,7 @@ use Guzzle\Http\Message\Response;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class SoapExplorerSpec extends ObjectBehavior
+class UrlExplorerSpec extends ObjectBehavior
 {
     function let(
         ClientInterface $client,
@@ -45,8 +45,9 @@ class SoapExplorerSpec extends ObjectBehavior
         $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
         $clientParameters->getHttpLogin()->willReturn('');
         $clientParameters->getHttpPassword()->willReturn('');
+        $clientParameters->getHash()->willReturn('');
 
-        $this->getSoapUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
+        $this->getUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
     function it_success_with_valid_http_authentication_credentials(
@@ -67,9 +68,10 @@ class SoapExplorerSpec extends ObjectBehavior
         $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
         $clientParameters->getHttpLogin()->willReturn('user');
         $clientParameters->getHttpPassword()->willReturn('valid_credential');
+        $clientParameters->getHash()->willReturn('');
 
 
-        $this->getSoapUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
+        $this->getUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
     function it_fails_with_invalid_url(ClientInterface $client, Request $request, MagentoSoapClientParameters $clientParameters)
@@ -83,9 +85,10 @@ class SoapExplorerSpec extends ObjectBehavior
         $clientParameters->getSoapUrl()->willReturn('http://notvalidsoapurl/api/soap/?wsdl');
         $clientParameters->getHttpLogin()->willReturn('');
         $clientParameters->getHttpPassword()->willReturn('');
+        $clientParameters->getHash()->willReturn('');
 
         $notReachableException = new NotReachableUrlException();
-        $this->shouldThrow($notReachableException)->duringGetSoapUrlContent($clientParameters);
+        $this->shouldThrow($notReachableException)->duringGetUrlContent($clientParameters);
     }
 
     function it_fails_with_invalid_api_soap_url(
@@ -102,9 +105,10 @@ class SoapExplorerSpec extends ObjectBehavior
         $clientParameters->getSoapUrl()->willReturn('http://notvalidsoapurl/api/soap/?wsdl');
         $clientParameters->getHttpLogin()->willReturn('');
         $clientParameters->getHttpPassword()->willReturn('');
+        $clientParameters->getHash()->willReturn('');
 
         $invalidSoapUrlException = new InvalidSoapUrlException();
-        $this->shouldThrow($invalidSoapUrlException)->duringGetSoapUrlContent($clientParameters);
+        $this->shouldThrow($invalidSoapUrlException)->duringGetUrlContent($clientParameters);
     }
 
     function it_fails_with_invalid_http_authentication_credentials(
@@ -122,9 +126,10 @@ class SoapExplorerSpec extends ObjectBehavior
         $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
         $clientParameters->getHttpLogin()->willReturn('user');
         $clientParameters->getHttpPassword()->willReturn('bad_credential');
+        $clientParameters->getHash()->willReturn('');
 
 
         $invalidSoapUrlException = new InvalidSoapUrlException();
-        $this->shouldThrow($invalidSoapUrlException)->duringGetSoapUrlContent($clientParameters);
+        $this->shouldThrow($invalidSoapUrlException)->duringGetUrlContent($clientParameters);
     }
 }
