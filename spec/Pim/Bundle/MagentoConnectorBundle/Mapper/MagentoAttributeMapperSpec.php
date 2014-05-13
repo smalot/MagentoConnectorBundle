@@ -99,7 +99,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->getIdentifier()->shouldReturn('');
     }
 
-    function it_shoulds_be_called_once($hasValidCredentialsValidator, $webservice)
+    function it_should_be_called_once($hasValidCredentialsValidator, $webservice)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
         $webservice->getAllAttributes()->shouldBeCalledTimes(1)->willReturn(array('foo' => array(), 'bar' => array()));

@@ -78,7 +78,6 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getHttpPassword()
         );
 
-
         try {
             $xml = $this->urlExplorer->getUrlContent($clientParameters);
             $this->xmlChecker->checkXml($xml);

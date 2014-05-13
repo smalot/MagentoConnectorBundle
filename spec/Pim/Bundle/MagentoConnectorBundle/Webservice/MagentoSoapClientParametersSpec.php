@@ -9,13 +9,13 @@ class MagentoSoapClientParametersSpec extends ObjectBehavior
 {
     protected $clientParameters;
 
-    function let(
-    ) {
+    function let()
+    {
         $this->beConstructedWith('soapusername', 'soapapikey', 'magentourl', 'wsdlurl', 'httplogin', 'httppassword');
     }
 
     function it_returns_a_correct_md5_hash()
     {
-        $this->getHash()->shouldReturn('fb5fdc41da78ba8368db20305f3ae840');
+        $this->getHash()->shouldReturn(md5(implode('', ['soapusername', 'soapapikey', 'magentourl', 'wsdlurl', 'httplogin', 'httppassword'])));
     }
 }
