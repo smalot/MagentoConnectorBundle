@@ -31,9 +31,9 @@ use Prophecy\Argument;
 class HasValidCredentialsValidatorSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser $webserviceGuesser,
-        UrlExplorer $urlExplorer,
-        XmlChecker $xmlChecker,
+        WebserviceGuesser         $webserviceGuesser,
+        UrlExplorer               $urlExplorer,
+        XmlChecker                $xmlChecker,
         ExecutionContextInterface $context
     ) {
         $this->beConstructedWith($webserviceGuesser, $urlExplorer, $xmlChecker);
