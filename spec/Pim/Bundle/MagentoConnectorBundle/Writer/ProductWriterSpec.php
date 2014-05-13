@@ -77,7 +77,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array());
-        $webservice->sendProduct(array('sku'))->shouldBeCalled();
+        $webservice->sendProduct(array('something', 'another', 'sku', 'again', 'lastone'))->shouldBeCalled();
         $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
         $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
