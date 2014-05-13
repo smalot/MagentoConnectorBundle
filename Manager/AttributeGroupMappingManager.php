@@ -2,9 +2,10 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
-use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
+use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository;
 
 /**
  * Attribute group mapping manager
@@ -68,16 +69,18 @@ class AttributeGroupMappingManager
     /**
      * Get id from group and Magento url
      * @param AttributeGroup $group
+     * @param Family         $family
      * @param string         $magentoUrl
      *
      * @return integer
      */
-    public function getIdFromGroup(AttributeGroup $group, $magentoUrl)
+    public function getIdFromGroup(AttributeGroup $group, Family $family, $magentoUrl)
     {
         $groupMapping = $this->getEntityRepository()->findOneBy(
             array(
-                'group'      => $group,
-                'magentoUrl' => $magentoUrl
+                'pimGroupCode'  => $group->getCode(),
+                'pimFamilyCode' => $family->getCode(),
+                'magentoUrl'    => $magentoUrl
             )
         );
 
@@ -86,23 +89,31 @@ class AttributeGroupMappingManager
 
     /**
      * Register a new group mapping
-     * @param AttributeGroup   $pimGroup
-     * @param integer          $magentoGroupId
-     * @param string           $magentoUrl
+     *
+     * @param AttributeGroup $pimGroup
+     * @param Family         $pimFamily
+     * @param integer        $magentoGroupId
+     * @param string         $magentoUrl
      */
     public function registerGroupMapping(
         AttributeGroup $pimGroup,
+        Family $pimFamily,
         $magentoGroupId,
         $magentoUrl
     ) {
-        $groupMapping = $this->getEntityRepository()->findOneByGroup($pimGroup->getId());
+        $groupMapping = $this->getEntityRepository()->findOneBy(array(
+            'pimGroupCode'  => $pimGroup->getCode(),
+            'pimFamilyCode' => $pimFamily->getCode()
+        ));
+
         $magentoGroupMapping = new $this->className();
 
         if ($groupMapping) {
             $magentoGroupMapping = $groupMapping;
         }
 
-        $magentoGroupMapping->setGroup($pimGroup);
+        $magentoGroupMapping->setPimGroupCode($pimGroup->getCode());
+        $magentoGroupMapping->setPimFamilyCode($pimFamily->getCode());
         $magentoGroupMapping->setMagentoGroupId($magentoGroupId);
         $magentoGroupMapping->setMagentoUrl($magentoUrl);
 
@@ -112,14 +123,14 @@ class AttributeGroupMappingManager
 
     /**
      * Does the given magento group exist in pim ?
-     * @param string $groupId
+     * @param string $magentoGroupId
      * @param string $magentoUrl
      *
      * @return boolean
      */
-    public function magentoGroupExists($groupId, $magentoUrl)
+    public function magentoGroupExists($magentoGroupId, $magentoUrl)
     {
-        return null !== $this->getGroupFromId($groupId, $magentoUrl);
+        return null !== $this->getGroupFromId($magentoGroupId, $magentoUrl);
     }
 
     /**

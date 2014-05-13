@@ -630,6 +630,8 @@ class Webservice
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
             );
 
+            $this->magentoAttributeSets = array();
+
             foreach ($attributeSets as $attributeSet) {
                 $this->magentoAttributeSets[$attributeSet['name']] = $attributeSet['set_id'];
             }

@@ -2,12 +2,14 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
+use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Magento group cleaner
@@ -20,8 +22,7 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class GroupCleaner extends Cleaner
 {
-    const GROUP_DELETED    = 'Group deleted';
-    const CONNECTION_ERROR = 'SOAP connection error';
+    const GROUP_DELETED = 'Group deleted';
 
     /**
      * @var AttributeGroupMappingManager
@@ -29,24 +30,28 @@ class GroupCleaner extends Cleaner
     protected $attributeGroupMappingManager;
 
     /**
-     * @var MagentoGroupManager
+     * @var EntityManager
      */
-    protected $magentoGroupManager;
+    protected $entityManager;
 
     /**
      * @param WebserviceGuesser            $webserviceGuesser
-     * @param MagentoGroupManager          $magentoGroupManager
      * @param AttributeGroupMappingManager $attributeGroupMappingManager
+     * @param EntityManager                $entityManager
      */
     public function __construct(
         WebserviceGuesser            $webserviceGuesser,
-        MagentoGroupManager          $magentoGroupManager,
-        AttributeGroupMappingManager $attributeGroupMappingManager
+        AttributeGroupMappingManager $attributeGroupMappingManager,
+        EntityManager                $entityManager,
+        $attributeGroupClass,
+        $magentoGroupMappingClass
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->magentoGroupManager = $magentoGroupManager;
         $this->attributeGroupMappingManager = $attributeGroupMappingManager;
+        $this->entityManager                = $entityManager;
+        $this->attributeGroupClass          = $attributeGroupClass;
+        $this->magentoGroupMappingClass     = $magentoGroupMappingClass;
     }
 
     /**
@@ -56,38 +61,45 @@ class GroupCleaner extends Cleaner
     {
         parent::beforeExecute();
 
-        $magentoGroups = $this->magentoGroupManager->getAllMagentoGroups();
+        // $attributeGroupRepository = $this->entityManager->getRepository($this->attributeGroupClass);
+        // $attributeGroupMappingRepository = $this->entityManager->getRepository($this->magentoGroupMappingClass);
 
-        foreach ($magentoGroups as $group) {
-            try {
-                $this->handleGroupNotInPimAnymore($group->getMagentoGroupId());
-            } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array(json_encode($group)));
-            }
-        }
+        // $attributeGroupMappings = $attributeGroupMappingRepository->findAll();
+
+        // foreach ($attributeGroupMappings as $attributeGroupMapping) {
+        //     $attributeGroupRepository->findOneByCode($attributeGroupMapping->getPimGroupCode())
+
+        //     $attributeGroupMapping = $attributeGroupMappingRepository->findBy(array(
+        //         'pimGroupCode' => $attributeGroup->getCode()
+        //     ));
+
+
+        // }
+
+        // $magentoGroupMappings = $this->attributeGroupMappingManager->getAllGroups();
+
+        // foreach ($magentoGroupMappings as $groupMapping) {
+        //     try {
+        //         $this->handleGroupNotInPimAnymore($groupMapping);
+        //     } catch (SoapCallException $e) {
+        //         throw new InvalidItemException($e->getMessage(), array(json_encode($groupMapping)));
+        //     }
+        // }
     }
 
     /**
      * Handle deletion of groups that are not in PIM anymore
      * @param int $groupId
      */
-    protected function handleGroupNotInPimAnymore($groupId)
+    protected function handleGroupNotInPimAnymore(MagentoGroupMapping $groupMapping)
     {
-        try {
-            $groupName = $this->attributeGroupMappingManager->getGroupFromId($groupId, $this->getSoapUrl());
-            if (isset($groupName)) {
-                $groupName = $groupName->getCode();
-            }
-            if (!$this->attributeGroupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
-                && !in_array($groupName, $this->getIgnoredCleaners())
-            ) {
-                $this->webservice->removeAttributeGroupFromAttributeSet($groupId);
-                $this->magentoGroupManager->removeMagentoGroup($groupId, $this->getSoapUrl());
-                $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
-            }
-        } catch (SoapCallException $e) {
-            $this->stepExecution->incrementSummaryInfo(self::CONNECTION_ERROR);
-        }
+        // if (!$this->attributeGroupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
+        //     //&& !in_array($groupName, $this->getIgnoredCleaners())
+        // ) {
+        //     $this->webservice->removeAttributeGroupFromAttributeSet($groupId);
+        //     $this->magentoGroupManager->removeMagentoGroup($groupId, $this->getSoapUrl());
+        //     $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
+        // }
     }
 
     /**
