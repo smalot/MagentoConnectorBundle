@@ -92,6 +92,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
         } catch (SoapCallException $e) {
             $this->context->addViolationAt('soapUsername', $e->getMessage());
+        } catch (\Exception $e) {
+            $this->context->addViolationAt('soapUsername', $e->getMessage());
         }
     }
 
