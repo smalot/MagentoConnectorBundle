@@ -24,8 +24,11 @@ class ProductWriterSpec extends ObjectBehavior
         $this->beConstructedWith($webserviceGuesser, $channelManager);
     }
 
-    function it_writes_a_product($webserviceGuesser, Webservice $webservice, StepExecution $stepExecution)
-    {
+    function it_updates_a_product(
+        $webserviceGuesser,
+        Webservice $webservice,
+        StepExecution $stepExecution
+    ) {
         $products = array(
             'batch_1' => array(
                 'product_1' => array(
@@ -50,7 +53,71 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_fails_if_something_went_wrong_when_it_sends_a_product(
+    function it_creates_a_product(
+        $webserviceGuesser,
+        Webservice $webservice,
+        StepExecution $stepExecution
+    ) {
+        $products = array(
+            'batch_1' => array(
+                'product_1' => array(
+                    'default' => array(
+                        'something',
+                        'another',
+                        'sku',
+                        'again',
+                        'lastone'
+                    ),
+                    'en_US' => array(),
+                    'images' => array()
+                )
+            )
+        );
+
+        $this->setStepExecution($stepExecution);
+        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webservice->getImages('sku', 'default')->willReturn(array());
+        $webservice->sendProduct(array('sku'))->shouldBeCalled();
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
+        $webservice->sendImages(Argument::any())->shouldBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
+        $webservice->updateProductPart(Argument::any())->shouldBeCalled();
+
+        $this->write($products);
+    }
+
+    function it_updates_a_product_and_prunes_old_images(
+        $webserviceGuesser,
+        Webservice $webservice,
+        StepExecution $stepExecution
+    ) {
+        $products = array(
+            'batch_1' => array(
+                'product_1' => array(
+                    'default' => array(
+                        'sku'
+                    ),
+                    'en_US' => array(),
+                    'images' => array()
+                )
+            )
+        );
+
+        $this->setStepExecution($stepExecution);
+        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
+        $webservice->deleteImage('sku','foo')->shouldBeCalled();
+        $webservice->deleteImage('sku','bar')->shouldBeCalled();
+        $webservice->sendProduct(array('sku'))->shouldBeCalled();
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
+        $webservice->sendImages(Argument::any())->shouldBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
+        $webservice->updateProductPart(Argument::any())->shouldBeCalled();
+
+        $this->write($products);
+    }
+
+    function it_fails_if_something_went_wrong_when_it_updates_a_product(
         $webserviceGuesser,
         Webservice $webservice,
         StepExecution $stepExecution
@@ -71,6 +138,36 @@ class ProductWriterSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('sku'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
+        $webservice->sendImages(Argument::any())->shouldNotBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldNotBeCalled();
+        $webservice->updateProductPart(Argument::any())->shouldNotBeCalled();
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($products);
+    }
+
+    function it_fails_if_something_went_wrong_when_it_prunes_images(
+        $webserviceGuesser,
+        Webservice $webservice,
+        StepExecution $stepExecution
+    ) {
+        $products = array(
+            'batch_1' => array(
+                'product_1' => array(
+                    'default' => array(
+                        'sku'
+                    ),
+                    'en_US' => array(),
+                    'images' => array()
+                )
+            )
+        );
+
+        $this->setStepExecution($stepExecution);
+        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
+        $webservice->deleteImage('sku','foo')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->sendProduct(Argument::any())->shouldNotBeCalled();
         $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
         $webservice->sendImages(Argument::any())->shouldNotBeCalled();
         $stepExecution->incrementSummaryInfo('Products images sent')->shouldNotBeCalled();
