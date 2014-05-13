@@ -78,26 +78,21 @@ class HasValidCredentialsValidator extends ConstraintValidator
             $protocol->getHttpPassword()
         );
 
-        $objectId = spl_object_hash($clientParameters);
 
-        if (!isset($this->valid[$objectId]) || false === $this->valid[$objectId]) {
-
-            try {
-                $xml = $this->soapExplorer->getSoapUrlContent($clientParameters);
-                $this->xmlChecker->checkXml($xml);
-                $this->webserviceGuesser->getWebservice($clientParameters);
-            } catch (NotReachableUrlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageUrlNotReachable);
-            } catch (InvalidSoapUrlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid);
-            } catch (InvalidXmlException $e) {
-                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid);
-            } catch (InvalidCredentialException $e) {
-                $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
-            } catch (SoapCallException $e) {
-                $this->context->addViolationAt('soapUsername', $e->getMessage());
-            }
-
+        try {
+            $xml = $this->urlExplorer->getUrlContent($clientParameters);
+            $this->xmlChecker->checkXml($xml);
+            $this->webserviceGuesser->getWebservice($clientParameters);
+        } catch (NotReachableUrlException $e) {
+            $this->context->addViolationAt('wsdlUrl', $constraint->messageUrlNotReachable);
+        } catch (InvalidSoapUrlException $e) {
+            $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid);
+        } catch (InvalidXmlException $e) {
+            $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid);
+        } catch (InvalidCredentialException $e) {
+            $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
+        } catch (SoapCallException $e) {
+            $this->context->addViolationAt('soapUsername', $e->getMessage());
         }
     }
 
@@ -110,25 +105,20 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function areValidSoapCredentials(MagentoSoapClientParameters $clientParameters)
     {
-        $objectId = spl_object_hash($clientParameters);
-
-        if (!isset($this->valid[$objectId])) {
-
-            try {
-                $this->soapExplorer->getSoapUrlContent($clientParameters);
-                $this->webserviceGuesser->getWebservice($clientParameters);
-                $this->valid[$objectId] = true;
-            } catch (NotReachableUrlException $e) {
-                $this->valid[$objectId] = false;
-            } catch (InvalidSoapUrlException $e) {
-                $this->valid[$objectId] = false;
-            } catch (InvalidCredentialException $e) {
-                $this->valid[$objectId] = false;
-            } catch (SoapCallException $e) {
-                $this->valid[$objectId] = false;
-            }
+        $valid = true;
+        try {
+            $this->urlExplorer->getUrlContent($clientParameters);
+            $this->webserviceGuesser->getWebservice($clientParameters);
+        } catch (NotReachableUrlException $e) {
+            $valid = false;
+        } catch (InvalidSoapUrlException $e) {
+            $valid = false;
+        } catch (InvalidCredentialException $e) {
+            $valid = false;
+        } catch (SoapCallException $e) {
+            $valid = false;
         }
 
-        return $this->valid[$objectId];
+        return $valid;
     }
 }

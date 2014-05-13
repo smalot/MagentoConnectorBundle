@@ -5,6 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoMapper;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -96,5 +97,12 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
     function it_returns_an_empty_identifier_if_the_mapper_is_not_configured()
     {
         $this->getIdentifier()->shouldReturn('');
+    }
+
+    function it_shoulds_be_called_once($hasValidCredentialsValidator, $webservice)
+    {
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $webservice->getAllAttributes()->shouldBeCalledTimes(1)->willReturn(array('foo' => array(), 'bar' => array()));
+        $this->getAllSources();
     }
 }

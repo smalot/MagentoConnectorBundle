@@ -70,6 +70,23 @@ class MagentoSoapClientParameters
     }
 
     /**
+     * get hash to uniquely identify parameters even in different instances
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return md5(
+            $this->soapUsername.
+            $this->soapApiKey.
+            $this->magentoUrl.
+            $this->wsdlUrl.
+            $this->httpLogin.
+            $this->httpPassword
+        );
+    }
+
+    /**
      * Get soapUsername
      *
      * @return string Soap magento soapUsername
