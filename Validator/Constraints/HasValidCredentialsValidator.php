@@ -42,7 +42,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
 
     /**
      * @param WebserviceGuesser $webserviceGuesser
-     * @param UrlExplorer      $urlExplorer
+     * @param UrlExplorer       $urlExplorer
      * @param XmlChecker        $xmlChecker
      */
     public function __construct(
