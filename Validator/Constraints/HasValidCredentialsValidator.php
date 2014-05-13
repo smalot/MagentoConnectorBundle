@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapExplorer;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\UrlExplorer;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
@@ -31,9 +31,9 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $webserviceGuesser;
 
     /**
-     * @var SoapExplorer
+     * @var UrlExplorer
      */
-    protected $soapExplorer;
+    protected $urlExplorer;
 
     /**
      * @var XmlChecker
@@ -41,22 +41,17 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $xmlChecker;
 
     /**
-     * @var array
-     */
-    protected $valid;
-
-    /**
      * @param WebserviceGuesser $webserviceGuesser
-     * @param SoapExplorer      $soapExplorer
+     * @param UrlExplorer      $urlExplorer
      * @param XmlChecker        $xmlChecker
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        SoapExplorer $soapExplorer,
-        XmlChecker $xmlChecker
+        UrlExplorer       $urlExplorer,
+        XmlChecker        $xmlChecker
     ) {
         $this->webserviceGuesser = $webserviceGuesser;
-        $this->soapExplorer      = $soapExplorer;
+        $this->urlExplorer       = $urlExplorer;
         $this->xmlChecker        = $xmlChecker;
     }
 
