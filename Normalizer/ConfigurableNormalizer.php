@@ -46,7 +46,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
     }
 
     /**
-     * {@inheritdoc}
+     *{@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = array())
     {

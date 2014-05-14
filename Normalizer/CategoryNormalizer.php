@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 
 /**
  * A normalizer to transform a category entity into an array

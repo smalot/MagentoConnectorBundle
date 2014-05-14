@@ -2,8 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
-use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
-
 /**
  * Magento group mapping
  *
@@ -29,9 +27,14 @@ class MagentoGroupMapping
     protected $magentoGroupId;
 
     /**
-     * @var AttributeGroup
+     * @var string
      */
-    protected $group;
+    protected $pimGroupCode;
+
+    /**
+     * @var integer
+     */
+    protected $pimFamilyCode;
 
     /**
      * Get id
@@ -92,26 +95,50 @@ class MagentoGroupMapping
     }
 
     /**
-     * Set group
+     * Set pimGroupCode
      *
-     * @param AttributeGroup $group
+     * @param string $pimGroupCode
      *
      * @return MagentoGroupMapping
      */
-    public function setGroup(AttributeGroup $group)
+    public function setPimGroupCode($pimGroupCode)
     {
-        $this->group = $group;
+        $this->pimGroupCode = $pimGroupCode;
 
         return $this;
     }
 
     /**
-     * Get group
+     * Get pimGroupCode
      *
-     * @return AttributeGroup
+     * @return string
      */
-    public function getGroup()
+    public function getPimGroupCode()
     {
-        return $this->group;
+        return $this->pimGroupCode;
+    }
+
+    /**
+     * Set pimFamilyCode
+     *
+     * @param integer $pimFamilyCode
+     *
+     * @return MagentoGroupMapping
+     */
+    public function setPimFamilyCode($pimFamilyCode)
+    {
+        $this->pimFamilyCode = $pimFamilyCode;
+
+        return $this;
+    }
+
+    /**
+     * Get pimFamilyCode
+     *
+     * @return integer
+     */
+    public function getPimFamilyCode()
+    {
+        return $this->pimFamilyCode;
     }
 }

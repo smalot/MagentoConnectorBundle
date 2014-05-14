@@ -139,7 +139,7 @@ class MagentoSoapClientParameters
     /**
      * Get the http authentication login
      *
-     * @return string  Http login
+     * @return string Http login
      */
     public function getHttpLogin()
     {

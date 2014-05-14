@@ -285,7 +285,6 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     protected function hasGroupedProduct(ProductInterface $product, $pimGrouped)
     {
         if ($associationType = $this->associationTypeManager->getAssociationTypeByCode($pimGrouped)) {
-            
             return (bool) $product->getAssociationForType($associationType);
         } else {
             return false;
