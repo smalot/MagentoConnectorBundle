@@ -169,8 +169,8 @@ class AttributeWriter extends AbstractWriter
     protected function addGroupToAttributeSet()
     {
         $families = $this->attribute->getFamilies();
-
         $group = $this->attribute->getGroup();
+
         if (isset($group)) {
             $groupName = $group->getCode();
 
