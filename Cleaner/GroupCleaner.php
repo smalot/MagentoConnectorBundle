@@ -2,13 +2,13 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -35,23 +35,38 @@ class GroupCleaner extends Cleaner
     protected $entityManager;
 
     /**
+     * @var AttributeMappingManager
+     */
+    protected $attributeMappingManager;
+
+    /**
+     * @var FamilyMappingManager
+     */
+    protected $familyMappingManager;
+
+    /**
      * @param WebserviceGuesser            $webserviceGuesser
      * @param AttributeGroupMappingManager $attributeGroupMappingManager
      * @param EntityManager                $entityManager
+     * @param $attributeGroupClass
+     * @param AttributeMappingManager      $attributeMappingManager
+     * @param FamilyMappingManager         $familyMappingManager
      */
     public function __construct(
         WebserviceGuesser            $webserviceGuesser,
         AttributeGroupMappingManager $attributeGroupMappingManager,
         EntityManager                $entityManager,
         $attributeGroupClass,
-        $magentoGroupMappingClass
+        AttributeMappingManager      $attributeMappingManager,
+        FamilyMappingManager         $familyMappingManager
     ) {
         parent::__construct($webserviceGuesser);
 
         $this->attributeGroupMappingManager = $attributeGroupMappingManager;
         $this->entityManager                = $entityManager;
         $this->attributeGroupClass          = $attributeGroupClass;
-        $this->magentoGroupMappingClass     = $magentoGroupMappingClass;
+        $this->attributeMappingManager      = $attributeMappingManager;
+        $this->familyMappingManager         = $familyMappingManager;
     }
 
     /**
@@ -61,44 +76,55 @@ class GroupCleaner extends Cleaner
     {
         parent::beforeExecute();
 
-        // $attributeGroupRepository = $this->entityManager->getRepository($this->attributeGroupClass);
-        // $attributeGroupMappingRepository = $this->entityManager->getRepository($this->magentoGroupMappingClass);
+        $mappingAttributeGroups = $this->attributeGroupMappingManager->getAllMappings();
 
-        // $attributeGroupMappings = $attributeGroupMappingRepository->findAll();
+        foreach ($mappingAttributeGroups as $groupMapping) {
+            $attributeGroup = $this->entityManager->getRepository($this->attributeGroupClass)
+                ->findOneBy(array('code' => $groupMapping->getPimGroupCode()));
 
-        // foreach ($attributeGroupMappings as $attributeGroupMapping) {
-        //     $attributeGroupRepository->findOneByCode($attributeGroupMapping->getPimGroupCode())
-
-        //     $attributeGroupMapping = $attributeGroupMappingRepository->findBy(array(
-        //         'pimGroupCode' => $attributeGroup->getCode()
-        //     ));
-
-        // }
-
-        // $magentoGroupMappings = $this->attributeGroupMappingManager->getAllGroups();
-
-        // foreach ($magentoGroupMappings as $groupMapping) {
-        //     try {
-        //         $this->handleGroupNotInPimAnymore($groupMapping);
-        //     } catch (SoapCallException $e) {
-        //         throw new InvalidItemException($e->getMessage(), array(json_encode($groupMapping)));
-        //     }
-        // }
+            if ($attributeGroup == null) {
+                $this->handleGroupNotInPimAnymore($groupMapping);
+            }
+        }
     }
 
     /**
      * Handle deletion of groups that are not in PIM anymore
-     * @param int $groupId
+     *
+     * @param MagentoGroupMapping $groupMapping
+     *
+     * @throws \Exception
      */
     protected function handleGroupNotInPimAnymore(MagentoGroupMapping $groupMapping)
     {
-        // if (!$this->attributeGroupMappingManager->magentoGroupExists($groupId, $this->getSoapUrl())
-        //     //&& !in_array($groupName, $this->getIgnoredCleaners())
-        // ) {
-        //     $this->webservice->removeAttributeGroupFromAttributeSet($groupId);
-        //     $this->magentoGroupManager->removeMagentoGroup($groupId, $this->getSoapUrl());
-        //     $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
-        // }
+        if (!in_array($groupMapping->getPimGroupCode(), $this->getIgnoredCleaners())) {
+            try {
+                $attributeGroup = $this->entityManager->getRepository($this->attributeGroupClass)
+                    ->findOneByCode($groupMapping->getPimGroupCode());
+
+                var_dump($groupMapping->getPimGroupCode());
+                $attributes = $attributeGroup->getAttributes();
+
+                $magentoFamilyId = $this->entityManager->createQuery(
+                    'SELECT PimMagentoConnectorBundle:MagentoFamilyMapping m
+                     JOIN PimCatalogBundle:Family f
+                     WHERE f.code = :code'
+                )->setParameter('code', $groupMapping->getPimGroupCode());
+
+                foreach ($attributes as $attribute) {
+                    $magentoAttributeId = $this->attributeMappingManager
+                        ->getIdFromAttribute($attribute, $this->getSoapUrl());
+
+                    var_dump($this->webservice->removeAttributeFromAttributeSet($magentoAttributeId, $magentoFamilyId));
+                }
+
+                $this->webservice->removeAttributeGroupFromAttributeSet($groupMapping->getMagentoGroupId());
+                $this->$attributeGroupMappingManager->removeMapping($groupMapping);
+                $this->stepExecution->incrementSummaryInfo(self::GROUP_DELETED);
+            } catch (\Exception $e) {
+                throw new \Exception($e);
+            }
+        }
     }
 
     /**

@@ -37,35 +37,6 @@ class AttributeGroupMappingManager
     }
 
     /**
-     * Get group from id and Magento url
-     * @param integer $id
-     * @param string  $magentoUrl
-     *
-     * @return AttributeGroup|null
-     */
-    public function getGroupFromId($id, $magentoUrl)
-    {
-        $magentoGroupMapping = $this->getEntityRepository()->findOneBy(
-            array(
-                'magentoGroupId' => $id,
-                'magentoUrl'     => $magentoUrl
-            )
-        );
-
-        return $magentoGroupMapping ? $magentoGroupMapping->getGroup() : null;
-    }
-
-    /**
-     * Get all groups
-     *
-     * @return AttributeGroup
-     */
-    public function getAllGroups()
-    {
-        return $this->getEntityRepository()->findAll();
-    }
-
-    /**
      * Get id from group and Magento url
      * @param AttributeGroup $group
      * @param Family         $family
@@ -121,19 +92,31 @@ class AttributeGroupMappingManager
     }
 
     /**
-     * Does the given magento group exist in pim ?
-     * @param string $magentoGroupId
-     * @param string $magentoUrl
+     * Return all the mappings
      *
-     * @return boolean
+     * @return array
      */
-    public function magentoGroupExists($magentoGroupId, $magentoUrl)
+    public function getAllMappings()
     {
-        return null !== $this->getGroupFromId($magentoGroupId, $magentoUrl);
+        return ($this->getEntityRepository()->findAll() ? $this->getEntityRepository()->findAll() : null);
+    }
+
+    /**
+     * Remove the given mapping
+     *
+     * @param AttributeGroupMapping $groupMapping
+     *
+     * @return void
+     */
+    public function removeMapping($groupMapping)
+    {
+        $this->getEntityRepository()->remove($groupMapping);
+        $this->getEntityRepository()->flush();
     }
 
     /**
      * Get the entity manager
+     *
      * @return EntityRepository
      */
     protected function getEntityRepository()

@@ -26,6 +26,7 @@ class FamilyMappingManager
 
     /**
      * Constructor
+     *
      * @param ObjectManager $objectManager
      * @param string        $className
      */
@@ -37,6 +38,7 @@ class FamilyMappingManager
 
     /**
      * Get family from id and Magento url
+     *
      * @param integer $id
      * @param string  $magentoUrl
      *
@@ -56,6 +58,7 @@ class FamilyMappingManager
 
     /**
      * Get id from family and Magento url
+     *
      * @param Family $family
      * @param string $magentoUrl
      *
@@ -75,6 +78,7 @@ class FamilyMappingManager
 
     /**
      * Register a new family mapping
+     *
      * @param Family  $pimFamily
      * @param integer $magentoFamilyId
      * @param string  $magentoUrl
@@ -101,6 +105,7 @@ class FamilyMappingManager
 
     /**
      * Does the given magento family exist in pim ?
+     *
      * @param string $familyId
      * @param string $magentoUrl
      *
@@ -113,6 +118,7 @@ class FamilyMappingManager
 
     /**
      * Get the entity manager
+     *
      * @return EntityRepository
      */
     protected function getEntityRepository()

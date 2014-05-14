@@ -89,7 +89,7 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Handle attribute creation and update
-     * @param  array $attribute
+     * @param array $attribute
      *
      * @throws InvalidItemException
      */
@@ -179,6 +179,12 @@ class AttributeWriter extends AbstractWriter
 
                 try {
                     $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
+                    $this->attributeGroupMappingManager->registerGroupMapping(
+                        $group,
+                        $family,
+                        $magentoGroupId,
+                        $this->getSoapUrl()
+                    );
                 } catch (SoapCallException $e) {
                     if (strpos($e->getMessage(), 'already') !== false) {
                         $this->stepExecution->incrementSummaryInfo(self::GROUP_EXISTS);
@@ -186,13 +192,6 @@ class AttributeWriter extends AbstractWriter
                         throw $e;
                     }
                 }
-
-                $this->attributeGroupMappingManager->registerGroupMapping(
-                    $group,
-                    $family,
-                    $magentoGroupId,
-                    $this->getSoapUrl()
-                );
             }
         }
     }

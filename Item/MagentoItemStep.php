@@ -316,7 +316,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Set http login
      *
-     * @param  string $httpLogin
+     * @param string $httpLogin
      *
      * @return MagentoItemStep
      */
@@ -340,7 +340,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Set http password
      *
-     * @param  string $httpPassword
+     * @param string $httpPassword
      *
      * @return MagentoItemStep
      */

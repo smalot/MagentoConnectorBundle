@@ -52,4 +52,5 @@ services:
             - '@pim_magento_connector.manager.group_mapping'
             - '@doctrine.orm.entity_manager'
             - %pim_catalog.entity.attribute_group.class%
-            - %pim_magento_connector.entity.attribute_mapping.class%
+            - '@pim_magento_connector.manager.attribute_mapping'
+            - '@pim_magento_connector.manager.family_mapping'

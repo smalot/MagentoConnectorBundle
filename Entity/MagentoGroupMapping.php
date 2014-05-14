@@ -27,7 +27,7 @@ class MagentoGroupMapping
     protected $magentoGroupId;
 
     /**
-     * @var interger
+     * @var string
      */
     protected $pimGroupCode;
 
@@ -97,7 +97,7 @@ class MagentoGroupMapping
     /**
      * Set pimGroupCode
      *
-     * @param AttributeGroup $pimGroupCode
+     * @param string $pimGroupCode
      *
      * @return MagentoGroupMapping
      */
@@ -111,7 +111,7 @@ class MagentoGroupMapping
     /**
      * Get pimGroupCode
      *
-     * @return AttributeGroup
+     * @return string
      */
     public function getPimGroupCode()
     {

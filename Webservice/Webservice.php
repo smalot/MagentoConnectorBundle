@@ -673,8 +673,8 @@ class Webservice
     /**
      *  Allows you to remove an existing attribute from an attribute set.
      *
-     * @param  integer $attributeId Attribute ID
-     * @param  integer $setId       Attribute set ID
+     * @param integer $attributeId Attribute ID
+     * @param integer $setId       Attribute set ID
      *
      * @return boolean True if the attribute is removed from an attribute set
      */
@@ -694,8 +694,8 @@ class Webservice
     /**
      *  Allows you to create a new attribute set based on another attribute set.
      *
-     * @param  integer $attributeSetName Attribute set name
-     * @param  integer $skeletonSetId    Attribute set ID basing on which the new attribute set will be created
+     * @param integer $attributeSetName Attribute set name
+     * @param integer $skeletonSetId    Attribute set ID basing on which the new attribute set will be created
      *
      * @return integer ID of the created attribute set
      */
@@ -736,7 +736,7 @@ class Webservice
     /**
      *  Allows you to remove a group from an attribute set.
      *
-     * @param  integer $attributeGroupId Group ID
+     * @param integer $attributeGroupId Group ID
      *
      * @return boolean true (1) if the group is removed
      */
@@ -754,8 +754,8 @@ class Webservice
     /**
      *  Allows you to rename a group in the attribute set.
      *
-     * @param  integer $attributeGroupId Group ID
-     * @param  string  $groupName        New name for the group
+     * @param integer $attributeGroupId Group ID
+     * @param string  $groupName        New name for the group
      *
      * @return boolean True (1) if the group is renamed
      */
@@ -775,8 +775,8 @@ class Webservice
     /**
      *  Allows you to remove an existing attribute set.
      *
-     * @param  integer $attributeSetId      Attribute set ID
-     * @param  string  $forceProductsRemove Force product remove flag (optional)
+     * @param integer $attributeSetId      Attribute set ID
+     * @param string  $forceProductsRemove Force product remove flag (optional)
      *
      * @return boolean True (1) if the attribute set is removed
      */
