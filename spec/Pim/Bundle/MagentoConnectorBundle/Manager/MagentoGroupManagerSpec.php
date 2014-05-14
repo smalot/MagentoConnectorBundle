@@ -15,27 +15,24 @@ use Prophecy\Argument;
  */
 class MagentoGroupManagerSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager, MagentoGroup $magentoGroup)
+    function let(ObjectManager $objectManager, MagentoGroup $magentoGroup, EntityRepository $entityRepository)
     {
         $this->beConstructedWith($objectManager, $magentoGroup);
+        $objectManager->getRepository(Argument::any())->willReturn($entityRepository);
     }
 
     function it_gives_magento_group_from_id(
         $magentoGroup,
-        $objectManager,
-        EntityRepository $entityRepository
+        $entityRepository
     ) {
-        $objectManager->getRepository(Argument::any())->willReturn($entityRepository);
         $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'http://magento.url'))->shouldBeCalled()->willReturn($magentoGroup);
 
         $this->getMagentoGroupFromId(2, 'http://magento.url')->shouldReturn($magentoGroup);
     }
 
     function it_returns_null_if_no_magento_group_were_found(
-        $objectManager,
-        EntityRepository $entityRepository
+        $entityRepository
     ) {
-        $objectManager->getRepository(Argument::any())->willReturn($entityRepository);
         $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'http://magento.url'))->shouldBeCalled()->willReturn(null);
 
         $this->getMagentoGroupFromId(2, 'http://magento.url')->shouldReturn(null);
@@ -44,9 +41,8 @@ class MagentoGroupManagerSpec extends ObjectBehavior
     function it_registers_a_magento_group(
         $objectManager,
         $magentoGroup,
-        EntityRepository $entityRepository
+        $entityRepository
     ) {
-        $objectManager->getRepository(Argument::any())->willReturn($entityRepository);
         $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'http://magento.url'))->shouldBeCalled()->willReturn($magentoGroup);
 
         $magentoGroup->setMagentoGroupId(2)->shouldBeCalled();
@@ -61,9 +57,8 @@ class MagentoGroupManagerSpec extends ObjectBehavior
     function it_removes_a_magento_group(
         $objectManager,
         $magentoGroup,
-        EntityRepository $entityRepository
+        $entityRepository
     ) {
-        $objectManager->getRepository(Argument::any())->willReturn($entityRepository);
         $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'http://magento.url'))->shouldBeCalled()->willReturn($magentoGroup);
 
         $objectManager->remove($magentoGroup)->shouldBeCalled();
