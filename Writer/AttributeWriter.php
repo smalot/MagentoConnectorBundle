@@ -8,10 +8,8 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoGroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 
 /**
  * Magento attribute writer. Add attributes to groups and attribute sets on magento side
@@ -91,7 +89,8 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Handle attribute creation and update
-     * @param array $attribute
+     * @param  array $attribute
+     *
      * @throws InvalidItemException
      */
     protected function handleAttribute(array $attribute, $pimAttribute)
@@ -127,7 +126,8 @@ class AttributeWriter extends AbstractWriter
         $pimGroup = $pimAttribute->getGroup();
 
         if ($pimGroup !== null) {
-            $magentoGroupId = $this->attributeGroupMappingManager->getIdFromGroup($pimGroup, $pimFamily, $this->getSoapUrl());
+            $magentoGroupId = $this->attributeGroupMappingManager
+                ->getIdFromGroup($pimGroup, $pimFamily, $this->getSoapUrl());
         } else {
             $magentoGroupId = null;
         }

@@ -73,5 +73,4 @@ class ORMPimMapper extends ORMMapper
         return $this->clientParameters !== null &&
             $this->hasValidCredentialsValidator->areValidSoapCredentials($this->clientParameters);
     }
-
 }

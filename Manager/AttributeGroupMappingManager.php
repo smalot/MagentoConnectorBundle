@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository;
 
 /**
  * Attribute group mapping manager

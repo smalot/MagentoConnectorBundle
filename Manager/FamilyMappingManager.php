@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\CatalogBundle\Entity\Repository\FamilyRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**

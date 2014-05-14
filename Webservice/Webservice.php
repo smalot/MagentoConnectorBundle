@@ -181,6 +181,7 @@ class Webservice
      * @param string $code the attributeSet id
      *
      * @throws AttributeSetNotFoundException If If the attribute doesn't exist on Magento side
+     *
      * @return void
      */
     public function getAttributeSetId($code)
@@ -198,6 +199,7 @@ class Webservice
 
     /**
      * Get magento storeview list from magento
+     *
      * @return array
      */
     public function getStoreViewsList()
@@ -214,7 +216,7 @@ class Webservice
     /**
      * Get all images attached to a product
      *
-     * @param string $sku The product sku
+     * @param string $sku               The product sku
      * @param string $defaultLocalStore
      *
      * @return array
@@ -304,6 +306,7 @@ class Webservice
 
     /**
      * Get categories status from Magento
+     *
      * @return array
      */
     public function getCategoriesStatus()
@@ -643,12 +646,12 @@ class Webservice
     /**
      *  Add an attribute to the attribute set.
      *
-     * @param integer $attributeId       Attribute ID
-     * @param integer $setId             Attribute set ID
-     * @param integer $attributeGroupId  Group ID (optional)
-     * @param boolean $sortOrder         Sort order (optional)
+     * @param integer $attributeId      Attribute ID
+     * @param integer $setId            Attribute set ID
+     * @param integer $attributeGroupId Group ID (optional)
+     * @param boolean $sortOrder        Sort order (optional)
      *
-     * @return boolean                   True if the attribute is added to an attribute set
+     * @return boolean True if the attribute is added to an attribute set
      */
     public function addAttributeToAttributeSet(
         $attributeId,
@@ -672,7 +675,8 @@ class Webservice
      *
      * @param  integer $attributeId Attribute ID
      * @param  integer $setId       Attribute set ID
-     * @return boolean          True if the attribute is removed from an attribute set
+     *
+     * @return boolean True if the attribute is removed from an attribute set
      */
     public function removeAttributeFromAttributeSet(
         $attributeId,
@@ -690,9 +694,10 @@ class Webservice
     /**
      *  Allows you to create a new attribute set based on another attribute set.
      *
-     * @param integer $attributeSetName Attribute set name
-     * @param integer $skeletonSetId    Attribute set ID basing on which the new attribute set will be created
-     * @return integer                  ID of the created attribute set
+     * @param  integer $attributeSetName Attribute set name
+     * @param  integer $skeletonSetId    Attribute set ID basing on which the new attribute set will be created
+     *
+     * @return integer ID of the created attribute set
      */
     public function createAttributeSet(
         $attributeSetName,
@@ -713,7 +718,7 @@ class Webservice
      * @param integer $attributeSetId Attribute set Id
      * @param string  $groupName      Group name
      *
-     * @return integer                ID of the created group
+     * @return integer ID of the created group
      */
     public function addAttributeGroupToAttributeSet(
         $attributeSetId,
@@ -731,8 +736,9 @@ class Webservice
     /**
      *  Allows you to remove a group from an attribute set.
      *
-     * @param integer $attributeGroupId Group ID
-     * @return boolean                  true (1) if the group is removed
+     * @param  integer $attributeGroupId Group ID
+     *
+     * @return boolean true (1) if the group is removed
      */
     public function removeAttributeGroupFromAttributeSet(
         $attributeGroupId
@@ -748,9 +754,10 @@ class Webservice
     /**
      *  Allows you to rename a group in the attribute set.
      *
-     * @param integer $attributeGroupId Group ID
-     * @param string  $groupName        New name for the group
-     * @return boolean                  True (1) if the group is renamed
+     * @param  integer $attributeGroupId Group ID
+     * @param  string  $groupName        New name for the group
+     *
+     * @return boolean True (1) if the group is renamed
      */
     public function renameAttributeGroupInAttributeSet(
         $attributeGroupId,
@@ -768,9 +775,10 @@ class Webservice
     /**
      *  Allows you to remove an existing attribute set.
      *
-     * @param integer $attributeSetId      Attribute set ID
-     * @param string  $forceProductsRemove Force product remove flag (optional)
-     * @return boolean                    True (1) if the attribute set is removed
+     * @param  integer $attributeSetId      Attribute set ID
+     * @param  string  $forceProductsRemove Force product remove flag (optional)
+     *
+     * @return boolean True (1) if the attribute set is removed
      */
     public function removeAttributeSet(
         $attributeSetId,

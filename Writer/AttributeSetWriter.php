@@ -65,7 +65,8 @@ class AttributeSetWriter extends AbstractWriter
 
     /**
      * Handle family creation
-     * @param array $item
+     * @param  array $item
+     *
      * @throws InvalidItemException
      */
     protected function handleNewFamily(array $item)

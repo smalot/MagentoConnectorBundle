@@ -3,8 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
-use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
@@ -76,7 +74,7 @@ class FamilyProcessor extends AbstractProcessor
 
     /**
      * Normalize the given family
-     * @param Family $family        Family of attribute
+     * @param Family $family  Family of attribute
      * @param array  $context
      *
      * @throws InvalidItemException If a problem occurred with the normalizer

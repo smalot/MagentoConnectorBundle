@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\ClientInterface;

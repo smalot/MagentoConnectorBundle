@@ -73,7 +73,6 @@ class GroupCleaner extends Cleaner
         //         'pimGroupCode' => $attributeGroup->getCode()
         //     ));
 
-
         // }
 
         // $magentoGroupMappings = $this->attributeGroupMappingManager->getAllGroups();
@@ -104,6 +103,7 @@ class GroupCleaner extends Cleaner
 
     /**
      * Get all ignored cleaners
+     *
      * @return array
      */
     protected function getIgnoredCleaners()

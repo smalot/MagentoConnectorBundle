@@ -3,8 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -36,7 +34,7 @@ class FamilyNormalizer implements NormalizerInterface
     /**
      * Checks whether the given class is supported for normalization by this normalizer
      *
-     * @param mixed $data Data to normalize.
+     * @param mixed  $data   Data to normalize.
      * @param string $format The format being (de-)serialized from or into.
      *
      * @return boolean
