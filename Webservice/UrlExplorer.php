@@ -9,13 +9,13 @@ use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\ClientInterface;
 
 /**
- * Allows to explore a soap url
+ * Allows to get the content of an url
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class SoapExplorer
+class UrlExplorer
 {
     /**
      * @var ClientInterface
@@ -23,15 +23,21 @@ class SoapExplorer
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $resultCache;
+
+    /**
      * @param ClientInterface $client
      */
     public function __construct(ClientInterface $client)
     {
-        $this->client = $client;
+        $this->client      = $client;
+        $this->resultCache = array();
     }
 
     /**
-     * Reaches soap url and get his content
+     * Reaches url and get his content
      *
      * @param MagentoSoapClientParameters $clientParameters
      *
@@ -40,16 +46,22 @@ class SoapExplorer
      * @throws NotReachableUrlException
      * @throws InvalidSoapUrlException
      */
-    public function getSoapUrlContent(MagentoSoapClientParameters $clientParameters)
+    public function getUrlContent(MagentoSoapClientParameters $clientParameters)
     {
-        $request = $this->client->createRequest('GET', $clientParameters->getSoapUrl());
-        $request->setAuth(
-            $clientParameters->getHttpLogin(),
-            $clientParameters->getHttpPassword()
-        );
+        $parametersHash = $clientParameters->getHash();
 
         try {
-            $response = $this->client->send($request);
+            if (!isset($this->resultCache[$parametersHash])) {
+                $request = $this->client->createRequest('GET', $clientParameters->getSoapUrl());
+                $request->setAuth(
+                    $clientParameters->getHttpLogin(),
+                    $clientParameters->getHttpPassword()
+                );
+                $response = $this->client->send($request);
+                $this->resultCache[$parametersHash] = $response;
+            } else {
+                $response = $this->resultCache[$parametersHash];
+            }
         } catch (CurlException $e) {
             throw new NotReachableUrlException;
         } catch (BadResponseException $e) {
