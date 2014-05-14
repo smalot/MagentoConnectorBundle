@@ -46,10 +46,11 @@ class ProductWriterSpec extends ObjectBehavior
 
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('sku'))->shouldBeCalled();
-        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
-        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
+
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
 
         $this->write($products);
     }
@@ -74,10 +75,11 @@ class ProductWriterSpec extends ObjectBehavior
 
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('something', 'another', 'sku', 'again', 'lastone'))->shouldBeCalled();
-        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
-        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
+
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
 
         $this->write($products);
     }
@@ -100,10 +102,11 @@ class ProductWriterSpec extends ObjectBehavior
         $webservice->deleteImage('sku','foo')->shouldBeCalled();
         $webservice->deleteImage('sku','bar')->shouldBeCalled();
         $webservice->sendProduct(array('sku'))->shouldBeCalled();
-        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
-        $webservice->sendImages(Argument::any())->shouldBeCalled();
-        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
+        $webservice->sendImages(Argument::any())->shouldBeCalled();
+
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldBeCalledTimes(2);
 
         $this->write($products);
     }
@@ -124,10 +127,11 @@ class ProductWriterSpec extends ObjectBehavior
 
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('sku'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
-        $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
         $webservice->sendImages(Argument::any())->shouldNotBeCalled();
-        $stepExecution->incrementSummaryInfo('Products images sent')->shouldNotBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldNotBeCalled();
+
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldNotBeCalled();
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($products);
     }
@@ -149,10 +153,11 @@ class ProductWriterSpec extends ObjectBehavior
         $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
         $webservice->deleteImage('sku','foo')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $webservice->sendProduct(Argument::any())->shouldNotBeCalled();
-        $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
         $webservice->sendImages(Argument::any())->shouldNotBeCalled();
-        $stepExecution->incrementSummaryInfo('Products images sent')->shouldNotBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldNotBeCalled();
+
+        $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
+        $stepExecution->incrementSummaryInfo('Products images sent')->shouldNotBeCalled();
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($products);
     }
