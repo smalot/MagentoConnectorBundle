@@ -19,16 +19,19 @@ use Prophecy\Argument;
  */
 class ProductWriterSpec extends ObjectBehavior
 {
-    function let(WebserviceGuesser $webserviceGuesser, ChannelManager $channelManager)
-    {
+    function let(
+        WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager,
+        StepExecution $stepExecution,
+        Webservice $webservice
+    ) {
         $this->beConstructedWith($webserviceGuesser, $channelManager);
+        $this->setStepExecution($stepExecution);
+        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
     }
 
-    function it_updates_a_product(
-        $webserviceGuesser,
-        Webservice $webservice,
-        StepExecution $stepExecution
-    ) {
+    function it_updates_a_product($webservice, $stepExecution)
+    {
         $products = array(
             'batch_1' => array(
                 'product_1' => array(
@@ -41,8 +44,6 @@ class ProductWriterSpec extends ObjectBehavior
             )
         );
 
-        $this->setStepExecution($stepExecution);
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('sku'))->shouldBeCalled();
         $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
@@ -53,11 +54,8 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_creates_a_product(
-        $webserviceGuesser,
-        Webservice $webservice,
-        StepExecution $stepExecution
-    ) {
+    function it_creates_a_product($webservice, $stepExecution)
+    {
         $products = array(
             'batch_1' => array(
                 'product_1' => array(
@@ -74,8 +72,6 @@ class ProductWriterSpec extends ObjectBehavior
             )
         );
 
-        $this->setStepExecution($stepExecution);
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('something', 'another', 'sku', 'again', 'lastone'))->shouldBeCalled();
         $stepExecution->incrementSummaryInfo('Products sent')->shouldBeCalled();
@@ -86,11 +82,8 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_updates_a_product_and_prunes_old_images(
-        $webserviceGuesser,
-        Webservice $webservice,
-        StepExecution $stepExecution
-    ) {
+    function it_updates_a_product_and_prunes_old_images($webservice, $stepExecution)
+    {
         $products = array(
             'batch_1' => array(
                 'product_1' => array(
@@ -103,8 +96,6 @@ class ProductWriterSpec extends ObjectBehavior
             )
         );
 
-        $this->setStepExecution($stepExecution);
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
         $webservice->deleteImage('sku','foo')->shouldBeCalled();
         $webservice->deleteImage('sku','bar')->shouldBeCalled();
@@ -117,11 +108,8 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_fails_if_something_went_wrong_when_it_updates_a_product(
-        $webserviceGuesser,
-        Webservice $webservice,
-        StepExecution $stepExecution
-    ) {
+    function it_fails_if_something_went_wrong_when_it_updates_a_product($webservice, $stepExecution)
+    {
         $products = array(
             'batch_1' => array(
                 'product_1' => array(
@@ -134,8 +122,6 @@ class ProductWriterSpec extends ObjectBehavior
             )
         );
 
-        $this->setStepExecution($stepExecution);
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array());
         $webservice->sendProduct(array('sku'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $stepExecution->incrementSummaryInfo('Products sent')->shouldNotBeCalled();
@@ -146,11 +132,8 @@ class ProductWriterSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($products);
     }
 
-    function it_fails_if_something_went_wrong_when_it_prunes_images(
-        $webserviceGuesser,
-        Webservice $webservice,
-        StepExecution $stepExecution
-    ) {
+    function it_fails_if_something_went_wrong_when_it_prunes_images($webservice, $stepExecution)
+    {
         $products = array(
             'batch_1' => array(
                 'product_1' => array(
@@ -163,8 +146,6 @@ class ProductWriterSpec extends ObjectBehavior
             )
         );
 
-        $this->setStepExecution($stepExecution);
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
         $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
         $webservice->deleteImage('sku','foo')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $webservice->sendProduct(Argument::any())->shouldNotBeCalled();
