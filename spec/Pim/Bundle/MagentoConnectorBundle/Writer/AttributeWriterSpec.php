@@ -147,35 +147,4 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $this->write($attributes);
     }
-
-//    function it_increments_summary_info_if_attribute_already_exists(
-//        $webservice,
-//        AbstractAttribute            $attribute,
-//        StepExecution                $stepExecution,
-//        AttributeMappingManager      $attributeMappingManager,
-//        AttributeGroupMappingManager $attributeGroupMappingManager
-//    ) {
-//        $attributes = array(
-//            array(
-//                $attribute,
-//                array(
-//                    'create' => array(
-//                        'attributeName' => 'attribute_code'
-//                    ),
-//                )
-//            )
-//        );
-//        $this->setMagentoUrl('bar');
-//        $this->setWsdlUrl('foo');
-//
-//        $attribute->getFamilies()->willReturn(array());
-//        $attribute->getGroup()->willReturn(null);
-//        $webservice->createAttribute(Argument::any())->willReturn(12);
-//        $attributeGroupMappingManager->getIdFromGroup(Argument::any(), 'barfoo')->willReturn(797);
-//        $webservice->addAttributeToAttributeSet(12, 414, 797)->willThrow(new SoapCallException('Attribute already exists'));
-//        $stepExecution->incrementSummaryInfo('Attribute already in magento')->shouldBeCalled();
-//        $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
-//
-//        $this->write($attributes);
-//    }
 }
