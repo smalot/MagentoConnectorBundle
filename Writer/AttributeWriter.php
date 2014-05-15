@@ -99,32 +99,14 @@ class AttributeWriter extends AbstractWriter
             $this->webservice->updateAttribute($attribute);
             $magentoAttributeId = $this->attributeMappingManager
                 ->getIdFromAttribute($pimAttribute, $this->getSoapUrl());
-            if (null === $magentoAttributeId) {
-                $attributes = $this->webservice->getAllAttributes();
-                foreach ($attributes as $attribute) {
-                    if ($pimAttribute->getCode() === $attribute['code']) {
-                        $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
-                        break;
-                    }
-                }
-            } else {
-                $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
-                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
-            }
+
+            $this->attributeSetManager($magentoAttributeId, $pimAttribute);
+
+            $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
             $magentoAttributeId = $this->webservice->createAttribute($attribute);
 
-            if (null === $magentoAttributeId) {
-                $attributes = $this->webservice->getAllAttributes();
-                foreach ($attributes as $attribute) {
-                    if ($pimAttribute->getCode() === $attribute['code']) {
-                        $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
-                        break;
-                    }
-                }
-            } else {
-                $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
-            }
+            $this->attributeSetManager($magentoAttributeId, $pimAttribute);
 
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
@@ -134,6 +116,27 @@ class AttributeWriter extends AbstractWriter
                 $magentoAttributeId,
                 $magentoUrl
             );
+        }
+    }
+
+    /**
+     * Verify if the magento attribute id is null else add the attribute to the attribute set
+     *
+     * @param integer $magentoAttributeId
+     * @param array   $pimAttribute
+     */
+    protected function attributeSetManager($magentoAttributeId, $pimAttribute)
+    {
+        if (null === $magentoAttributeId) {
+            $attributes = $this->webservice->getAllAttributes();
+            foreach ($attributes as $attribute) {
+                if ($pimAttribute->getCode() === $attribute['code']) {
+                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                    break;
+                }
+            }
+        } else {
+            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
         }
     }
 
