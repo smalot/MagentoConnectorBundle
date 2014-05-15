@@ -4,6 +4,7 @@ pim_magento_connector:
         category_export.title: Export catégories vers Magento
         option_export.title: "Export d'options vers Magento"
         attribute_export.title: "Export d'attributs vers Magento"
+        attributeset_export.title: Export de familles vers Magento
     steps:
         simple_product_export.export.title: Export de produits simples
         configurable_product_export.export.title: Export de produits configurables
@@ -33,6 +34,9 @@ pim_magento_connector:
         configurable_cleaner.title: Nettoyeur de configurable
         option_cleaner.title: "Nettoyeur d'options"
         product_cleaner.title: Nettoyeur de produit
+        attributeset_export.export.title: Export de familles
+        family_clean.clean.title: Nettoyeur de famille
+        group_clean.clean.title: Nettoyeur de groupe
     export:
         soapUsername:
             label: "Nom d'utilisateur soap"
@@ -46,6 +50,15 @@ pim_magento_connector:
         wsdlUrl:
             label: Suffix wsdl
             help: Vous pouvez personnaliser le suffix wsdl de l'API Soap. Si vous ne savez pas à quoi correspond ce paramètre, laissez ce paramètre inchangé.
+            httpLogin:
+            label: "Nom d'utilisateur http"
+            help: "Si vous avez une authentification par http fournissez ici votre nom d'utilisateur de votre connection http"
+        httpPassword:
+            label: Mot de passe http
+            help: "Si vous avez une authentification par http fournissez ici le mot de passe de votre connection http"
+        defaultStoreView:
+            label: Vue boutique par défaut
+            help: Fournissez ici votre vue boutique par défaut
         channel:
             label: Canal
             help:
