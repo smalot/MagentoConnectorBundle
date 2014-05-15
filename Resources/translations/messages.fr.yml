@@ -84,35 +84,35 @@ pim_magento_connector:
             label: Correspondance de catégories
             help:  Vous pouvez faire la correspondance entre les catégories de votre installation Akeneo et votre installation Magento
         pimGrouped:
-            label: Association type for grouped products
-            help:  Association type corresponding to grouped products
+            label: "Type d'association pour les produits groupés"
+            help:  Type d'association correspondant aux produits groupés
         pimUpSell:
-            label: Association type for up-sell products
-            help:  Association type corresponding to up-sell products
+            label: "Type d'association pour les produits de vente additionnelles"
+            help:  "Type d'association correspondant aux produits vente additionnelles"
         pimCrossSell:
-            label: Association type for cross-sell products
-            help:  Association type corresponding to cross-sell products
+            label: "Type d'association pour les produits de vente liées"
+            help:  "Type d'association correspondant aux produits vente liées"
         pimRelated:
-            label: Association type for related products
-            help:  Association type corresponding to related products
+            label: "Type d'association pour les produits liés"
+            help:  "Type d'association correspondant aux produits liés"
         attributeMapping:
-            label: Attribute mapping
-            help: Map attribute code between Akeneo PIM and Magento
+            label: Correspondance d'attributs
+            help:  Correspondance des attributs entre Akeneo PIM et Magento
         notInPimAnymoreAction:
-            label: Action for item not in PIM anymore
-            help:  What to do on Magento if an item is not in the Pim anymore ?
+            label: Action pour les items qui ne sont plus dans la PIM
+            help:  Que faire sur Magento si un item n'est plus dans la PIM ?
         notCompleteAnymoreAction:
-            label: Action for item not complete anymore
-            help:  What to do on Magento if an item is not complete in Akeneo anymore ?
+            label: Action pour les items quine sont pas complet
+            help:  Que faire sur Magento si un item n'es pas complet dans Akeneo PIM ?
         delete:
-            label: Delete it
+            label: les supprimer
         do_nothing:
-            label: Do nothing
+            label: Ne rien faire
         disable:
-            label: Disable it
+            label: Les désactiver
         validator:
-            url_syntax_not_valid: Url syntax is not valid
-            url_not_reachable: Url can not be resolved
-            soap_url_not_valid: Api soap url is not valid
-            xml_not_valid: Magento XML is not valid
-            authentication_failed: The given magento api username is invalid or magento user has no rights to access the soap api
+            url_syntax_not_valid: la syntaxe de l'url n'est pas valide
+            url_not_reachable: "L'url n'a pas pu être résolue"
+            soap_url_not_valid: "L'url de l'api soap n'est pas valide"
+            xml_not_valid: "L'xml de magento n'est pas valide"
+            authentication_failed: "Le nom d'utilisteur fourni n'est pas valide ou l'utilisateur magento n'a pas les droits d'accéder à l'api soap de Magento"
