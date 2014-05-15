@@ -168,8 +168,8 @@ class AttributeWriter extends AbstractWriter
      */
     protected function addGroupToAttributeSet($pimAttribute)
     {
-        $families = $this->attribute->getFamilies();
-        $group = $this->attribute->getGroup();
+        $families = $pimAttribute->getFamilies();
+        $group = $pimAttribute->getGroup();
 
         if (isset($group)) {
             $groupName = $group->getCode();
