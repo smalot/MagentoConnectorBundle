@@ -99,12 +99,33 @@ class AttributeWriter extends AbstractWriter
             $this->webservice->updateAttribute($attribute);
             $magentoAttributeId = $this->attributeMappingManager
                 ->getIdFromAttribute($pimAttribute, $this->getSoapUrl());
-
-            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
-            $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
+            if (null === $magentoAttributeId) {
+                $attributes = $this->webservice->getAllAttributes();
+                foreach ($attributes as $attribute) {
+                    if ($pimAttribute->getCode() === $attribute['code']) {
+                        $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                        break;
+                    }
+                }
+            } else {
+                $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
+            }
         } else {
             $magentoAttributeId = $this->webservice->createAttribute($attribute);
-            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+
+            if (null === $magentoAttributeId) {
+                $attributes = $this->webservice->getAllAttributes();
+                foreach ($attributes as $attribute) {
+                    if ($pimAttribute->getCode() === $attribute['code']) {
+                        $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                        break;
+                    }
+                }
+            } else {
+                $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+            }
+
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
             $magentoUrl = $this->getSoapUrl();
@@ -137,6 +158,7 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Add attribute to corresponding attribute sets
+     *
      * @param integer $magentoAttributeId ID of magento attribute
      * @param integer $magentoGroupId
      *
@@ -176,7 +198,12 @@ class AttributeWriter extends AbstractWriter
 
             foreach ($families as $family) {
                 $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
-
+                if (null === $familyMagentoId) {
+                    $magentoAttributeSets = $this->webservice->getAttributeSetList();
+                    if (array_key_exists($family->getCode(), $magentoAttributeSets)) {
+                        $familyMagentoId = $magentoAttributeSets[$family->getCode()];
+                    }
+                }
                 try {
                     $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
                     $this->attributeGroupMappingManager->registerGroupMapping(
