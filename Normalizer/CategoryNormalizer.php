@@ -169,7 +169,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 'default_sort_by'   => 1,
                     'is_anchor'     => 1
             ),
-            $context['magentoStoreView']
+            $context['defaultStoreView']
         );
     }
 
