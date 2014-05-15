@@ -61,13 +61,9 @@ class FamilyCleaner extends Cleaner
      */
     protected function handleFamilyNotInPimAnymore($family)
     {
-        try {
-            if (!$this->familyMappingManager->magentoFamilyExists($family, $this->getSoapUrl())) {
-                $this->webservice->removeAttributeSet($family);
-                $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
-            }
-        } catch (SoapCallException $e) {
-
+        if (!$this->familyMappingManager->magentoFamilyExists($family, $this->getSoapUrl())) {
+            $this->webservice->removeAttributeSet($family);
+            $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
         }
     }
 

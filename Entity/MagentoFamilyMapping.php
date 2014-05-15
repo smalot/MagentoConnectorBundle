@@ -29,6 +29,11 @@ class MagentoFamilyMapping
     protected $magentoFamilyId;
 
     /**
+     * @var string
+     */
+    protected $pimFamilyCode;
+
+    /**
      * @var Family
      */
     protected $family;
@@ -70,7 +75,7 @@ class MagentoFamilyMapping
     /**
      * Set magentoFamilyId
      *
-     * @param string $magentoFamilyId
+     * @param integer $magentoFamilyId
      *
      * @return MagentoFamilyMapping
      */
@@ -84,11 +89,35 @@ class MagentoFamilyMapping
     /**
      * Get magentoFamilyId
      *
-     * @return string
+     * @return integer
      */
     public function getMagentoFamilyId()
     {
         return $this->magentoFamilyId;
+    }
+
+    /**
+     * Set pim family code
+     *
+     * @param string $pimFamilyCode
+     *
+     * @return MagentoFamilyMapping
+     */
+    public function setPimFamilyCode($pimFamilyCode)
+    {
+        $this->pimFamilyCode = $pimFamilyCode;
+
+        return $this;
+    }
+
+    /**
+     * Get pim family code
+     *
+     * @return string
+     */
+    public function getPimFamilyCode()
+    {
+        return $this->pimFamilyCode;
     }
 
     /**

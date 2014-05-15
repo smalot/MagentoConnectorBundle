@@ -55,6 +55,21 @@ jobs:
             website:          base
             storeviewMapping: ''
 
+    magento_family_export:
+        connector: Magento Connector
+        alias:     magento_family_export
+        label:     Magento family export
+        type:      export
+        configuration:
+            channel:          magento
+            soapUsername:     soap
+            soapApiKey:       magento1
+            magentoUrl:       http://magento.local
+            wsdlUrl:          /api/soap/?wsdl
+            defaultLocale:    en_US
+            website:          base
+            storeviewMapping: 'default'
+
     magento_option_export:
         connector: Magento Connector
         alias:     magento_option_export

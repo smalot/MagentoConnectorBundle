@@ -19,7 +19,7 @@ class ORMPimMapper extends ORMMapper
     /**
      * @var MagentoSoapClientParameters
      */
-    protected $clientParameters
+    protected $clientParameters;
 
     /**
      * @var HasValidCredentialsValidator
@@ -73,5 +73,4 @@ class ORMPimMapper extends ORMMapper
         return $this->clientParameters !== null &&
             $this->hasValidCredentialsValidator->areValidSoapCredentials($this->clientParameters);
     }
-
 }
