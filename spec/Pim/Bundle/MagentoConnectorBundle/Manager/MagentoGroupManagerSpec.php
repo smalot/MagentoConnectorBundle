@@ -54,6 +54,18 @@ class MagentoGroupManagerSpec extends ObjectBehavior
         $this->registerMagentoGroup(2, 'http://magento.url');
     }
 
+    function it_registers_new_magento_group_if_it_is_not_found(
+        $objectManager,
+        $entityRepository
+    ) {
+        $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'http://magento.url'))->shouldBeCalled()->willReturn(null);
+
+        $objectManager->persist(Argument::type('\Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroup'))->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->registerMagentoGroup(2, 'http://magento.url');
+    }
+
     function it_removes_a_magento_group(
         $objectManager,
         $magentoGroup,
@@ -65,5 +77,25 @@ class MagentoGroupManagerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->removeMagentoGroup(2, 'http://magento.url');
+    }
+
+    function it_returns_false_if_magento_family_doesnt_exist($entityRepository)
+    {
+        $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'htpp://magento.url'))->willReturn(null);
+
+        $this->magentoFamilyExists('2', 'htpp://magento.url')->shouldReturn(false);
+    }
+
+    function it_returns_true_if_magento_family_exists($entityRepository, $magentoGroup)
+    {
+        $entityRepository->findOneBy(array('magentoGroupId' => 2, 'magentoUrl' => 'htpp://magento.url'))->willReturn($magentoGroup);
+
+        $this->magentoFamilyExists('2', 'htpp://magento.url')->shouldReturn(true);
+    }
+
+    function it_gives_all_magento_groups($entityRepository, $groups = array())
+    {
+        $entityRepository->findAll()->shouldBeCalled()->willReturn($groups);
+        $this->getAllMagentoGroups()->shouldReturn($groups);
     }
 }
