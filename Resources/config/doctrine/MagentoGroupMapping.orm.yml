@@ -13,12 +13,9 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping:
         magentoGroupId:
             type: integer
             column: magento_group_id
-    manyToOne:
-        group:
-            targetEntity: Pim\Bundle\CatalogBundle\Entity\AttributeGroup
-            inversedBy: magentoGroupMappings
-            joinColumn:
-                name: group_id
-                referencedColumnName: id
-                onDelete: 'CASCADE'
-                unique: true
+        pimGroupCode:
+            type: string
+            column: pim_group_code
+        pimFamilyCode:
+            type: string
+            column: pim_family_code

@@ -21,7 +21,7 @@ class MagentoFamilyMapper extends MagentoMapper
 
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
-     * @param WebserviceGuesser $webserviceGuesser
+     * @param WebserviceGuesser            $webserviceGuesser
      */
     public function __construct(
         HasValidCredentialsValidator $hasValidCredentialsValidator,

@@ -16,7 +16,9 @@ class MagentoMappingMerger extends MappingMerger
 {
     /**
      * Set parameters of all mappers
+     *
      * @param MagentoSoapClientParameters $clientParameters
+     * @param string                      $defaultStoreView
      */
     public function setParameters(MagentoSoapClientParameters $clientParameters, $defaultStoreView)
     {
@@ -29,6 +31,7 @@ class MagentoMappingMerger extends MappingMerger
 
     /**
      * Get configuration field for the merger
+     *
      * @return array
      */
     public function getConfigurationField()

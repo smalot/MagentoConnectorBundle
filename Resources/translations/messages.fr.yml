@@ -24,7 +24,7 @@ pim_magento_connector:
         option_processor.title: "Processeur d'option"
         product_association_processor.title: "Processeur d'association de produits"
         attribute_writer.title: Service d'écriture d'attributs
-        category_writer.title: Service d'écriture de catégories 
+        category_writer.title: Service d'écriture de catégories
         option_writer.title: Service d'écriture d'options
         product_association_writer.title: Service d'écriture d'associations
         product_writer.title: Service d'écritures de produits
