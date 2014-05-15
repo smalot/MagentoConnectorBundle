@@ -24,15 +24,4 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $this->beConstructedWith($objectManager, $className);
         $this->className = $className;
     }
-
-    function it_gives_group_from_id(EntityRepository $repository, $objectManager)
-    {
-        $objectManager->getRepository($this->className)->willReturn($repository);
-        $repository->findOneById(array(
-                'magentoGroupId' => 2,
-                'magentoUrl'     => 'http://magento.url'
-            )
-        )->willReturn();
-
-    }
 }
