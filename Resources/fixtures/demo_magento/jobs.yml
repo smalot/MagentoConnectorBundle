@@ -55,10 +55,10 @@ jobs:
             website:          base
             storeviewMapping: ''
 
-    magento_family_export:
+    magento_attributeset_export:
         connector: Magento Connector
-        alias:     magento_family_export
-        label:     Magento family export
+        alias:     magento_attributeset_export
+        label:     Magento attributeset export
         type:      export
         configuration:
             channel:          magento
