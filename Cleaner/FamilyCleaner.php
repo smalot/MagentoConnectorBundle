@@ -46,11 +46,11 @@ class FamilyCleaner extends Cleaner
 
         $magentoFamilies = $this->webservice->getAttributeSetList();
 
-        foreach ($magentoFamilies as $family) {
+        foreach ($magentoFamilies as $name => $id) {
             try {
-                $this->handleFamilyNotInPimAnymore($family);
+                $this->handleFamilyNotInPimAnymore($name, $id);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array(json_encode($family)));
+                throw new InvalidItemException($e->getMessage(), array(json_encode($name)));
             }
         }
     }
@@ -59,10 +59,11 @@ class FamilyCleaner extends Cleaner
      * Handle deletion of families that are not in PIM anymore
      * @param array $family
      */
-    protected function handleFamilyNotInPimAnymore($family)
+    protected function handleFamilyNotInPimAnymore($name, $id)
     {
-        if (!$this->familyMappingManager->magentoFamilyExists($family, $this->getSoapUrl())) {
-            $this->webservice->removeAttributeSet($family);
+        if (!$this->familyMappingManager->magentoFamilyExists($id, $this->getSoapUrl())
+        && !in_array($name, $this->getIgnoredFamilies())) {
+            $this->webservice->removeAttributeSet($id);
             $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
         }
     }
@@ -85,6 +86,18 @@ class FamilyCleaner extends Cleaner
                     )
                 )
             )
+        );
+    }
+
+    /**
+     * Get all ignored families
+     *
+     * @return array
+     */
+    protected function getIgnoredFamilies()
+    {
+        return array(
+            'Default',
         );
     }
 }
