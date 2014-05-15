@@ -58,7 +58,9 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $attribute->getFamilies()->willReturn(array());
         $attribute->getGroup()->willReturn(null);
+
         $webservice->createAttribute(Argument::any())->willReturn(12);
+
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
         $this->write($attributes);
@@ -88,14 +90,18 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $attribute->getFamilies()->willReturn(array($family));
         $attribute->getGroup()->willReturn($group);
-        $group->getCode()->willReturn('group_name');
-        $familyMappingManager->getIdFromFamily(Argument::any(), 'barfoo')->willReturn(414);
-        $webservice->addAttributeGroupToAttributeSet(414, 'group_name')->shouldBeCalled()->willReturn(797);
-        $attributeGroupMappingManager->registerGroupMapping($group, $family, 797, 'barfoo')->shouldBeCalled();
 
+        $group->getCode()->willReturn('group_name');
+
+        $familyMappingManager->getIdFromFamily(Argument::any(), 'barfoo')->willReturn(414);
+
+        $webservice->addAttributeGroupToAttributeSet(414, 'group_name')->shouldBeCalled()->willReturn(797);
         $webservice->createAttribute(Argument::any())->willReturn(12);
-        $attributeGroupMappingManager->getIdFromGroup($group, $family, 'barfoo')->willReturn(797);
         $webservice->addAttributeToAttributeSet(12, 414, 797)->shouldBeCalled();
+
+        $attributeGroupMappingManager->registerGroupMapping($group, $family, 797, 'barfoo')->shouldBeCalled();
+        $attributeGroupMappingManager->getIdFromGroup($group, $family, 'barfoo')->willReturn(797);
+
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
         $this->write($attributes);
@@ -108,7 +114,6 @@ class AttributeWriterSpec extends ObjectBehavior
         AttributeGroup               $group,
         FamilyMappingManager         $familyMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        MagentoGroupManager          $magentoGroupManager,
         StepExecution                $stepExecution,
         Family                       $family
     ) {
@@ -127,17 +132,21 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $attribute->getFamilies()->willReturn(array($family));
         $attribute->getGroup()->willReturn($group);
-        $group->getCode()->willReturn('group_name');
-        $familyMappingManager->getIdFromFamily(Argument::any(), 'barfoo')->willReturn(414);
-        $webservice->addAttributeGroupToAttributeSet('414', 'group_name')->willThrow(new SoapCallException('Group already exists.'));
-        $attributeGroupMappingManager->registerGroupMapping(Argument::cetera())->shouldNotBeCalled();
-        $magentoGroupManager->registerMagentoGroup(Argument::cetera())->shouldNotBeCalled();
-        $stepExecution->incrementSummaryInfo('Group was already in attribute set on magento')->shouldBeCalled();
 
+        $group->getCode()->willReturn('group_name');
+
+        $familyMappingManager->getIdFromFamily($family, 'barfoo')->willReturn(414);
+
+        $webservice->addAttributeGroupToAttributeSet('414', 'group_name')->willThrow(new SoapCallException('Group already exists.'));
         $webservice->createAttribute(Argument::any())->willReturn(12);
-        $attributeGroupMappingManager->getIdFromGroup(Argument::any(), 'barfoo')->willReturn(797);
         $webservice->addAttributeToAttributeSet(12, 414, 797)->shouldBeCalled();
+
+        $attributeGroupMappingManager->registerGroupMapping(Argument::cetera())->shouldNotBeCalled();
+        $attributeGroupMappingManager->getIdFromGroup(Argument::any(), $family, 'barfoo')->willReturn(797);
+
+        $stepExecution->incrementSummaryInfo('Group was already in attribute set on magento')->shouldBeCalled();
         $stepExecution->incrementSummaryInfo('Attributes created')->shouldBeCalled();
+
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
         $this->write($attributes);
