@@ -103,16 +103,16 @@ pim_magento_connector:
             help:  Que faire sur Magento si un item n'est plus dans la PIM ?
         notCompleteAnymoreAction:
             label: Action pour les items quine sont pas complet
-            help:  Que faire sur Magento si un item n'es pas complet dans Akeneo PIM ?
+            help:  Que faire sur Magento si un item n'est pas complet dans Akeneo PIM ?
         delete:
-            label: les supprimer
+            label: Les supprimer
         do_nothing:
             label: Ne rien faire
         disable:
             label: Les désactiver
         validator:
-            url_syntax_not_valid: la syntaxe de l'url n'est pas valide
-            url_not_reachable: "L'url n'a pas pu être résolue"
+            url_syntax_not_valid: "La syntaxe de l'url n'est pas valide"
+            url_not_reachable: "L'url magento n'est pas joignable"
             soap_url_not_valid: "L'url de l'api soap n'est pas valide"
             xml_not_valid: "L'xml de magento n'est pas valide"
             authentication_failed: "Le nom d'utilisteur fourni n'est pas valide ou l'utilisateur magento n'a pas les droits d'accéder à l'api soap de Magento"
