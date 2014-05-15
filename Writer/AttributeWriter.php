@@ -89,7 +89,9 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Handle attribute creation and update
+     *
      * @param array $attribute
+     * @param AbstractAttribute $pimAttribute
      *
      * @throws InvalidItemException
      */
@@ -119,6 +121,9 @@ class AttributeWriter extends AbstractWriter
     /**
      * Get the magento group id
      *
+     * @param AbstractAttribute $pimAttribute
+     * @param Family $pimFamily
+     *
      * @return int|null
      */
     protected function getGroupId(AbstractAttribute $pimAttribute, Family $pimFamily)
@@ -137,8 +142,8 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Add attribute to corresponding attribute sets
-     * @param integer $magentoAttributeId ID of magento attribute
-     * @param integer $magentoGroupId
+     * @param integer           $magentoAttributeId ID of magento attribute
+     * @param AbstractAttribute $pimAttribute
      *
      * @return void
      */
@@ -164,13 +169,15 @@ class AttributeWriter extends AbstractWriter
     /**
      * Create a group in an attribute set
      *
+     * @param AbstractAttribute $pimAttribute
+     *
      * @return void
      */
     protected function addGroupToAttributeSet($pimAttribute)
     {
         $families = $pimAttribute->getFamilies();
-
         $group = $pimAttribute->getGroup();
+
         if (isset($group)) {
             $groupName = $group->getCode();
 
