@@ -54,9 +54,12 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
     {
         $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn(array($attributeMapping));
 
-        $magentoAttributeMappingMerger->getTarget('attribute_code')->willReturn('attribute_code');
+        $magentoAttributeMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget('attribute_code')->willReturn('attribute_code');
 
-        $this->getMapping()->shouldReturn($mappingCollection);
+        $this->getMapping()->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
+        $mappingCollection = $this->getMapping();
+
         $mappingCollection->getTarget(12)->shouldReturn('attribute_code');
     }
 
@@ -64,9 +67,12 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
     {
         $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn(array($attributeMapping));
 
-        $magentoAttributeMappingMerger->getTarget('attribute_code')->willReturn('attribute_code_mapped');
+        $magentoAttributeMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget('attribute_code')->willReturn('attribute_code_mapped');
 
-        $this->getMapping()->shouldReturn($mappingCollection);
+        $this->getMapping()->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
+        $mappingCollection = $this->getMapping();
+
         $mappingCollection->getTarget(12)->shouldReturn('attribute_code_mapped');
     }
 }
