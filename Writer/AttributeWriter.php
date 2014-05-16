@@ -142,8 +142,12 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Add attribute to corresponding attribute sets
+     *
      * @param integer           $magentoAttributeId ID of magento attribute
      * @param AbstractAttribute $pimAttribute
+     *
+     * @throws \Exception
+     * @throws \SoapCallException
      *
      * @return void
      */
@@ -170,6 +174,9 @@ class AttributeWriter extends AbstractWriter
      * Create a group in an attribute set
      *
      * @param AbstractAttribute $pimAttribute
+     *
+     * @throws \Exception
+     * @throws \SoapCallException
      *
      * @return void
      */
