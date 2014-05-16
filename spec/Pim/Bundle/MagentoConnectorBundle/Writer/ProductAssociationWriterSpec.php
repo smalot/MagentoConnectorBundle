@@ -4,6 +4,8 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -23,13 +25,46 @@ class ProductAssociationWriterSpec extends ObjectBehavior
         $webservice->removeProductAssociation(array('foo'))->shouldBeCalled();
         $webservice->createProductAssociation(array('bar'))->shouldBeCalled();
 
-        $this->write(
+        $productAssociationCallsBatchs =
             array(
                 array(
                     'remove' => array(array('foo')),
                     'create' => array(array('bar'))
                 )
-            )
-        );
+            );
+
+        $this->write($productAssociationCallsBatchs);
+    }
+
+    function it_fails_if_an_error_occured_with_remove_call($webservice)
+    {
+        $webservice->removeProductAssociation(array('foo'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->createProductAssociation(array('bar'))->shouldNotBeCalled();
+
+        $productAssociationCallsBatchs =
+            array(
+                array(
+                    'remove' => array(array('foo')),
+                    'create' => array(array('bar'))
+                )
+            );
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($productAssociationCallsBatchs);
+    }
+
+    function it_fails_if_an_error_occured_with_create_call($webservice)
+    {
+        $webservice->removeProductAssociation(array('foo'))->shouldBeCalled();
+        $webservice->createProductAssociation(array('bar'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+
+        $productAssociationCallsBatchs =
+            array(
+                array(
+                    'remove' => array(array('foo')),
+                    'create' => array(array('bar'))
+                )
+            );
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($productAssociationCallsBatchs);
     }
 }

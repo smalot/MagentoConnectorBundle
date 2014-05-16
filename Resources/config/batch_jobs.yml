@@ -43,7 +43,7 @@ connector:
                     services:
                         cleaner: pim_magento_connector.cleaner.configurable
         magento_product_export_delta:
-            title: pim_magento_connector.jobs.product_export.title
+            title: pim_magento_connector.jobs.product_delta_export.title
             type:  export
             templates:
                 show: 'PimMagentoConnectorBundle:Export:show.html.twig'
