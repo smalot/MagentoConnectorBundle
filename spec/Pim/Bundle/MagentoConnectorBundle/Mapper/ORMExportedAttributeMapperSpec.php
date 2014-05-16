@@ -44,9 +44,10 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper');
     }
 
-    function it_should_return_a_mapping_collection_on_get_mapping()
+    function it_should_return_a_mapping_collection_on_get_mapping(AttributeMappingManager $attributeMappingManager, MagentoSoapClientParameters $clientParameters)
     {
-        $this->getMapping()->shouldReturnAnInstanceOf('MappingCollection');
+        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn(array());
+        $this->getMapping()->shouldReturnAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
     }
 
     function it_should_get_mapping_from_exported_attributes_table($attributeMappingManager, $clientParameters, MappingCollection $mapping, $attributeMapping, $attribute, $magentoAttributeMappingMerger)
