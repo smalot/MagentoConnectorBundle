@@ -100,13 +100,13 @@ class AttributeWriter extends AbstractWriter
             $magentoAttributeId = $this->attributeMappingManager
                 ->getIdFromAttribute($pimAttribute, $this->getSoapUrl());
 
-            $this->attributeSetManager($magentoAttributeId, $pimAttribute);
+            $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
 
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
             $magentoAttributeId = $this->webservice->createAttribute($attribute);
 
-            $this->attributeSetManager($magentoAttributeId, $pimAttribute);
+            $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
 
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
@@ -125,7 +125,7 @@ class AttributeWriter extends AbstractWriter
      * @param integer $magentoAttributeId
      * @param array   $pimAttribute
      */
-    protected function attributeSetManager($magentoAttributeId, $pimAttribute)
+    protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
     {
         if (null === $magentoAttributeId) {
             $attributes = $this->webservice->getAllAttributes();
