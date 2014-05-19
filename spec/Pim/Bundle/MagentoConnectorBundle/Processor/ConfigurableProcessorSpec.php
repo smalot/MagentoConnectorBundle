@@ -42,7 +42,8 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         MappingCollection           $mappingCollection,
         ProductNormalizer           $productNormalizer,
         GroupRepository             $groupRepository,
-        ConfigurableNormalizer      $configurableNormalizer
+        ConfigurableNormalizer      $configurableNormalizer,
+        Group $group
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -102,7 +103,10 @@ class ConfigurableProcessorSpec extends ObjectBehavior
             $productNormalizer,
             Argument::type('\Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager')
         )->willReturn($configurableNormalizer);
+
         $groupManager->getRepository()->willReturn($groupRepository);
+
+        $group->getId()->willReturn(1);
     }
 
     function it_throws_an_exception_if_groups_dont_matched_with_variant_group($groupRepository, $webservice, Product $product)
@@ -117,16 +121,20 @@ class ConfigurableProcessorSpec extends ObjectBehavior
     function it_processes_products(
         $groupRepository,
         $webservice,
+        $group,
         $configurableNormalizer,
-        Product $product,
-        Group $group
+        Product $product
     ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+
         $product->getGroups()->willReturn(array($group));
-        $group->getId()->willReturn(1);
+
         $group->getCode()->willReturn('abcd');
+
         $configurable = array('group' => $group, 'products' => array($product));
+
         $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-abcd')));
+
         $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->shouldBeCalled();
 
         $this->process(array($product));
@@ -135,9 +143,9 @@ class ConfigurableProcessorSpec extends ObjectBehavior
     function it_processes_products_even_if_magento_configurable_doesnt_exist(
         $groupRepository,
         $webservice,
+        $group,
         $configurableNormalizer,
         Product $product,
-        Group $group,
         Family $family
     ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
@@ -145,7 +153,6 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $product->getGroups()->willReturn(array($group));
         $product->getFamily()->shouldBeCalled()->willReturn($family);
 
-        $group->getId()->willReturn(1);
         $group->getCode()->willReturn('abcd');
 
         $family->getCode()->willReturn('family_code');
@@ -163,10 +170,10 @@ class ConfigurableProcessorSpec extends ObjectBehavior
     function it_throws_an_exception_if_there_are_products_products_with_different_families(
         $groupRepository,
         $webservice,
+        $group,
         $configurableNormalizer,
         Product $product,
         Product $product_2,
-        Group $group,
         Family $family,
         Family $family_2
     ) {
@@ -177,7 +184,6 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $product_2->getFamily()->shouldBeCalled()->willReturn($family_2);
 
-        $group->getId()->willReturn(1);
         $group->getCode()->willReturn('abcd');
 
         $family->getCode()->willReturn('family_code');
