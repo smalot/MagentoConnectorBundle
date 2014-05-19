@@ -177,4 +177,13 @@ class CategoryProcessorSpec extends ObjectBehavior
             'foo' => 'bar',
         ));
     }
+
+    function it_sets_storeview_mapping($storeViewMappingMerger, MappingCollection $mappingCollection)
+    {
+        $storeViewMappingMerger->setMapping(json_decode('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}', true))->willReturn(array('fr_FR' => array('source' => 'fr_FR', 'target' => 'fr_fr')));
+        $storeViewMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
+        $mappingCollection->toArray()->shouldBeCalled()->willReturn(array('fr_FR' => array('source' => 'fr_FR', 'target' => 'fr_fr', 'deletable' => 'true')));
+
+        $this->setStoreviewMapping('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}')->shouldReturn($this);
+    }
 }
