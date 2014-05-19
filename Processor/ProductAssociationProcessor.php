@@ -299,7 +299,7 @@ class ProductAssociationProcessor extends AbstractProcessor
                 'pimUpSell' => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
+                        'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimUpSell.help',
                         'label'    => 'pim_magento_connector.export.pimUpSell.label'
                     )
@@ -307,7 +307,7 @@ class ProductAssociationProcessor extends AbstractProcessor
                 'pimCrossSell' => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
+                        'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimCrossSell.help',
                         'label'    => 'pim_magento_connector.export.pimCrossSell.label'
                     )
@@ -315,7 +315,7 @@ class ProductAssociationProcessor extends AbstractProcessor
                 'pimRelated' => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
+                        'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimRelated.help',
                         'label'    => 'pim_magento_connector.export.pimRelated.label'
                     )
@@ -323,7 +323,7 @@ class ProductAssociationProcessor extends AbstractProcessor
                 'pimGrouped' => array(
                     'type'    => 'choice',
                     'options' => array(
-                        'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
+                        'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimGrouped.help',
                         'label'    => 'pim_magento_connector.export.pimGrouped.label'
                     )
