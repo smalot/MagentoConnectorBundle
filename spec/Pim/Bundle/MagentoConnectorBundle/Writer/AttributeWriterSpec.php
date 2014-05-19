@@ -8,6 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoAttributeCodeMapper;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
@@ -24,6 +25,7 @@ class AttributeWriterSpec extends ObjectBehavior
         FamilyMappingManager         $familyMappingManager,
         AttributeMappingManager      $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
+        MagentoAttributeCodeMapper   $magentoAttributeCodeMapper,
         Webservice                   $webservice,
         StepExecution                $stepExecution
     ) {
@@ -33,7 +35,8 @@ class AttributeWriterSpec extends ObjectBehavior
             $webserviceGuesser,
             $familyMappingManager,
             $attributeMappingManager,
-            $attributeGroupMappingManager
+            $attributeGroupMappingManager,
+            $magentoAttributeCodeMapper
         );
         $this->setStepExecution($stepExecution);
     }

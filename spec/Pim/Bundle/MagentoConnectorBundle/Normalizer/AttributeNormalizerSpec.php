@@ -49,7 +49,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attributeMapping->getTarget('2ttribute_code')->willReturn('2ttribute_code');
         $attributeMapping->getTarget('attributeCode')->willReturn('attributeCode');
 
-        $this->baseContext['attributeMapping'] = $attributeMapping;
+        $this->baseContext['attributeCodeMapping'] = $attributeMapping;
         $this->baseContext['storeViewMapping'] = $storeViewMapping;
     }
 

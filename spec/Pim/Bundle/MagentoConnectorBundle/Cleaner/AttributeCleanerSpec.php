@@ -101,19 +101,19 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
-    function it_shoulds_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
+    function it_should_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
     {
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
         $mappingCollection->toArray()->willReturn(array());
 
-        $this->getAttributeMapping()->shouldReturn('[]');
+        $this->getAttributeCodeMapping()->shouldReturn('[]');
     }
 
     function it_shoulds_set_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
     {
         $attributeMappingMerger->setMapping(array())->shouldBeCalled();
 
-        $this->setAttributeMapping('[]');
+        $this->setAttributeCodeMapping('[]');
     }
 
     function it_shoulds_give_configuration_fields($attributeMappingMerger)
