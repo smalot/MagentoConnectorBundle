@@ -24,6 +24,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
+use Pim\Bundle\CatalogBundle\Entity\Group;
 
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
@@ -109,12 +110,25 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $groupManager->getRepository()->willReturn($groupRepository);
     }
 
-    function it_throws_an_exception_if_the_variant_group_is_not_associated_to_any_product($groupRepository, $webservice, Product $product)
+    function it_throws_an_exception_if_groups_dont_matched_with_variant_group($groupRepository, $webservice, Product $product)
     {
         $groupRepository->getVariantGroupIds()->willReturn(array());
         $product->getGroups()->willReturn(Argument::type('\Doctrine\Common\Collections\ArrayCollection'));
-        $webservice->getConfigurablesStatus(array(array()))->willReturn(array());
+        $webservice->getConfigurablesStatus(array())->willReturn(array());
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+    }
+
+    function it_processes_products($groupRepository, $webservice, $configurableNormalizer, Product $product, Group $group)
+    {
+        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+        $product->getGroups()->willReturn(array($group));
+        $group->getId()->willReturn(1);
+        $group->getCode()->willReturn('abcd');
+        $configurable = array('group' => $group, 'products' => array($product));
+        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-abcd')));
+        $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->shouldBeCalled();
+
+        $this->process(array($product));
     }
 }

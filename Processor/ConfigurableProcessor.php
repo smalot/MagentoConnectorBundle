@@ -101,9 +101,13 @@ class ConfigurableProcessor extends AbstractProductProcessor
         $configurables        = $this->getProductsForGroups($items, $groupsIds);
         $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
 
+        if (count($configurables) === 0) {
+            throw new InvalidItemException('Groups didn\'t match with variants groups', array($configurables));
+        }
+
         foreach ($configurables as $configurable) {
 
-            if (!isset($configurable['products'])) {
+            if (count($configurable['products']) === 0) {
                 throw new InvalidItemException(
                     'The variant group is not associated to any products',
                     array($configurable)
@@ -213,7 +217,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      */
     protected function getProductsForGroups(array $products, array $groupsIds)
     {
-        $groups = array(array());
+        $groups = array();
 
         foreach ($products as $product) {
             foreach ($product->getGroups() as $group) {
