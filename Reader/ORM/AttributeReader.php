@@ -27,26 +27,28 @@ class AttributeReader extends EntityReader
     /**
      * @var string
      */
-    protected $attributeMapping = '';
+    protected $attributeCodeMapping = '';
 
     /**
-     * Set attribute mapping
-     * @param string $attributeMapping
+     * Set attribute code mapping
+     *
+     * @param string $attributeCodeMapping
      *
      * @return AttributeProcessor
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get attribute id mapping
+     *
      * @return string
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
     }
@@ -72,7 +74,7 @@ class AttributeReader extends EntityReader
 
         $attributeMapping = $this->attributeMappingMerger->getMapping();
 
-        while ($attribute !== null && $this->isAttriguteIgnored($attribute, $attributeMapping)) {
+        while ($attribute !== null && $this->isAttributeIgnored($attribute, $attributeMapping)) {
             $attribute = parent::read();
         }
 
@@ -87,7 +89,7 @@ class AttributeReader extends EntityReader
      *
      * @return boolean
      */
-    protected function isAttriguteIgnored(AbstractAttribute $attribute, MappingCollection $attributeMapping)
+    protected function isAttributeIgnored(AbstractAttribute $attribute, MappingCollection $attributeMapping)
     {
         return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes())
             || $attribute->getAttributeType() === self::IMAGE_ATTRIBUTE_TYPE;
@@ -111,6 +113,7 @@ class AttributeReader extends EntityReader
 
     /**
      * Get all ignored attributes
+     *
      * @return array
      */
     protected function getIgnoredAttributes()
@@ -130,7 +133,7 @@ class AttributeReader extends EntityReader
     {
         parent::afterConfigurationSet();
 
-        $this->attributeMappingMerger->setParameters($this->getClientParameters());
+        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getSoapUrl());
     }
 
     /**

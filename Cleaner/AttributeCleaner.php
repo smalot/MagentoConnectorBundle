@@ -40,7 +40,7 @@ class AttributeCleaner extends Cleaner
     /**
      * @var string
      */
-    protected $attributeMapping;
+    protected $attributeCodeMapping;
 
     /**
      * @param WebserviceGuesser    $webserviceGuesser
@@ -62,23 +62,24 @@ class AttributeCleaner extends Cleaner
     }
 
     /**
-     * Set attribute mapping
-     * @param string $attributeMapping
+     * Set attribute code mapping
+     *
+     * @param string $attributeCodeMapping
      *
      * @return AttributeCleaner
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get attribute code mapping
      * @return string
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
     }

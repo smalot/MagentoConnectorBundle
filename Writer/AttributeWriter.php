@@ -8,6 +8,8 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoAttributeCodeMapper;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 
@@ -47,23 +49,31 @@ class AttributeWriter extends AbstractWriter
     protected $attributeGroupMappingManager;
 
     /**
+     * @var MagentoAttributeCodeMapper
+     */
+    protected $magentoAttributeCodeMapper;
+
+    /**
      * Constructor
      *
      * @param WebserviceGuesser            $webserviceGuesser
      * @param FamilyMappingManager         $familyMappingManager
      * @param AttributeMappingManager      $attributeMappingManager
      * @param AttributeGroupMappingManager $attributeGroupMappingManager
+     * @param MagentoAttributeCodeMapper   $magentoAttributeCodeMapper
      */
     public function __construct(
         WebserviceGuesser            $webserviceGuesser,
         FamilyMappingManager         $familyMappingManager,
         AttributeMappingManager      $attributeMappingManager,
-        AttributeGroupMappingManager $attributeGroupMappingManager
+        AttributeGroupMappingManager $attributeGroupMappingManager,
+        MagentoAttributeCodeMapper   $magentoAttributeCodeMapper
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->attributeMappingManager      = $attributeMappingManager;
-        $this->familyMappingManager         = $familyMappingManager;
+        $this->attributeMappingManager = $attributeMappingManager;
+        $this->familyMappingManager    = $familyMappingManager;
+        $this->magentoAttributeCodeMapper    = $magentoAttributeCodeMapper;
         $this->attributeGroupMappingManager = $attributeGroupMappingManager;
     }
 

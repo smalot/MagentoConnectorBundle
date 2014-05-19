@@ -75,7 +75,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeMapping;
+    protected $attributeCodeMapping;
 
     /**
      * @var MagentoMappingMerger
@@ -231,25 +231,25 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
-     * get attributeMapping
+     * get attribute code mapping
      *
-     * @return string attributeMapping
+     * @return string attributeCodeMapping
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
     }
 
     /**
-     * Set attributeMapping
+     * Set attribute code mapping
      *
-     * @param string $attributeMapping attributeMapping
+     * @param string $attributeCodeMapping attributeCodeMapping
      *
      * @return AbstractProcessor
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
@@ -281,7 +281,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                 'magentoAttributesOptions' => $magentoAttributesOptions,
                 'magentoStoreViews'        => $magentoStoreViews,
                 'categoryMapping'          => $this->categoryMappingMerger->getMapping(),
-                'attributeMapping'          => $this->attributeMappingMerger->getMapping()
+                'attributeCodeMapping'         => $this->attributeMappingMerger->getMapping()
             )
         );
     }

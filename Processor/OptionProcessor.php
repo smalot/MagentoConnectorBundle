@@ -34,7 +34,7 @@ class OptionProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeMapping;
+    protected $attributeCodeMapping;
 
     /**
      * @param WebserviceGuesser        $webserviceGuesser
@@ -56,23 +56,25 @@ class OptionProcessor extends AbstractProcessor
     }
 
     /**
-     * Set attribute mapping
-     * @param string $attributeMapping
+     * Set attribute code mapping
+     *
+     * @param string $attributeCodeMapping
      *
      * @return AttributeProcessor
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get attribute code mapping
+     *
      * @return string
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
     }
@@ -89,7 +91,7 @@ class OptionProcessor extends AbstractProcessor
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
         $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
-        $this->globalContext['attributeMapping']  = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['attributeCodeMapping']  = $this->attributeMappingMerger->getMapping();
     }
 
     /**
@@ -100,7 +102,7 @@ class OptionProcessor extends AbstractProcessor
         $this->beforeExecute();
 
         $attribute     = $groupedOptions[0]->getAttribute();
-        $attributeCode = strtolower($this->globalContext['attributeMapping']->getTarget($attribute->getCode()));
+        $attributeCode = strtolower($this->globalContext['attributeCodeMapping']->getTarget($attribute->getCode()));
 
         try {
             $optionsStatus = $this->webservice->getAttributeOptions($attributeCode);

@@ -8,14 +8,14 @@ services:
         class: %pim_magento_connector.merger.mapping.class%
         arguments:
             - ['@pim_magento_connector.mapper.magento_attribute_code', '@pim_magento_connector.mapper.orm_attribute_code']
-            - 'attribute_code'
+            - 'attributeCode'
             - 'export'
             - %pim_magento_connector.merger.addition_allowed%
     pim_magento_connector.merger.attribute_id_mapping:
         class: %pim_magento_connector.merger.mapping.class%
         arguments:
             - ['@pim_magento_connector.mapper.magento_attribute_code', '@pim_magento_connector.mapper.orm_attribute_code']
-            - 'attribute_id'
+            - 'attributeId'
             - 'export'
             - %pim_magento_connector.merger.addition_not_allowed%
     pim_magento_connector.merger.storeview_mapping:
