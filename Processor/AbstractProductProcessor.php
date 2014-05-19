@@ -281,7 +281,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                 'magentoAttributesOptions' => $magentoAttributesOptions,
                 'magentoStoreViews'        => $magentoStoreViews,
                 'categoryMapping'          => $this->categoryMappingMerger->getMapping(),
-                'attributeMapping'          => $this->attributeMappingMerger->getMapping()
+                'attributeMapping'         => $this->attributeMappingMerger->getMapping()
             )
         );
     }
