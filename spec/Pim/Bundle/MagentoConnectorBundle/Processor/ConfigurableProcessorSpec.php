@@ -2,30 +2,24 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Prophecy\Argument;
-use PhpSpec\ObjectBehavior;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\CatalogBundle\Model\Product;
-use Doctrine\Common\Collections\ArrayCollection;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Entity\Family;
+
+use Prophecy\Argument;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
