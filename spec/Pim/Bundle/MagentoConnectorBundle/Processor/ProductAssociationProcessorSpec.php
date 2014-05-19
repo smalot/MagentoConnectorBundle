@@ -78,6 +78,15 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         );
     }
 
+    function it_throws_an_exception_if_something_went_wrong_with_soap_call(
+        ProductInterface $product,
+        $webservice
+    ){
+        $webservice->getAssociationsStatus($product)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+    }
+
     function it_shoulds_be_configurable()
     {
         $this->setPimUpSell('foo');
