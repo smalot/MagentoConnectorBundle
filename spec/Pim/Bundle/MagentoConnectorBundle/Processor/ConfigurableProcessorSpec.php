@@ -165,4 +165,36 @@ class ConfigurableProcessorSpec extends ObjectBehavior
 
         $this->process(array($product));
     }
+
+    function it_throws_an_exception_if_there_are_products_products_with_different_families(
+        $groupRepository,
+        $webservice,
+        $configurableNormalizer,
+        Product $product,
+        Product $product_2,
+        Group $group,
+        Family $family,
+        Family $family_2
+    ) {
+        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+
+        $product->getGroups()->willReturn(array($group));
+        $product_2->getGroups()->willReturn(array($group));
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+        $product_2->getFamily()->shouldBeCalled()->willReturn($family_2);
+
+        $group->getId()->willReturn(1);
+        $group->getCode()->willReturn('abcd');
+
+        $family->getCode()->willReturn('family_code');
+
+        $configurable = array('group' => $group, 'products' => array($product, $product_2));
+
+        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getAttributeSetId(Argument::any())->shouldNotBeCalled();
+
+        $configurableNormalizer->normalize(Argument::cetera())->shouldNotBeCalled();
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product, $product_2));
+    }
 }

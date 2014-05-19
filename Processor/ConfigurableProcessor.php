@@ -200,7 +200,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
             if ($groupFamily != $product->getFamily()) {
                 throw new InvalidItemException(
                     'Your variant group contains products from different families. Magento cannot handle ' .
-                    'configurable products with heterogen attribute sets'
+                    'configurable products with heterogen attribute sets',
+                    array($configurable)
                 );
             }
         }
