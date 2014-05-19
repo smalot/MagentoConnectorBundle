@@ -25,6 +25,7 @@ use Pim\Bundle\CatalogBundle\Model\Product;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Group;
+use Pim\Bundle\CatalogBundle\Entity\Family;
 
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
@@ -119,14 +120,47 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
     }
 
-    function it_processes_products($groupRepository, $webservice, $configurableNormalizer, Product $product, Group $group)
-    {
+    function it_processes_products(
+        $groupRepository,
+        $webservice,
+        $configurableNormalizer,
+        Product $product,
+        Group $group
+    ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
         $product->getGroups()->willReturn(array($group));
         $group->getId()->willReturn(1);
         $group->getCode()->willReturn('abcd');
         $configurable = array('group' => $group, 'products' => array($product));
         $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-abcd')));
+        $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->shouldBeCalled();
+
+        $this->process(array($product));
+    }
+
+    function it_processes_products_even_if_magento_configurable_doesnt_exist(
+        $groupRepository,
+        $webservice,
+        $configurableNormalizer,
+        Product $product,
+        Group $group,
+        Family $family
+    ) {
+        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+
+        $product->getGroups()->willReturn(array($group));
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+
+        $group->getId()->willReturn(1);
+        $group->getCode()->willReturn('abcd');
+
+        $family->getCode()->willReturn('family_code');
+
+        $configurable = array('group' => $group, 'products' => array($product));
+
+        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('attrSet_code');
+
         $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->shouldBeCalled();
 
         $this->process(array($product));
