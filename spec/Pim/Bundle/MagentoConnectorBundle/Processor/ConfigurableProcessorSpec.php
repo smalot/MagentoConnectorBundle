@@ -197,4 +197,58 @@ class ConfigurableProcessorSpec extends ObjectBehavior
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product, $product_2));
     }
+
+    function it_throws_an_exception_if_a_normalization_error_occured(
+        $groupRepository,
+        $webservice,
+        $group,
+        $configurableNormalizer,
+        Product $product,
+        Family $family
+    ) {
+        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+
+        $product->getGroups()->willReturn(array($group));
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+
+        $group->getCode()->willReturn('abcd');
+
+        $family->getCode()->willReturn('family_code');
+
+        $configurable = array('group' => $group, 'products' => array($product));
+
+        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('attrSet_code');
+
+        $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->willThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException');
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+    }
+
+    function it_throws_an_exception_if_a_soap_call_error_occured_during_normalization(
+        $groupRepository,
+        $webservice,
+        $group,
+        $configurableNormalizer,
+        Product $product,
+        Family $family
+    ) {
+        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+
+        $product->getGroups()->willReturn(array($group));
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+
+        $group->getCode()->willReturn('abcd');
+
+        $family->getCode()->willReturn('family_code');
+
+        $configurable = array('group' => $group, 'products' => array($product));
+
+        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('attrSet_code');
+
+        $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+    }
 }
