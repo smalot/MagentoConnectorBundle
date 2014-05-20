@@ -50,8 +50,6 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {
-        $magentoMappingMerger->getMapping()->willReturn($mapping);
-        $mapping->getTarget('attributeName')->willReturn(12);
         $attributes = array(
             array(
                 $attribute,
@@ -69,7 +67,10 @@ class AttributeWriterSpec extends ObjectBehavior
         $attribute->getFamilies()->willReturn(array());
         $attribute->getGroup()->willReturn(null);
 
-        $webservice->createAttribute(Argument::any())->willReturn(12);
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget(Argument::any())->willReturn(12);
+
+        $webservice->createAttribute($attribute)->willReturn(12);
 
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
@@ -87,8 +88,6 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {
-        $magentoMappingMerger->getMapping()->willReturn($mapping);
-        $mapping->getTarget('attributeName')->willReturn(12);
         $attributes = array(
             array(
                 $attribute,
@@ -99,12 +98,16 @@ class AttributeWriterSpec extends ObjectBehavior
                 )
             )
         );
+
         $this->setMagentoUrl('bar');
         $this->setWsdlUrl('foo');
 
         $attribute->getCode()->willReturn('attributeName');
         $attribute->getFamilies()->willReturn(array($family));
         $attribute->getGroup()->willReturn($group);
+
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget($attribute)->willReturn(12);
 
         $group->getCode()->willReturn('group_name');
 
@@ -134,8 +137,6 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {
-        $magentoMappingMerger->getMapping()->willReturn($mapping);
-        $mapping->getTarget('attributeName')->willReturn(12);
         $attributes = array(
             array(
                 $attribute,
@@ -153,11 +154,12 @@ class AttributeWriterSpec extends ObjectBehavior
         $attribute->getFamilies()->willReturn(array($family));
         $attribute->getGroup()->willReturn($group);
 
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget($attribute)->willReturn(12);
+
         $group->getCode()->willReturn('group_name');
 
         $familyMappingManager->getIdFromFamily($family, 'barfoo')->willReturn(414);
-
-
 
         $webservice->addAttributeGroupToAttributeSet('414', 'group_name')->willThrow(new SoapCallException('Group already exists.'));
 

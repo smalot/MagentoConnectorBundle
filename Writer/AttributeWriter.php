@@ -140,7 +140,7 @@ class AttributeWriter extends AbstractWriter
     {
         $pimGroup = $pimAttribute->getGroup();
 
-        if ($pimGroup !== null) {
+        if (null !== $pimGroup) {
             $magentoGroupId = $this->attributeGroupMappingManager
                 ->getIdFromGroup($pimGroup, $pimFamily, $this->getSoapUrl());
         } else {
@@ -169,7 +169,9 @@ class AttributeWriter extends AbstractWriter
             $magentoGroupId  = $this->getGroupId($pimAttribute, $family);
             $magentoFamilyId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
             try {
-                $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $magentoFamilyId, $magentoGroupId);
+                if(null !== $magentoGroupId || null !== $magentoFamilyId) {
+                    $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $magentoFamilyId, $magentoGroupId);
+                }
             } catch (SoapCallException $e) {
                 if (strpos($e->getMessage(), 'already') !== false) {
                     $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
@@ -200,7 +202,12 @@ class AttributeWriter extends AbstractWriter
 
             foreach ($families as $family) {
                 $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
-
+                if (null === $familyMagentoId) {
+                    $magentoAttributeSets = $this->webservice->getAttributeSetList();
+                    if (array_key_exists($family->getCode(), $magentoAttributeSets)) {
+                        $familyMagentoId = $magentoAttributeSets[$family->getCode()];
+                    }
+                }
                 try {
                     $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
                     $this->attributeGroupMappingManager->registerGroupMapping(

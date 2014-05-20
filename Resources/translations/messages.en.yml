@@ -38,6 +38,7 @@ pim_magento_connector:
         attributeset_export.export.title: Family export
         family_clean.clean.title: Family cleaner
         group_clean.clean.title: Group cleaner
+        family_cleaner.title: Family cleaner
     export:
         soapUsername:
             label: Soap Username
