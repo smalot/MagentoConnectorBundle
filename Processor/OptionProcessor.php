@@ -90,7 +90,7 @@ class OptionProcessor extends AbstractProcessor
 
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
-        $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
+        $this->globalContext['magentoStoreViews']     = $magentoStoreViews;
         $this->globalContext['attributeCodeMapping']  = $this->attributeMappingMerger->getMapping();
     }
 

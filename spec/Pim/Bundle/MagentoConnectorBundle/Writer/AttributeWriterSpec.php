@@ -72,7 +72,6 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget(Argument::any())->willReturn(12);
 
-
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
         $this->write($attributes);
