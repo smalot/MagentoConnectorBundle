@@ -8,7 +8,6 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoAttributeCodeMapper;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
@@ -49,9 +48,9 @@ class AttributeWriter extends AbstractWriter
     protected $attributeGroupMappingManager;
 
     /**
-     * @var MagentoAttributeCodeMapper
+     * @var MagentoMappingMerger
      */
-    protected $magentoAttributeCodeMapper;
+    protected $magentoMappingMerger;
 
     /**
      * Constructor
@@ -60,21 +59,23 @@ class AttributeWriter extends AbstractWriter
      * @param FamilyMappingManager         $familyMappingManager
      * @param AttributeMappingManager      $attributeMappingManager
      * @param AttributeGroupMappingManager $attributeGroupMappingManager
-     * @param MagentoAttributeCodeMapper   $magentoAttributeCodeMapper
+     * @param MagentoMappingMerger         $magentoMappingMerger
      */
     public function __construct(
         WebserviceGuesser            $webserviceGuesser,
         FamilyMappingManager         $familyMappingManager,
         AttributeMappingManager      $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        MagentoAttributeCodeMapper   $magentoAttributeCodeMapper
+        MagentoMappingMerger         $magentoMappingMerger
     ) {
         parent::__construct($webserviceGuesser);
 
-        $this->attributeMappingManager = $attributeMappingManager;
-        $this->familyMappingManager    = $familyMappingManager;
-        $this->magentoAttributeCodeMapper    = $magentoAttributeCodeMapper;
+        $this->attributeMappingManager      = $attributeMappingManager;
+        $this->familyMappingManager         = $familyMappingManager;
         $this->attributeGroupMappingManager = $attributeGroupMappingManager;
+        $this->magentoMappingMerger         = $magentoMappingMerger;
+
+        $this->magentoMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**
@@ -107,16 +108,15 @@ class AttributeWriter extends AbstractWriter
      */
     protected function handleAttribute(array $attribute, $pimAttribute)
     {
+        $magentoAttributeId = $this->magentoMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
         if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
             $this->webservice->updateAttribute($attribute);
-            $magentoAttributeId = $this->attributeMappingManager
-                ->getIdFromAttribute($pimAttribute, $this->getSoapUrl());
 
-            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+            $this->addAttributeToAttributeSet($pimAttribute);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
-            $magentoAttributeId = $this->webservice->createAttribute($attribute);
-            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+            $this->webservice->createAttribute($attribute);
+            $this->addAttributeToAttributeSet($pimAttribute);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
             $magentoUrl = $this->getSoapUrl();
@@ -153,7 +153,6 @@ class AttributeWriter extends AbstractWriter
     /**
      * Add attribute to corresponding attribute sets
      *
-     * @param integer           $magentoAttributeId ID of magento attribute
      * @param AbstractAttribute $pimAttribute
      *
      * @throws \Exception
@@ -161,8 +160,9 @@ class AttributeWriter extends AbstractWriter
      *
      * @return void
      */
-    protected function addAttributeToAttributeSet($magentoAttributeId, $pimAttribute)
+    protected function addAttributeToAttributeSet($pimAttribute)
     {
+        $magentoAttributeId = $this->magentoMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
         $families = $pimAttribute->getFamilies();
 
         foreach ($families as $family) {
