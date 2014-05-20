@@ -57,6 +57,7 @@ class MagentoAttributeCodeMapper extends MagentoMapper
                     );
                 }
             }
+
             return $mapping;
         }
     }
