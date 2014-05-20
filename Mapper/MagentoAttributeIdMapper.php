@@ -40,16 +40,15 @@ class MagentoAttributeIdMapper extends MagentoMapper
      */
     public function getMapping()
     {
-        if (!$this->isValid()) {
+        if ($this->isValid()) {
             return new MappingCollection();
         } else {
             $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
-
             $mapping = new MappingCollection();
             foreach ($attributes as $attribute) {
                 $mapping->add([
-                    'source'    => $attribute['attribute_id'],
-                    'target'    => $attribute['code'],
+                    'source'    => $attribute['code'],
+                    'target'    => $attribute['attribute_id'],
                     'deletable' => true
                 ]);
             }

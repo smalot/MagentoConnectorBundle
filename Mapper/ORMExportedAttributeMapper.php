@@ -83,8 +83,8 @@ class ORMExportedAttributeMapper extends Mapper
         foreach ($magentoAttributeMappings as $magentoAttributeMapping) {
             $pimAttributeCode = $magentoAttributeMapping->getAttribute()->getCode();
             $mappingCollection->add([
-                'source'    => $magentoAttributeMapping->getMagentoAttributeId(),
-                'target'    => $attributeCodeMapping->getTarget($pimAttributeCode),
+                'source'    => $attributeCodeMapping->getTarget($pimAttributeCode),
+                'target'    => $magentoAttributeMapping->getMagentoAttributeId(),
                 'deletable' => true
             ]);
         }
