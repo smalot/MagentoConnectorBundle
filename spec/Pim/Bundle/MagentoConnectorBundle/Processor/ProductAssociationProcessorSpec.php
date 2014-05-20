@@ -87,7 +87,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
     }
 
-    function it_shoulds_be_configurable()
+    function it_is_configurable()
     {
         $this->setPimUpSell('foo');
         $this->setPimCrossSell('bar');
