@@ -155,7 +155,7 @@ class AttributeWriter extends AbstractWriter
      * Get the magento group id
      *
      * @param AbstractAttribute $pimAttribute
-     * @param Family $pimFamily
+     * @param Family            $pimFamily
      *
      * @return int|null
      */
