@@ -41,7 +41,7 @@ class ORMAttributeCodeMapper extends ORMPimMapper
      * Get all targets
      * @return array
      */
-    public function getAllTargets()
+    public function getAllSources()
     {
         $targets = array();
 

@@ -66,7 +66,7 @@ class MagentoAttributeCodeMapper extends MagentoMapper
      *
      * @return array
      */
-    public function getAllSources()
+    public function getAllTargets()
     {
         $sources = array();
 
