@@ -4,11 +4,13 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoAttributeCodeMapper;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
@@ -25,9 +27,9 @@ class AttributeWriterSpec extends ObjectBehavior
         FamilyMappingManager         $familyMappingManager,
         AttributeMappingManager      $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        MagentoAttributeCodeMapper   $magentoAttributeCodeMapper,
         Webservice                   $webservice,
-        StepExecution                $stepExecution
+        StepExecution                $stepExecution,
+        MagentoMappingMerger         $magentoMappingMerger
     ) {
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
@@ -36,7 +38,7 @@ class AttributeWriterSpec extends ObjectBehavior
             $familyMappingManager,
             $attributeMappingManager,
             $attributeGroupMappingManager,
-            $magentoAttributeCodeMapper
+            $magentoMappingMerger
         );
         $this->setStepExecution($stepExecution);
     }
@@ -44,8 +46,12 @@ class AttributeWriterSpec extends ObjectBehavior
     function it_sends_attribute_to_create_on_magento_webservice(
         $webservice,
         AbstractAttribute $attribute,
-        AttributeMappingManager $attributeMappingManager
+        AttributeMappingManager $attributeMappingManager,
+        $magentoMappingMerger,
+        MappingCollection $mapping
     ) {
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget('attributeName')->willReturn(12);
         $attributes = array(
             array(
                 $attribute,
@@ -59,6 +65,7 @@ class AttributeWriterSpec extends ObjectBehavior
         $this->setMagentoUrl('bar');
         $this->setWsdlUrl('foo');
 
+        $attribute->getCode()->willReturn('attributeName');
         $attribute->getFamilies()->willReturn(array());
         $attribute->getGroup()->willReturn(null);
 
@@ -76,8 +83,12 @@ class AttributeWriterSpec extends ObjectBehavior
         AttributeGroupMappingManager $attributeGroupMappingManager,
         FamilyMappingManager         $familyMappingManager,
         AttributeGroup               $group,
-        Family                       $family
+        Family                       $family,
+        $magentoMappingMerger,
+        MappingCollection $mapping
     ) {
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget('attributeName')->willReturn(12);
         $attributes = array(
             array(
                 $attribute,
@@ -91,6 +102,7 @@ class AttributeWriterSpec extends ObjectBehavior
         $this->setMagentoUrl('bar');
         $this->setWsdlUrl('foo');
 
+        $attribute->getCode()->willReturn('attributeName');
         $attribute->getFamilies()->willReturn(array($family));
         $attribute->getGroup()->willReturn($group);
 
@@ -118,8 +130,12 @@ class AttributeWriterSpec extends ObjectBehavior
         FamilyMappingManager         $familyMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
         StepExecution                $stepExecution,
-        Family                       $family
+        Family                       $family,
+        $magentoMappingMerger,
+        MappingCollection $mapping
     ) {
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget('attributeName')->willReturn(12);
         $attributes = array(
             array(
                 $attribute,
@@ -133,6 +149,7 @@ class AttributeWriterSpec extends ObjectBehavior
         $this->setMagentoUrl('bar');
         $this->setWsdlUrl('foo');
 
+        $attribute->getCode()->willReturn('attributeName');
         $attribute->getFamilies()->willReturn(array($family));
         $attribute->getGroup()->willReturn($group);
 
@@ -140,7 +157,10 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $familyMappingManager->getIdFromFamily($family, 'barfoo')->willReturn(414);
 
+
+
         $webservice->addAttributeGroupToAttributeSet('414', 'group_name')->willThrow(new SoapCallException('Group already exists.'));
+
         $webservice->createAttribute(Argument::any())->willReturn(12);
         $webservice->addAttributeToAttributeSet(12, 414, 797)->shouldBeCalled();
 

@@ -60,7 +60,8 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
         $this->getMapping()->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
         $mappingCollection = $this->getMapping();
 
-        $mappingCollection->getTarget(12)->shouldReturn('attribute_code');
+        $mappingCollection->getSource(12)->shouldReturn('attribute_code');
+        $mappingCollection->getTarget('attribute_code')->shouldReturn(12);
     }
 
     function it_should_get_mapping_from_exported_attributes_table_with_a_mapped_attribute($attributeMappingManager, $clientParameters, MappingCollection $mapping, $attributeMapping, $attribute, $magentoAttributeMappingMerger)
@@ -73,6 +74,7 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
         $this->getMapping()->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
         $mappingCollection = $this->getMapping();
 
-        $mappingCollection->getTarget(12)->shouldReturn('attribute_code_mapped');
+        $mappingCollection->getSource(12)->shouldReturn('attribute_code_mapped');
+        $mappingCollection->getTarget('attribute_code_mapped')->shouldReturn(12);
     }
 }
