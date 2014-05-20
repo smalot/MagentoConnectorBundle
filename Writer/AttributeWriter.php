@@ -108,15 +108,17 @@ class AttributeWriter extends AbstractWriter
      */
     protected function handleAttribute(array $attribute, $pimAttribute)
     {
-        $magentoAttributeId = $this->magentoMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
         if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
             $this->webservice->updateAttribute($attribute);
+            $magentoAttributeId = $this->magentoMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
+            $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
 
-            $this->addAttributeToAttributeSet($pimAttribute);
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
-            $this->webservice->createAttribute($attribute);
-            $this->addAttributeToAttributeSet($pimAttribute);
+            $magentoAttributeId = $this->webservice->createAttribute($attribute);
+
+            $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
+
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
             $magentoUrl = $this->getSoapUrl();
@@ -129,10 +131,31 @@ class AttributeWriter extends AbstractWriter
     }
 
     /**
+     * Verify if the magento attribute id is null else add the attribute to the attribute set
+     *
+     * @param integer $magentoAttributeId
+     * @param array   $pimAttribute
+     */
+    protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
+    {
+        if (null === $magentoAttributeId) {
+            $attributes = $this->webservice->getAllAttributes();
+            foreach ($attributes as $attribute) {
+                if ($pimAttribute->getCode() === $attribute['code']) {
+                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                    break;
+                }
+            }
+        } else {
+            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+        }
+    }
+
+    /**
      * Get the magento group id
      *
      * @param AbstractAttribute $pimAttribute
-     * @param Family            $pimFamily
+     * @param Family $pimFamily
      *
      * @return int|null
      */
@@ -140,7 +163,7 @@ class AttributeWriter extends AbstractWriter
     {
         $pimGroup = $pimAttribute->getGroup();
 
-        if (null !== $pimGroup) {
+        if ($pimGroup !== null) {
             $magentoGroupId = $this->attributeGroupMappingManager
                 ->getIdFromGroup($pimGroup, $pimFamily, $this->getSoapUrl());
         } else {
@@ -153,25 +176,23 @@ class AttributeWriter extends AbstractWriter
     /**
      * Add attribute to corresponding attribute sets
      *
-     * @param AbstractAttribute $pimAttribute
+     * @param integer $magentoAttributeId ID of magento attribute
+     * @param         $pimAttribute
      *
      * @throws \Exception
      * @throws \SoapCallException
      *
      * @return void
      */
-    protected function addAttributeToAttributeSet($pimAttribute)
+    protected function addAttributeToAttributeSet($magentoAttributeId, $pimAttribute)
     {
-        $magentoAttributeId = $this->magentoMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
         $families = $pimAttribute->getFamilies();
 
         foreach ($families as $family) {
             $magentoGroupId  = $this->getGroupId($pimAttribute, $family);
             $magentoFamilyId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
             try {
-                if(null !== $magentoGroupId || null !== $magentoFamilyId) {
-                    $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $magentoFamilyId, $magentoGroupId);
-                }
+                $this->webservice->addAttributeToAttributeSet($magentoAttributeId, $magentoFamilyId, $magentoGroupId);
             } catch (SoapCallException $e) {
                 if (strpos($e->getMessage(), 'already') !== false) {
                     $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);

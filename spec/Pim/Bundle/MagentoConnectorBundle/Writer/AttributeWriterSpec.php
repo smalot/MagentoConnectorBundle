@@ -67,10 +67,11 @@ class AttributeWriterSpec extends ObjectBehavior
         $attribute->getFamilies()->willReturn(array());
         $attribute->getGroup()->willReturn(null);
 
+        $webservice->createAttribute(Argument::any())->willReturn(12);
+
         $magentoMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget(Argument::any())->willReturn(12);
 
-        $webservice->createAttribute($attribute)->willReturn(12);
 
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
