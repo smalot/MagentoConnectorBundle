@@ -84,7 +84,7 @@ class AttributeProcessor extends AbstractProcessor
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
-        $this->globalContext['attributeCodeMapping']         = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['attributeCodeMapping']     = $this->attributeMappingMerger->getMapping();
         $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
     }
 
