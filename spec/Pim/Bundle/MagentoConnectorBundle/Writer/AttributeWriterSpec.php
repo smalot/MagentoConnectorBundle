@@ -71,6 +71,7 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $magentoMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget(Argument::any())->willReturn(12);
+        $mapping->getSource(12)->willReturn(12);
 
         $attributeMappingManager->registerAttributeMapping($attribute, 12, 'barfoo')->shouldBeCalled();
 
@@ -108,6 +109,7 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $magentoMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget($attribute)->willReturn(12);
+        $mapping->getSource(12)->willReturn(12);
 
         $group->getCode()->willReturn('group_name');
 
@@ -156,6 +158,7 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $magentoMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget($attribute)->willReturn(12);
+        $mapping->getSource(12)->willReturn(12);
 
         $group->getCode()->willReturn('group_name');
 
