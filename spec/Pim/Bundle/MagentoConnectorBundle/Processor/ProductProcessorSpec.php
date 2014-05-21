@@ -95,7 +95,7 @@ class ProductProcessorSpec extends ObjectBehavior
         )
         ->willReturn($productNormalizer);
 
-        $webservice->getAllAttributesOptions()->willReturn(Argument::type('array'));
+        $webservice->getAllAttributesOptions()->willReturn(array());
         $webservice->getProductsStatus(array($product))->willReturn(
             array(
                 array(
@@ -146,13 +146,14 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
+        $mappingCollection,
         Product         $product,
         Channel         $channel,
         Family          $family,
         MetricConverter $metricConverter
     ) {
-        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
+        $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
@@ -173,13 +174,14 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
+        $mappingCollection,
         Product         $product,
         Channel         $channel,
         Family          $family,
         MetricConverter $metricConverter
     ) {
-        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
+        $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
@@ -200,12 +202,13 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
+        $mappingCollection,
         Product         $product,
         Family          $family,
         MetricConverter $metricConverter
     ) {
-        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
+        $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
@@ -226,13 +229,14 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
+        $mappingCollection,
         Product         $product,
         Channel         $channel,
         Family          $family,
         MetricConverter $metricConverter
     ) {
-        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
+        $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
