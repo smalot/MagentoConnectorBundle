@@ -66,7 +66,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
 
         $webservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
 
-        $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo'), array('id' => 'bar', 'text' => 'bar')));
+        $this->getAllTargets()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo'), array('id' => 'bar', 'text' => 'bar')));
     }
 
     function it_returns_an_empty_array_as_targets_if_parameters_are_not_setted($hasValidCredentialsValidator)
@@ -103,6 +103,6 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
     {
         $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
         $webservice->getAllAttributes()->shouldBeCalledTimes(1)->willReturn(array('foo' => array(), 'bar' => array()));
-        $this->getAllSources();
+        $this->getAllTargets();
     }
 }

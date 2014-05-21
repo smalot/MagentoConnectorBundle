@@ -102,11 +102,14 @@ class AttributeWriter extends AbstractWriter
             $magentoAttributeId = $this->attributeMappingManager
                 ->getIdFromAttribute($pimAttribute, $this->getSoapUrl());
 
-            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+            $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
+
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
         } else {
             $magentoAttributeId = $this->webservice->createAttribute($attribute);
-            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
+
+            $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
+
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
             $magentoUrl = $this->getSoapUrl();
@@ -115,6 +118,27 @@ class AttributeWriter extends AbstractWriter
                 $magentoAttributeId,
                 $magentoUrl
             );
+        }
+    }
+
+    /**
+     * Verify if the magento attribute id is null else add the attribute to the attribute set
+     *
+     * @param integer $magentoAttributeId
+     * @param array   $pimAttribute
+     */
+    protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
+    {
+        if (null === $magentoAttributeId) {
+            $attributes = $this->webservice->getAllAttributes();
+            foreach ($attributes as $attribute) {
+                if ($pimAttribute->getCode() === $attribute['code']) {
+                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
+                    break;
+                }
+            }
+        } else {
+            $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
         }
     }
 
@@ -142,8 +166,12 @@ class AttributeWriter extends AbstractWriter
 
     /**
      * Add attribute to corresponding attribute sets
-     * @param integer           $magentoAttributeId ID of magento attribute
-     * @param AbstractAttribute $pimAttribute
+     *
+     * @param integer $magentoAttributeId ID of magento attribute
+     * @param         $pimAttribute
+     *
+     * @throws \Exception
+     * @throws \SoapCallException
      *
      * @return void
      */
@@ -171,6 +199,9 @@ class AttributeWriter extends AbstractWriter
      *
      * @param AbstractAttribute $pimAttribute
      *
+     * @throws \Exception
+     * @throws \SoapCallException
+     *
      * @return void
      */
     protected function addGroupToAttributeSet($pimAttribute)
@@ -183,7 +214,12 @@ class AttributeWriter extends AbstractWriter
 
             foreach ($families as $family) {
                 $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
-
+                if (null === $familyMagentoId) {
+                    $magentoAttributeSets = $this->webservice->getAttributeSetList();
+                    if (array_key_exists($family->getCode(), $magentoAttributeSets)) {
+                        $familyMagentoId = $magentoAttributeSets[$family->getCode()];
+                    }
+                }
                 try {
                     $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
                     $this->attributeGroupMappingManager->registerGroupMapping(

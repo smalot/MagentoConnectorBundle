@@ -32,6 +32,6 @@ class ORMAttributeMapperSpec extends ObjectBehavior
 
         $attribute->getCode()->willReturn('foo');
 
-        $this->getAllTargets()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
+        $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
     }
 }
