@@ -2,15 +2,22 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
+use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
+
+use Pim\Bundle\CatalogBundle\Entity\Channel;
+use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 
 /**
@@ -21,16 +28,20 @@ use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 class ProductProcessorSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser $webserviceGuesser,
-        NormalizerGuesser $normalizerGuesser,
-        LocaleManager $localeManager,
-        MagentoMappingMerger $storeViewMappingMerger,
-        CurrencyManager $currencyManager,
-        ChannelManager $channelManager,
-        MagentoMappingMerger $categoryMappingMerger,
-        MagentoMappingMerger $attributeMappingMerger,
-        MetricConverter $metricConverter,
-        AssociationTypeManager $associationTypeManager
+        WebserviceGuesser      $webserviceGuesser,
+        NormalizerGuesser      $normalizerGuesser,
+        LocaleManager          $localeManager,
+        MagentoMappingMerger   $storeViewMappingMerger,
+        CurrencyManager        $currencyManager,
+        ChannelManager         $channelManager,
+        MagentoMappingMerger   $categoryMappingMerger,
+        MagentoMappingMerger   $attributeMappingMerger,
+        MetricConverter        $metricConverter,
+        AssociationTypeManager $associationTypeManager,
+        Webservice             $webservice,
+        MappingCollection      $mappingCollection,
+        NormalizerGuesser      $normalizerGuesser,
+        ProductNormalizer      $productNormalizer
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -44,12 +55,51 @@ class ProductProcessorSpec extends ObjectBehavior
             $metricConverter,
             $associationTypeManager
         );
+
+        $webserviceGuesser->getWebservice(Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'))->willReturn($webservice);
+        $storeViewMappingMerger->getMapping()->willReturn($mappingCollection);
+
+        $webservice->getStoreViewsList()->willReturn(
+            array(
+                array (
+                    'store_id' => '1',
+                    'code' => 'default',
+                    'website_id' => '1',
+                    'group_id' => '1',
+                    'name' => 'Default Store View',
+                    'sort_order' => '0',
+                    'is_active' => '1'
+                )
+            )
+        );
+
+        $webservice->getAllAttributes()->willReturn(
+            array (
+                'name' =>
+                    array (
+                        'attribute_id' => '71',
+                        'code' => 'name',
+                        'type' => 'text',
+                        'required' => '1',
+                        'scope' => 'store'
+                    )
+            )
+        );
+
+        $normalizerGuesser->getProductNormalizer(
+            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'),
+            null,
+            4,
+            null
+        )->willReturn($productNormalizer);
+
+        $webservice->getAllAttributesOptions()->willReturn(Argument::type('array'));
     }
 
     function it_is_configurable(
         $categoryMappingMerger,
         $attributeMappingMerger,
-        MappingCollection $mappingCollection
+        $mappingCollection
     ) {
         $this->setChannel('channel');
         $this->setCurrency('EUR');
@@ -58,7 +108,6 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->setCategoryMapping('{"categoryMapping" : "category"}');
         $this->setAttributeMapping('{"attributeMapping" : "attribute"}');
         $this->setPimGrouped('group');
-
 
         $categoryMappingMerger->setMapping(array('categoryMapping' => 'category'))->shouldBeCalled();
         $categoryMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
@@ -75,8 +124,185 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->getPimGrouped()->shouldReturn('group');
     }
 
-    function it_does_something()
-    {
-        
+    function it_processes_new_products(
+        $webservice,
+        $attributeMappingMerger,
+        $categoryMappingMerger,
+        $productNormalizer,
+        ChannelManager  $channelManager,
+        Product         $product,
+        Channel         $channel,
+        Family          $family,
+        MetricConverter $metricConverter
+    ) {
+        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+
+        $webservice->getProductsStatus(array($product))->willReturn(
+            array(
+                array(
+                    'product_id' => '1',
+                    'sku' => 'sku-000',
+                    'name' => 'Product example',
+                    'set' => '4',
+                    'type' => 'simple',
+                    'category_ids' => array('207'),
+                    'website_ids' => array('1')
+                )
+            )
+        );
+
+        $channelManager->getChannelByCode(null)->willReturn($channel);
+
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+        $family->getCode()->shouldBeCalled()->willReturn('family_code');
+
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('4');
+
+        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-001');
+
+        $metricConverter->convert($product, $channel)->shouldBeCalled();
+
+        $productNormalizer->normalize(Argument::type('\Pim\Bundle\CatalogBundle\Model\Product'), 'MagentoArray', Argument::type('array'))->shouldBeCalled();
+
+        $this->process($product);
+    }
+
+    function it_processes_already_created_products(
+        $webservice,
+        $attributeMappingMerger,
+        $categoryMappingMerger,
+        $productNormalizer,
+        ChannelManager  $channelManager,
+        Product         $product,
+        Channel         $channel,
+        Family          $family,
+        MetricConverter $metricConverter
+    ) {
+        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+
+        $webservice->getProductsStatus(array($product))->willReturn(
+            array(
+                array(
+                    'product_id' => '1',
+                    'sku' => 'sku-000',
+                    'name' => 'Product example',
+                    'set' => '4',
+                    'type' => 'simple',
+                    'category_ids' => array('207'),
+                    'website_ids' => array('1')
+                )
+            )
+        );
+
+        $channelManager->getChannelByCode(null)->willReturn($channel);
+
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+        $family->getCode()->shouldBeCalled()->willReturn('family_code');
+
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('4');
+
+        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-000');
+
+        $metricConverter->convert($product, $channel)->shouldBeCalled();
+
+        $productNormalizer->normalize(Argument::type('\Pim\Bundle\CatalogBundle\Model\Product'), 'MagentoArray', Argument::type('array'))->shouldBeCalled();
+
+        $this->process($product);
+    }
+
+    function it_throws_an_exception_if_family_has_changed_of_the_product(
+        $webservice,
+        $attributeMappingMerger,
+        $categoryMappingMerger,
+        $productNormalizer,
+        ChannelManager  $channelManager,
+        Product         $product,
+        Channel         $channel,
+        Family          $family,
+        MetricConverter $metricConverter
+    ) {
+        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+
+        $webservice->getProductsStatus(array($product))->willReturn(
+            array(
+                array(
+                    'product_id' => '1',
+                    'sku' => 'sku-000',
+                    'name' => 'Product example',
+                    'set' => '4',
+                    'type' => 'simple',
+                    'category_ids' => array('207'),
+                    'website_ids' => array('1')
+                )
+            )
+        );
+
+        $channelManager->getChannelByCode(null)->willReturn($channel);
+
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+        $family->getCode()->shouldBeCalled()->willReturn('family_code');
+
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('5');
+
+        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-000');
+
+        $metricConverter->convert(Argument::cetera())->shouldNotBeCalled();
+
+        $productNormalizer->normalize(Argument::cetera())->shouldNotBeCalled();
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess($product);
+    }
+
+    function it_throws_an_exception_if_something_went_wrong_during_normalization(
+        $webservice,
+        $attributeMappingMerger,
+        $categoryMappingMerger,
+        $productNormalizer,
+        ChannelManager  $channelManager,
+        Product         $product,
+        Channel         $channel,
+        Family          $family,
+        MetricConverter $metricConverter
+    ) {
+        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+
+        $webservice->getProductsStatus(array($product))->willReturn(
+            array(
+                array(
+                    'product_id' => '1',
+                    'sku' => 'sku-000',
+                    'name' => 'Product example',
+                    'set' => '4',
+                    'type' => 'simple',
+                    'category_ids' => array('207'),
+                    'website_ids' => array('1')
+                )
+            )
+        );
+
+        $channelManager->getChannelByCode(null)->willReturn($channel);
+
+        $product->getFamily()->shouldBeCalled()->willReturn($family);
+        $family->getCode()->shouldBeCalled()->willReturn('family_code');
+
+        $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('4');
+
+        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-001');
+
+        $metricConverter->convert($product, $channel)->shouldBeCalled();
+
+        $productNormalizer->normalize(
+            Argument::type('\Pim\Bundle\CatalogBundle\Model\Product'),
+            'MagentoArray',
+            Argument::type('array')
+        )
+        ->shouldBeCalled()
+        ->willThrow('\Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException');
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess($product);
     }
 }
