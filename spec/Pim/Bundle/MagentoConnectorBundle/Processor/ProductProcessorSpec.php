@@ -41,7 +41,9 @@ class ProductProcessorSpec extends ObjectBehavior
         Webservice             $webservice,
         MappingCollection      $mappingCollection,
         NormalizerGuesser      $normalizerGuesser,
-        ProductNormalizer      $productNormalizer
+        ProductNormalizer      $productNormalizer,
+        Product                $product,
+        Channel                $channel
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -61,7 +63,7 @@ class ProductProcessorSpec extends ObjectBehavior
 
         $webservice->getStoreViewsList()->willReturn(
             array(
-                array (
+                array(
                     'store_id' => '1',
                     'code' => 'default',
                     'website_id' => '1',
@@ -74,15 +76,14 @@ class ProductProcessorSpec extends ObjectBehavior
         );
 
         $webservice->getAllAttributes()->willReturn(
-            array (
-                'name' =>
-                    array (
-                        'attribute_id' => '71',
-                        'code' => 'name',
-                        'type' => 'text',
-                        'required' => '1',
-                        'scope' => 'store'
-                    )
+            array(
+                'name' => array(
+                    'attribute_id' => '71',
+                    'code' => 'name',
+                    'type' => 'text',
+                    'required' => '1',
+                    'scope' => 'store'
+                )
             )
         );
 
@@ -91,9 +92,25 @@ class ProductProcessorSpec extends ObjectBehavior
             null,
             4,
             null
-        )->willReturn($productNormalizer);
+        )
+        ->willReturn($productNormalizer);
 
         $webservice->getAllAttributesOptions()->willReturn(Argument::type('array'));
+        $webservice->getProductsStatus(array($product))->willReturn(
+            array(
+                array(
+                    'product_id' => '1',
+                    'sku' => 'sku-000',
+                    'name' => 'Product example',
+                    'set' => '4',
+                    'type' => 'simple',
+                    'category_ids' => array('207'),
+                    'website_ids' => array('1')
+                )
+            )
+        );
+
+        $channelManager->getChannelByCode(null)->willReturn($channel);
     }
 
     function it_is_configurable(
@@ -129,7 +146,6 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
-        ChannelManager  $channelManager,
         Product         $product,
         Channel         $channel,
         Family          $family,
@@ -137,22 +153,6 @@ class ProductProcessorSpec extends ObjectBehavior
     ) {
         $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
         $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-
-        $webservice->getProductsStatus(array($product))->willReturn(
-            array(
-                array(
-                    'product_id' => '1',
-                    'sku' => 'sku-000',
-                    'name' => 'Product example',
-                    'set' => '4',
-                    'type' => 'simple',
-                    'category_ids' => array('207'),
-                    'website_ids' => array('1')
-                )
-            )
-        );
-
-        $channelManager->getChannelByCode(null)->willReturn($channel);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
@@ -173,7 +173,6 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
-        ChannelManager  $channelManager,
         Product         $product,
         Channel         $channel,
         Family          $family,
@@ -181,22 +180,6 @@ class ProductProcessorSpec extends ObjectBehavior
     ) {
         $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
         $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-
-        $webservice->getProductsStatus(array($product))->willReturn(
-            array(
-                array(
-                    'product_id' => '1',
-                    'sku' => 'sku-000',
-                    'name' => 'Product example',
-                    'set' => '4',
-                    'type' => 'simple',
-                    'category_ids' => array('207'),
-                    'website_ids' => array('1')
-                )
-            )
-        );
-
-        $channelManager->getChannelByCode(null)->willReturn($channel);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
@@ -217,30 +200,12 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
-        ChannelManager  $channelManager,
         Product         $product,
-        Channel         $channel,
         Family          $family,
         MetricConverter $metricConverter
     ) {
         $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
         $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-
-        $webservice->getProductsStatus(array($product))->willReturn(
-            array(
-                array(
-                    'product_id' => '1',
-                    'sku' => 'sku-000',
-                    'name' => 'Product example',
-                    'set' => '4',
-                    'type' => 'simple',
-                    'category_ids' => array('207'),
-                    'website_ids' => array('1')
-                )
-            )
-        );
-
-        $channelManager->getChannelByCode(null)->willReturn($channel);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
@@ -261,7 +226,6 @@ class ProductProcessorSpec extends ObjectBehavior
         $attributeMappingMerger,
         $categoryMappingMerger,
         $productNormalizer,
-        ChannelManager  $channelManager,
         Product         $product,
         Channel         $channel,
         Family          $family,
@@ -269,22 +233,6 @@ class ProductProcessorSpec extends ObjectBehavior
     ) {
         $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
         $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-
-        $webservice->getProductsStatus(array($product))->willReturn(
-            array(
-                array(
-                    'product_id' => '1',
-                    'sku' => 'sku-000',
-                    'name' => 'Product example',
-                    'set' => '4',
-                    'type' => 'simple',
-                    'category_ids' => array('207'),
-                    'website_ids' => array('1')
-                )
-            )
-        );
-
-        $channelManager->getChannelByCode(null)->willReturn($channel);
 
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $family->getCode()->shouldBeCalled()->willReturn('family_code');
