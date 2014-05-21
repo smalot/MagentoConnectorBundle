@@ -187,7 +187,8 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->setStoreviewMapping('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}')->shouldReturn($this);
     }
 
-    function it_is_configurable(){
+    function it_is_configurable()
+    {
         $this->setDefaultLocale('en_US');
         $this->setWebsite('http://mywebsite.com');
 
