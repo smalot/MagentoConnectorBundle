@@ -2,9 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
-use Pim\Bundle\CatalogBundle\Entity\Repository\GroupRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
+use Pim\Bundle\CatalogBundle\Entity\Family;
 
 /**
  * Attribute group mapping manager
@@ -37,47 +37,20 @@ class AttributeGroupMappingManager
     }
 
     /**
-     * Get group from id and Magento url
-     * @param integer $id
-     * @param string  $magentoUrl
-     *
-     * @return AttributeGroup|null
-     */
-    public function getGroupFromId($id, $magentoUrl)
-    {
-        $magentoGroupMapping = $this->getEntityRepository()->findOneBy(
-            array(
-                'magentoGroupId' => $id,
-                'magentoUrl'     => $magentoUrl
-            )
-        );
-
-        return $magentoGroupMapping ? $magentoGroupMapping->getGroup() : null;
-    }
-
-    /**
-     * Get all groups
-     *
-     * @return AttributeGroup
-     */
-    public function getAllGroups()
-    {
-        return $this->getEntityRepository()->findAll();
-    }
-
-    /**
      * Get id from group and Magento url
      * @param AttributeGroup $group
+     * @param Family         $family
      * @param string         $magentoUrl
      *
      * @return integer
      */
-    public function getIdFromGroup(AttributeGroup $group, $magentoUrl)
+    public function getIdFromGroup(AttributeGroup $group, Family $family, $magentoUrl)
     {
         $groupMapping = $this->getEntityRepository()->findOneBy(
             array(
-                'group'      => $group,
-                'magentoUrl' => $magentoUrl
+                'pimGroupCode'  => $group->getCode(),
+                'pimFamilyCode' => $family->getCode(),
+                'magentoUrl'    => $magentoUrl
             )
         );
 
@@ -86,23 +59,31 @@ class AttributeGroupMappingManager
 
     /**
      * Register a new group mapping
-     * @param AttributeGroup   $pimGroup
-     * @param integer          $magentoGroupId
-     * @param string           $magentoUrl
+     *
+     * @param AttributeGroup $pimGroup
+     * @param Family         $pimFamily
+     * @param integer        $magentoGroupId
+     * @param string         $magentoUrl
      */
     public function registerGroupMapping(
         AttributeGroup $pimGroup,
+        Family $pimFamily,
         $magentoGroupId,
         $magentoUrl
     ) {
-        $groupMapping = $this->getEntityRepository()->findOneByGroup($pimGroup->getId());
+        $groupMapping = $this->getEntityRepository()->findOneBy(array(
+            'pimGroupCode'  => $pimGroup->getCode(),
+            'pimFamilyCode' => $pimFamily->getCode()
+        ));
+
         $magentoGroupMapping = new $this->className();
 
         if ($groupMapping) {
             $magentoGroupMapping = $groupMapping;
         }
 
-        $magentoGroupMapping->setGroup($pimGroup);
+        $magentoGroupMapping->setPimGroupCode($pimGroup->getCode());
+        $magentoGroupMapping->setPimFamilyCode($pimFamily->getCode());
         $magentoGroupMapping->setMagentoGroupId($magentoGroupId);
         $magentoGroupMapping->setMagentoUrl($magentoUrl);
 
@@ -111,19 +92,31 @@ class AttributeGroupMappingManager
     }
 
     /**
-     * Does the given magento group exist in pim ?
-     * @param string $groupId
-     * @param string $magentoUrl
+     * Return all the mappings
      *
-     * @return boolean
+     * @return array
      */
-    public function magentoGroupExists($groupId, $magentoUrl)
+    public function getAllMappings()
     {
-        return null !== $this->getGroupFromId($groupId, $magentoUrl);
+        return ($this->getEntityRepository()->findAll() ? $this->getEntityRepository()->findAll() : null);
+    }
+
+    /**
+     * Remove the given mapping
+     *
+     * @param AttributeGroupMapping $groupMapping
+     *
+     * @return void
+     */
+    public function removeMapping($groupMapping)
+    {
+        $this->getEntityRepository()->remove($groupMapping);
+        $this->getEntityRepository()->flush();
     }
 
     /**
      * Get the entity manager
+     *
      * @return EntityRepository
      */
     protected function getEntityRepository()

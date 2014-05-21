@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -46,6 +47,28 @@ class AttributeSetWriterSpec extends ObjectBehavior
 
         $this->setMagentoUrl('bar');
         $this->setWsdlUrl('foo');
+
+        $this->write($batches);
+    }
+
+    function it_increments_summary_info_with_family_exists_if_it_exists(
+        $webservice,
+        $stepExecution,
+        Family $family,
+        FamilyMappingManager $familyMappingManager
+    ) {
+        $batches = array(
+            array(
+                'families_to_create' => array(
+                    'attributeSetName' => 'family_code'
+                ),
+                'family_object' => $family,
+            )
+        );
+
+        $webservice->createAttributeSet('family_code')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $familyMappingManager->registerFamilyMapping(Argument::cetera())->shouldNotBeCalled();
+        $stepExecution->incrementSummaryInfo('Family already in magento')->shouldBeCalled();
 
         $this->write($batches);
     }

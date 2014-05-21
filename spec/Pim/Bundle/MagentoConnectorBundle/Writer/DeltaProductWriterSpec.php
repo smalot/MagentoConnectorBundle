@@ -1,0 +1,33 @@
+<?php
+namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
+
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\DeltaExportBundle\Manager\ProductExportManager;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
+use PhpSpec\ObjectBehavior;
+
+/**
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+class DeltaProductWriterSpec extends ObjectBehavior
+{
+    function let(
+        WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager,
+        ProductExportManager $productExportManager
+    ) {
+        $this->beConstructedWith($webserviceGuesser, $channelManager, $productExportManager);
+    }
+
+    function it_sets_step_execution(StepExecution $stepExecution, JobExecution $jobExecution)
+    {
+        $stepExecution->getJobExecution()->willReturn($jobExecution);
+        $jobExecution->getJobInstance()->shouldBeCalled();
+
+        $this->setStepExecution($stepExecution);
+    }
+}

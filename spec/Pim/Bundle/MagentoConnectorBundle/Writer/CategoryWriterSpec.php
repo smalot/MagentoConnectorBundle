@@ -6,6 +6,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -108,5 +110,28 @@ class CategoryWriterSpec extends ObjectBehavior
 
         $this->setMagentoUrl('bar');
         $this->write($batches);
+    }
+
+    function it_throws_an_exception_if_something_went_wrong_with_magento_calls(
+        Category $category,
+        $webservice,
+        $categoryMappingManager
+    ) {
+        $batches = array(
+            array(
+                'create' => array(
+                    array(
+                        'pimCategory'     => $category,
+                        'magentoCategory' => array('foo')
+                    )
+                )
+            )
+        );
+        $webservice->sendNewCategory(array('foo'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $categoryMappingManager
+                ->registerCategoryMapping(Argument::cetera())
+                ->shouldNotBeCalled();
+
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($batches);
     }
 }

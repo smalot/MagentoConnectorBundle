@@ -9,7 +9,6 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedE
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Pim\Bundle\CatalogBundle\Model\AbstractProductValue;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 
 /**
