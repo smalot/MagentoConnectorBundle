@@ -288,7 +288,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $association = $product->getAssociationForType($associationType);
 
             return null != $association &&
-                null != $association->getProducts();
+                null != $association->getProducts() &&
+                null != $association->getGroups();
         } else {
             return false;
         }
