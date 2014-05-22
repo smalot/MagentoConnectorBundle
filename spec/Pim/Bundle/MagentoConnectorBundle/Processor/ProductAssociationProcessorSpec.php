@@ -42,8 +42,13 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->setPimUpSell('UPSELL');
     }
 
-    function it_generated_association_calls_for_given_products(ProductInterface $product, ProductInterface $associatedProduct, Association $association, AssociationType $associationType, $webservice)
-    {
+    function it_generated_association_calls_for_given_products(
+        $webservice,
+        ProductInterface $product,
+        ProductInterface $associatedProduct,
+        Association $association,
+        AssociationType $associationType
+    ) {
         $webservice->getAssociationsStatus($product)->willReturn(array('up_sell' => array(), 'cross_sell' => array(array('sku' => 'sku-011')), 'related' => array()));
 
         $product->getIdentifier()->willReturn('sku-012');
@@ -79,9 +84,9 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
     }
 
     function it_throws_an_exception_if_something_went_wrong_with_soap_call(
-        ProductInterface $product,
-        $webservice
-    ){
+        $webservice,
+        ProductInterface $product
+    ) {
         $webservice->getAssociationsStatus($product)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
