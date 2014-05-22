@@ -197,7 +197,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                     $familyCode
                 );
         } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array());
+            throw new InvalidItemException($e->getMessage(), array($relatedItem));
         }
     }
 

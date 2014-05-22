@@ -101,8 +101,13 @@ class ConfigurableProcessor extends AbstractProductProcessor
         $configurables        = $this->getProductsForGroups($items, $groupsIds);
         $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
 
+        if (empty($configurables)) {
+            throw new InvalidItemException('Groups didn\'t match with variants groups', array($configurables));
+        }
+
         foreach ($configurables as $configurable) {
-            if (count($configurable['products']) == 0) {
+
+            if (empty($configurable['products'])) {
                 throw new InvalidItemException(
                     'The variant group is not associated to any products',
                     array($configurable)
@@ -195,7 +200,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
             if ($groupFamily != $product->getFamily()) {
                 throw new InvalidItemException(
                     'Your variant group contains products from different families. Magento cannot handle ' .
-                    'configurable products with heterogen attribute sets'
+                    'configurable products with heterogen attribute sets',
+                    array($configurable)
                 );
             }
         }
