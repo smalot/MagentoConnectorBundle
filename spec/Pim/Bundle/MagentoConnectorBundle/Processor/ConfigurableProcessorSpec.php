@@ -93,7 +93,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
             )
         );
 
-        $webservice->getAllAttributesOptions()->willReturn(Argument::type('array'));
+        $webservice->getAllAttributesOptions()->willReturn(array());
 
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
