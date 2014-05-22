@@ -43,7 +43,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         ProductNormalizer           $productNormalizer,
         GroupRepository             $groupRepository,
         ConfigurableNormalizer      $configurableNormalizer,
-        Group $group
+        Group                       $group
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -109,8 +109,12 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group->getId()->willReturn(1);
     }
 
-    function it_throws_an_exception_if_groups_dont_matched_with_variant_group($group, $groupRepository, $webservice, Product $product)
-    {
+    function it_throws_an_exception_if_groups_dont_matched_with_variant_group(
+        $group,
+        $groupRepository,
+        $webservice,
+        Product $product
+    ) {
         $groupRepository->getVariantGroupIds()->willReturn(array());
         $product->getGroups()->shouldBeCalled()->willReturn(array($group));
         $webservice->getConfigurablesStatus(array())->shouldBeCalled()->willReturn(array());
@@ -146,7 +150,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group,
         $configurableNormalizer,
         Product $product,
-        Family $family
+        Family  $family
     ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
 
@@ -174,8 +178,8 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $configurableNormalizer,
         Product $product,
         Product $product_2,
-        Family $family,
-        Family $family_2
+        Family  $family,
+        Family  $family_2
     ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
 
@@ -204,7 +208,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group,
         $configurableNormalizer,
         Product $product,
-        Family $family
+        Family  $family
     ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
 
@@ -231,7 +235,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group,
         $configurableNormalizer,
         Product $product,
-        Family $family
+        Family  $family
     ) {
         $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
 
