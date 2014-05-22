@@ -95,8 +95,8 @@ class ConfigurableProcessorSpec extends ObjectBehavior
 
         $webservice->getAllAttributesOptions()->willReturn(Argument::type('array'));
 
-        $categoryMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
-        $attributeMappingMerger->getMapping()->willReturn(Argument::type('\Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection'));
+        $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
+        $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $normalizerGuesser->getConfigurableNormalizer(
             Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'),
@@ -109,11 +109,11 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group->getId()->willReturn(1);
     }
 
-    function it_throws_an_exception_if_groups_dont_matched_with_variant_group($groupRepository, $webservice, Product $product)
+    function it_throws_an_exception_if_groups_dont_matched_with_variant_group($group, $groupRepository, $webservice, Product $product)
     {
         $groupRepository->getVariantGroupIds()->willReturn(array());
-        $product->getGroups()->willReturn(Argument::type('\Doctrine\Common\Collections\ArrayCollection'));
-        $webservice->getConfigurablesStatus(array())->willReturn(array());
+        $product->getGroups()->shouldBeCalled()->willReturn(array($group));
+        $webservice->getConfigurablesStatus(array())->shouldBeCalled()->willReturn(array());
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
     }
