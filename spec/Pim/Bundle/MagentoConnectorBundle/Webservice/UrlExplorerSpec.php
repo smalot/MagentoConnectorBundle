@@ -34,7 +34,7 @@ class UrlExplorerSpec extends ObjectBehavior
         Response $response,
         MagentoSoapClientParameters $clientParameters
     ){
-        $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
+        $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl', array('timeout' => '5'))->willReturn($request);
         $client->send($request)->willReturn($response);
         $response->setHeader('ContentType', 'text/xml');
         $response->isContentType('text/xml')->willReturn(true);
@@ -56,7 +56,7 @@ class UrlExplorerSpec extends ObjectBehavior
         Response $response,
         MagentoSoapClientParameters $clientParameters
     ){
-        $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
+        $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl', array('timeout' => '5'))->willReturn($request);
         $request->setAuth('user', 'valid_credential')->willReturn($request);
         $client->send($request)->willReturn($response);
         $response->setHeader('ContentType', 'text/xml');
@@ -76,7 +76,7 @@ class UrlExplorerSpec extends ObjectBehavior
 
     function it_fails_with_invalid_url(ClientInterface $client, Request $request, MagentoSoapClientParameters $clientParameters)
     {
-        $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl')->willReturn($request);
+        $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl', array('timeout' => '5'))->willReturn($request);
         $curlException = new CurlException();
         $client->send($request)->willThrow($curlException);
         $clientParameters->getSoapUsername()->willReturn('soapUsername');
@@ -96,7 +96,7 @@ class UrlExplorerSpec extends ObjectBehavior
         Request $request,
         MagentoSoapClientParameters $clientParameters
     ){
-        $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl')->willReturn($request);
+        $client->createRequest('GET', 'http://notvalidsoapurl/api/soap/?wsdl', array('timeout' => '5'))->willReturn($request);
         $badResponseException = new BadResponseException();
         $client->send($request)->willThrow($badResponseException);
         $clientParameters->getSoapUsername()->willReturn('soapUsername');
@@ -116,7 +116,7 @@ class UrlExplorerSpec extends ObjectBehavior
         Request $request,
         MagentoSoapClientParameters $clientParameters
     ){
-        $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl')->willReturn($request);
+        $client->createRequest('GET', 'http://myvalidsoap.url/api/soap/?wsdl', array('timeout' => '5'))->willReturn($request);
         $request->setAuth('user', 'bad_credential')->willReturn($request);
         $badResponseException = new BadResponseException();
         $client->send($request)->willThrow($badResponseException);
