@@ -45,7 +45,7 @@ You can now update your database :
 
     app/console doctrine:schema:update --force
 
-If you want to manage configurable products like variant groups, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
+If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
 
 ## Installation the Magento Connector in an Akeneo PIM developpement environnement
 
