@@ -6,7 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
@@ -90,16 +90,16 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Get the product normalizer corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
-     * @param bool                        $enabled
-     * @param bool                        $visibility
-     * @param string                      $currencyCode
+     * @param MagentoSoapClientParametersRegistry $clientParameters
+     * @param bool                                $enabled
+     * @param bool                                $visibility
+     * @param string                              $currencyCode
      *
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return AbstractNormalizer
      */
     public function getProductNormalizer(
-        MagentoSoapClientParameters $clientParameters,
+        MagentoSoapClientParametersRegistry $clientParameters,
         $enabled,
         $visibility,
         $currencyCode
@@ -141,14 +141,14 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Get the configurable normalizer corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
-     * @param ProductNormalizerInterface  $productNormalizer
-     * @param PriceMappingManager         $priceMappingManager
+     * @param MagentoSoapClientParametersRegistry $clientParameters
+     * @param ProductNormalizerInterface          $productNormalizer
+     * @param PriceMappingManager                 $priceMappingManager
      *
      * @return AbstractNormalizer
      */
     public function getConfigurableNormalizer(
-        MagentoSoapClientParameters $clientParameters,
+        MagentoSoapClientParametersRegistry $clientParameters,
         ProductNormalizerInterface $productNormalizer,
         PriceMappingManager $priceMappingManager
     ) {
@@ -172,11 +172,11 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Get the Category normalizer corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @return AbstractNormalizer
      */
-    public function getCategoryNormalizer(MagentoSoapClientParameters $clientParameters)
+    public function getCategoryNormalizer(MagentoSoapClientParametersRegistry $clientParameters)
     {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
@@ -197,11 +197,11 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Get the option normalizer corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @return AbstractNormalizer
      */
-    public function getOptionNormalizer(MagentoSoapClientParameters $clientParameters)
+    public function getOptionNormalizer(MagentoSoapClientParametersRegistry $clientParameters)
     {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
@@ -219,11 +219,11 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Get the attribute normalizer corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @return AbstractNormalizer
      */
-    public function getAttributeNormalizer(MagentoSoapClientParameters $clientParameters)
+    public function getAttributeNormalizer(MagentoSoapClientParametersRegistry $clientParameters)
     {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
@@ -241,12 +241,12 @@ class NormalizerGuesser extends AbstractGuesser
 
     /**
      * Get the family normalizer corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @throws NotSupportedVersionException
      * @return FamilyNormalizer
      */
-    public function getFamilyNormalizer(MagentoSoapClientParameters $clientParameters)
+    public function getFamilyNormalizer(MagentoSoapClientParametersRegistry $clientParameters)
     {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
