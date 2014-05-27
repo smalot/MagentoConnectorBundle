@@ -18,6 +18,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 
 /**
@@ -58,7 +59,8 @@ class ProductProcessorSpec extends ObjectBehavior
             $associationTypeManager
         );
 
-        $webserviceGuesser->getWebservice(Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'))->willReturn($webservice);
+        $clientParameters = MagentoSoapClientParametersRegistry::getInstance(null, null, null, '/api/soap/?wsdl', 'default');
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
         $storeViewMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $webservice->getStoreViewsList()->willReturn(
@@ -88,7 +90,7 @@ class ProductProcessorSpec extends ObjectBehavior
         );
 
         $normalizerGuesser->getProductNormalizer(
-            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'),
+            $clientParameters,
             null,
             4,
             null
