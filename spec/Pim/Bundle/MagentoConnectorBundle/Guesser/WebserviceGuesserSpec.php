@@ -4,13 +4,13 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class WebserviceGuesserSpec extends ObjectBehavior
 {
-    function let(MagentoSoapClientFactory $magentoSoapClientFactory, MagentoSoapClientParameters $clientParameters)
+    function let(MagentoSoapClientFactory $magentoSoapClientFactory, MagentoSoapClientParametersRegistry $clientParameters)
     {
         $this->beConstructedWith($magentoSoapClientFactory);
 
