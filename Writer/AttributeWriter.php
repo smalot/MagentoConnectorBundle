@@ -50,7 +50,7 @@ class AttributeWriter extends AbstractWriter
     /**
      * @var MagentoMappingMerger
      */
-    protected $magentoMappingMerger;
+    protected $attributeIdMappingMerger;
 
     /**
      * Constructor
@@ -59,23 +59,23 @@ class AttributeWriter extends AbstractWriter
      * @param FamilyMappingManager         $familyMappingManager
      * @param AttributeMappingManager      $attributeMappingManager
      * @param AttributeGroupMappingManager $attributeGroupMappingManager
-     * @param MagentoMappingMerger         $magentoMappingMerger
+     * @param MagentoMappingMerger         $attributeIdMappingMerger
      */
     public function __construct(
         WebserviceGuesser            $webserviceGuesser,
         FamilyMappingManager         $familyMappingManager,
         AttributeMappingManager      $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        MagentoMappingMerger         $magentoMappingMerger
+        MagentoMappingMerger         $attributeIdMappingMerger
     ) {
         parent::__construct($webserviceGuesser);
 
         $this->attributeMappingManager      = $attributeMappingManager;
         $this->familyMappingManager         = $familyMappingManager;
         $this->attributeGroupMappingManager = $attributeGroupMappingManager;
-        $this->magentoMappingMerger         = $magentoMappingMerger;
+        $this->attributeIdMappingMerger     = $attributeIdMappingMerger;
 
-        $this->magentoMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->attributeIdMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**
@@ -110,7 +110,7 @@ class AttributeWriter extends AbstractWriter
     {
         if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
             $this->webservice->updateAttribute($attribute);
-            $magentoAttributeId = $this->magentoMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
+            $magentoAttributeId = $this->attributeIdMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
             $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
 
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
@@ -138,7 +138,7 @@ class AttributeWriter extends AbstractWriter
      */
     protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
     {
-        if ($this->magentoMappingMerger->getMapping()->getSource($magentoAttributeId) == $pimAttribute->getCode()) {
+        if ($this->attributeIdMappingMerger->getMapping()->getSource($magentoAttributeId) == $pimAttribute->getCode()) {
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
         } else {
             $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
