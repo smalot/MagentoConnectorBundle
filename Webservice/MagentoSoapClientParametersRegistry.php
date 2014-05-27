@@ -72,7 +72,7 @@ class MagentoSoapClientParametersRegistry
         $this->httpLogin        = $httpLogin;
         $this->httpPassword     = $httpPassword;
         $this->defaultStoreView = $defaultStoreView;
-        $this->isValid          = false;
+        $this->isValid          = null;
     }
 
     /**
