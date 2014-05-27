@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceEE;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
 
 /**
@@ -38,12 +38,12 @@ class WebserviceGuesser extends AbstractGuesser
 
     /**
      * Get the Webservice corresponding to the given Magento parameters
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @throws NotSupportedVersionException If the magento version is not supported
      * @return Webservice
      */
-    public function getWebservice(MagentoSoapClientParameters $clientParameters)
+    public function getWebservice(MagentoSoapClientParametersRegistry $clientParameters)
     {
         if (!$this->webservice) {
             $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
