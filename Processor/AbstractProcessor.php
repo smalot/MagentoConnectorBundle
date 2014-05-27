@@ -176,8 +176,9 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     {
         parent::beforeExecute();
 
-        $this->globalContext['defaultLocale']    = $this->defaultLocale;
-        $this->globalContext['storeViewMapping'] = $this->storeViewMappingMerger->getMapping();
+        $this->globalContext['defaultLocale']     = $this->defaultLocale;
+        $this->globalContext['storeViewMapping']  = $this->storeViewMappingMerger->getMapping();
+        $this->globalContext['defaultStoreView']  = $this->getDefaultStoreView();
     }
 
     /**
@@ -197,7 +198,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                     $familyCode
                 );
         } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array());
+            throw new InvalidItemException($e->getMessage(), array($relatedItem));
         }
     }
 

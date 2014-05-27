@@ -44,7 +44,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'categoryMapping'          => $categoryMapping,
             'attributeMapping'         => $attributeMapping,
             'create'                   => true,
-            'magentoStoreView'         => 'default'
+            'defaultStoreView'         => 'default'
         );
 
         $productNormalizer->getNormalizedImages($product, 'conf-group_code')->willReturn(array());

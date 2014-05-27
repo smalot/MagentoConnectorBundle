@@ -17,6 +17,9 @@ use Guzzle\Service\ClientInterface;
  */
 class UrlExplorer
 {
+    const TIMEOUT = 10;
+    const CONNECT_TIMEOUT = 10;
+
     /**
      * @var ClientInterface
      */
@@ -48,30 +51,62 @@ class UrlExplorer
      */
     public function getUrlContent(MagentoSoapClientParameters $clientParameters)
     {
-        $parametersHash = $clientParameters->getHash();
-
         try {
-            if (!isset($this->resultCache[$parametersHash])) {
-                $request = $this->client->createRequest('GET', $clientParameters->getSoapUrl());
-                $request->setAuth(
-                    $clientParameters->getHttpLogin(),
-                    $clientParameters->getHttpPassword()
-                );
-                $response = $this->client->send($request);
-                $this->resultCache[$parametersHash] = $response;
-            } else {
-                $response = $this->resultCache[$parametersHash];
-            }
+            $response = $this->connect($clientParameters);
         } catch (CurlException $e) {
-            throw new NotReachableUrlException;
+            throw new NotReachableUrlException($e->getMessage());
         } catch (BadResponseException $e) {
-            throw new InvalidSoapUrlException();
+            throw new InvalidSoapUrlException($e->getMessage());
         }
 
         if (false === $response->isContentType('text/xml')) {
-            throw new InvalidSoapUrlException();
+            throw new InvalidSoapUrlException('Content type is not XML');
         }
 
         return $response->getBody(true);
+    }
+
+    /**
+     * It connects to the url and give response
+     *
+     * @param MagentoSoapClientParameters $clientParameters
+     *
+     * @return Guzzle\Http\Message\Response
+     *
+     * @throws \Exception
+     */
+    protected function connect($clientParameters)
+    {
+        $parametersHash = $clientParameters->getHash();
+
+        if (!isset($this->resultCache[$parametersHash])) {
+            $guzzleParams = array(
+                'connect_timeout' => self::CONNECT_TIMEOUT,
+                'timeout'         => self::TIMEOUT,
+                'auth'            => array(
+                    $clientParameters->getHttpLogin(),
+                    $clientParameters->getHttpPassword()
+                )
+            );
+
+            $request = $this->client->get($clientParameters->getSoapUrl(), array(), $guzzleParams);
+            $request->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, self::CONNECT_TIMEOUT);
+            $request->getCurlOptions()->set(CURLOPT_TIMEOUT, self::TIMEOUT);
+
+            try {
+                $response = $this->client->send($request);
+                $this->resultCache[$parametersHash] = $response;
+            } catch (\Exception $e) {
+                $this->resultCache[$parametersHash] = $e;
+                throw $e;
+            }
+        } else {
+            $response = $this->resultCache[$parametersHash];
+            if ($response instanceof \Exception) {
+                throw $response;
+            }
+        }
+
+        return $response;
     }
 }

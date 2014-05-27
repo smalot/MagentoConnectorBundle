@@ -12,6 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\CatalogBundle\Model\Association;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Locale;
@@ -140,7 +141,7 @@ class ProductNormalizerSpec extends ObjectBehavior
     function it_normalizes_the_given_grouped_product($product, $associationTypeManager, AssociationType $associationType)
     {
         $associationTypeManager->getAssociationTypeByCode('pim_grouped')->willReturn($associationType);
-        $product->getAssociationForType($associationType)->willReturn(new ArrayCollection(array('association')));
+        $product->getAssociationForType($associationType)->willReturn(new Association(array('association')));
 
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn(array(
             'default' => array(
