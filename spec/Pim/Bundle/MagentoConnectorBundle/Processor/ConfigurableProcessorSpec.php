@@ -12,6 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Product;
@@ -29,21 +30,21 @@ use PhpSpec\ObjectBehavior;
 class ConfigurableProcessorSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser           $webserviceGuesser,
-        NormalizerGuesser           $normalizerGuesser,
-        LocaleManager               $localeManager,
-        MagentoMappingMerger        $storeViewMappingMerger,
-        CurrencyManager             $currencyManager,
-        ChannelManager              $channelManager,
-        MagentoMappingMerger        $categoryMappingMerger,
-        MagentoMappingMerger        $attributeMappingMerger,
-        GroupManager                $groupManager,
-        Webservice                  $webservice,
-        MappingCollection           $mappingCollection,
-        ProductNormalizer           $productNormalizer,
-        GroupRepository             $groupRepository,
-        ConfigurableNormalizer      $configurableNormalizer,
-        Group                       $group
+        WebserviceGuesser      $webserviceGuesser,
+        NormalizerGuesser      $normalizerGuesser,
+        LocaleManager          $localeManager,
+        MagentoMappingMerger   $storeViewMappingMerger,
+        CurrencyManager        $currencyManager,
+        ChannelManager         $channelManager,
+        MagentoMappingMerger   $categoryMappingMerger,
+        MagentoMappingMerger   $attributeMappingMerger,
+        GroupManager           $groupManager,
+        Webservice             $webservice,
+        MappingCollection      $mappingCollection,
+        ProductNormalizer      $productNormalizer,
+        GroupRepository        $groupRepository,
+        ConfigurableNormalizer $configurableNormalizer,
+        Group                  $group
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -56,11 +57,13 @@ class ConfigurableProcessorSpec extends ObjectBehavior
             $attributeMappingMerger,
             $groupManager
         );
-        $webserviceGuesser->getWebservice(Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'))->willReturn($webservice);
+
+        $clientParameters = MagentoSoapClientParametersRegistry::getInstance(null, null, null, '/api/soap/?wsdl', 'default');
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
         $storeViewMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $normalizerGuesser->getProductNormalizer(
-            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'),
+            $clientParameters,
             null,
             4,
             null
@@ -99,7 +102,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $normalizerGuesser->getConfigurableNormalizer(
-            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'),
+            $clientParameters,
             $productNormalizer,
             Argument::type('\Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager')
         )->willReturn($configurableNormalizer);
