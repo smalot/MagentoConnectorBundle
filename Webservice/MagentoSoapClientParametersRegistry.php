@@ -223,7 +223,7 @@ class MagentoSoapClientParametersRegistry
      *
      * @param boolean $state Is valid or not
      */
-    public function setValidation(boolean $state)
+    public function setValidation($state)
     {
         $this->isValid = $state;
     }
