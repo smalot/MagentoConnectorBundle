@@ -45,6 +45,8 @@ You can now update your database :
 
     app/console doctrine:schema:update --force
 
+If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
+
 ## Installation the Magento Connector in an Akeneo PIM developpement environnement
 
 The following installation instructions are meant for developement on the Magento Connector itself.
@@ -65,7 +67,7 @@ After that you can go to `spread > export profiles` on Akeneo PIM and create you
 
 *Configuration example* :
 
-![Magento connector configuration example](http://i.imgur.com/thNNxtO.png)
+![Magento connector configuration example](http://i.imgur.com/bmWa8DT.png?1)
 
 # Demo fixtures
 
@@ -77,7 +79,7 @@ To test the connector with the minimum data requirements, you can load the demo 
 
 ## Mandatory attributes
 
-The following Magento's attributes are mandatory for Mangeot and need to be created or mapped in Akeneo :
+The following Magento's attributes are mandatory for Magento and need to be created or mapped in Akeneo :
 
 - name
 - price
