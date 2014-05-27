@@ -3,15 +3,13 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
 /**
- * Magento soap client parameters
- *
- * @author    Julien Sanchez <julien@akeneo.com>
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoSoapClientParameters
+class MagentoSoapClientParametersRegistry
 {
-    const SOAP_WSDL_URL = '/api/soap/?wsdl';
+    CONST SOAP_WSDL_URL = '/api/soap/?wsdl';
 
     /**
      * @var string Soap Username
@@ -44,16 +42,16 @@ class MagentoSoapClientParameters
     protected $httpPassword;
 
     /**
-     * Constructor
-     *
-     * @param string $soapUsername Magento soap username
-     * @param string $soapApiKey   Magento soap api key
-     * @param string $magentoUrl   Magento url (only the domain)
-     * @param string $wsdlUrl      Only wsdl soap api extension
-     * @param string $httpLogin    Login http authentication
-     * @param string $httpPassword Password http authentication
+     * @var boolean If is valid parameters or not
      */
-    public function __construct(
+    protected $isValid;
+
+    /**
+     * @var array Contains a unique instance of each group of parameters, identified by md5 hash.
+     */
+    private static $instance;
+
+    private function __construct(
         $soapUsername,
         $soapApiKey,
         $magentoUrl,
@@ -67,6 +65,43 @@ class MagentoSoapClientParameters
         $this->wsdlUrl      = $wsdlUrl;
         $this->httpLogin    = $httpLogin;
         $this->httpPassword = $httpPassword;
+        $this->isValid      = false;
+    }
+
+    /**
+     *
+     * @param array $soapParameters Associative array which contains soap parameters
+     * @return type
+     */
+    public static function getInstance(
+        $soapUsername,
+        $soapApiKey,
+        $magentoUrl,
+        $wsdlUrl,
+        $httpLogin = null,
+        $httpPassword = null
+    ) {
+        $hash = md5(
+            $soapUsername.
+            $soapApiKey.
+            $magentoUrl.
+            $wsdlUrl.
+            $httpLogin.
+            $httpPassword
+        );
+
+        if (!isset(self::$instance[$hash])) {
+            self::$instance[$hash] = new self(
+                $soapUsername,
+                $soapApiKey,
+                $magentoUrl,
+                $wsdlUrl,
+                $httpLogin = null,
+                $httpPassword = null
+            );
+        }
+
+        return self::$instance[$hash];
     }
 
     /**
@@ -154,5 +189,25 @@ class MagentoSoapClientParameters
     public function getHttpPassword()
     {
         return $this->httpPassword;
+    }
+
+    /**
+     * Get the state of validation
+     *
+     * @return boolean Is valid or not
+     */
+    public function isValid()
+    {
+        return $this->isValid;
+    }
+
+    /**
+     * Allow to change the state of validation
+     *
+     * @param boolean $state Is valid or not
+     */
+    public function setValidation(boolean $state)
+    {
+        $this->isValid = $state;
     }
 }
