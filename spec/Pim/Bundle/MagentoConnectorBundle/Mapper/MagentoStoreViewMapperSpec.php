@@ -3,7 +3,7 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use PhpSpec\ObjectBehavior;
@@ -17,17 +17,17 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser,
         Webservice $webservice,
-        MagentoSoapClientParameters $clientParameters
+        MagentoSoapClientParametersRegistry $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
         $this->setParameters($clientParameters, '');
     }
 
-    function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
+    function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
 
@@ -48,9 +48,9 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $this->setMapping(array())->shouldReturn(null);
     }
 
-    function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice)
+    function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
 
@@ -59,7 +59,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
 
     function it_should_give_an_proper_identifier($hasValidCredentialsValidator, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
         $clientParameters->getSoapUrl()->willReturn('soap_urlwsdl_url');
         $identifier = sha1('storeview-soap_urlwsdl_url');
         $this->getIdentifier()->shouldReturn($identifier);
