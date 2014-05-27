@@ -68,7 +68,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @param ProductValueNormalizer   $productValueNormalizer
      * @param CategoryMappingManager   $categoryMappingManager
      * @param AssociationTypeManager   $associationTypeManager
-     * @param AssociationTypeManager   $productValueManager
+     * @param ProductValueManager      $productValueManager
      */
     public function __construct(
         MagentoSoapClientFactory $magentoSoapClientFactory,
