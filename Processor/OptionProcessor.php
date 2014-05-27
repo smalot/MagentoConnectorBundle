@@ -34,25 +34,25 @@ class OptionProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeCodeMapping;
+    protected $attributeCodeMappingMerger;
 
     /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
      * @param MagentoMappingMerger     $storeViewMappingMerger
-     * @param MagentoMappingMerger     $attributeMappingMerger
+     * @param MagentoMappingMerger     $attributeCodeMappingMerger
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
-        MagentoMappingMerger $attributeMappingMerger
+        MagentoMappingMerger $attributeCodeMappingMerger
     ) {
         parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
 
-        $this->attributeMappingMerger = $attributeMappingMerger;
+        $this->attributeCodeMappingMerger = $attributeCodeMappingMerger;
     }
 
     /**
@@ -64,7 +64,7 @@ class OptionProcessor extends AbstractProcessor
      */
     public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
+        $this->attributeCodeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
@@ -76,7 +76,7 @@ class OptionProcessor extends AbstractProcessor
      */
     public function getAttributeCodeMapping()
     {
-        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        return json_encode($this->attributeCodeMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -90,8 +90,8 @@ class OptionProcessor extends AbstractProcessor
 
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
-        $this->globalContext['magentoStoreViews']     = $magentoStoreViews;
-        $this->globalContext['attributeCodeMapping']  = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['magentoStoreViews']    = $magentoStoreViews;
+        $this->globalContext['attributeCodeMapping'] = $this->attributeCodeMappingMerger->getMapping();
     }
 
     /**
@@ -163,7 +163,7 @@ class OptionProcessor extends AbstractProcessor
     {
         parent::afterConfigurationSet();
 
-        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->attributeCodeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**
@@ -173,7 +173,7 @@ class OptionProcessor extends AbstractProcessor
     {
         return array_merge(
             parent::getConfigurationFields(),
-            $this->attributeMappingMerger->getConfigurationField()
+            $this->attributeCodeMappingMerger->getConfigurationField()
         );
     }
 }
