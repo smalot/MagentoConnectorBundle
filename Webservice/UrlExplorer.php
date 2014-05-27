@@ -42,14 +42,14 @@ class UrlExplorer
     /**
      * Reaches url and get his content
      *
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @return string Xml content as string
      *
      * @throws NotReachableUrlException
      * @throws InvalidSoapUrlException
      */
-    public function getUrlContent(MagentoSoapClientParameters $clientParameters)
+    public function getUrlContent(MagentoSoapClientParametersRegistry $clientParameters)
     {
         try {
             $response = $this->connect($clientParameters);
@@ -69,7 +69,7 @@ class UrlExplorer
     /**
      * It connects to the url and give response
      *
-     * @param  MagentoSoapClientParameters $clientParameters
+     * @param  MagentoSoapClientParametersRegistry $clientParameters
      *
      * @return Guzzle\Http\Message\Response
      *
