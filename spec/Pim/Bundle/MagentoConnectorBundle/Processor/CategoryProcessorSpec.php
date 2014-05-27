@@ -11,7 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
@@ -44,15 +44,14 @@ class CategoryProcessorSpec extends ObjectBehavior
 
         $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
 
-        $normalizerGuesser->getCategoryNormalizer(Argument::any(), Argument::any())->willReturn($categoryNormalizer);
+        $normalizerGuesser->getCategoryNormalizer(Argument::cetera())->willReturn($categoryNormalizer);
     }
 
     function it_normalizes_categories(
         Category $category,
         Category $parentCategory,
         $webservice,
-        $categoryNormalizer,
-        $categoryMappingMerger
+        $categoryNormalizer
     ) {
         $webservice->getCategoriesStatus()->willReturn(array(
             1 => array(
@@ -130,7 +129,7 @@ class CategoryProcessorSpec extends ObjectBehavior
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
+                    'data'     => MagentoSoapClientParametersRegistry::SOAP_WSDL_URL
                 )
             ),
             'httpLogin' => array(
