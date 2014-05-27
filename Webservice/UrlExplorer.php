@@ -17,8 +17,8 @@ use Guzzle\Service\ClientInterface;
  */
 class UrlExplorer
 {
-    CONST TIMEOUT = 10;
-    CONST CONNECT_TIMEOUT = 10;
+    const TIMEOUT = 10;
+    const CONNECT_TIMEOUT = 10;
 
     /**
      * @var ClientInterface
@@ -96,7 +96,7 @@ class UrlExplorer
             try {
                 $response = $this->client->send($request);
                 $this->resultCache[$parametersHash] = $response;
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->resultCache[$parametersHash] = $e;
                 throw $e;
             }
