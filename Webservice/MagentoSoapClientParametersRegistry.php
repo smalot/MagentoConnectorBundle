@@ -9,7 +9,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
  */
 class MagentoSoapClientParametersRegistry
 {
-    CONST SOAP_WSDL_URL = '/api/soap/?wsdl';
+    const SOAP_WSDL_URL = '/api/soap/?wsdl';
 
     /**
      * @var string Soap Username
@@ -30,6 +30,11 @@ class MagentoSoapClientParametersRegistry
      * @var string Magento Url (only the domain)
      */
     protected $magentoUrl;
+
+    /**
+     * @var string Default store view
+     */
+    protected $defaultStoreView;
 
     /**
      * @var string Login for http authentication
@@ -56,16 +61,18 @@ class MagentoSoapClientParametersRegistry
         $soapApiKey,
         $magentoUrl,
         $wsdlUrl,
+        $defaultStoreView,
         $httpLogin = null,
         $httpPassword = null
     ) {
-        $this->soapUsername = $soapUsername;
-        $this->soapApiKey   = $soapApiKey;
-        $this->magentoUrl   = $magentoUrl;
-        $this->wsdlUrl      = $wsdlUrl;
-        $this->httpLogin    = $httpLogin;
-        $this->httpPassword = $httpPassword;
-        $this->isValid      = false;
+        $this->soapUsername     = $soapUsername;
+        $this->soapApiKey       = $soapApiKey;
+        $this->magentoUrl       = $magentoUrl;
+        $this->wsdlUrl          = $wsdlUrl;
+        $this->httpLogin        = $httpLogin;
+        $this->httpPassword     = $httpPassword;
+        $this->defaultStoreView = $defaultStoreView;
+        $this->isValid          = false;
     }
 
     /**
@@ -78,6 +85,7 @@ class MagentoSoapClientParametersRegistry
         $soapApiKey,
         $magentoUrl,
         $wsdlUrl,
+        $defaultStoreView,
         $httpLogin = null,
         $httpPassword = null
     ) {
@@ -86,6 +94,7 @@ class MagentoSoapClientParametersRegistry
             $soapApiKey.
             $magentoUrl.
             $wsdlUrl.
+            $defaultStoreView.
             $httpLogin.
             $httpPassword
         );
@@ -96,6 +105,7 @@ class MagentoSoapClientParametersRegistry
                 $soapApiKey,
                 $magentoUrl,
                 $wsdlUrl,
+                $defaultStoreView,
                 $httpLogin = null,
                 $httpPassword = null
             );
@@ -169,6 +179,11 @@ class MagentoSoapClientParametersRegistry
     public function getMagentoUrl()
     {
         return $this->magentoUrl;
+    }
+
+    public function getDefaultStoreView()
+    {
+        return $this->defaultStoreView;
     }
 
     /**
