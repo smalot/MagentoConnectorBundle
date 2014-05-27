@@ -9,7 +9,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
@@ -26,7 +26,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         CategoryMappingManager $categoryMappingManager,
         AssociationTypeManager $associationTypeManager,
         ProductValueManager $productValueManager,
-        MagentoSoapClientParameters $clientParameters
+        MagentoSoapClientParametersRegistry $clientParameters
     ) {
         $this->beConstructedWith($magentoSoapClientFactory, $channelManager, $mediaManager, $productValueNormalizer, $categoryMappingManager, $associationTypeManager, $productValueManager);
 
