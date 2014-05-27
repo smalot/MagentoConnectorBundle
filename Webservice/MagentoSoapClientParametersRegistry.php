@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -61,7 +63,7 @@ class MagentoSoapClientParametersRegistry
         $soapApiKey,
         $magentoUrl,
         $wsdlUrl,
-        $defaultStoreView,
+        $defaultStoreView = Webservice::SOAP_DEFAULT_STORE_VIEW,
         $httpLogin = null,
         $httpPassword = null
     ) {
