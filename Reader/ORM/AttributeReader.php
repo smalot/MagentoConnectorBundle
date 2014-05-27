@@ -22,7 +22,7 @@ class AttributeReader extends EntityReader
     /**
      * @var MagentoMappingMerger
      */
-    protected $attributeMappingMerger;
+    protected $attributeCodeMappingMerger;
 
     /**
      * @var string
@@ -38,7 +38,7 @@ class AttributeReader extends EntityReader
      */
     public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
+        $this->attributeCodeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
@@ -50,7 +50,7 @@ class AttributeReader extends EntityReader
      */
     public function getAttributeCodeMapping()
     {
-        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        return json_encode($this->attributeCodeMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -58,11 +58,11 @@ class AttributeReader extends EntityReader
      * @param string               $className              The entity class name used
      * @param MagentoMappingMerger $attributeMappingMerger Attribute mapping merger
      */
-    public function __construct(EntityManager $em, $className, MagentoMappingMerger $attributeMappingMerger)
+    public function __construct(EntityManager $em, $className, MagentoMappingMerger $attributeCodeMappingMerger)
     {
         parent::__construct($em, $className);
 
-        $this->attributeMappingMerger = $attributeMappingMerger;
+        $this->attributeCodeMappingMerger = $attributeCodeMappingMerger;
     }
 
     /**
@@ -72,7 +72,7 @@ class AttributeReader extends EntityReader
     {
         $attribute = parent::read();
 
-        $attributeMapping = $this->attributeMappingMerger->getMapping();
+        $attributeMapping = $this->attributeCodeMappingMerger->getMapping();
 
         while ($attribute !== null && $this->isAttributeIgnored($attribute, $attributeMapping)) {
             $attribute = parent::read();
@@ -133,7 +133,7 @@ class AttributeReader extends EntityReader
     {
         parent::afterConfigurationSet();
 
-        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getSoapUrl());
+        $this->attributeCodeMappingMerger->setParameters($this->getClientParameters(), $this->getSoapUrl());
     }
 
     /**
@@ -143,7 +143,7 @@ class AttributeReader extends EntityReader
     {
         return array_merge(
             parent::getConfigurationFields(),
-            $this->attributeMappingMerger->getConfigurationField()
+            $this->attributeCodeMappingMerger->getConfigurationField()
         );
     }
 }
