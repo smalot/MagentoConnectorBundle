@@ -50,7 +50,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
-    protected $wsdlUrl = MagentoSoapClientParameters::SOAP_WSDL_URL;
+    protected $wsdlUrl = MagentoSoapClientParametersRegistry::SOAP_WSDL_URL;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
