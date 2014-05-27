@@ -36,21 +36,21 @@ class MagentoMappingMerger extends MappingMerger
      */
     public function getConfigurationField()
     {
-        return [
-            $this->name . 'Mapping' => [
+        return array(
+            $this->name . 'Mapping' => array(
                 'type'    => 'textarea',
-                'options' => [
+                'options' => array(
                     'required' => false,
-                    'attr'     => [
+                    'attr'     => array(
                         'class' => 'mapping-field',
                         'data-sources' => json_encode($this->getAllSources()),
                         'data-targets' => json_encode($this->getAllTargets()),
                         'data-name'    => $this->name
-                    ],
+                    ),
                     'label' => 'pim_magento_connector.' . $this->direction . '.' . $this->name . 'Mapping.label',
                     'help'  => 'pim_magento_connector.' . $this->direction . '.' . $this->name . 'Mapping.help'
-                ]
-            ]
-        ];
+                )
+            )
+        );
     }
 }
