@@ -13,6 +13,27 @@ use Pim\Bundle\CatalogBundle\Manager\CurrencyManager as BaseCurrencyManager;
  */
 class CurrencyManager extends BaseCurrencyManager
 {
+
+    /**
+     * Get active code choices
+     *
+     * Prior to PHP 5.4 array_combine() does not accept
+     * empty array as argument.
+     *
+     * @see http://php.net/array_combine#refsect1-function.array-combine-changelog
+     *
+     * @return array
+     */
+    public function getActiveCodeChoices()
+    {
+        $codes = $this->getActiveCodes();
+        if (empty($codes)) {
+            return array();
+        }
+
+        return array_combine($codes, $codes);
+    }
+
     /**
      * Get currency choices
      * Allow to list currencys in an array like array[<code>] = <code>
