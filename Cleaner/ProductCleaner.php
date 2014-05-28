@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
@@ -90,9 +91,10 @@ class ProductCleaner extends Cleaner
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         ChannelManager $channelManager,
-        ProductManager $productManager
+        ProductManager $productManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->channelManager = $channelManager;
         $this->productManager = $productManager;
