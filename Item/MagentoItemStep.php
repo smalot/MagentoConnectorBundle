@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
@@ -50,7 +51,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * @Assert\NotBlank(groups={"Execution"})
      */
-    protected $wsdlUrl = MagentoSoapClientParametersRegistry::SOAP_WSDL_URL;
+    protected $wsdlUrl = MagentoSoapClientParameters::SOAP_WSDL_URL;
 
     /**
      * @Assert\NotBlank(groups={"Execution"})
@@ -74,9 +75,14 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $httpPassword;
 
     /**
-     * @var MagentoSoapClientParametersRegistry
+     * @var MagentoSoapClientParameters
      */
     protected $clientParameters;
+
+    /**
+     * @var MagentosoapClientParametersRegistry
+     */
+    protected $clientParametersRegistry;
 
     /**
      * @var boolean
@@ -91,9 +97,12 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * @param WebserviceGuesser $webserviceGuesser
      */
-    public function __construct(WebserviceGuesser $webserviceGuesser)
-    {
-        $this->webserviceGuesser = $webserviceGuesser;
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
+    ) {
+        $this->clientParametersRegistry = $clientParametersRegistry;
+        $this->webserviceGuesser        = $webserviceGuesser;
     }
 
     /**
@@ -390,7 +399,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected function getClientParameters()
     {
         if (!$this->clientParameters) {
-            $this->clientParameters = MagentoSoapClientParametersRegistry::getInstance(
+            $this->clientParameters = $this->clientParametersRegistry->getInstance(
                 $this->soapUsername,
                 $this->soapApiKey,
                 $this->magentoUrl,
