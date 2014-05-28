@@ -17,7 +17,7 @@ class MagentoSoapClientParametersRegistry
      *
      * @var array
      */
-    protected static $instances;
+    protected $instances;
 
     /**
      * Gives MagentoSoapClientParameters which corresponding to given parameters
@@ -25,12 +25,12 @@ class MagentoSoapClientParametersRegistry
      * @param array $soapParameters Associative array which contains soap parameters
      * @return MagentoSoapClientParameters
      */
-    public static function getInstance(
+    public function getInstance(
         $soapUsername,
         $soapApiKey,
         $magentoUrl,
         $wsdlUrl,
-        $defaultStoreView,
+        $defaultStoreView = Webservice::SOAP_DEFAULT_STORE_VIEW,
         $httpLogin = null,
         $httpPassword = null
     ) {
@@ -44,8 +44,8 @@ class MagentoSoapClientParametersRegistry
             $httpPassword
         );
 
-        if (!isset(static::$instances[$hash])) {
-            static::$instances[$hash] = new MagentoSoapClientParameters(
+        if (!isset($this->instances[$hash])) {
+            $this->instances[$hash] = new MagentoSoapClientParameters(
                 $soapUsername,
                 $soapApiKey,
                 $magentoUrl,
