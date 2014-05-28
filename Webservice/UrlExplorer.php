@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\ClientInterface;
@@ -42,14 +43,14 @@ class UrlExplorer
     /**
      * Reaches url and get his content
      *
-     * @param MagentoSoapClientParametersRegistry $clientParameters
+     * @param MagentoSoapClientParameters $clientParameters
      *
      * @return string Xml content as string
      *
      * @throws NotReachableUrlException
      * @throws InvalidSoapUrlException
      */
-    public function getUrlContent(MagentoSoapClientParametersRegistry $clientParameters)
+    public function getUrlContent(MagentoSoapClientParameters $clientParameters)
     {
         try {
             $response = $this->connect($clientParameters);
@@ -69,7 +70,7 @@ class UrlExplorer
     /**
      * It connects to the url and give response
      *
-     * @param  MagentoSoapClientParametersRegistry $clientParameters
+     * @param  MagentoSoapClientParameters $clientParameters
      *
      * @return Guzzle\Http\Message\Response
      *
