@@ -59,6 +59,12 @@ After that, add bundles to your `AppKernel.php` :
     $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
     $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
 
+Don't forget to add guzzle in the composer.json of the pim
+
+    "require-dev": {
+        "guzzle/service": ">=3.6.0,<3.8.0"
+    },
+
 # Configuration
 
 In order to export products to Magento, a SOAP user with full rights has to be created on Magento.
