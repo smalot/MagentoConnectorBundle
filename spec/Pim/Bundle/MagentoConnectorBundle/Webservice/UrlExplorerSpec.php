@@ -2,7 +2,7 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Webservice;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\UrlExplorer;
 use Guzzle\Service\ClientInterface;
 use Guzzle\Http\Message\Request;
@@ -19,30 +19,25 @@ use Prophecy\Argument;
 class UrlExplorerSpec extends ObjectBehavior
 {
     function let(
-        ClientInterface $client,
-        MagentoSoapClientParameters $clientParameters
+        ClientInterface $client
     )
     {
         $this->beConstructedWith($client);
     }
 
     function it_success_with_valid_soap_url(
-        $clientParameters,
         $client,
         Request $request,
         Response $response,
         Collection $curlOptions
     ){
+        $clientParameters = MagentoSoapClientParametersRegistry::getInstance('soap_username', 'soap_api_key', 'http://myvalidsoap.url', '/api/soap/?wsdl', 'default');
+
         $guzzleParams = array(
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array('', '')
+            'auth'            => array($clientParameters->getHttpLogin(), $clientParameters->getHttpPassword())
         );
-
-        $clientParameters->getHash()->willReturn('hash_md5');
-        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
-        $clientParameters->getHttpLogin()->willReturn('');
-        $clientParameters->getHttpPassword()->willReturn('');
 
         $client->get('http://myvalidsoap.url/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
@@ -58,22 +53,18 @@ class UrlExplorerSpec extends ObjectBehavior
     }
 
     function it_success_with_valid_http_authentication_credentials(
-        $clientParameters,
         $client,
         Request $request,
         Response $response,
         Collection $curlOptions
     ){
+        $clientParameters = MagentoSoapClientParametersRegistry::getInstance('soap_username', 'soap_api_key', 'http://myvalidsoap.url', '/api/soap/?wsdl', 'default', 'user', 'valid_passwd');
+
         $guzzleParams = array(
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array('user', 'valid_credential')
+            'auth'            => array($clientParameters->getHttpLogin(), $clientParameters->getHttpPassword())
         );
-
-        $clientParameters->getHash()->willReturn('hash_md5');
-        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
-        $clientParameters->getHttpLogin()->willReturn('user');
-        $clientParameters->getHttpPassword()->willReturn('valid_credential');
 
         $client->get('http://myvalidsoap.url/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
@@ -89,22 +80,18 @@ class UrlExplorerSpec extends ObjectBehavior
     }
 
     function it_fails_with_invalid_url(
-        $clientParameters,
         $client,
         Request $request,
         Response $response,
         Collection $curlOptions
     ) {
+        $clientParameters = MagentoSoapClientParametersRegistry::getInstance('soap_username', 'soap_api_key', 'http://notvalidurl', '/api/soap/?wsdl', 'default');
+
         $guzzleParams = array(
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array('', '')
+            'auth'            => array($clientParameters->getHttpLogin(), $clientParameters->getHttpPassword())
         );
-
-        $clientParameters->getHash()->willReturn('hash_md5');
-        $clientParameters->getSoapUrl()->willReturn('http://notvalidurl/api/soap/?wsdl');
-        $clientParameters->getHttpLogin()->willReturn('');
-        $clientParameters->getHttpPassword()->willReturn('');
 
         $client->get('http://notvalidurl/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
@@ -119,22 +106,18 @@ class UrlExplorerSpec extends ObjectBehavior
     }
 
     function it_fails_with_invalid_http_authentication_credentials(
-        $clientParameters,
         $client,
         Request $request,
         Response $response,
         Collection $curlOptions
     ) {
+        $clientParameters = MagentoSoapClientParametersRegistry::getInstance('soap_username', 'soap_api_key', 'http://myvalid.url', '/api/soap/?wsdl', 'default', 'user', 'not_valid_pwd');
+
         $guzzleParams = array(
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array('user', 'not_valid_pwd')
+            'auth'            => array($clientParameters->getHttpLogin(), $clientParameters->getHttpPassword())
         );
-
-        $clientParameters->getHash()->willReturn('hash_md5');
-        $clientParameters->getSoapUrl()->willReturn('http://myvalid.url/api/soap/?wsdl');
-        $clientParameters->getHttpLogin()->willReturn('user');
-        $clientParameters->getHttpPassword()->willReturn('not_valid_pwd');
 
         $client->get('http://myvalid.url/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
