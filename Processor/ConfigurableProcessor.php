@@ -15,6 +15,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento configurable processor
@@ -45,6 +46,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      * @param MagentoMappingMerger     $categoryMappingMerger
      * @param MagentoMappingMerger     $attributeMappingMerger
      * @param GroupManager             $groupManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
@@ -55,7 +57,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
         ChannelManager $channelManager,
         MagentoMappingMerger $categoryMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
-        GroupManager $groupManager
+        GroupManager $groupManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct(
             $webserviceGuesser,
@@ -65,7 +68,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
             $currencyManager,
             $channelManager,
             $categoryMappingMerger,
-            $attributeMappingMerger
+            $attributeMappingMerger,
+            $clientParametersRegistry
         );
 
         $this->groupManager = $groupManager;

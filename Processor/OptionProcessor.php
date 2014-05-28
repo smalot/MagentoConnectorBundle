@@ -11,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento option processor
@@ -37,20 +38,28 @@ class OptionProcessor extends AbstractProcessor
     protected $attributeMapping;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MagentoMappingMerger     $storeViewMappingMerger
-     * @param MagentoMappingMerger     $attributeMappingMerger
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param LocaleManager                       $localeManager
+     * @param MagentoMappingMerger                $storeViewMappingMerger
+     * @param MagentoMappingMerger                $attributeMappingMerger
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
-        MagentoMappingMerger $attributeMappingMerger
+        MagentoMappingMerger $attributeMappingMerger,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $clientParametersRegistry
+        );
 
         $this->attributeMappingMerger = $attributeMappingMerger;
     }

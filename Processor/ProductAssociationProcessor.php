@@ -11,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento product processor
@@ -52,20 +53,28 @@ class ProductAssociationProcessor extends AbstractProcessor
     protected $pimGrouped;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MagentoMappingMerger     $storeViewMappingMerger
-     * @param AssociationTypeManager   $associationTypeManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param LocaleManager                       $localeManager
+     * @param MagentoMappingMerger                $storeViewMappingMerger
+     * @param AssociationTypeManager              $associationTypeManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
-        AssociationTypeManager $associationTypeManager
+        AssociationTypeManager $associationTypeManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $clientParametersRegistry
+        );
 
         $this->associationTypeManager = $associationTypeManager;
     }

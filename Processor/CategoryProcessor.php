@@ -7,6 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento category processor
@@ -28,22 +29,30 @@ class CategoryProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MagentoMappingMerger     $storeViewMappingMerger
-     * @param MagentoMappingMerger     $categoryMappingMerger
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param LocaleManager                       $localeManager
+     * @param MagentoMappingMerger                $storeViewMappingMerger
+     * @param MagentoMappingMerger                $categoryMappingMerger
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
-        MagentoMappingMerger $categoryMappingMerger
+        MagentoMappingMerger $categoryMappingMerger,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $clientParametersRegistry
+        );
 
-        $this->categoryMappingMerger = $categoryMappingMerger;
+        $this->attributeMappingMerger = $categoryMappingMerger;
     }
 
     /**
