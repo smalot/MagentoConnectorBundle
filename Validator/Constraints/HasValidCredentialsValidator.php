@@ -7,6 +7,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\UrlExplorer;
