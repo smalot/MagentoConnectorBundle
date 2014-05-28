@@ -4,10 +4,8 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -45,7 +43,7 @@ class CategoryWriterSpec extends ObjectBehavior
         );
         $webservice->sendNewCategory(array('foo'))->willReturn(12);
         $categoryMappingManager
-                ->registerCategoryMapping($category, 12, 'bar'. MagentoSoapClientParameters::SOAP_WSDL_URL)
+                ->registerCategoryMapping($category, 12, 'bar'. MagentoSoapClientParametersRegistry::SOAP_WSDL_URL)
                 ->shouldBeCalled();
 
         $this->setMagentoUrl('bar');
@@ -103,7 +101,7 @@ class CategoryWriterSpec extends ObjectBehavior
         );
 
         $categoryMappingManager
-                ->getIdFromCategory($category, 'bar' .MagentoSoapClientParameters::SOAP_WSDL_URL)
+                ->getIdFromCategory($category, 'bar' .MagentoSoapClientParametersRegistry::SOAP_WSDL_URL)
                 ->willReturn(12);
 
         $webservice->sendUpdateCategory(array(12))->shouldBeCalled();
