@@ -19,7 +19,7 @@ use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 /**
  * Validator for Magento credentials
  *
- * @author    Julien Sanchez <julien@akeneo.com>
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
@@ -41,18 +41,26 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $xmlChecker;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param UrlExplorer       $urlExplorer
-     * @param XmlChecker        $xmlChecker
+     * @var MagentoSoapClientParametersRegistry
+     */
+    protected $clientParametersRegistry;
+
+    /**
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param UrlExplorer                         $urlExplorer
+     * @param XmlChecker                          $xmlChecker
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        UrlExplorer       $urlExplorer,
-        XmlChecker        $xmlChecker
+        WebserviceGuesser                   $webserviceGuesser,
+        UrlExplorer                         $urlExplorer,
+        XmlChecker                          $xmlChecker,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        $this->webserviceGuesser = $webserviceGuesser;
-        $this->urlExplorer       = $urlExplorer;
-        $this->xmlChecker        = $xmlChecker;
+        $this->webserviceGuesser        = $webserviceGuesser;
+        $this->urlExplorer              = $urlExplorer;
+        $this->xmlChecker               = $xmlChecker;
+        $this->clientParametersRegistry = $clientParametersRegistry;
     }
 
     /**
@@ -69,7 +77,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
             return null;
         }
 
-        $clientParameters = MagentoSoapClientParametersRegistry::getInstance(
+        $clientParameters = $this->clientParametersRegistry->getInstance(
             $protocol->getSoapUsername(),
             $protocol->getSoapApiKey(),
             $protocol->getMagentoUrl(),
@@ -116,11 +124,11 @@ class HasValidCredentialsValidator extends ConstraintValidator
     /**
      * Are the given parameters valid ?
      *
-     * @param MagentoSoapClientParametersRegistry $clientParameters
+     * @param MagentoSoapClientParameters $clientParameters
      *
      * @return boolean
      */
-    public function areValidSoapCredentials(MagentoSoapClientParametersRegistry $clientParameters)
+    public function areValidSoapCredentials(MagentoSoapClientParameters $clientParameters)
     {
         if (null === $clientParameters->isValid()) {
             try {
