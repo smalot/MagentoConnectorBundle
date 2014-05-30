@@ -3,6 +3,7 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Merger;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoMapper;
 use PhpSpec\ObjectBehavior;
 
@@ -14,9 +15,15 @@ class MagentoMappingMergerSpec extends ObjectBehavior
         $mapper2->getPriority()->willReturn(10);
     }
 
-    function it_sets_parameters_to_all_mappers($mapper1, $mapper2, MagentoSoapClientParametersRegistry $clientParameters)
-    {
+    function it_sets_parameters_to_all_mappers(
+        $mapper1,
+        $mapper2,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
+    ) {
         $this->beConstructedWith(array($mapper1, $mapper2), 'generic', 'export', true);
+
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
         $mapper1->setParameters($clientParameters, 'default')->shouldBeCalled();
         $mapper2->setParameters($clientParameters, 'default')->shouldBeCalled();
@@ -24,9 +31,15 @@ class MagentoMappingMergerSpec extends ObjectBehavior
         $this->setParameters($clientParameters, 'default');
     }
 
-    function it_gives_a_configuration_field($mapper1, $mapper2, MagentoSoapClientParametersRegistry $clientParameters)
-    {
+    function it_gives_a_configuration_field(
+        $mapper1,
+        $mapper2,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
+    ) {
         $this->beConstructedWith(array($mapper2, $mapper1), 'generic', 'export', true);
+
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
         $mapper1->setParameters($clientParameters, 'default')->shouldBeCalled();
         $mapper2->setParameters($clientParameters, 'default')->shouldBeCalled();
