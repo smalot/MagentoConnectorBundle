@@ -45,8 +45,15 @@ You can now update your database :
 
     app/console doctrine:schema:update --force
 
-If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
+Don't forget to add guzzle in the composer.json of the pim
 
+    "require": {
+        "guzzle/service": ">=3.6.0,<3.8.0"
+    },
+
+
+If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
+ 
 ## Installation the Magento Connector in an Akeneo PIM developpement environnement
 
 The following installation instructions are meant for developement on the Magento Connector itself.
@@ -61,7 +68,7 @@ After that, add bundles to your `AppKernel.php` :
 
 Don't forget to add guzzle in the composer.json of the pim
 
-    "require-dev": {
+    "require": {
         "guzzle/service": ">=3.6.0,<3.8.0"
     },
 
