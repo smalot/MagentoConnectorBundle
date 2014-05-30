@@ -32,6 +32,7 @@ class AttributeCleanerSpec extends ObjectBehavior
 
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+
         $em->getRepository('attribute_class')->willReturn($entityRepository);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
     }

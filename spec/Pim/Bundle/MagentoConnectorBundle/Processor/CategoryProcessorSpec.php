@@ -11,8 +11,8 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
-use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
@@ -27,10 +27,11 @@ class CategoryProcessorSpec extends ObjectBehavior
         MagentoMappingMerger $categoryMappingMerger,
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
-        CategoryMappingManager $categoryMappingManager,
         Webservice $webservice,
         CategoryNormalizer $categoryNormalizer,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -38,13 +39,14 @@ class CategoryProcessorSpec extends ObjectBehavior
             $localeManager,
             $storeViewMappingMerger,
             $categoryMappingMerger,
-            $categoryMappingManager
+            $clientParametersRegistry
         );
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
 
-        $normalizerGuesser->getCategoryNormalizer(Argument::cetera())->willReturn($categoryNormalizer);
+        $normalizerGuesser->getCategoryNormalizer($clientParameters)->willReturn($categoryNormalizer);
     }
 
     function it_normalizes_categories(
@@ -129,7 +131,7 @@ class CategoryProcessorSpec extends ObjectBehavior
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                    'data'     => MagentoSoapClientParametersRegistry::SOAP_WSDL_URL
+                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
                 )
             ),
             'httpLogin' => array(

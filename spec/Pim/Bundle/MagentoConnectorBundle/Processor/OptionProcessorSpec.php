@@ -2,11 +2,11 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
@@ -20,7 +20,6 @@ use Prophecy\Argument;
 class OptionProcessorSpec extends ObjectBehavior
 {
     function let(
-        ChannelManager $channelManager,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
@@ -29,21 +28,27 @@ class OptionProcessorSpec extends ObjectBehavior
         NormalizerGuesser $normalizerGuesser,
         Webservice $webservice,
         OptionNormalizer $optionNormalizer,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
-            $attributeMappingMerger
+            $attributeMappingMerger,
+            $clientParametersRegistry
         );
         $this->setStepExecution($stepExecution);
 
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+
         $attributeMappingMerger->getMapping()->willReturn($attributeMapping);
         $attributeMapping->getTarget('color')->willReturn('color');
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
-        $normalizerGuesser->getOptionNormalizer(Argument::cetera())->willReturn($optionNormalizer);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+        $normalizerGuesser->getOptionNormalizer($clientParameters)->willReturn($optionNormalizer);
     }
 
     function it_normalizes_given_grouped_options(
@@ -144,7 +149,7 @@ class OptionProcessorSpec extends ObjectBehavior
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                    'data'     => MagentoSoapClientParametersRegistry::SOAP_WSDL_URL
+                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
                 )
             ),
             'httpLogin' => array(
