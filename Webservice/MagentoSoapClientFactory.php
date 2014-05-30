@@ -2,8 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-
 /**
  * A magento soap client factory
  *

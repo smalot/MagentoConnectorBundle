@@ -2,9 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
