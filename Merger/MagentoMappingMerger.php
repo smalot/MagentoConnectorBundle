@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Merger;
 
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\ConnectorMappingBundle\Merger\MappingMerger;
 
 /**
@@ -20,7 +20,7 @@ class MagentoMappingMerger extends MappingMerger
      * @param MagentoSoapClientParametersRegistry $clientParameters
      * @param string                              $defaultStoreView
      */
-    public function setParameters(MagentoSoapClientParametersRegistry $clientParameters, $defaultStoreView)
+    public function setParameters(MagentoSoapClientParameters $clientParameters, $defaultStoreView)
     {
         foreach ($this->getOrderedMappers() as $mapper) {
             $mapper->setParameters($clientParameters, $defaultStoreView);

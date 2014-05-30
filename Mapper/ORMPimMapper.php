@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\ConnectorMappingBundle\Mapper\ORMMapper;
 use Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 
 /**
@@ -44,7 +44,7 @@ class ORMPimMapper extends ORMMapper
      * Set mapper parameters
      * @param MagentoSoapClientParametersRegistry $clientParameters
      */
-    public function setParameters(MagentoSoapClientParametersRegistry $clientParameters)
+    public function setParameters(MagentoSoapClientParameters $clientParameters)
     {
         $this->clientParameters = $clientParameters;
     }

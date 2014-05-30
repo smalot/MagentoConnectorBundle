@@ -3,7 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper;
 
 /**
@@ -43,7 +43,7 @@ class MagentoMapper extends Mapper
      * @param MagentoSoapClientParametersRegistry $clientParameters
      * @param string                              $defaultStoreView
      */
-    public function setParameters(MagentoSoapClientParametersRegistry $clientParameters, $defaultStoreView)
+    public function setParameters(MagentoSoapClientParameters $clientParameters, $defaultStoreView)
     {
         $this->clientParameters = $clientParameters;
         $this->defaultStoreView = $defaultStoreView;

@@ -52,7 +52,7 @@ class CategoryProcessor extends AbstractProcessor
             $clientParametersRegistry
         );
 
-        $this->attributeMappingMerger = $categoryMappingMerger;
+        $this->categoryMappingMerger = $categoryMappingMerger;
     }
 
     /**

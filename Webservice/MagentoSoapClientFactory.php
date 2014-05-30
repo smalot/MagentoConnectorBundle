@@ -1,6 +1,7 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**
  * A magento soap client factory
@@ -17,7 +18,7 @@ class MagentoSoapClientFactory
      *
      * @return MagentoSoapClient
      */
-    public function getMagentoSoapClient(MagentoSoapClientParametersRegistry $clientParameters)
+    public function getMagentoSoapClient(MagentoSoapClientParameters $clientParameters)
     {
         return new MagentoSoapClient($clientParameters);
     }
