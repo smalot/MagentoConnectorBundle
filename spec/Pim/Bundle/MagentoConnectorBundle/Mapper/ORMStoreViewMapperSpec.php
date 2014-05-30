@@ -3,6 +3,7 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
@@ -17,9 +18,12 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
         LocaleManager $localeManager,
-        MagentoSoapClientParametersRegistry $clientParameters
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'storeview', $localeManager);
+
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
         $this->setParameters($clientParameters, '');
     }

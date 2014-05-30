@@ -4,10 +4,10 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class MagentoStoreViewMapperSpec extends ObjectBehavior
 {
@@ -17,9 +17,12 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser,
         Webservice $webservice,
-        MagentoSoapClientParametersRegistry $clientParameters
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
+
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
         $this->setParameters($clientParameters, '');
