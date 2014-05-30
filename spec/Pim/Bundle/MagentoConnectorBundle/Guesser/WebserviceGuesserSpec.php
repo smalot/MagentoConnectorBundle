@@ -4,17 +4,22 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class WebserviceGuesserSpec extends ObjectBehavior
 {
-    function let(MagentoSoapClientFactory $magentoSoapClientFactory, MagentoSoapClientParametersRegistry $clientParameters)
-    {
+    function let(
+        MagentoSoapClientFactory $magentoSoapClientFactory,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
+    ) {
         $this->beConstructedWith($magentoSoapClientFactory);
 
-        $clientParameters->getSoapUrl()->willReturn('soap_url');
+        $clientParametersRegistry->getInstance('soap_username', 'soap_api_key', 'http://magento.url', '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+
+        $clientParameters->getSoapUrl()->willReturn('http://magento.url/api/soap/?wsdl');
         $clientParameters->getSoapUsername()->willReturn('soap_username');
         $clientParameters->getSoapApiKey()->willReturn('soap_api_key');
     }
