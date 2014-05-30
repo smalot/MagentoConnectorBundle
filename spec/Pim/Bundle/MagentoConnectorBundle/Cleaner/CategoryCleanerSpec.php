@@ -4,6 +4,8 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
@@ -15,12 +17,15 @@ class CategoryCleanerSpec extends ObjectBehavior
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
         Webservice $webservice,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith($webserviceGuesser, $categoryMappingManager);
+        $this->beConstructedWith($webserviceGuesser, $categoryMappingManager, $clientParametersRegistry);
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
     function it_asks_soap_client_to_delete_categories_that_are_not_in_pim_anymore($webservice, $categoryMappingManager)
