@@ -6,7 +6,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
@@ -20,11 +21,14 @@ class AttributeSetWriterSpec extends ObjectBehavior
         FamilyMappingManager $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
         Webservice $webservice,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
 
-        $this->beConstructedWith($webserviceGuesser, $familyMappingManager, $attributeMappingManager);
+        $this->beConstructedWith($webserviceGuesser, $familyMappingManager, $attributeMappingManager, $clientParametersRegistry);
         $this->setStepExecution($stepExecution);
     }
 
@@ -43,10 +47,10 @@ class AttributeSetWriterSpec extends ObjectBehavior
         );
 
         $webservice->createAttributeSet('family_code')->willReturn(12);
-        $familyMappingManager->registerFamilyMapping($family, 12, 'barfoo')->shouldBeCalled();
+        $familyMappingManager->registerFamilyMapping($family, 12, '/api/soap/?wsdl')->shouldBeCalled();
 
-        $this->setMagentoUrl('bar');
-        $this->setWsdlUrl('foo');
+        $this->setMagentoUrl(null);
+        $this->setWsdlUrl('/api/soap/?wsdl');
 
         $this->write($batches);
     }

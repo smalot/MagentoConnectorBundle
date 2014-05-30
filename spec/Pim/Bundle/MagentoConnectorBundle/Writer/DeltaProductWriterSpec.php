@@ -6,6 +6,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\DeltaExportBundle\Manager\ProductExportManager;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -18,9 +19,10 @@ class DeltaProductWriterSpec extends ObjectBehavior
     function let(
         WebserviceGuesser $webserviceGuesser,
         ChannelManager $channelManager,
-        ProductExportManager $productExportManager
+        ProductExportManager $productExportManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        $this->beConstructedWith($webserviceGuesser, $channelManager, $productExportManager);
+        $this->beConstructedWith($webserviceGuesser, $channelManager, $productExportManager, $clientParametersRegistry);
     }
 
     function it_sets_step_execution(StepExecution $stepExecution, JobExecution $jobExecution)

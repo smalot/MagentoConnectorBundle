@@ -4,6 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Entity\Category;
@@ -18,11 +19,14 @@ class CategoryWriterSpec extends ObjectBehavior
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
         Webservice $webservice,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
 
-        $this->beConstructedWith($webserviceGuesser, $categoryMappingManager);
+        $this->beConstructedWith($webserviceGuesser, $categoryMappingManager, $clientParametersRegistry);
         $this->setStepExecution($stepExecution);
     }
 
@@ -43,10 +47,10 @@ class CategoryWriterSpec extends ObjectBehavior
         );
         $webservice->sendNewCategory(array('foo'))->willReturn(12);
         $categoryMappingManager
-                ->registerCategoryMapping($category, 12, 'bar'. MagentoSoapClientParametersRegistry::SOAP_WSDL_URL)
+                ->registerCategoryMapping($category, 12, MagentoSoapClientParameters::SOAP_WSDL_URL)
                 ->shouldBeCalled();
 
-        $this->setMagentoUrl('bar');
+        $this->setMagentoUrl(null);
         $this->write($batches);
     }
 
@@ -101,12 +105,12 @@ class CategoryWriterSpec extends ObjectBehavior
         );
 
         $categoryMappingManager
-                ->getIdFromCategory($category, 'bar' .MagentoSoapClientParametersRegistry::SOAP_WSDL_URL)
+                ->getIdFromCategory($category, MagentoSoapClientParameters::SOAP_WSDL_URL)
                 ->willReturn(12);
 
         $webservice->sendUpdateCategory(array(12))->shouldBeCalled();
 
-        $this->setMagentoUrl('bar');
+        $this->setMagentoUrl(null);
         $this->write($batches);
     }
 
