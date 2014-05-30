@@ -80,7 +80,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $clientParameters;
 
     /**
-     * @var MagentosoapClientParametersRegistry
+     * @var MagentoSoapClientParametersRegistry
      */
     protected $clientParametersRegistry;
 

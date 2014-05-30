@@ -70,7 +70,7 @@ class UrlExplorer
     /**
      * It connects to the url and give response
      *
-     * @param  MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParameters $clientParameters
      *
      * @return Guzzle\Http\Message\Response
      *
