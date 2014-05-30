@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento category writer
@@ -29,14 +30,16 @@ class CategoryWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser      $webserviceGuesser
-     * @param CategoryMappingManager $categoryMappingManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param CategoryMappingManager              $categoryMappingManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        CategoryMappingManager $categoryMappingManager
+        WebserviceGuesser                   $webserviceGuesser,
+        CategoryMappingManager              $categoryMappingManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }

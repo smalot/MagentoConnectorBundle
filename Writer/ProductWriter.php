@@ -8,6 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento product writer
@@ -35,14 +36,16 @@ class ProductWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param ChannelManager    $channelManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ChannelManager                      $channelManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        ChannelManager $channelManager
+        WebserviceGuesser                   $webserviceGuesser,
+        ChannelManager                      $channelManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->channelManager = $channelManager;
     }
