@@ -1,6 +1,7 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
+
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 
 /**

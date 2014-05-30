@@ -104,7 +104,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         MagentoMappingMerger $attributeMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger, $clientParametersRegistry);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $clientParametersRegistry
+        );
 
         $this->currencyManager        = $currencyManager;
         $this->channelManager         = $channelManager;

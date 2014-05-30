@@ -58,5 +58,4 @@ class MagentoSoapClientParametersRegistry
 
         return $this->instances[$hash];
     }
-
 }
