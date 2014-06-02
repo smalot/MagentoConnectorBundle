@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Item;
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
@@ -79,6 +80,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $clientParameters;
 
     /**
+     * @var MagentoSoapClientParametersRegistry
+     */
+    protected $clientParametersRegistry;
+
+    /**
      * @var boolean
      */
     protected $beforeExecute = false;
@@ -91,9 +97,12 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * @param WebserviceGuesser $webserviceGuesser
      */
-    public function __construct(WebserviceGuesser $webserviceGuesser)
-    {
-        $this->webserviceGuesser = $webserviceGuesser;
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
+    ) {
+        $this->clientParametersRegistry = $clientParametersRegistry;
+        $this->webserviceGuesser        = $webserviceGuesser;
     }
 
     /**
@@ -385,19 +394,19 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Get the magento soap client parameters
      *
-     * @return MagentoSoapClientParameters
+     * @return MagentoSoapClientParametersRegistry
      */
     protected function getClientParameters()
     {
         if (!$this->clientParameters) {
-            $this->clientParameters = new MagentoSoapClientParameters(
+            $this->clientParameters = $this->clientParametersRegistry->getInstance(
                 $this->soapUsername,
                 $this->soapApiKey,
                 $this->magentoUrl,
                 $this->wsdlUrl,
+                $this->defaultStoreView,
                 $this->httpLogin,
-                $this->httpPassword,
-                $this->defaultStoreView
+                $this->httpPassword
             );
         }
 

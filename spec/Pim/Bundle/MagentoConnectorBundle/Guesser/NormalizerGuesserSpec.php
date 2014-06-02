@@ -9,12 +9,12 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class NormalizerGuesserSpec extends ObjectBehavior
 {
@@ -26,11 +26,14 @@ class NormalizerGuesserSpec extends ObjectBehavior
         CategoryMappingManager $categoryMappingManager,
         AssociationTypeManager $associationTypeManager,
         ProductValueManager $productValueManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($magentoSoapClientFactory, $channelManager, $mediaManager, $productValueNormalizer, $categoryMappingManager, $associationTypeManager, $productValueManager);
 
-        $clientParameters->getSoapUrl()->willReturn('soap_url');
+        $clientParametersRegistry->getInstance('soap_username', 'soap_api_key', 'http://magento.url', '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+
+        $clientParameters->getSoapUrl()->willReturn('http://magento.url/api/soap/?wsdl');
         $clientParameters->getSoapUsername()->willReturn('soap_username');
         $clientParameters->getSoapApiKey()->willReturn('soap_api_key');
     }

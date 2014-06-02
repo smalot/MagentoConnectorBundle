@@ -4,11 +4,10 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoMapper;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class MagentoAttributeMapperSpec extends ObjectBehavior
 {
@@ -18,17 +17,20 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser,
         Webservice $webservice,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
 
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+
         $this->setParameters($clientParameters, '');
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
+    function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getAllAttributes()->willReturn(array('attribute_foo' => array(), 'attribute_bar' => array()));
 
@@ -37,9 +39,9 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn(array());
     }
 
-    function it_returns_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $webservice)
+    function it_returns_mapping_from_magento_with_madatory_attributes($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getAllAttributes()->willReturn(array('name' => array(), 'attribute_bar' => array()));
 
@@ -60,9 +62,9 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->setMapping(array())->shouldReturn(null);
     }
 
-    function it_returns_all_magento_attributes_as_sources($hasValidCredentialsValidator, $webservice)
+    function it_returns_all_magento_attributes_as_sources($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getAllAttributes()->willReturn(array('foo' => array(), 'bar' => array()));
 
@@ -86,7 +88,7 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
 
     function it_returns_an_proper_identifier($hasValidCredentialsValidator, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $clientParameters->getSoapUrl()->willReturn('soap_urlwsdl_url');
         $identifier = sha1('attribute-soap_urlwsdl_url');
@@ -99,9 +101,9 @@ class MagentoAttributeMapperSpec extends ObjectBehavior
         $this->getIdentifier()->shouldReturn('');
     }
 
-    function it_should_be_called_once($hasValidCredentialsValidator, $webservice)
+    function it_should_be_called_once($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
         $webservice->getAllAttributes()->shouldBeCalledTimes(1)->willReturn(array('foo' => array(), 'bar' => array()));
         $this->getAllTargets();
     }

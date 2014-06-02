@@ -7,6 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Doctrine\ORM\ProductRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
@@ -33,12 +34,15 @@ class ProductCleanerSpec extends ObjectBehavior
         ProductInterface $secondProduct,
         ProductInterface $thirdProduct,
         Channel $channel,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith($webserviceGuesser, $channelManager, $productManager);
+        $this->beConstructedWith($webserviceGuesser, $channelManager, $productManager, $clientParametersRegistry);
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
 
         $webservice->getProductsStatus()->willReturn(
             array(

@@ -91,8 +91,8 @@ class NormalizerGuesser extends AbstractGuesser
     /**
      * Get the product normalizer corresponding to the given Magento parameters
      * @param MagentoSoapClientParameters $clientParameters
-     * @param bool                        $enabled
-     * @param bool                        $visibility
+     * @param boolean                     $enabled
+     * @param boolean                     $visibility
      * @param string                      $currencyCode
      *
      * @throws NotSupportedVersionException If the magento version is not supported

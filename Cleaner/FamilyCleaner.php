@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -27,12 +28,16 @@ class FamilyCleaner extends Cleaner
     protected $familyMappingManager;
 
     /**
-     * @param WebserviceGuesser    $webserviceGuesser
-     * @param FamilyMappingManager $familyMappingManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param FamilyMappingManager                $familyMappingManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
-    public function __construct(WebserviceGuesser    $webserviceGuesser, FamilyMappingManager $familyMappingManager)
-    {
-        parent::__construct($webserviceGuesser);
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        FamilyMappingManager $familyMappingManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
+    ) {
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->familyMappingManager = $familyMappingManager;
     }

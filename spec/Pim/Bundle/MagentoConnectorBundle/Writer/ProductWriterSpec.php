@@ -6,8 +6,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -23,11 +23,15 @@ class ProductWriterSpec extends ObjectBehavior
         WebserviceGuesser $webserviceGuesser,
         ChannelManager $channelManager,
         StepExecution $stepExecution,
-        Webservice $webservice
+        Webservice $webservice,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith($webserviceGuesser, $channelManager);
+        $this->beConstructedWith($webserviceGuesser, $channelManager, $clientParametersRegistry);
         $this->setStepExecution($stepExecution);
-        $webserviceGuesser->getWebservice(Argument::any())->willReturn($webservice);
+
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
     function it_updates_a_product($webservice, $stepExecution)

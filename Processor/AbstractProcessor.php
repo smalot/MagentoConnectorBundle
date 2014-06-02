@@ -12,6 +12,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento product processor
@@ -58,18 +59,20 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     protected $globalContext = array();
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MagentoMappingMerger     $storeViewMappingMerger
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param LocaleManager                       $localeManager
+     * @param MagentoMappingMerger                $storeViewMappingMerger
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MagentoMappingMerger $storeViewMappingMerger
+        MagentoMappingMerger $storeViewMappingMerger,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->normalizerGuesser      = $normalizerGuesser;
         $this->localeManager          = $localeManager;

@@ -22,6 +22,8 @@ services:
             - '@pim_magento_connector.merger.attribute_mapping'
             - '@pim_transform.converter.metric'
             - '@pim_magento_connector.manager.association_type'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
+
     pim_magento_connector.processor.configurable:
         class: %pim_magento_connector.processor.configurable.class%
         arguments:
@@ -34,6 +36,8 @@ services:
             - '@pim_magento_connector.merger.category_mapping'
             - '@pim_magento_connector.merger.attribute_mapping'
             - '@pim_magento_connector.manager.group'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
+
     pim_magento_connector.processor.product_association:
         class: %pim_magento_connector.processor.product_association.class%
         arguments:
@@ -42,6 +46,7 @@ services:
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
             - '@pim_magento_connector.manager.association_type'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
     pim_magento_connector.processor.category:
         class: %pim_magento_connector.processor.category.class%
@@ -51,6 +56,7 @@ services:
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
             - '@pim_magento_connector.merger.category_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
     pim_magento_connector.processor.attribute:
         class: %pim_magento_connector.processor.attribute.class%
@@ -60,6 +66,8 @@ services:
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
             - '@pim_magento_connector.merger.attribute_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
+
     pim_magento_connector.processor.option:
         class: %pim_magento_connector.processor.option.class%
         arguments:
@@ -68,6 +76,8 @@ services:
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
             - '@pim_magento_connector.merger.attribute_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
+
     pim_magento_connector.processor.family:
         class: %pim_magento_connector.processor.family.class%
         arguments:
@@ -75,3 +85,4 @@ services:
             - '@pim_magento_connector.guesser.magento_normalizer'
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'

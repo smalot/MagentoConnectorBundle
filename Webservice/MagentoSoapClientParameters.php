@@ -34,6 +34,11 @@ class MagentoSoapClientParameters
     protected $magentoUrl;
 
     /**
+     * @var string Default store view
+     */
+    protected $defaultStoreView;
+
+    /**
      * @var string Login for http authentication
      */
     protected $httpLogin;
@@ -44,29 +49,37 @@ class MagentoSoapClientParameters
     protected $httpPassword;
 
     /**
+     * @var boolean Are parameters valid or not ?
+     */
+    protected $isValid;
+
+    /**
      * Constructor
      *
-     * @param string $soapUsername Magento soap username
-     * @param string $soapApiKey   Magento soap api key
-     * @param string $magentoUrl   Magento url (only the domain)
-     * @param string $wsdlUrl      Only wsdl soap api extension
-     * @param string $httpLogin    Login http authentication
-     * @param string $httpPassword Password http authentication
+     * @param string $soapUsername     Magento soap username
+     * @param string $soapApiKey       Magento soap api key
+     * @param string $magentoUrl       Magento url (only the domain)
+     * @param string $wsdlUrl          Only wsdl soap api extension
+     * @param string $defaultStoreView Default stroe view
+     * @param string $httpLogin        Login http authentication
+     * @param string $httpPassword     Password http authentication
      */
     public function __construct(
         $soapUsername,
         $soapApiKey,
         $magentoUrl,
         $wsdlUrl,
+        $defaultStoreView,
         $httpLogin = null,
         $httpPassword = null
     ) {
-        $this->soapUsername = $soapUsername;
-        $this->soapApiKey   = $soapApiKey;
-        $this->magentoUrl   = $magentoUrl;
-        $this->wsdlUrl      = $wsdlUrl;
-        $this->httpLogin    = $httpLogin;
-        $this->httpPassword = $httpPassword;
+        $this->soapUsername     = $soapUsername;
+        $this->soapApiKey       = $soapApiKey;
+        $this->magentoUrl       = $magentoUrl;
+        $this->wsdlUrl          = $wsdlUrl;
+        $this->defaultStoreView = $defaultStoreView;
+        $this->httpLogin        = $httpLogin;
+        $this->httpPassword     = $httpPassword;
     }
 
     /**
@@ -81,9 +94,30 @@ class MagentoSoapClientParameters
             $this->soapApiKey.
             $this->magentoUrl.
             $this->wsdlUrl.
+            $this->defaultStoreView.
             $this->httpLogin.
             $this->httpPassword
         );
+    }
+
+    /**
+     * Are parameters valid or not ?
+     *
+     * @return boolean Is valid
+     */
+    public function isValid()
+    {
+        return $this->isValid;
+    }
+
+    /**
+     * Allows to change the state of validation
+     *
+     * @param boolean $state
+     */
+    public function setValidation($state)
+    {
+        $this->isValid = $state;
     }
 
     /**
@@ -134,6 +168,16 @@ class MagentoSoapClientParameters
     public function getMagentoUrl()
     {
         return $this->magentoUrl;
+    }
+
+    /**
+     * Get the default store view
+     *
+     * @return string Default store view
+     */
+    public function getDefaultstoreView()
+    {
+        return $this->defaultStoreView;
     }
 
     /**

@@ -7,6 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -38,18 +39,20 @@ class OptionCleaner extends Cleaner
     protected $optionClassName;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param EntityManager     $em
-     * @param string            $attributeClassName
-     * @param string            $optionClassName
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param EntityManager                       $em
+     * @param string                              $attributeClassName
+     * @param string                              $optionClassName
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         EntityManager $em,
         $attributeClassName,
-        $optionClassName
+        $optionClassName,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->em                 = $em;
         $this->attributeClassName = $attributeClassName;

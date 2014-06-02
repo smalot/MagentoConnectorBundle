@@ -14,6 +14,7 @@ use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento product processor
@@ -61,7 +62,8 @@ class ProductProcessor extends AbstractProductProcessor
         MagentoMappingMerger $categoryMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
         MetricConverter $metricConverter,
-        AssociationTypeManager $associationTypeManager
+        AssociationTypeManager $associationTypeManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct(
             $webserviceGuesser,
@@ -71,7 +73,8 @@ class ProductProcessor extends AbstractProductProcessor
             $currencyManager,
             $channelManager,
             $categoryMappingMerger,
-            $attributeMappingMerger
+            $attributeMappingMerger,
+            $clientParametersRegistry
         );
 
         $this->metricConverter        = $metricConverter;

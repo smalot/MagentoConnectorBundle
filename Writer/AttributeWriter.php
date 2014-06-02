@@ -10,6 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento attribute writer. Add attributes to groups and attribute sets on magento side
@@ -49,18 +50,19 @@ class AttributeWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser            $webserviceGuesser
-     * @param FamilyMappingManager         $familyMappingManager
-     * @param AttributeMappingManager      $attributeMappingManager
-     * @param AttributeGroupMappingManager $attributeGroupMappingManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param FamilyMappingManager                $familyMappingManager
+     * @param AttributeMappingManager             $attributeMappingManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser            $webserviceGuesser,
-        FamilyMappingManager         $familyMappingManager,
-        AttributeMappingManager      $attributeMappingManager,
-        AttributeGroupMappingManager $attributeGroupMappingManager
+        WebserviceGuesser                   $webserviceGuesser,
+        FamilyMappingManager                $familyMappingManager,
+        AttributeMappingManager             $attributeMappingManager,
+        AttributeGroupMappingManager        $attributeGroupMappingManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->attributeMappingManager      = $attributeMappingManager;
         $this->familyMappingManager         = $familyMappingManager;

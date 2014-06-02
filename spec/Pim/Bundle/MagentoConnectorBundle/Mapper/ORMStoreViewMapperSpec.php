@@ -2,13 +2,13 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\CatalogBundle\Entity\Locale;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ORMStoreViewMapperSpec extends ObjectBehavior
 {
@@ -18,16 +18,23 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
         LocaleManager $localeManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $simpleMappingManager, 'storeview', $localeManager);
 
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+
         $this->setParameters($clientParameters, '');
     }
 
-    function it_shoulds_return_all_locales_from_database_as_sources($localeManager, $hasValidCredentialsValidator, Locale $locale)
-    {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+    function it_shoulds_return_all_locales_from_database_as_sources(
+            Locale $locale,
+            $localeManager,
+            $hasValidCredentialsValidator,
+            $clientParameters
+    ) {
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $localeManager->getActiveCodes()->willReturn(array('foo'));
 

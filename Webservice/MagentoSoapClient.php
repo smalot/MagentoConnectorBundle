@@ -22,8 +22,8 @@ class MagentoSoapClient
     /**
      * Create and init the soap client
      *
-     * @param MagentoSoapClientParameters $clientParameters
-     * @param SoapClient                  $soapClient
+     * @param MagentoSoapClientParametersRegistry $clientParameters
+     * @param SoapClient                          $soapClient
      */
     public function __construct(MagentoSoapClientParameters $clientParameters, \SoapClient $soapClient = null)
     {

@@ -9,6 +9,8 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
@@ -27,18 +29,23 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         NormalizerGuesser $normalizerGuesser,
         AssociationTypeManager $associationTypeManager,
         Webservice $webservice,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
             $normalizerGuesser,
             $localeManager,
             $storeViewMappingMerger,
-            $associationTypeManager
+            $associationTypeManager,
+            $clientParametersRegistry
         );
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+
         $this->setPimUpSell('UPSELL');
     }
 
