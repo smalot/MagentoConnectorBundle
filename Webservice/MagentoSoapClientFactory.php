@@ -13,7 +13,7 @@ class MagentoSoapClientFactory
 {
     /**
      * Get a new magento soap client
-     * @param MagentoSoapClientParameters $clientParameters
+     * @param MagentoSoapClientParametersRegistry $clientParameters
      *
      * @return MagentoSoapClient
      */

@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
@@ -26,18 +27,20 @@ class ConfigurableCleaner extends ProductCleaner
     protected $groupManager;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param ChannelManager    $channelManager
-     * @param ProductManager    $productManager
-     * @param GroupManager      $groupManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ChannelManager                      $channelManager
+     * @param ProductManager                      $productManager
+     * @param GroupManager                        $groupManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         ChannelManager $channelManager,
         ProductManager $productManager,
-        GroupManager $groupManager
+        GroupManager $groupManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $channelManager, $productManager);
+        parent::__construct($webserviceGuesser, $channelManager, $productManager, $clientParametersRegistry);
 
         $this->groupManager = $groupManager;
     }

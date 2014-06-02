@@ -16,7 +16,7 @@ use Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper;
 class MagentoMapper extends Mapper
 {
     /**
-     * @var MagentoSoapClientParameters
+     * @var MagentoSoapClientParametersRegistry
      */
     protected $clientParameters = null;
 
@@ -29,6 +29,7 @@ class MagentoMapper extends Mapper
      * @var string Default store view parameter
      */
     protected $defaultStoreView;
+
     /**
      * @param HasValidCredentialsValidator $hasValidCredentialsValidator
      */
@@ -39,8 +40,8 @@ class MagentoMapper extends Mapper
 
     /**
      * Set mapper parameters
-     * @param MagentoSoapClientParameters $clientParameters
-     * @param string                      $defaultStoreView
+     * @param MagentoSoapClientParametersRegistry $clientParameters
+     * @param string                              $defaultStoreView
      */
     public function setParameters(MagentoSoapClientParameters $clientParameters, $defaultStoreView)
     {

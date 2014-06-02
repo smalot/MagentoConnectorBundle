@@ -18,6 +18,8 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 
 /**
@@ -28,22 +30,24 @@ use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 class ProductProcessorSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser      $webserviceGuesser,
-        NormalizerGuesser      $normalizerGuesser,
-        LocaleManager          $localeManager,
-        MagentoMappingMerger   $storeViewMappingMerger,
-        CurrencyManager        $currencyManager,
-        ChannelManager         $channelManager,
-        MagentoMappingMerger   $categoryMappingMerger,
-        MagentoMappingMerger   $attributeMappingMerger,
-        MetricConverter        $metricConverter,
-        AssociationTypeManager $associationTypeManager,
-        Webservice             $webservice,
-        MappingCollection      $mappingCollection,
-        NormalizerGuesser      $normalizerGuesser,
-        ProductNormalizer      $productNormalizer,
-        Product                $product,
-        Channel                $channel
+        WebserviceGuesser                   $webserviceGuesser,
+        NormalizerGuesser                   $normalizerGuesser,
+        LocaleManager                       $localeManager,
+        MagentoMappingMerger                $storeViewMappingMerger,
+        CurrencyManager                     $currencyManager,
+        ChannelManager                      $channelManager,
+        MagentoMappingMerger                $categoryMappingMerger,
+        MagentoMappingMerger                $attributeMappingMerger,
+        MetricConverter                     $metricConverter,
+        AssociationTypeManager              $associationTypeManager,
+        Webservice                          $webservice,
+        MappingCollection                   $mappingCollection,
+        NormalizerGuesser                   $normalizerGuesser,
+        ProductNormalizer                   $productNormalizer,
+        Product                             $product,
+        Channel                             $channel,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters         $clientParameters
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -55,10 +59,13 @@ class ProductProcessorSpec extends ObjectBehavior
             $categoryMappingMerger,
             $attributeMappingMerger,
             $metricConverter,
-            $associationTypeManager
+            $associationTypeManager,
+            $clientParametersRegistry
         );
 
-        $webserviceGuesser->getWebservice(Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'))->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+
         $storeViewMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $webservice->getStoreViewsList()->willReturn(
@@ -88,7 +95,7 @@ class ProductProcessorSpec extends ObjectBehavior
         );
 
         $normalizerGuesser->getProductNormalizer(
-            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters'),
+            $clientParameters,
             null,
             4,
             null

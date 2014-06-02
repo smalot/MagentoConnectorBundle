@@ -14,25 +14,30 @@ services:
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_catalog.manager.channel'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
     pim_magento_connector.writer.product_delta:
         class: %pim_magento_connector.writer.product_delta.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_catalog.manager.channel'
             - '@pim_delta_export.manager.product_export'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
     pim_magento_connector.writer.product_association:
         class: %pim_magento_connector.writer.product_association.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
     pim_magento_connector.writer.category:
         class: %pim_magento_connector.writer.category.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_magento_connector.manager.category_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
     pim_magento_connector.writer.option:
         class: %pim_magento_connector.writer.option.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
     pim_magento_connector.writer.attribute:
         class: %pim_magento_connector.writer.attribute.class%
         arguments:
@@ -41,9 +46,12 @@ services:
             - '@pim_magento_connector.manager.attribute_mapping'
             - '@pim_magento_connector.manager.group_mapping'
             - '@pim_magento_connector.merger.attribute_id_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
+
     pim_magento_connector.writer.family:
         class: %pim_magento_connector.writer.family.class%
         arguments:
             - '@pim_magento_connector.guesser.magento_webservice'
             - '@pim_magento_connector.manager.family_mapping'
             - '@pim_magento_connector.manager.attribute_mapping'
+            - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'

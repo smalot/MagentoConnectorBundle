@@ -3,11 +3,11 @@
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class MagentoCategoryMapperSpec extends ObjectBehavior
 {
@@ -17,17 +17,20 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser,
         Webservice $webservice,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($hasValidCredentialsValidator, $webserviceGuesser);
+
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
         $this->setParameters($clientParameters, '');
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice)
+    function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getCategoriesStatus()->willReturn(array('category_id_1' => array(), 'categorie_id_2' => array()));
 
@@ -48,9 +51,9 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
         $this->setMapping(array())->shouldReturn(null);
     }
 
-    function it_returns_all_magento_categories_as_targets($hasValidCredentialsValidator, $webservice)
+    function it_returns_all_magento_categories_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
         $webservice->getCategoriesStatus()->willReturn(array('foo' => array('name' => 'Foo'), 'bar' => array('name' => 'Bar')));
 
@@ -59,7 +62,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
 
     function it_returns_a_proper_identifier($hasValidCredentialsValidator, $clientParameters)
     {
-        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(true);
+        $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
         $clientParameters->getSoapUrl()->willReturn('soap_urlwsdl_url');
         $identifier = sha1('category-soap_urlwsdl_url');
 

@@ -71,10 +71,12 @@ class AttributeGroupMappingManager
         $magentoGroupId,
         $magentoUrl
     ) {
-        $groupMapping = $this->getEntityRepository()->findOneBy(array(
-            'pimGroupCode'  => $pimGroup->getCode(),
-            'pimFamilyCode' => $pimFamily->getCode()
-        ));
+        $groupMapping = $this->getEntityRepository()->findOneBy(
+            array(
+                'pimGroupCode'  => $pimGroup->getCode(),
+                'pimFamilyCode' => $pimFamily->getCode()
+            )
+        );
 
         $magentoGroupMapping = new $this->className();
 

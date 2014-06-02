@@ -4,6 +4,8 @@
 - Groups can be deleted
 - Attribute can be removed from AttributeSets and groups
 - AttributeSets can be deleted
+- Add a full export job
+- Add Magento v1.9 and v1.14 support
 
 ## Improvements
 - Compatibility with pim-community 1.1

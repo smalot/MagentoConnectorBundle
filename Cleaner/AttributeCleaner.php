@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Doctrine\ORM\EntityManager;
 
@@ -43,18 +44,20 @@ class AttributeCleaner extends Cleaner
     protected $attributeCodeMapping;
 
     /**
-     * @param WebserviceGuesser    $webserviceGuesser
-     * @param MagentoMappingMerger $attributeCodeMappingMerger
-     * @param EntityManager        $em
-     * @param string               $attributeClassName
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param MagentoMappingMerger                $attributeMappingMerger
+     * @param EntityManager                       $em
+     * @param string                              $attributeClassName
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         MagentoMappingMerger $attributeCodeMappingMerger,
         EntityManager $em,
-        $attributeClassName
+        $attributeClassName,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->attributeCodeMappingMerger = $attributeCodeMappingMerger;
         $this->em                         = $em;

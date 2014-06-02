@@ -4,6 +4,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Doctrine\ORM\EntityManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
@@ -12,7 +13,6 @@ use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class AttributeCleanerSpec extends ObjectBehavior
 {
@@ -23,12 +23,16 @@ class AttributeCleanerSpec extends ObjectBehavior
         Webservice $webservice,
         EntityRepository $entityRepository,
         MappingCollection $mappingCollection,
-        StepExecution $stepExecution
+        StepExecution $stepExecution,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith($webserviceGuesser, $attributeMappingMerger, $em, 'attribute_class');
+        $this->beConstructedWith($webserviceGuesser, $attributeMappingMerger, $em, 'attribute_class', $clientParametersRegistry);
         $this->setStepExecution($stepExecution);
 
-        $webserviceGuesser->getWebservice(Argument::cetera())->willReturn($webservice);
+        $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+
         $em->getRepository('attribute_class')->willReturn($entityRepository);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
     }

@@ -6,6 +6,7 @@ pim_magento_connector:
         option_export.title: Export options to Magento
         attribute_export.title: Export attributes to Magento
         attributeset_export.title: Export families to Magento
+        full_export.title: Full export (without products) to Magento
     steps:
         simple_product_export.export.title: Simple product export
         configurable_product_export.export.title: Configurable product export

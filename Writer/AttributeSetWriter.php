@@ -7,6 +7,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento attribute set writer
@@ -33,19 +34,21 @@ class AttributeSetWriter extends AbstractWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser       $webserviceGuesser
-     * @param FamilyMappingManager    $familyMappingManager
-     * @param AttributeMappingManager $attributeMappingManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param FamilyMappingManager                $familyMappingManager
+     * @param AttributeMappingManager             $attributeMappingManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        FamilyMappingManager $familyMappingManager,
-        AttributeMappingManager $attributeMappingManager
+        WebserviceGuesser                   $webserviceGuesser,
+        FamilyMappingManager                $familyMappingManager,
+        AttributeMappingManager             $attributeMappingManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->attributeMappingManager = $attributeMappingManager;
-        $this->familyMappingManager = $familyMappingManager;
+        $this->familyMappingManager    = $familyMappingManager;
     }
 
     /**

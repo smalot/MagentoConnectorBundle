@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -19,7 +20,7 @@ use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 /**
  * Validator for Magento credentials
  *
- * @author    Julien Sanchez <julien@akeneo.com>
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
@@ -41,18 +42,26 @@ class HasValidCredentialsValidator extends ConstraintValidator
     protected $xmlChecker;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param UrlExplorer       $urlExplorer
-     * @param XmlChecker        $xmlChecker
+     * @var MagentoSoapClientParametersRegistry
+     */
+    protected $clientParametersRegistry;
+
+    /**
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param UrlExplorer                         $urlExplorer
+     * @param XmlChecker                          $xmlChecker
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        UrlExplorer       $urlExplorer,
-        XmlChecker        $xmlChecker
+        WebserviceGuesser                   $webserviceGuesser,
+        UrlExplorer                         $urlExplorer,
+        XmlChecker                          $xmlChecker,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        $this->webserviceGuesser = $webserviceGuesser;
-        $this->urlExplorer       = $urlExplorer;
-        $this->xmlChecker        = $xmlChecker;
+        $this->webserviceGuesser        = $webserviceGuesser;
+        $this->urlExplorer              = $urlExplorer;
+        $this->xmlChecker               = $xmlChecker;
+        $this->clientParametersRegistry = $clientParametersRegistry;
     }
 
     /**
@@ -69,34 +78,47 @@ class HasValidCredentialsValidator extends ConstraintValidator
             return null;
         }
 
-        $clientParameters = new MagentoSoapClientParameters(
+        $clientParameters = $this->clientParametersRegistry->getInstance(
             $protocol->getSoapUsername(),
             $protocol->getSoapApiKey(),
             $protocol->getMagentoUrl(),
             $protocol->getWsdlUrl(),
+            $protocol->getDefaultStoreView(),
             $protocol->getHttpLogin(),
             $protocol->getHttpPassword()
         );
 
-        try {
-            $xml = $this->urlExplorer->getUrlContent($clientParameters);
-            $this->xmlChecker->checkXml($xml);
-            $this->webserviceGuesser->getWebservice($clientParameters);
-        } catch (NotReachableUrlException $e) {
-            $this->context->addViolationAt(
-                'wsdlUrl',
-                $constraint->messageUrlNotReachable . ' "' . $e->getMessage() . '"'
-            );
-        } catch (InvalidSoapUrlException $e) {
-            $this->context->addViolationAt('wsdlUrl', $constraint->messageSoapNotValid . ' "' . $e->getMessage() . '"');
-        } catch (InvalidXmlException $e) {
-            $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid);
-        } catch (InvalidCredentialException $e) {
-            $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
-        } catch (SoapCallException $e) {
-            $this->context->addViolationAt('soapUsername', $e->getMessage());
-        } catch (\Exception $e) {
-            $this->context->addViolationAt('soapUsername', $e->getMessage());
+        if (null === $clientParameters->isValid() || false === $clientParameters->isValid()) {
+            try {
+                $xml = $this->urlExplorer->getUrlContent($clientParameters);
+                $this->xmlChecker->checkXml($xml);
+                $this->webserviceGuesser->getWebservice($clientParameters);
+                $clientParameters->setValidation(true);
+            } catch (NotReachableUrlException $e) {
+                $clientParameters->setValidation(false);
+                $this->context->addViolationAt(
+                    'wsdlUrl',
+                    $constraint->messageUrlNotReachable . ' "' . $e->getMessage() . '"'
+                );
+            } catch (InvalidSoapUrlException $e) {
+                $clientParameters->setValidation(false);
+                $this->context->addViolationAt(
+                    'wsdlUrl',
+                    $constraint->messageSoapNotValid . ' "' . $e->getMessage() . '"'
+                );
+            } catch (InvalidXmlException $e) {
+                $clientParameters->setValidation(false);
+                $this->context->addViolationAt('wsdlUrl', $constraint->messageXmlNotValid);
+            } catch (InvalidCredentialException $e) {
+                $clientParameters->setValidation(false);
+                $this->context->addViolationAt('soapUsername', $constraint->messageUsername);
+            } catch (SoapCallException $e) {
+                $clientParameters->setValidation(false);
+                $this->context->addViolationAt('soapUsername', $e->getMessage());
+            } catch (\Exception $e) {
+                $clientParameters->setValidation(false);
+                $this->context->addViolationAt('soapUsername', $e->getMessage());
+            }
         }
     }
 
@@ -109,14 +131,16 @@ class HasValidCredentialsValidator extends ConstraintValidator
      */
     public function areValidSoapCredentials(MagentoSoapClientParameters $clientParameters)
     {
-        $valid = true;
-        try {
-            $this->urlExplorer->getUrlContent($clientParameters);
-            $this->webserviceGuesser->getWebservice($clientParameters);
-        } catch (\Exception $e) {
-            $valid = false;
+        if (null === $clientParameters->isValid()) {
+            try {
+                $this->urlExplorer->getUrlContent($clientParameters);
+                $this->webserviceGuesser->getWebservice($clientParameters);
+                $clientParameters->setValidation(true);
+            } catch (\Exception $e) {
+                $clientParameters->setValidation(false);
+            }
         }
 
-        return $valid;
+        return $clientParameters->isValid();
     }
 }

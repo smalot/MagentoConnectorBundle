@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
@@ -28,14 +29,16 @@ class CategoryCleaner extends Cleaner
     protected $categoryMappingManager;
 
     /**
-     * @param WebserviceGuesser      $webserviceGuesser
-     * @param CategoryMappingManager $categoryMappingManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param CategoryMappingManager              $categoryMappingManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        CategoryMappingManager $categoryMappingManager
+        CategoryMappingManager $categoryMappingManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser);
+        parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->categoryMappingManager = $categoryMappingManager;
     }

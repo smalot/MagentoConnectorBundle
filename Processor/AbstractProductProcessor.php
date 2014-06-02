@@ -11,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Abstract magento product processor
@@ -100,9 +101,16 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         CurrencyManager $currencyManager,
         ChannelManager $channelManager,
         MagentoMappingMerger $categoryMappingMerger,
-        MagentoMappingMerger $attributeMappingMerger
+        MagentoMappingMerger $attributeMappingMerger,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $normalizerGuesser, $localeManager, $storeViewMappingMerger);
+        parent::__construct(
+            $webserviceGuesser,
+            $normalizerGuesser,
+            $localeManager,
+            $storeViewMappingMerger,
+            $clientParametersRegistry
+        );
 
         $this->currencyManager        = $currencyManager;
         $this->channelManager         = $channelManager;

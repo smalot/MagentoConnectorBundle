@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\DeltaExportBundle\Manager\ProductExportManager;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
  * Magento delta product writer
@@ -29,16 +30,18 @@ class DeltaProductWriter extends ProductWriter
     /**
      * Constructor
      *
-     * @param WebserviceGuesser    $webserviceGuesser
-     * @param ChannelManager       $channelManager
-     * @param ProductExportManager $productExportManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ChannelManager                      $channelManager
+     * @param ProductExportManager                $productExportManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser $webserviceGuesser,
-        ChannelManager $channelManager,
-        ProductExportManager $productExportManager
+        WebserviceGuesser                   $webserviceGuesser,
+        ChannelManager                      $channelManager,
+        ProductExportManager                $productExportManager,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
-        parent::__construct($webserviceGuesser, $channelManager);
+        parent::__construct($webserviceGuesser, $channelManager, $clientParametersRegistry);
 
         $this->productExportManager = $productExportManager;
     }
