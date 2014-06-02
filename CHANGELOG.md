@@ -4,6 +4,7 @@
 - Groups can be deleted
 - Attribute can be removed from AttributeSets and groups
 - AttributeSets can be deleted
+- Add a full export job
 
 ## Improvements
 - Compatibility with pim-community 1.1
