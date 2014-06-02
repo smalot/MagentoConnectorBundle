@@ -89,4 +89,21 @@ class CategoryMappingManagerSpec extends ObjectBehavior
 
         $this->magentoCategoryExists(12, 'magento_url')->shouldReturn(true);
     }
+
+    public function it_register_mapping(
+        $entityRepository,
+        MagentoCategoryMapping $magentoCategoryMapping,
+        Category $category,
+        $objectManager
+    ) {
+        $entityRepository->findOneBy(array('category' => $category))->willReturn($magentoCategoryMapping);
+        $magentoCategoryMapping->setCategory($category)->shouldBeCalled();
+        $magentoCategoryMapping->setMagentoCategoryId(3)->shouldBeCalled();
+        $magentoCategoryMapping->setMagentoUrl('url')->shouldBeCalled();
+
+        $objectManager->persist($magentoCategoryMapping)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->registerCategoryMapping($category, 3, 'url');
+    }
 }

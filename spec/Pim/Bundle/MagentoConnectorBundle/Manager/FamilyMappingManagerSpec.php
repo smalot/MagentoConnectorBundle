@@ -82,4 +82,21 @@ class FamilyMappingManagerSpec extends ObjectBehavior
 
         $this->magentoFamilyExists(12, 'magento_url')->shouldReturn(true);
     }
+
+    public function it_register_mapping(
+        EntityRepository $entityRepository,
+        MagentoFamilyMapping $magentoFamilyMapping,
+        Family $family,
+        $objectManager
+    ) {
+        $entityRepository->findOneBy(array('family' => $family))->willReturn($magentoFamilyMapping);
+        $magentoFamilyMapping->setFamily($family)->shouldBeCalled();
+        $magentoFamilyMapping->setMagentoFamilyId(35050)->shouldBeCalled();
+        $magentoFamilyMapping->setMagentoUrl('url')->shouldBeCalled();
+
+        $objectManager->persist($magentoFamilyMapping)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->registerFamilyMapping($family, 35050, 'url');
+    }
 }
