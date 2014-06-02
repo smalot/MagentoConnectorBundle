@@ -102,19 +102,6 @@ class AttributeGroupMappingManager
     }
 
     /**
-     * Remove the given mapping
-     *
-     * @param AttributeGroupMapping $groupMapping
-     *
-     * @return void
-     */
-    public function removeMapping($groupMapping)
-    {
-        $this->getEntityRepository()->remove($groupMapping);
-        $this->getEntityRepository()->flush();
-    }
-
-    /**
      * Get the entity manager
      *
      * @return EntityRepository

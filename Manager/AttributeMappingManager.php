@@ -101,7 +101,7 @@ class AttributeMappingManager
         $magentoAttributeId,
         $magentoUrl
     ) {
-        $attributeMapping = $this->getEntityRepository()->findOneByAttribute($pimAttribute->getId());
+        $attributeMapping = $this->getEntityRepository()->findOneBy(array('attribute' => $pimAttribute));
         $magentoAttributeMapping = new $this->className();
 
         if ($attributeMapping) {
