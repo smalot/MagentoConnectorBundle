@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
+use Pim\Bundle\MagentoConnectorBundle\Guesser\AbstractGuesser;
+
 /**
  * A magento soap client to abstract interaction with the php soap client
  *
@@ -101,14 +103,19 @@ class MagentoSoapClient
             try {
                 $response = $this->client->call($this->session, $resource, $params);
             } catch (\SoapFault $e) {
-                throw new SoapCallException(
-                    sprintf(
-                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s',
-                        $e->getMessage(),
-                        $resource,
-                        json_encode($params)
-                    )
-                );
+                if ($resource === 'core_magento.info' && $e->getMessage()
+                    === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
+                    $response = ['magento_version' => AbstractGuesser::UNKNOWN_VERSION];
+                } else {
+                    throw new SoapCallException(
+                        sprintf(
+                            'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s',
+                            $e->getMessage(),
+                            $resource,
+                            json_encode($params)
+                        )
+                    );
+                }
             }
 
             if (is_array($response) && isset($response['isFault']) && $response['isFault']) {
