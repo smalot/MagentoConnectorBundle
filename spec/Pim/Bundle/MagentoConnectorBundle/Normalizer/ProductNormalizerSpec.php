@@ -63,7 +63,7 @@ class ProductNormalizerSpec extends ObjectBehavior
             'website'                  => 'website',
             'channel'                  => 'channel',
             'categoryMapping'          => $categoryMapping,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'     => $attributeMapping,
             'create'                   => true,
             'pimGrouped'               => 'pim_grouped',
             'created_date'             => (new \DateTime()),

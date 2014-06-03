@@ -27,7 +27,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
             'magentoAttributes'        => array('attribute_code' => array('code' => 'attribute_ode', 'scope' => 'global')),
             'magentoAttributesOptions' => array(),
             'currencyCode'             => 'currency_code',
-            'attributeMapping'         => $attributeMapping
+            'attributeCodeMapping'     => $attributeMapping
         );
 
         $attributeMapping->getTarget('attribute_code')->willReturn('attribute_code');

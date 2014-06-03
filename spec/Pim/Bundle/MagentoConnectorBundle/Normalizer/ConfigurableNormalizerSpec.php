@@ -42,7 +42,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'website'                  => 'website',
             'channel'                  => 'channel',
             'categoryMapping'          => $categoryMapping,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'     => $attributeMapping,
             'create'                   => true,
             'defaultStoreView'         => 'default'
         );
