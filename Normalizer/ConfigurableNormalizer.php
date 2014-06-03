@@ -66,7 +66,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['website'],
             $context['channel'],
             $context['categoryMapping'],
-            $context['attributeMapping'],
+            $context['attributeCodeMapping'],
             $context['create']
         );
 
@@ -93,7 +93,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
                     $locale->getCode(),
                     $context['channel'],
                     $context['categoryMapping'],
-                    $context['attributeMapping'],
+                    $context['attributeCodeMapping'],
                     true
                 );
 

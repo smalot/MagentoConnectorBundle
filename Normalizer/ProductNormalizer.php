@@ -105,7 +105,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['channel'],
             $context['website'],
             $context['categoryMapping'],
-            $context['attributeMapping'],
+            $context['attributeCodeMapping'],
             $context['pimGrouped'],
             $context['create'],
             $context['defaultStoreView']
@@ -134,7 +134,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $locale,
                     $context['channel'],
                     $context['categoryMapping'],
-                    $context['attributeMapping'],
+                    $context['attributeCodeMapping'],
                     true
                 );
 
@@ -304,7 +304,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param string            $localeCode               The locale to apply
      * @param string            $scopeCode                The akeno scope
      * @param MappingCollection $categoryMapping          Root category mapping
-     * @param MappingCollection $attributeMapping         Attribute mapping
+     * @param MappingCollection $attributeCodeMapping     Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
@@ -316,7 +316,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $localeCode,
         $scopeCode,
         MappingCollection $categoryMapping,
-        MappingCollection $attributeMapping,
+        MappingCollection $attributeCodeMapping,
         $onlyLocalized
     ) {
         $normalizedValues = array();
@@ -328,7 +328,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'onlyLocalized'            => $onlyLocalized,
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'     => $attributeCodeMapping,
             'currencyCode'             => $this->currencyCode
         );
 
@@ -346,7 +346,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $normalizedValues,
             $this->getCustomValue(
                 $product,
-                $attributeMapping,
+                $attributeCodeMapping,
                 array('categoryMapping' => $categoryMapping)
             )
         );
@@ -393,24 +393,24 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get custom values (not provided by the PIM product)
      * @param ProductInterface  $product
-     * @param MappingCollection $attributeMapping
+     * @param MappingCollection $attributeCodeMapping
      * @param array             $parameters
      *
      * @return mixed
      */
     protected function getCustomValue(
         ProductInterface $product,
-        MappingCollection $attributeMapping,
+        MappingCollection $attributeCodeMapping,
         array $parameters = array()
     ) {
         return array(
-            strtolower($attributeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
-            strtolower($attributeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
-            strtolower($attributeMapping->getTarget('created_at'))     => $product->getCreated()
+            strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
+            strtolower($attributeCodeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
+            strtolower($attributeCodeMapping->getTarget('created_at'))     => $product->getCreated()
                 ->format(AbstractNormalizer::DATE_FORMAT),
-            strtolower($attributeMapping->getTarget('updated_at'))     => $product->getUpdated()
+            strtolower($attributeCodeMapping->getTarget('updated_at'))     => $product->getUpdated()
                 ->format(AbstractNormalizer::DATE_FORMAT),
-            strtolower($attributeMapping->getTarget('categories'))     => $this->getProductCategories(
+            strtolower($attributeCodeMapping->getTarget('categories'))     => $this->getProductCategories(
                 $product,
                 $parameters['categoryMapping']
             )
