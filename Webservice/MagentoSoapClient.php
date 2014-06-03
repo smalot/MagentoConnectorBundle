@@ -103,8 +103,9 @@ class MagentoSoapClient
             try {
                 $response = $this->client->call($this->session, $resource, $params);
             } catch (\SoapFault $e) {
-                if ($resource === 'core_magento.info' && $e->getMessage() === 'Access denied.') {
-                    $response = ['magento_version' => AbstractGuesser::MAGENTO_VERSION_1_7];
+                if ($resource === 'core_magento.info' && $e->getMessage()
+                    === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
+                    $response = ['magento_version' => AbstractGuesser::UNKNOWN_VERSION];
                 } else {
                     throw new SoapCallException(
                         sprintf(

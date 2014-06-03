@@ -20,6 +20,10 @@ abstract class AbstractGuesser
     const MAGENTO_VERSION_1_7  = '1.7';
     const MAGENTO_VERSION_1_6  = '1.6';
 
+    const MAGENTO_CORE_ACCESS_DENIED = 'Access denied.';
+
+    const UNKNOWN_VERSION = 'unknown_version';
+
     const MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE = 'Your Magento version is not supported yet.';
 
     /**
