@@ -17,6 +17,6 @@ class Webservice16 extends Webservice
      */
     public function getStoreViewsList()
     {
-        return array();
+        return [];
     }
 }

@@ -282,7 +282,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
 
         $this->globalContext = array_merge(
             $this->globalContext,
-            array(
+            [
                 'channel'                  => $this->channel,
                 'website'                  => $this->website,
                 'magentoAttributes'        => $magentoAttributes,
@@ -290,7 +290,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                 'magentoStoreViews'        => $magentoStoreViews,
                 'categoryMapping'          => $this->categoryMappingMerger->getMapping(),
                 'attributeCodeMapping'     => $this->attributeMappingMerger->getMapping()
-            )
+            ]
         );
     }
 
@@ -312,45 +312,45 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'channel' => array(
+            [
+                'channel' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->channelManager->getChannelChoices(),
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.channel.help',
                         'label'    => 'pim_magento_connector.export.channel.label'
-                    )
-                ),
-                'enabled' => array(
+                    ]
+                ],
+                'enabled' => [
                     'type'    => 'switch',
-                    'options' => array(
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.enabled.help',
                         'label'    => 'pim_magento_connector.export.enabled.label'
-                    )
-                ),
-                'visibility' => array(
+                    ]
+                ],
+                'visibility' => [
                     'type'    => 'text',
-                    'options' => array(
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.visibility.help',
                         'label'    => 'pim_magento_connector.export.visibility.label'
-                    )
-                ),
-                'currency' => array(
+                    ]
+                ],
+                'currency' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->currencyManager->getCurrencyChoices(),
                         'required' => true,
-                        'attr' => array(
+                        'attr' => [
                             'class' => 'select2',
                             'help'     => 'pim_magento_connector.export.currency.help',
                             'label'    => 'pim_magento_connector.export.currency.label'
-                        )
-                    )
-                )
-            ),
+                        ]
+                    ]
+                ]
+            ],
             $this->categoryMappingMerger->getConfigurationField(),
             $this->attributeMappingMerger->getConfigurationField()
         );

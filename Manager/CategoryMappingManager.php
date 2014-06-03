@@ -46,10 +46,10 @@ class CategoryMappingManager
     public function getCategoryFromId($id, $magentoUrl)
     {
         $magentoCategoryMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'magentoCategoryId' => $id,
                 'magentoUrl'        => $magentoUrl
-            )
+            ]
         );
 
         return $magentoCategoryMapping ? $magentoCategoryMapping->getCategory() : null;
@@ -74,10 +74,10 @@ class CategoryMappingManager
             return $categoryId;
         } else {
             $categoryMapping = $this->getEntityRepository()->findOneBy(
-                array(
+                [
                     'category'   => $category,
                     'magentoUrl' => $magentoUrl
-                )
+                ]
             );
 
             return $categoryMapping ? $categoryMapping->getMagentoCategoryId() : null;
@@ -95,7 +95,7 @@ class CategoryMappingManager
         $magentoCategoryId,
         $magentoUrl
     ) {
-        $categoryMapping = $this->getEntityRepository()->findOneBy(array('category' => $pimCategory));
+        $categoryMapping = $this->getEntityRepository()->findOneBy(['category' => $pimCategory]);
         $magentoCategoryMapping = new $this->className();
 
         if ($categoryMapping) {

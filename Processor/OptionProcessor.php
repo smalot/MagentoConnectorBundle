@@ -126,13 +126,13 @@ class OptionProcessor extends AbstractProcessor
                     $attributeCode,
                     $e->getMessage()
                 ),
-                array($attribute)
+                [$attribute]
             );
         }
 
         $this->globalContext['attributeCode'] = $attributeCode;
 
-        $normalizedOptions = array();
+        $normalizedOptions = [];
 
         foreach ($groupedOptions as $option) {
             if (!array_key_exists($option->getCode(), $optionsStatus)) {
@@ -159,7 +159,7 @@ class OptionProcessor extends AbstractProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($option));
+            throw new InvalidItemException($e->getMessage(), [$option]);
         }
 
         return $normalizedOption;

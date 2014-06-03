@@ -96,7 +96,7 @@ class AttributeWriter extends AbstractWriter
             } catch (SoapCallException $e) {
                 $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
 
-                throw new InvalidItemException($e->getMessage(), array($pimAttribute));
+                throw new InvalidItemException($e->getMessage(), [$pimAttribute]);
             }
         }
     }

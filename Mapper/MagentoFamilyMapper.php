@@ -38,13 +38,13 @@ class MagentoFamilyMapper extends MagentoMapper
      */
     public function getAllTargets()
     {
-        $targets = array();
+        $targets = [];
 
         if ($this->isValid()) {
             $families = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAttributeSetList();
 
             foreach ($families as $familyId => $family) {
-                $targets[] = array('id' => $familyId, 'name' => $family['name']);
+                $targets[] = ['id' => $familyId, 'name' => $family['name']];
             }
         }
 

@@ -48,7 +48,7 @@ class FamilyProcessor extends AbstractProcessor
     public function process($family)
     {
         $this->beforeExecute();
-        $result = array();
+        $result = [];
 
         $result['family_object']        = $family;
         $result['attributes_in_family'] = $family->getAttributes();
@@ -89,7 +89,7 @@ class FamilyProcessor extends AbstractProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($family));
+            throw new InvalidItemException($e->getMessage(), [$family]);
         }
 
         return $processedItem;

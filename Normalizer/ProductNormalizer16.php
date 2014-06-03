@@ -25,7 +25,7 @@ class ProductNormalizer16 extends ProductNormalizer implements ProductNormalizer
      */
     protected function getStoreViewForLocale($locale, $magentoStoreViews, MappingCollection $storeViewMapping)
     {
-        return array('code' => $storeViewMapping->getTarget($locale));
+        return ['code' => $storeViewMapping->getTarget($locale)];
     }
 
     /**

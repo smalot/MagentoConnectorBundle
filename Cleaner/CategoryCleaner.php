@@ -62,7 +62,7 @@ class CategoryCleaner extends Cleaner
                 try {
                     $this->handleCategoryNotInPimAnymore($category);
                 } catch (SoapCallException $e) {
-                    throw new InvalidItemException($e->getMessage(), array(json_encode($category)));
+                    throw new InvalidItemException($e->getMessage(), [json_encode($category)]);
                 }
             }
         }

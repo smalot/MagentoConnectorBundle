@@ -41,7 +41,7 @@ class AssociationTypeManager
      *
      * @return array
      */
-    public function getAssociationTypes($criterias = array())
+    public function getAssociationTypes($criterias = [])
     {
         return $this->getEntityRepository()->findBy($criterias);
     }
@@ -53,7 +53,7 @@ class AssociationTypeManager
      *
      * @return AssociationType|null
      */
-    public function getAssociationType($criterias = array())
+    public function getAssociationType($criterias = [])
     {
         return $this->getEntityRepository()->findOneBy($criterias);
     }
@@ -67,7 +67,7 @@ class AssociationTypeManager
      */
     public function getAssociationTypeByCode($code)
     {
-        return $this->getAssociationType(array('code' => $code));
+        return $this->getAssociationType(['code' => $code]);
     }
 
     /**
@@ -78,11 +78,11 @@ class AssociationTypeManager
      *
      * @return string[]
      */
-    public function getAssociationTypeChoices($criterias = array())
+    public function getAssociationTypeChoices($criterias = [])
     {
         $associationTypes = $this->getAssociationTypes($criterias);
 
-        $choices = array();
+        $choices = [];
 
         foreach ($associationTypes as $assiociationType) {
             $choices[$assiociationType->getCode()] = $assiociationType->getLabel();

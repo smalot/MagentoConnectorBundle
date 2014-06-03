@@ -46,13 +46,13 @@ class ORMFamilyMapper extends ORMPimMapper
      */
     public function getAllSources(Family $family = null)
     {
-        $sources = array();
+        $sources = [];
 
         if ($this->isValid()) {
             $families = $this->familyManager->getFamilies();
 
             foreach ($families as $family) {
-                $sources[] = array('id' => $family->getCode(), 'name' => $family->getCode());
+                $sources[] = ['id' => $family->getCode(), 'name' => $family->getCode()];
             }
         }
 

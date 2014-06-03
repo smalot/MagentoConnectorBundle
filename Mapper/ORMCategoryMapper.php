@@ -46,16 +46,16 @@ class ORMCategoryMapper extends ORMPimMapper
      */
     public function getAllSources(CategoryInterface $category = null)
     {
-        $sources = array();
+        $sources = [];
 
         if ($this->isValid()) {
             $categories = $category === null ? $this->categoryManager->getTrees() : $category->getChildren();
 
             foreach ($categories as $category) {
-                $sources[] = array(
+                $sources[] = [
                     'id'   => $category->getCode(),
                     'text' => sprintf('%s (%s)', $category->getLabel(), $category->getCode())
-                );
+                ];
 
                 $sources = array_merge($sources, $this->getAllSources($category));
             }

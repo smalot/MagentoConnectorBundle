@@ -95,18 +95,18 @@ class ConfigurableProcessor extends AbstractProductProcessor
      */
     public function process($items)
     {
-        $items = is_array($items) ? $items : array($items);
+        $items = is_array($items) ? $items : [$items];
 
         $this->beforeExecute();
 
-        $processedItems = array();
+        $processedItems = [];
 
         $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
         $configurables        = $this->getProductsForGroups($items, $groupsIds);
         $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
 
         if (empty($configurables)) {
-            throw new InvalidItemException('Groups didn\'t match with variants groups', array($configurables));
+            throw new InvalidItemException('Groups didn\'t match with variants groups', [$configurables]);
         }
 
         foreach ($configurables as $configurable) {
@@ -114,23 +114,23 @@ class ConfigurableProcessor extends AbstractProductProcessor
             if (empty($configurable['products'])) {
                 throw new InvalidItemException(
                     'The variant group is not associated to any products',
-                    array($configurable)
+                    [$configurable]
                 );
             }
 
             if ($this->magentoConfigurableExist($configurable, $magentoConfigurables)) {
                 $context = array_merge(
                     $this->globalContext,
-                    array('attributeSetId' => 0, 'create' => false)
+                    ['attributeSetId' => 0, 'create' => false]
                 );
             } else {
                 $groupFamily = $this->getGroupFamily($configurable);
                 $context     = array_merge(
                     $this->globalContext,
-                    array(
+                    [
                         'attributeSetId' => $this->getAttributeSetId($groupFamily->getCode(), $configurable),
                         'create'         => true
-                    )
+                    ]
                 );
             }
 
@@ -158,9 +158,9 @@ class ConfigurableProcessor extends AbstractProductProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($configurable['group']));
+            throw new InvalidItemException($e->getMessage(), [$configurable['group']]);
         } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), array($configurable['group']));
+            throw new InvalidItemException($e->getMessage(), [$configurable['group']]);
         }
 
         return $processedItem;
@@ -205,7 +205,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
                 throw new InvalidItemException(
                     'Your variant group contains products from different families. Magento cannot handle ' .
                     'configurable products with heterogen attribute sets',
-                    array($configurable)
+                    [$configurable]
                 );
             }
         }
@@ -222,7 +222,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      */
     protected function getProductsForGroups(array $products, array $groupsIds)
     {
-        $groups = array();
+        $groups = [];
 
         foreach ($products as $product) {
             foreach ($product->getGroups() as $group) {
@@ -230,10 +230,10 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
                 if (in_array($groupId, $groupsIds)) {
                     if (!isset($groups[$groupId])) {
-                        $groups[$groupId] = array(
+                        $groups[$groupId] = [
                             'group'    => $group,
-                            'products' => array()
-                        );
+                            'products' => []
+                        ];
                     }
 
                     $groups[$groupId]['products'][] = $product;

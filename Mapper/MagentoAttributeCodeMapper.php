@@ -49,11 +49,11 @@ class MagentoAttributeCodeMapper extends MagentoMapper
             foreach (array_keys($attributes) as $attributeCode) {
                 if (in_array($attributeCode, $this->mandatoryAttributes())) {
                     $mapping->add(
-                        array(
+                        [
                             'source'    => $attributeCode,
                             'target'    => $attributeCode,
                             'deletable' => false
-                        )
+                        ]
                     );
                 }
             }
@@ -69,7 +69,7 @@ class MagentoAttributeCodeMapper extends MagentoMapper
      */
     public function getAllTargets()
     {
-        $sources = array();
+        $sources = [];
 
         if ($this->isValid()) {
             $attributeCodes = array_keys(
@@ -77,7 +77,7 @@ class MagentoAttributeCodeMapper extends MagentoMapper
             );
 
             foreach ($attributeCodes as $attributeCode) {
-                $sources[] = array('id' => $attributeCode, 'text' => $attributeCode);
+                $sources[] = ['id' => $attributeCode, 'text' => $attributeCode];
             }
         }
 
@@ -103,13 +103,13 @@ class MagentoAttributeCodeMapper extends MagentoMapper
      */
     protected function mandatoryAttributes()
     {
-        return array(
+        return [
             'name',
             'price',
             'description',
             'short_description',
             'tax_class_id',
             'weight'
-        );
+        ];
     }
 }

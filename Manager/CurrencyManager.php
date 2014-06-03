@@ -28,7 +28,7 @@ class CurrencyManager extends BaseCurrencyManager
     {
         $codes = $this->getActiveCodes();
         if (empty($codes)) {
-            return array();
+            return [];
         }
 
         return array_combine($codes, $codes);
@@ -44,7 +44,7 @@ class CurrencyManager extends BaseCurrencyManager
     {
         $currencyCodes = $this->getActiveCodeChoices();
 
-        $choices = array();
+        $choices = [];
         foreach ($currencyCodes as $code) {
             $choices[$code] = $code;
         }

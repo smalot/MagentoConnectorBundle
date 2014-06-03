@@ -53,6 +53,6 @@ class HasValidDefaultLocaleValidator extends ConstraintValidator
             }
         }
 
-        $this->context->addViolationAt('defaultLocale', $constraint->message, array('defaultLocale'));
+        $this->context->addViolationAt('defaultLocale', $constraint->message, ['defaultLocale']);
     }
 }

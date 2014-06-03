@@ -43,13 +43,13 @@ class ORMAttributeCodeMapper extends ORMPimMapper
      */
     public function getAllSources()
     {
-        $targets = array();
+        $targets = [];
 
         if ($this->isValid()) {
             $attributes = $this->attributeManager->getAttributes();
 
             foreach ($attributes as $attribute) {
-                $targets[] = array('id' => $attribute->getCode(), 'text' => $attribute->getCode());
+                $targets[] = ['id' => $attribute->getCode(), 'text' => $attribute->getCode()];
             }
         }
 

@@ -59,7 +59,7 @@ class CategoryWriter extends AbstractWriter
                 $this->handleMoveCategory($batch);
                 $this->handleVariationCategory($batch);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array());
+                throw new InvalidItemException($e->getMessage(), []);
             }
         }
     }

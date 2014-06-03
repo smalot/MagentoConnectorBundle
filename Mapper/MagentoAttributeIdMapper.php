@@ -64,7 +64,7 @@ class MagentoAttributeIdMapper extends MagentoMapper
      */
     public function getAllTargets()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -74,7 +74,7 @@ class MagentoAttributeIdMapper extends MagentoMapper
      */
     public function getAllSources()
     {
-        return array();
+        return [];
     }
 
     /**

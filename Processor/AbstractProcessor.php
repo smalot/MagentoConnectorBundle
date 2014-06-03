@@ -56,7 +56,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     /**
      * @var array
      */
-    protected $globalContext = array();
+    protected $globalContext = [];
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
@@ -159,7 +159,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      */
     protected function getComputedMapping($mapping)
     {
-        $computedMapping = array();
+        $computedMapping = [];
 
         foreach (explode(chr(10), $mapping) as $line) {
             $computedLine = explode(':', $line);
@@ -201,7 +201,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                     $familyCode
                 );
         } catch (AttributeSetNotFoundException $e) {
-            throw new InvalidItemException($e->getMessage(), array($relatedItem));
+            throw new InvalidItemException($e->getMessage(), [$relatedItem]);
         }
     }
 
@@ -222,28 +222,28 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'defaultLocale' => array(
+            [
+                'defaultLocale' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->localeManager->getLocaleChoices(),
                         'required' => true,
-                        'attr' => array(
+                        'attr' => [
                             'class' => 'select2'
-                        ),
+                        ],
                         'help'  => 'pim_magento_connector.export.defaultLocale.help',
                         'label' => 'pim_magento_connector.export.defaultLocale.label'
-                    )
-                ),
-                'website' => array(
+                    ]
+                ],
+                'website' => [
                     'type'    => 'text',
-                    'options' => array(
+                    'options' => [
                         'required' => true,
                         'help'  => 'pim_magento_connector.export.website.help',
                         'label' => 'pim_magento_connector.export.website.label'
-                    )
-                )
-            ),
+                    ]
+                ]
+            ],
             $this->storeViewMappingMerger->getConfigurationField()
         );
     }

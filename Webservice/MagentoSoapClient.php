@@ -33,14 +33,14 @@ class MagentoSoapClient
 
         if (!$soapClient) {
             $wsdlUrl     = $this->clientParameters->getSoapUrl();
-            $soapOptions = array(
+            $soapOptions = [
                 'encoding'   => 'UTF-8',
                 'trace'      => true,
                 'exceptions' => true,
                 'login'      => $this->clientParameters->getHttpLogin(),
                 'password'   => $this->clientParameters->getHttpPassword(),
                 'cache_wsdl' => WSDL_CACHE_BOTH
-            );
+            ];
 
             try {
                 $this->client = new \SoapClient($wsdlUrl, $soapOptions);
@@ -172,7 +172,7 @@ class MagentoSoapClient
                 throw new NotConnectedException();
             }
 
-            $this->calls = array();
+            $this->calls = [];
         }
     }
 }

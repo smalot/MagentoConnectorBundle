@@ -92,9 +92,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        $processedItem = array();
+        $processedItem = [];
 
         $processedItem[$context['defaultStoreView']] = $this->getDefaultProduct(
             $object,
@@ -138,12 +138,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     true
                 );
 
-                $processedItem[$storeView['code']] = array(
+                $processedItem[$storeView['code']] = [
                     (string) $object->getIdentifier(),
                     $values,
                     $storeView['code'],
                     'sku'
-                );
+                ];
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
                     $this->localeNotFound($locale);
@@ -174,28 +174,28 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $sku = $product->getIdentifier();
         }
 
-        $images = array();
+        $images = [];
 
         foreach ($imageValues as $imageValue) {
             $data = $imageValue->getData();
 
             if ($imageData = $this->mediaManager->getBase64($data)) {
-                $images[] = array(
+                $images[] = [
                     (string) $sku,
-                    array(
-                        'file' => array(
+                    [
+                        'file' => [
                             'name'    => $data->getFilename(),
                             'content' => $imageData,
                             'mime'    => $data->getMimeType()
-                        ),
+                        ],
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL),
+                        'types'    => [Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL],
                         'exclude'  => 0
-                    ),
+                    ],
                     0,
                     'sku'
-                );
+                ];
             }
         }
 
@@ -246,7 +246,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             false
         );
 
-        $defaultValues['websites'] = array($website);
+        $defaultValues['websites'] = [$website];
 
         if ($create) {
             if ($this->hasGroupedProduct($product, $pimGrouped)) {
@@ -256,20 +256,20 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             }
 
             //For the default storeview we create an entire product
-            $defaultProduct = array(
+            $defaultProduct = [
                 $productType,
                 $attributeSetId,
                 $sku,
                 $defaultValues,
                 $defaultStoreValue
-            );
+            ];
         } else {
-            $defaultProduct = array(
+            $defaultProduct = [
                 $sku,
                 $defaultValues,
                 $defaultStoreValue,
                 'sku'
-            );
+            ];
         }
 
         return $defaultProduct;
@@ -319,9 +319,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         MappingCollection $attributeCodeMapping,
         $onlyLocalized
     ) {
-        $normalizedValues = array();
+        $normalizedValues = [];
 
-        $context = array(
+        $context = [
             'identifier'               => $product->getIdentifier(),
             'scopeCode'                => $scopeCode,
             'localeCode'               => $localeCode,
@@ -330,7 +330,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'attributeCodeMapping'     => $attributeCodeMapping,
             'currencyCode'             => $this->currencyCode
-        );
+        ];
 
         foreach ($product->getValues() as $value) {
             $normalizedValue = $this->productValueNormalizer->normalize($value, 'MagentoArray', $context);
@@ -347,7 +347,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $this->getCustomValue(
                 $product,
                 $attributeCodeMapping,
-                array('categoryMapping' => $categoryMapping)
+                ['categoryMapping' => $categoryMapping]
             )
         );
 
@@ -365,7 +365,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected function getProductCategories(ProductInterface $product, MappingCollection $categoryMapping)
     {
-        $productCategories = array();
+        $productCategories = [];
 
         foreach ($product->getCategories() as $category) {
             $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory(
@@ -401,9 +401,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     protected function getCustomValue(
         ProductInterface $product,
         MappingCollection $attributeCodeMapping,
-        array $parameters = array()
+        array $parameters = []
     ) {
-        return array(
+        return [
             strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
             strtolower($attributeCodeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
             strtolower($attributeCodeMapping->getTarget('created_at'))     => $product->getCreated()
@@ -414,6 +414,6 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $product,
                 $parameters['categoryMapping']
             )
-        );
+        ];
     }
 }
