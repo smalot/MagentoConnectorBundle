@@ -19,7 +19,7 @@ services:
             - '@pim_magento_connector.manager.currency'
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.merger.category_mapping'
-            - '@pim_magento_connector.merger.attribute_mapping'
+            - '@pim_magento_connector.merger.attribute_code_mapping'
             - '@pim_transform.converter.metric'
             - '@pim_magento_connector.manager.association_type'
             - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
@@ -34,7 +34,7 @@ services:
             - '@pim_magento_connector.manager.currency'
             - '@pim_catalog.manager.channel'
             - '@pim_magento_connector.merger.category_mapping'
-            - '@pim_magento_connector.merger.attribute_mapping'
+            - '@pim_magento_connector.merger.attribute_code_mapping'
             - '@pim_magento_connector.manager.group'
             - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
@@ -65,7 +65,7 @@ services:
             - '@pim_magento_connector.guesser.magento_normalizer'
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
-            - '@pim_magento_connector.merger.attribute_mapping'
+            - '@pim_magento_connector.merger.attribute_code_mapping'
             - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
     pim_magento_connector.processor.option:
@@ -75,7 +75,7 @@ services:
             - '@pim_magento_connector.guesser.magento_normalizer'
             - '@pim_magento_connector.manager.locale'
             - '@pim_magento_connector.merger.storeview_mapping'
-            - '@pim_magento_connector.merger.attribute_mapping'
+            - '@pim_magento_connector.merger.attribute_code_mapping'
             - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
     pim_magento_connector.processor.family:

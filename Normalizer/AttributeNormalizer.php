@@ -83,7 +83,7 @@ class AttributeNormalizer implements NormalizerInterface
                 $context['magentoStoreViews'],
                 $context['defaultLocale'],
                 $context['storeViewMapping'],
-                $context['attributeMapping']
+                $context['attributeCodeMapping']
             ),
             'default_value'                 => ''
         );
@@ -93,7 +93,7 @@ class AttributeNormalizer implements NormalizerInterface
         if ($context['create']) {
             $normalizedAttribute = array_merge(
                 array(
-                    'attribute_code' => $this->getNormalizedCode($object, $context['attributeMapping']),
+                    'attribute_code' => $this->getNormalizedCode($object, $context['attributeCodeMapping']),
                     'frontend_input' => $mappedAttributeType,
                 ),
                 $normalizedAttribute
@@ -105,10 +105,10 @@ class AttributeNormalizer implements NormalizerInterface
                 $context['defaultLocale'],
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
-                $context['attributeMapping']
+                $context['attributeCodeMapping']
             );
 
-            $magentoAttributeCode = strtolower($context['attributeMapping']->getTarget($object->getCode()));
+            $magentoAttributeCode = strtolower($context['attributeCodeMapping']->getTarget($object->getCode()));
             $magentoAttributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
             if ($mappedAttributeType !== $magentoAttributeType &&
                 !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
@@ -233,7 +233,7 @@ class AttributeNormalizer implements NormalizerInterface
                 'scope' => !$attribute->isLocalizable() ? ProductValueNormalizer::GLOBAL_SCOPE : ''
             )),
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'         => $attributeMapping,
             'currencyCode'             => ''
         );
 

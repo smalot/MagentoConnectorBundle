@@ -81,13 +81,13 @@ class AttributeMappingManager
      */
     public function getAllMagentoAttribute($magentoUrl)
     {
-        $attributeMapping = $this->getEntityRepository()->findAll(
+        $attributeMappings = $this->getEntityRepository()->findAll(
             array(
-                'magentoUrl'  => $magentoUrl
+                'magentoUrl' => $magentoUrl
             )
         );
 
-        return $attributeMapping;
+        return $attributeMappings;
     }
 
     /**
@@ -101,7 +101,7 @@ class AttributeMappingManager
         $magentoAttributeId,
         $magentoUrl
     ) {
-        $attributeMapping = $this->getEntityRepository()->findOneByAttribute($pimAttribute->getId());
+        $attributeMapping = $this->getEntityRepository()->findOneBy(array('attribute' => $pimAttribute));
         $magentoAttributeMapping = new $this->className();
 
         if ($attributeMapping) {
@@ -130,6 +130,7 @@ class AttributeMappingManager
 
     /**
      * Get the entity repository
+     *
      * @return EntityRepository
      */
     protected function getEntityRepository()

@@ -130,16 +130,16 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->setEnabled('true');
         $this->setVisibility('4');
         $this->setCategoryMapping('{"categoryMapping" : "category"}');
-        $this->setAttributeMapping('{"attributeMapping" : "attribute"}');
+        $this->setAttributeCodeMapping('{"attributeCodeMapping" : "attribute"}');
         $this->setPimGrouped('group');
 
         $categoryMappingMerger->setMapping(array('categoryMapping' => 'category'))->shouldBeCalled();
         $categoryMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
         $this->getCategoryMapping();
 
-        $attributeMappingMerger->setMapping(array('attributeMapping' => 'attribute'))->shouldBeCalled();
+        $attributeMappingMerger->setMapping(array('attributeCodeMapping' => 'attribute'))->shouldBeCalled();
         $attributeMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
-        $this->getAttributeMapping();
+        $this->getAttributeCodeMapping();
 
         $this->getChannel()->shouldReturn('channel');
         $this->getCurrency()->shouldReturn('EUR');

@@ -29,7 +29,7 @@ class AttributeProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeMapping = '';
+    protected $attributeCodeMapping = '';
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
@@ -59,23 +59,24 @@ class AttributeProcessor extends AbstractProcessor
     }
 
     /**
-     * Set attribute mapping
-     * @param string $attributeMapping
+     * Set attribute code mapping
+     *
+     * @param string $attributeCodeMapping
      *
      * @return AttributeProcessor
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get attribute code mapping
      * @return string
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
         return json_encode($this->attributeMappingMerger->getMapping()->toArray());
     }
@@ -92,7 +93,7 @@ class AttributeProcessor extends AbstractProcessor
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
-        $this->globalContext['attributeMapping']         = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['attributeCodeMapping']     = $this->attributeMappingMerger->getMapping();
         $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
     }
 

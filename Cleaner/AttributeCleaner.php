@@ -26,7 +26,7 @@ class AttributeCleaner extends Cleaner
     /**
      * @var MagentoMappingMerger
      */
-    protected $attributeMappingMerger;
+    protected $attributeCodeMappingMerger;
 
     /**
      * @var EntityManager
@@ -41,7 +41,7 @@ class AttributeCleaner extends Cleaner
     /**
      * @var string
      */
-    protected $attributeMapping;
+    protected $attributeCodeMapping;
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
@@ -52,38 +52,39 @@ class AttributeCleaner extends Cleaner
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
-        MagentoMappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $attributeCodeMappingMerger,
         EntityManager $em,
         $attributeClassName,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
-        $this->attributeMappingMerger = $attributeMappingMerger;
-        $this->em                     = $em;
-        $this->attributeClassName     = $attributeClassName;
+        $this->attributeCodeMappingMerger = $attributeCodeMappingMerger;
+        $this->em                         = $em;
+        $this->attributeClassName         = $attributeClassName;
     }
 
     /**
-     * Set attribute mapping
-     * @param string $attributeMapping
+     * Set attribute code mapping
+     *
+     * @param string $attributeCodeMapping
      *
      * @return AttributeCleaner
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeCodeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get attribute code mapping
      * @return string
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
-        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        return json_encode($this->attributeCodeMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -108,7 +109,7 @@ class AttributeCleaner extends Cleaner
     protected function cleanAttribute(array $attribute, array $magentoAttributes)
     {
         $magentoAttributeCode = $attribute['code'];
-        $pimAttributeCode     = $this->attributeMappingMerger->getMapping()->getSource($magentoAttributeCode);
+        $pimAttributeCode     = $this->attributeCodeMappingMerger->getMapping()->getSource($magentoAttributeCode);
         $pimAttribute         = $this->getAttribute($pimAttributeCode);
 
         if (!in_array($attribute['code'], $this->getIgnoredAttributes()) &&
@@ -167,7 +168,7 @@ class AttributeCleaner extends Cleaner
 
         return array_merge(
             $configurationFields,
-            $this->attributeMappingMerger->getConfigurationField()
+            $this->attributeCodeMappingMerger->getConfigurationField()
         );
     }
 
@@ -176,7 +177,7 @@ class AttributeCleaner extends Cleaner
      */
     protected function afterConfigurationSet()
     {
-        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->attributeCodeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**

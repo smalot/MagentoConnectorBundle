@@ -37,7 +37,7 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $attributeCode = strtolower($context['attributeMapping']->getTarget($object->getAttribute()->getCode()));
+        $attributeCode = strtolower($context['attributeCodeMapping']->getTarget($object->getAttribute()->getCode()));
 
         if ($this->isValueNormalizable(
             $object,
@@ -52,7 +52,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $attributeCode,
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
-                $context['attributeMapping'],
+                $context['attributeCodeMapping'],
                 $context['currencyCode']
             );
         } else {

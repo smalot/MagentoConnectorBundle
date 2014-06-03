@@ -120,8 +120,8 @@ class Webservice
                 $this->attributeSetList[$attributeSet] = array();
 
                 foreach ($attributes as $attribute) {
-                    $this->attributeList[$attribute['code']]                = $attribute;
-                    $this->attributeSetList[$attributeSet][$attributeSet]   = $attribute['code'];
+                    $this->attributeList[$attribute['code']]              = $attribute;
+                    $this->attributeSetList[$attributeSet][$attributeSet] = $attribute['code'];
                 }
             }
         }
