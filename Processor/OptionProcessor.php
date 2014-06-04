@@ -35,7 +35,7 @@ class OptionProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeCodeMappingMerger;
+    protected $attributeCodeMapping;
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
