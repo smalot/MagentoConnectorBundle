@@ -106,6 +106,18 @@ class MagentoSoapClient
                 if ($resource === 'core_magento.info' && $e->getMessage()
                     === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
                     $response = ['magento_version' => AbstractGuesser::UNKNOWN_VERSION];
+                } elseif ($e->getMessage() === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
+                    throw new SoapCallException(
+                        sprintf(
+                            '%s Called resource : "%s" with parameters : %s.' .
+                            ' Soap user needs access on this resource. Please ' .
+                            'check in your Magento webservice soap roles and ' .
+                            'users configuration.',
+                            $e->getMessage(),
+                            $resource,
+                            json_encode($params)
+                        )
+                    );
                 } else {
                     throw new SoapCallException(
                         sprintf(
