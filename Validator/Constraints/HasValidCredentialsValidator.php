@@ -92,7 +92,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
             try {
                 $xml = $this->urlExplorer->getUrlContent($clientParameters);
                 $this->xmlChecker->checkXml($xml);
-                $this->webserviceGuesser->getWebservice($clientParameters);
+                $webservice = $this->webserviceGuesser->getWebservice($clientParameters);
+                $webservice->getStoreViewsList();
                 $clientParameters->setValidation(true);
             } catch (NotReachableUrlException $e) {
                 $clientParameters->setValidation(false);
@@ -134,7 +135,8 @@ class HasValidCredentialsValidator extends ConstraintValidator
         if (null === $clientParameters->isValid()) {
             try {
                 $this->urlExplorer->getUrlContent($clientParameters);
-                $this->webserviceGuesser->getWebservice($clientParameters);
+                $webservice = $this->webserviceGuesser->getWebservice($clientParameters);
+                $webservice->getStoreViewsList();
                 $clientParameters->setValidation(true);
             } catch (\Exception $e) {
                 $clientParameters->setValidation(false);

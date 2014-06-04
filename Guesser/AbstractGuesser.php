@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * A magento guesser abstract class
@@ -48,6 +49,8 @@ abstract class AbstractGuesser
                 $magentoVersion = $client->call('core_magento.info')['magento_version'];
             } catch (\SoapFault $e) {
                 return self::MAGENTO_VERSION_1_6;
+            } catch (SoapCallException $e) {
+                throw $e;
             }
 
             $pattern = '/^(?P<version>[0-9]\.[0-9]{1,2})/';
