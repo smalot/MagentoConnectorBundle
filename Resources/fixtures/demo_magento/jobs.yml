@@ -1,4 +1,20 @@
 jobs:
+    magento_full_export:
+        connector: Magento Connector
+        alias:     magento_full_export
+        label:     Magento full export
+        type:      export
+        configuration:
+            channel:               magento
+            soapUsername:          soap
+            soapApiKey:            magento1
+            magentoUrl:            http://magento.local
+            wsdlUrl:               /api/soap/?wsdl
+            defaultLocale:         en_US
+            website:               base
+            storeviewMapping:      ''
+            categoryMapping:       'default:2'
+            notInPimAnymoreAction: 'disable'
     magento_product_export:
         connector: Magento Connector
         alias:     magento_product_export
