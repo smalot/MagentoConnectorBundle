@@ -37,14 +37,14 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $webservice,
         FamilyMappingManager $familyMappingManager
     ) {
-        $batches = array(
-            array(
-                'families_to_create' => array(
+        $batches = [
+            [
+                'families_to_create' => [
                     'attributeSetName' => 'family_code'
-                ),
+                ],
                 'family_object' => $family,
-            )
-        );
+            ]
+        ];
 
         $webservice->createAttributeSet('family_code')->willReturn(12);
         $familyMappingManager->registerFamilyMapping($family, 12, '/api/soap/?wsdl')->shouldBeCalled();
@@ -61,14 +61,14 @@ class AttributeSetWriterSpec extends ObjectBehavior
         Family $family,
         FamilyMappingManager $familyMappingManager
     ) {
-        $batches = array(
-            array(
-                'families_to_create' => array(
+        $batches = [
+            [
+                'families_to_create' => [
                     'attributeSetName' => 'family_code'
-                ),
+                ],
                 'family_object' => $family,
-            )
-        );
+            ]
+        ];
 
         $webservice->createAttributeSet('family_code')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $familyMappingManager->registerFamilyMapping(Argument::cetera())->shouldNotBeCalled();

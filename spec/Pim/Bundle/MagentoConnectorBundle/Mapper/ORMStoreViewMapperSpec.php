@@ -36,16 +36,16 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
     ) {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
-        $localeManager->getActiveCodes()->willReturn(array('foo'));
+        $localeManager->getActiveCodes()->willReturn(['foo']);
 
         $locale->getCode()->willReturn('foo');
 
-        $this->getAllSources()->shouldReturn(array(array('id' => 'foo', 'text' => 'foo')));
+        $this->getAllSources()->shouldReturn([['id' => 'foo', 'text' => 'foo']]);
     }
 
     function it_shoulds_return_nothing_as_sources_if_it_is_not_well_configured($localeManager)
     {
-        $localeManager->getActiveCodes()->willReturn(array());
-        $this->getAllSources()->shouldReturn(array());
+        $localeManager->getActiveCodes()->willReturn([]);
+        $this->getAllSources()->shouldReturn([]);
     }
 }

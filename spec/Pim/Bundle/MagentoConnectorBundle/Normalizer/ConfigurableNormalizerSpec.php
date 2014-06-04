@@ -15,7 +15,7 @@ use Prophecy\Argument;
 
 class ConfigurableNormalizerSpec extends ObjectBehavior
 {
-    protected $globalContext = array();
+    protected $globalContext = [];
 
     function let(
         ChannelManager $channelManager,
@@ -32,12 +32,12 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
     ) {
         $this->beConstructedWith($channelManager, $productNormalizer, $priceMappingManager, $attributeMapping);
 
-        $this->globalContext = array(
+        $this->globalContext = [
             'attributeSetId'           => 0,
-            'magentoAttributes'        => array(),
-            'magentoAttributesOptions' => array(),
+            'magentoAttributes'        => [],
+            'magentoAttributesOptions' => [],
             'storeViewMapping'         => $storeViewMapping,
-            'magentoStoreViews'        => array(array('code' => 'fr_fr')),
+            'magentoStoreViews'        => [['code' => 'fr_fr']],
             'defaultLocale'            => 'default_locale',
             'website'                  => 'website',
             'channel'                  => 'channel',
@@ -45,13 +45,13 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'attributeCodeMapping'     => $attributeMapping,
             'create'                   => true,
             'defaultStoreView'         => 'default'
-        );
+        ];
 
-        $productNormalizer->getNormalizedImages($product, 'conf-group_code')->willReturn(array());
-        $productNormalizer->getValues(Argument::cetera())->willReturn(array());
+        $productNormalizer->getNormalizedImages($product, 'conf-group_code')->willReturn([]);
+        $productNormalizer->getValues(Argument::cetera())->willReturn([]);
 
         $channelManager->getChannelByCode('channel')->willReturn($channel);
-        $channel->getLocales()->willReturn(array($localeEN, $localeFR));
+        $channel->getLocales()->willReturn([$localeEN, $localeFR]);
         $localeEN->getCode()->willReturn('default_locale');
         $localeFR->getCode()->willReturn('fr_FR');
         $channel->getCode()->willReturn('channel_code');
@@ -65,32 +65,32 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
 
     function it_normalizes_a_new_configurable_product($group, $product, $priceMappingManager, $attributeMapping)
     {
-        $products = array($product);
+        $products = [$product];
 
-        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(array('price_changes' => array(), 'price' => array()));
-        $priceMappingManager->validatePriceMapping($products, array(), array(), $attributeMapping)->willReturn(true);
+        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(['price_changes' => [], 'price' => []]);
+        $priceMappingManager->validatePriceMapping($products, [], [], $attributeMapping)->willReturn(true);
 
-        $this->normalize(array(
+        $this->normalize([
             'group'    => $group,
             'products' => $products
-        ), 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'default' => array(
+        ], 'MagentoArray', $this->globalContext)->shouldReturn([
+            'default' => [
                 'configurable',
                 0,
                 'conf-group_code',
-                array(
-                    'price_changes'   => array(),
-                    'price'           => array(),
-                    'associated_skus' => array('sku-000'),
-                    'websites'        => array('website')
-                )
-            ),
-            'fr_fr'  => array(
+                [
+                    'price_changes'   => [],
+                    'price'           => [],
+                    'associated_skus' => ['sku-000'],
+                    'websites'        => ['website']
+                ]
+            ],
+            'fr_fr'  => [
                 'conf-group_code',
-                array(),
+                [],
                 'fr_fr'
-            )
-        ));
+            ]
+        ]);
     }
 
     function it_normalizes_a_updated_configurable_product($group, $product, $priceMappingManager, $attributeMapping)
@@ -98,47 +98,47 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         $this->globalContext['create'] = false;
         $this->globalContext['defaultStoreView'] = 'default';
 
-        $products = array($product);
+        $products = [$product];
 
-        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(array('price_changes' => array(), 'price' => array()));
-        $priceMappingManager->validatePriceMapping($products, array(), array(), $attributeMapping)->willReturn(true);
+        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(['price_changes' => [], 'price' => []]);
+        $priceMappingManager->validatePriceMapping($products, [], [], $attributeMapping)->willReturn(true);
 
-        $this->normalize(array(
+        $this->normalize([
             'group'    => $group,
             'products' => $products
-        ), 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'default' => array(
+        ], 'MagentoArray', $this->globalContext)->shouldReturn([
+            'default' => [
                 'conf-group_code',
-                array(
-                    'price_changes'   => array(),
-                    'price'           => array(),
-                    'associated_skus' => array('sku-000'),
-                    'websites'        => array('website')
-                )
-            ),
-            'fr_fr'  => array(
+                [
+                    'price_changes'   => [],
+                    'price'           => [],
+                    'associated_skus' => ['sku-000'],
+                    'websites'        => ['website']
+                ]
+            ],
+            'fr_fr'  => [
                 'conf-group_code',
-                array(),
+                [],
                 'fr_fr'
-            )
-        ));
+            ]
+        ]);
     }
 
     function it_raises_an_expcetion_if_the_locale_does_not_have_a_corresponding_storeview($group, $product, $priceMappingManager, $attributeMapping)
     {
         $this->globalContext['create']            = false;
-        $this->globalContext['magentoStoreViews'] = array();
+        $this->globalContext['magentoStoreViews'] = [];
         $this->globalContext['magentoStoreView']  = 'default';
 
-        $products = array($product);
+        $products = [$product];
 
-        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(array('price_changes' => array(), 'price' => array()));
-        $priceMappingManager->validatePriceMapping($products, array(), array(), $attributeMapping)->willReturn(true);
+        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(['price_changes' => [], 'price' => []]);
+        $priceMappingManager->validatePriceMapping($products, [], [], $attributeMapping)->willReturn(true);
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', array(array(
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [[
             'group'    => $group,
             'products' => $products
-        ), 'MagentoArray', $this->globalContext));
+        ], 'MagentoArray', $this->globalContext]);
     }
 
     function it_raises_an_expcetion_if_the_price_mapping_is_not_valid($group, $product, $priceMappingManager, $attributeMapping)
@@ -146,14 +146,14 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         $this->globalContext['create'] = false;
         $this->globalContext['magentoStoreView'] = 'default';
 
-        $products = array($product);
+        $products = [$product];
 
-        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(array('price_changes' => array(), 'price' => array()));
-        $priceMappingManager->validatePriceMapping($products, array(), array(), $attributeMapping)->willThrow('Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException');
+        $priceMappingManager->getPriceMapping($group, $products, $attributeMapping)->willReturn(['price_changes' => [], 'price' => []]);
+        $priceMappingManager->validatePriceMapping($products, [], [], $attributeMapping)->willThrow('Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException');
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException')->during('normalize', array(array(
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException')->during('normalize', [[
             'group'    => $group,
             'products' => $products
-        ), 'MagentoArray', $this->globalContext));
+        ], 'MagentoArray', $this->globalContext]);
     }
 }

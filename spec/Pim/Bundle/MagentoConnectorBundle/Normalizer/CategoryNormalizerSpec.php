@@ -22,15 +22,15 @@ class CategoryNormalizerSpec extends ObjectBehavior
     ) {
         $this->beConstructedWith($channelManager, $categoryMappingManager);
 
-        $this->globalContext = array(
-            'magentoCategories' => array(),
+        $this->globalContext = [
+            'magentoCategories' => [],
             'magentoUrl'        => 'soap_url',
             'defaultLocale'     => 'default_locale',
-            'magentoStoreViews' => array(),
+            'magentoStoreViews' => [],
             'categoryMapping'   => $categoryMapping,
             'storeViewMapping'  => $storeViewMapping,
             'defaultStoreView'  => 'default'
-        );
+        ];
     }
 
     function it_normalizes_a_new_category(Category $category, Category $parentCategory, $categoryMapping, $categoryMappingManager)
@@ -38,7 +38,7 @@ class CategoryNormalizerSpec extends ObjectBehavior
         $category->getParent()->willReturn($parentCategory);
         $category->getLabel()->willReturn('category_label');
         $category->setLocale('default_locale')->shouldBeCalled();
-        $category->getTranslations()->willReturn(array());
+        $category->getTranslations()->willReturn([]);
         $category->getCode()->willReturn('category_code');
 
         $categoryMappingManager->getIdFromCategory($category, 'soap_url')->willReturn(null);
@@ -46,45 +46,45 @@ class CategoryNormalizerSpec extends ObjectBehavior
 
         $categoryMapping->getTarget('category_code')->willReturn('category_code');
 
-        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'create'    => array(
-                array(
-                    'magentoCategory' => array(
+        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'create'    => [
+                [
+                    'magentoCategory' => [
                         '3',
-                        array(
+                        [
                             'name'              => 'category_label',
                             'is_active'         => 1,
                             'include_in_menu'   => 1,
                             'available_sort_by' => 1,
                             'default_sort_by'   => 1,
-                        ),
+                        ],
                         'default'
-                    ),
+                    ],
                     'pimCategory' => $category
-                )
-            ),
-            'update'    => array(),
-            'move'      => array(),
-            'variation' => array()
-        ));
+                ]
+            ],
+            'update'    => [],
+            'move'      => [],
+            'variation' => []
+        ]);
     }
 
     function it_normalizes_a_updated_category(Category $category, Category $parentCategory, $categoryMapping, $categoryMappingManager)
     {
         $this->globalContext = array_merge(
             $this->globalContext,
-            array(
-                'magentoCategories' => array(
-                    4 => array('parent_id' => 3)
-                ),
+            [
+                'magentoCategories' => [
+                    4 => ['parent_id' => 3]
+                ],
                 'magentoStoreView' => 'default'
-            )
+            ]
         );
 
         $category->getParent()->willReturn($parentCategory);
         $category->getLabel()->willReturn('category_label');
         $category->setLocale('default_locale')->shouldBeCalled();
-        $category->getTranslations()->willReturn(array());
+        $category->getTranslations()->willReturn([]);
         $category->getCode()->willReturn('category_code');
 
         $categoryMappingManager->getIdFromCategory($category, 'soap_url')->willReturn(4);
@@ -93,41 +93,41 @@ class CategoryNormalizerSpec extends ObjectBehavior
 
         $categoryMapping->getTarget('category_code')->willReturn('category_code');
 
-        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'create'    => array(),
-            'update'    => array(
-                array(
+        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'create'    => [],
+            'update'    => [
+                [
                     4,
-                    array(
+                    [
                         'name'              => 'category_label',
                         'available_sort_by' => 1,
                         'default_sort_by'   => 1,
                         'is_anchor'         => 1
-                    ),
+                    ],
                     'default'
-                )
-            ),
-            'move'      => array(),
-            'variation' => array()
-        ));
+                ]
+            ],
+            'move'      => [],
+            'variation' => []
+        ]);
     }
 
     function it_normalizes_a_updated_category_who_have_moved(Category $category, Category $parentCategory, $categoryMapping, $categoryMappingManager)
     {
         $this->globalContext = array_merge(
             $this->globalContext,
-            array(
-                'magentoCategories' => array(
-                    4 => array('parent_id' => 5)
-                ),
+            [
+                'magentoCategories' => [
+                    4 => ['parent_id' => 5]
+                ],
                 'magentoStoreView' => 'default'
-            )
+            ]
         );
 
         $category->getParent()->willReturn($parentCategory);
         $category->getLabel()->willReturn('category_label');
         $category->setLocale('default_locale')->shouldBeCalled();
-        $category->getTranslations()->willReturn(array());
+        $category->getTranslations()->willReturn([]);
         $category->getCode()->willReturn('category_code');
 
         $categoryMappingManager->getIdFromCategory($category, 'soap_url')->willReturn(4);
@@ -136,46 +136,46 @@ class CategoryNormalizerSpec extends ObjectBehavior
 
         $categoryMapping->getTarget('category_code')->willReturn('category_code');
 
-        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'create'    => array(),
-            'update'    => array(
-                array(
+        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'create'    => [],
+            'update'    => [
+                [
                     4,
-                    array(
+                    [
                         'name'              => 'category_label',
                         'available_sort_by' => 1,
                         'default_sort_by'   => 1,
                         'is_anchor'         => 1
-                    ),
+                    ],
                     'default'
-                )
-            ),
-            'move'      => array(
-                array(
+                ]
+            ],
+            'move'      => [
+                [
                     4,
                     3
-                )
-            ),
-            'variation' => array()
-        ));
+                ]
+            ],
+            'variation' => []
+        ]);
     }
 
     function it_normalizes_category_variations(Category $category, Category $parentCategory, CategoryTranslation $translation, $categoryMapping, $storeViewMapping, $categoryMappingManager)
     {
         $this->globalContext = array_merge(
             $this->globalContext,
-            array(
-                'magentoStoreViews' => array(
-                    array('code' => 'fr_fr')
-                ),
+            [
+                'magentoStoreViews' => [
+                    ['code' => 'fr_fr']
+                ],
                 'magentoStoreView' => 'default'
-            )
+            ]
         );
 
         $category->getParent()->willReturn($parentCategory);
         $category->getLabel()->willReturn('category_label');
         $category->setLocale('default_locale')->shouldBeCalled();
-        $category->getTranslations()->willReturn(array($translation));
+        $category->getTranslations()->willReturn([$translation]);
         $category->getCode()->willReturn('category_code');
 
         $translation->getLocale()->willReturn('fr_FR');
@@ -189,39 +189,39 @@ class CategoryNormalizerSpec extends ObjectBehavior
 
         $categoryMapping->getTarget('category_code')->willReturn('category_code');
 
-        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'create'    => array(
-                array(
-                    'magentoCategory' => array(
+        $this->normalize($category, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'create'    => [
+                [
+                    'magentoCategory' => [
                         '3',
-                        array(
+                        [
                             'name'              => 'Libélé de la catégorie',
                             'is_active'         => 1,
                             'include_in_menu'   => 1,
                             'available_sort_by' => 1,
                             'default_sort_by'   => 1,
-                        ),
+                        ],
                         'default'
-                    ),
+                    ],
                     'pimCategory' => $category
-                )
-            ),
-            'update'    => array(),
-            'move'      => array(),
-            'variation' => array(
-                array(
-                    'magentoCategory' => array(
+                ]
+            ],
+            'update'    => [],
+            'move'      => [],
+            'variation' => [
+                [
+                    'magentoCategory' => [
                         null,
-                        array(
+                        [
                             'name'              => 'Libélé de la catégorie',
                             'available_sort_by' => 1,
                             'default_sort_by'   => 1,
-                        ),
+                        ],
                         'fr_fr'
-                    ),
+                    ],
                     'pimCategory' => $category
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
     }
 }

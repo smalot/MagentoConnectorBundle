@@ -27,48 +27,48 @@ class ProductAssociationWriterSpec extends ObjectBehavior
 
     function it_sends_remove_and_create_calls_to_the_webservice($webservice)
     {
-        $webservice->removeProductAssociation(array('foo'))->shouldBeCalled();
-        $webservice->createProductAssociation(array('bar'))->shouldBeCalled();
+        $webservice->removeProductAssociation(['foo'])->shouldBeCalled();
+        $webservice->createProductAssociation(['bar'])->shouldBeCalled();
 
         $productAssociationCallsBatchs =
-            array(
-                array(
-                    'remove' => array(array('foo')),
-                    'create' => array(array('bar'))
-                )
-            );
+            [
+                [
+                    'remove' => [['foo']],
+                    'create' => [['bar']]
+                ]
+            ];
 
         $this->write($productAssociationCallsBatchs);
     }
 
     function it_fails_if_an_error_occured_with_remove_call($webservice)
     {
-        $webservice->removeProductAssociation(array('foo'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
-        $webservice->createProductAssociation(array('bar'))->shouldNotBeCalled();
+        $webservice->removeProductAssociation(['foo'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->createProductAssociation(['bar'])->shouldNotBeCalled();
 
         $productAssociationCallsBatchs =
-            array(
-                array(
-                    'remove' => array(array('foo')),
-                    'create' => array(array('bar'))
-                )
-            );
+            [
+                [
+                    'remove' => [['foo']],
+                    'create' => [['bar']]
+                ]
+            ];
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($productAssociationCallsBatchs);
     }
 
     function it_fails_if_an_error_occured_with_create_call($webservice)
     {
-        $webservice->removeProductAssociation(array('foo'))->shouldBeCalled();
-        $webservice->createProductAssociation(array('bar'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->removeProductAssociation(['foo'])->shouldBeCalled();
+        $webservice->createProductAssociation(['bar'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
         $productAssociationCallsBatchs =
-            array(
-                array(
-                    'remove' => array(array('foo')),
-                    'create' => array(array('bar'))
-                )
-            );
+            [
+                [
+                    'remove' => [['foo']],
+                    'create' => [['bar']]
+                ]
+            ];
 
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($productAssociationCallsBatchs);
     }

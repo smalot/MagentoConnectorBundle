@@ -56,37 +56,37 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         Association $association,
         AssociationType $associationType
     ) {
-        $webservice->getAssociationsStatus($product)->willReturn(array('up_sell' => array(), 'cross_sell' => array(array('sku' => 'sku-011')), 'related' => array()));
+        $webservice->getAssociationsStatus($product)->willReturn(['up_sell' => [], 'cross_sell' => [['sku' => 'sku-011']], 'related' => []]);
 
         $product->getIdentifier()->willReturn('sku-012');
-        $product->getAssociations()->willReturn(array($association));
+        $product->getAssociations()->willReturn([$association]);
 
         $association->getAssociationType()->willReturn($associationType);
-        $association->getProducts()->willReturn(array($associatedProduct));
+        $association->getProducts()->willReturn([$associatedProduct]);
 
         $associatedProduct->getIdentifier()->willReturn('sku-011');
 
         $associationType->getCode()->willReturn('UPSELL');
 
-        $this->process(array($product))->shouldReturn(
-            array(
-                'remove' => array(
-                    array(
+        $this->process([$product])->shouldReturn(
+            [
+                'remove' => [
+                    [
                         'type'          => 'cross_sell',
                         'product'       => 'sku-012',
                         'linkedProduct' => 'sku-011',
                         'identifierType' => 'sku'
-                    )
-                ),
-                'create' => array(
-                    array(
+                    ]
+                ],
+                'create' => [
+                    [
                         'type'          => 'up_sell',
                         'product'       => 'sku-012',
                         'linkedProduct' => 'sku-011',
                         'identifierType' => 'sku'
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 
@@ -96,7 +96,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
     ) {
         $webservice->getAssociationsStatus($product)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
     }
 
     function it_is_configurable()

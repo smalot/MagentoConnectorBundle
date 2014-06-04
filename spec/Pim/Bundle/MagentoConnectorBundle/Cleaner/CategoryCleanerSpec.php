@@ -33,11 +33,11 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getCategoriesStatus()->willReturn(
-            array(
-                array('category_id' => '1'),
-                array('category_id' => '12', 'level' => '0'),
-                array('category_id' => '13', 'level' => '2')
-            )
+            [
+                ['category_id' => '1'],
+                ['category_id' => '12', 'level' => '0'],
+                ['category_id' => '13', 'level' => '2']
+            ]
         );
 
         $categoryMappingManager->magentoCategoryExists('1', Argument::cetera())->willReturn(true);
@@ -54,9 +54,9 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('disable');
 
         $webservice->getCategoriesStatus()->willReturn(
-            array(
-                array('category_id' => '13', 'level' => '2')
-            )
+            [
+                ['category_id' => '13', 'level' => '2']
+            ]
         );
 
         $categoryMappingManager->magentoCategoryExists('13', Argument::cetera())->willReturn(false);
@@ -71,9 +71,9 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('disable');
 
         $webservice->getCategoriesStatus()->willReturn(
-            array(
-                array('category_id' => '13', 'level' => '2')
-            )
+            [
+                ['category_id' => '13', 'level' => '2']
+            ]
         );
 
         $categoryMappingManager->magentoCategoryExists('13', Argument::cetera())->willReturn(false);

@@ -56,21 +56,21 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {
-        $attributes = array(
-            array(
+        $attributes = [
+            [
                 $attribute,
-                array(
-                    'create' => array(
+                [
+                    'create' => [
                         'attributeName' => 'attribute_code'
-                    ),
-                )
-            )
-        );
+                    ],
+                ]
+            ]
+        ];
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
 
         $attribute->getCode()->willReturn('attributeName');
-        $attribute->getFamilies()->willReturn(array());
+        $attribute->getFamilies()->willReturn([]);
         $attribute->getGroup()->willReturn(null);
 
         $webservice->createAttribute(Argument::any())->willReturn(12);
@@ -97,22 +97,22 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {
-        $attributes = array(
-            array(
+        $attributes = [
+            [
                 $attribute,
-                array(
-                    'create' => array(
+                [
+                    'create' => [
                         'attributeName' => 'attribute_code'
-                    ),
-                )
-            )
-        );
+                    ],
+                ]
+            ]
+        ];
 
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
 
         $attribute->getCode()->willReturn('attributeName');
-        $attribute->getFamilies()->willReturn(array($family));
+        $attribute->getFamilies()->willReturn([$family]);
         $attribute->getGroup()->willReturn($group);
 
         $magentoMappingMerger->getMapping()->willReturn($mapping);
@@ -147,21 +147,21 @@ class AttributeWriterSpec extends ObjectBehavior
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {
-        $attributes = array(
-            array(
+        $attributes = [
+            [
                 $attribute,
-                array(
-                    'create' => array(
+                [
+                    'create' => [
                         'attributeName' => 'attribute_code'
-                    ),
-                )
-            )
-        );
+                    ],
+                ]
+            ]
+        ];
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
 
         $attribute->getCode()->willReturn('attributeName');
-        $attribute->getFamilies()->willReturn(array($family));
+        $attribute->getFamilies()->willReturn([$family]);
         $attribute->getGroup()->willReturn($group);
 
         $magentoMappingMerger->getMapping()->willReturn($mapping);

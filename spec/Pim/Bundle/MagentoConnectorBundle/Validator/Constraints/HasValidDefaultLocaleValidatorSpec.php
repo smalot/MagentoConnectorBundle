@@ -46,7 +46,7 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
     ) {
         $value->getChannel()->willReturn('channel');
         $channelManager->getChannelByCode(Argument::any())->willReturn($channel);
-        $channel->getLocales()->willReturn(array($locale));
+        $channel->getLocales()->willReturn([$locale]);
         $locale->getCode()->willReturn('fr_FR');
         $value->getDefaultLocale()->willReturn('fr_FR');
 
@@ -65,13 +65,13 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
     ) {
         $value->getChannel()->willReturn('channel');
         $channelManager->getChannelByCode(Argument::any())->willReturn($channel);
-        $channel->getLocales()->willReturn(array($locale));
+        $channel->getLocales()->willReturn([$locale]);
         $locale->getCode()->willReturn('fr_FR');
         $value->getDefaultLocale()->willReturn('us_US');
 
         $constraint->message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales)';
 
-        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales)', array('defaultLocale'))->shouldBeCalled();
+        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales)', ['defaultLocale'])->shouldBeCalled();
 
         $this->validate($value, $constraint);
     }
@@ -88,7 +88,7 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
 
         $constraint->message = 'The given default locale is not valid (check that the selected locale is in channel\'s locales)';
 
-        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales)', array('defaultLocale'))->shouldBeCalled();
+        $context->addViolationAt('defaultLocale', 'The given default locale is not valid (check that the selected locale is in channel\'s locales)', ['defaultLocale'])->shouldBeCalled();
 
         $this->validate($value, $constraint);
     }

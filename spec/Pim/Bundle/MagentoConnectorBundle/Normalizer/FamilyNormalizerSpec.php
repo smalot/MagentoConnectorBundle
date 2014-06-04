@@ -14,17 +14,17 @@ class FamilyNormalizerSpec extends ObjectBehavior
 
     function let()
     {
-        $this->globalContext = array(
-            'magentoFamilies' => array(),
+        $this->globalContext = [
+            'magentoFamilies' => [],
             'magentoUrl'        => 'soap_url',
             'defaultLocale'     => 'default_locale',
-            'magentoStoreViews' => array()
-        );
+            'magentoStoreViews' => []
+        ];
     }
 
     function it_normalize_a_family(Family $family, $globalContext)
     {
         $family->getCode()->willReturn('family_code');
-        $this->normalize($family)->shouldReturn(array('attributeSetName' => 'family_code'));
+        $this->normalize($family)->shouldReturn(['attributeSetName' => 'family_code']);
     }
 }

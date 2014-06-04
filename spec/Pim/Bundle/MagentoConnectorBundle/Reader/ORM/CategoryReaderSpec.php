@@ -29,7 +29,7 @@ class CategoryReaderSpec extends ObjectBehavior
     ) {
         $repository->findOrderedCategories()->willReturn($qb);
         $qb->getQuery()->willReturn($query);
-        $query->execute()->willReturn(array('foo', 'bar'));
+        $query->execute()->willReturn(['foo', 'bar']);
 
         $this->read()->shouldReturn('foo');
         $this->read()->shouldReturn('bar');

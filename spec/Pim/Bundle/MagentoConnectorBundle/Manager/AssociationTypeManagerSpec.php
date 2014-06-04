@@ -19,24 +19,24 @@ class AssociationTypeManagerSpec extends ObjectBehavior
 
     function it_gets_association_type_from_repository($entityRepository, $arrayCollection)
     {
-        $entityRepository->findBy(array())->willReturn($arrayCollection);
+        $entityRepository->findBy([])->willReturn($arrayCollection);
 
         $this->getAssociationTypes()->shouldReturn($arrayCollection);
     }
 
     function it_gets_association_type_from_repository_by_code($entityRepository, AssociationType $associationType, $arrayCollection)
     {
-        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn($associationType);
+        $entityRepository->findOneBy(['code' => 'foo'])->willReturn($associationType);
 
         $this->getAssociationTypeByCode('foo')->shouldReturn($associationType);
     }
 
     function it_gets_association_type_choices_from_repository($entityRepository, AssociationType $associationType)
     {
-        $entityRepository->findBy(array())->willReturn(array($associationType));
+        $entityRepository->findBy([])->willReturn([$associationType]);
         $associationType->getCode()->willReturn('foo');
         $associationType->getLabel()->willReturn('Foo');
 
-        $this->getAssociationTypeChoices()->shouldReturn(array('foo' => 'Foo'));
+        $this->getAssociationTypeChoices()->shouldReturn(['foo' => 'Foo']);
     }
 }
