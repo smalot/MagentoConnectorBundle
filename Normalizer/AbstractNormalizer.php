@@ -32,7 +32,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * @var array
      */
-    protected $supportedFormats = array(self::MAGENTO_FORMAT);
+    protected $supportedFormats = [self::MAGENTO_FORMAT];
 
     /**
      * @var ChannelManager

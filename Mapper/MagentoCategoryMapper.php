@@ -40,14 +40,14 @@ class MagentoCategoryMapper extends MagentoMapper
      */
     public function getAllTargets()
     {
-        $targets = array();
+        $targets = [];
 
         if ($this->isValid()) {
             $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
 
             foreach ($categories as $categoryId => $category) {
                 if ($categoryId != self::ROOT_CATEGORY_ID) {
-                    $targets[] = array('id' => $categoryId, 'text' => $category['name']);
+                    $targets[] = ['id' => $categoryId, 'text' => $category['name']];
                 }
             }
         }

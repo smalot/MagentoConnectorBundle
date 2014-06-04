@@ -143,7 +143,7 @@ class AttributeProcessor extends AbstractProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($attribute));
+            throw new InvalidItemException($e->getMessage(), [$attribute]);
         }
 
         return $processedItem;

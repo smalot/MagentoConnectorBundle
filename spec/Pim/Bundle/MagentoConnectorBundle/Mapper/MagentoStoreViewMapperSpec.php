@@ -32,32 +32,32 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
-        $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
+        $webservice->getStoreViewsList()->willReturn([['code' => 'attribute_code']]);
 
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
-        $mapping->toArray()->shouldReturn(array());
+        $mapping->toArray()->shouldReturn([]);
     }
 
     function it_returns_an_empty_collection_if_parameters_are_not_setted()
     {
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
-        $mapping->toArray()->shouldReturn(array());
+        $mapping->toArray()->shouldReturn([]);
     }
 
     function it_shoulds_do_nothing_to_save_mapping()
     {
-        $this->setMapping(array())->shouldReturn(null);
+        $this->setMapping([])->shouldReturn(null);
     }
 
     function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
-        $webservice->getStoreViewsList()->willReturn(array(array('code' => 'attribute_code')));
+        $webservice->getStoreViewsList()->willReturn([['code' => 'attribute_code']]);
 
-        $this->getAllTargets()->shouldReturn(array(array('id' => 'attribute_code', 'text' => 'attribute_code')));
+        $this->getAllTargets()->shouldReturn([['id' => 'attribute_code', 'text' => 'attribute_code']]);
     }
 
     function it_should_give_an_proper_identifier($hasValidCredentialsValidator, $clientParameters)

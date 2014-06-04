@@ -43,13 +43,13 @@ class ORMStoreViewMapper extends ORMPimMapper
      */
     public function getAllSources()
     {
-        $sources = array();
+        $sources = [];
 
         if ($this->isValid()) {
             $codes = $this->localeManager->getActiveCodes();
 
             foreach ($codes as $code) {
-                $sources[] = array('id' => $code, 'text' => $code);
+                $sources[] = ['id' => $code, 'text' => $code];
             }
         }
 
@@ -62,6 +62,6 @@ class ORMStoreViewMapper extends ORMPimMapper
      */
     public function getAllTargets()
     {
-        return array();
+        return [];
     }
 }

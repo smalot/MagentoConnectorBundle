@@ -172,17 +172,17 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     public function process($items)
     {
-        $items = is_array($items) ? $items : array($items);
+        $items = is_array($items) ? $items : [$items];
 
         $this->beforeExecute();
 
-        $productAssociationCalls = array('remove' => array(), 'create' => array());
+        $productAssociationCalls = ['remove' => [], 'create' => []];
 
         foreach ($items as $product) {
             try {
                 $associationsStatus = $this->webservice->getAssociationsStatus($product);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($product->getIdentifier()));
+                throw new InvalidItemException($e->getMessage(), [$product->getIdentifier()]);
             }
 
             $productAssociationCalls['remove'] = array_merge(
@@ -206,7 +206,7 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     protected function getCreateCallsForProduct(ProductInterface $product)
     {
-        $createAssociationCalls = array();
+        $createAssociationCalls = [];
 
         foreach ($product->getAssociations() as $productAssociation) {
             $createAssociationCalls = array_merge(
@@ -227,18 +227,18 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     protected function getCreateCallsForAssociation(ProductInterface $product, Association $association)
     {
-        $createAssociationCalls = array();
+        $createAssociationCalls = [];
 
         $associationType = $association->getAssociationType()->getCode();
 
         if (in_array($associationType, array_keys($this->getAssociationCodeMapping()))) {
             foreach ($association->getProducts() as $associatedProduct) {
-                $createAssociationCalls[] = array(
+                $createAssociationCalls[] = [
                     'type'           => $this->getAssociationCodeMapping()[$associationType],
                     'product'        => (string) $product->getIdentifier(),
                     'linkedProduct'  => (string) $associatedProduct->getIdentifier(),
                     'identifierType' => 'sku'
-                );
+                ];
             }
         }
 
@@ -254,16 +254,16 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     protected function getRemoveCallsForProduct(ProductInterface $product, array $associationStatus)
     {
-        $removeAssociationCalls = array();
+        $removeAssociationCalls = [];
 
         foreach ($associationStatus as $associationType => $associatedProducts) {
             foreach ($associatedProducts as $associatedProduct) {
-                $removeAssociationCalls[] = array(
+                $removeAssociationCalls[] = [
                     'type'           => $associationType,
                     'product'        => (string) $product->getIdentifier(),
                     'linkedProduct'  => (string) $associatedProduct['sku'],
                     'identifierType' => 'sku'
-                );
+                ];
             }
         }
 
@@ -276,7 +276,7 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     protected function getAssociationCodeMapping()
     {
-        $associationCodeMapping = array();
+        $associationCodeMapping = [];
 
         if ($this->getPimUpSell()) {
             $associationCodeMapping[$this->getPimUpSell()] = self::MAGENTO_UP_SELL;
@@ -304,40 +304,40 @@ class ProductAssociationProcessor extends AbstractProcessor
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'pimUpSell' => array(
+            [
+                'pimUpSell' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimUpSell.help',
                         'label'    => 'pim_magento_connector.export.pimUpSell.label'
-                    )
-                ),
-                'pimCrossSell' => array(
+                    ]
+                ],
+                'pimCrossSell' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimCrossSell.help',
                         'label'    => 'pim_magento_connector.export.pimCrossSell.label'
-                    )
-                ),
-                'pimRelated' => array(
+                    ]
+                ],
+                'pimRelated' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimRelated.help',
                         'label'    => 'pim_magento_connector.export.pimRelated.label'
-                    )
-                ),
-                'pimGrouped' => array(
+                    ]
+                ],
+                'pimGrouped' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimGrouped.help',
                         'label'    => 'pim_magento_connector.export.pimGrouped.label'
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 }

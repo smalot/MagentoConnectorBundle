@@ -36,11 +36,11 @@ class OptionNormalizerSpec extends ObjectBehavior
         $channel,
         MappingCollection $storeViewMapping
     ) {
-        $magentoStoreViews = array(
-            array('code' => 'default', 'store_id' => 1),
-            array('code' => 'fr_fr',   'store_id' => 2),
-            array('code' => 'test',    'store_id' => 3),
-        );
+        $magentoStoreViews = [
+            ['code' => 'default', 'store_id' => 1],
+            ['code' => 'fr_fr',   'store_id' => 2],
+            ['code' => 'test',    'store_id' => 3],
+        ];
 
         $storeViewMapping->getTarget('en_US')->willReturn('en_us');
         $storeViewMapping->getTarget('fr_FR')->willReturn('fr_fr');
@@ -48,7 +48,7 @@ class OptionNormalizerSpec extends ObjectBehavior
 
         $option->getCode()->willReturn('red');
 
-        $option->getOptionValues()->willReturn(array($optionValueUS, $optionValueFR, $optionValueDE));
+        $option->getOptionValues()->willReturn([$optionValueUS, $optionValueFR, $optionValueDE]);
 
         $option->getSortOrder()->willReturn(1);
 
@@ -70,35 +70,35 @@ class OptionNormalizerSpec extends ObjectBehavior
         $option->getAttribute()->willReturn($attribute);
         $attribute->getCode()->willReturn('color');
 
-        $this->normalize($option, Argument::any(), array(
+        $this->normalize($option, Argument::any(), [
             'magentoStoreViews' => $magentoStoreViews,
             'storeViewMapping'  => $storeViewMapping,
             'channel'           => 'magento',
             'defaultLocale'     => 'en_US',
             'attributeCode'     => 'attribute_code'
-        ))->shouldReturn(array(
+        ])->shouldReturn([
             'attribute_code',
-            array(
-                'label' => array(
-                    array(
+            [
+                'label' => [
+                    [
                         'store_id' => '0',
                         'value'    => 'red'
-                    ),
-                    array(
+                    ],
+                    [
                         'store_id' => '1',
                         'value'    => 'Red'
-                    ),
-                    array(
+                    ],
+                    [
                         'store_id' => '2',
                         'value'    => 'Rouge'
-                    ),
-                    array(
+                    ],
+                    [
                         'store_id' => '3',
                         'value'    => 'Rot'
-                    ),
-                ),
+                    ],
+                ],
                 'order'      => 1
-            )
-        ));
+            ]
+        ]);
     }
 }

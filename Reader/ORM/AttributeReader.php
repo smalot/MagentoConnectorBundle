@@ -118,12 +118,12 @@ class AttributeReader extends EntityReader
      */
     protected function getIgnoredAttributes()
     {
-        return array(
+        return [
             'sku',
             'name',
             'description',
             'collection'
-        );
+        ];
     }
 
     /**

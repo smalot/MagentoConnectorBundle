@@ -55,18 +55,18 @@ class CategoryProcessorSpec extends ObjectBehavior
         $webservice,
         $categoryNormalizer
     ) {
-        $webservice->getCategoriesStatus()->willReturn(array(
-            1 => array(
+        $webservice->getCategoriesStatus()->willReturn([
+            1 => [
                 'category_id' => 1
-            )
-        ));
+            ]
+        ]);
 
-        $webservice->getStoreViewsList()->willReturn(array(
-            array(
+        $webservice->getStoreViewsList()->willReturn([
+            [
                 'store_id' => 10,
                 'code'     => 'fr_fr'
-            )
-        ));
+            ]
+        ]);
 
         $category->getParent()->willReturn($parentCategory);
 
@@ -74,116 +74,116 @@ class CategoryProcessorSpec extends ObjectBehavior
             $category,
             AbstractNormalizer::MAGENTO_FORMAT,
             Argument::any()
-        )->willReturn(array(
-            'create'    => array(),
-            'update'    => array(),
-            'move'      => array(),
-            'variation' => array()
-        ));
+        )->willReturn([
+            'create'    => [],
+            'update'    => [],
+            'move'      => [],
+            'variation' => []
+        ]);
 
-        $this->process($category)->shouldReturn(array(
-            'create'    => array(),
-            'update'    => array(),
-            'move'      => array(),
-            'variation' => array()
-        ));
+        $this->process($category)->shouldReturn([
+            'create'    => [],
+            'update'    => [],
+            'move'      => [],
+            'variation' => []
+        ]);
     }
 
     function it_gives_category_mapping_in_json($categoryMappingMerger, MappingCollection $mappingCollection)
     {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
-        $mappingCollection->toArray()->willReturn(array('foo'));
+        $mappingCollection->toArray()->willReturn(['foo']);
 
         $this->getCategoryMapping()->shouldReturn('["foo"]');
     }
 
     function it_gives_a_proper_configuration_for_fields($categoryMappingMerger, $storeViewMappingMerger)
     {
-        $categoryMappingMerger->getConfigurationField()->willReturn(array('foo' => 'bar'));
-        $storeViewMappingMerger->getConfigurationField()->willReturn(array('fooo' => 'baar'));
-        $this->getConfigurationFields()->shouldReturn(array(
-            'soapUsername' => array(
-                'options' => array(
+        $categoryMappingMerger->getConfigurationField()->willReturn(['foo' => 'bar']);
+        $storeViewMappingMerger->getConfigurationField()->willReturn(['fooo' => 'baar']);
+        $this->getConfigurationFields()->shouldReturn([
+            'soapUsername' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUsername.help',
                     'label'    => 'pim_magento_connector.export.soapUsername.label'
-                )
-            ),
-            'soapApiKey'   => array(
+                ]
+            ],
+            'soapApiKey'   => [
                 //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
                 'type'    => 'text',
-                'options' => array(
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapApiKey.help',
                     'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                )
-            ),
-            'magentoUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'magentoUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.magentoUrl.help',
                     'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                )
-            ),
-            'wsdlUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'wsdlUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                     'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                )
-            ),
-            'httpLogin' => array(
-                'options' => array(
+                ]
+            ],
+            'httpLogin' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpLogin.help',
                     'label'    => 'pim_magento_connector.export.httpLogin.label'
-                )
-            ),
-            'httpPassword' => array(
-                'options' => array(
+                ]
+            ],
+            'httpPassword' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpPassword.help',
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
-                )
-            ),
-            'defaultStoreView' => array(
-                'options' => array(
+                ]
+            ],
+            'defaultStoreView' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                     'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                     'data'     => $this->getDefaultStoreView(),
-                )
-            ),
-            'defaultLocale' => array(
+                ]
+            ],
+            'defaultLocale' => [
                 'type' => 'choice',
-                'options' => array(
+                'options' => [
                     'choices' => null,
                     'required' => true,
-                    'attr' => array('class' => 'select2'),
+                    'attr' => ['class' => 'select2'],
                     'help'     => 'pim_magento_connector.export.defaultLocale.help',
                     'label'    => 'pim_magento_connector.export.defaultLocale.label'
-                )
-            ),
-            'website' => array(
+                ]
+            ],
+            'website' => [
                 'type' => 'text',
-                'options' => array(
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.website.help',
                     'label'    => 'pim_magento_connector.export.website.label'
-                )
-            ),
+                ]
+            ],
             'fooo' => 'baar',
             'foo' => 'bar',
-        ));
+        ]);
     }
 
     function it_sets_storeview_mapping($storeViewMappingMerger, MappingCollection $mappingCollection)
     {
-        $storeViewMappingMerger->setMapping(json_decode('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}', true))->willReturn(array('fr_FR' => array('source' => 'fr_FR', 'target' => 'fr_fr')));
+        $storeViewMappingMerger->setMapping(json_decode('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}', true))->willReturn(['fr_FR' => ['source' => 'fr_FR', 'target' => 'fr_fr']]);
         $storeViewMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
-        $mappingCollection->toArray()->shouldBeCalled()->willReturn(array('fr_FR' => array('source' => 'fr_FR', 'target' => 'fr_fr', 'deletable' => 'true')));
+        $mappingCollection->toArray()->shouldBeCalled()->willReturn(['fr_FR' => ['source' => 'fr_FR', 'target' => 'fr_fr', 'deletable' => 'true']]);
 
         $this->setStoreviewMapping('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}')->shouldReturn($this);
     }

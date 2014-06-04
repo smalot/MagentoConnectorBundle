@@ -23,7 +23,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
 
     function it_gets_family_from_id(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
-        $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
+        $entityRepository->findOneBy(['magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'])
             ->willReturn($familyMapping);
 
         $familyMapping->getFamily()->willReturn($family);
@@ -33,7 +33,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
 
     function it_returns_null_if_family_mapping_is_not_found(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
-        $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
+        $entityRepository->findOneBy(['magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'])
             ->willReturn(null);
 
         $this->getFamilyFromId(12, 'magento_url')->shouldReturn(null);
@@ -42,10 +42,10 @@ class FamilyMappingManagerSpec extends ObjectBehavior
     function it_gets_id_from_family_mapping_stored_in_database(Family $family, $entityRepository, MagentoFamilyMapping $familyMapping, $mappingCollection)
     {
         $entityRepository->findOneBy(
-            array(
+            [
                 'family'   => $family,
                 'magentoUrl' => ''
-            )
+            ]
         )->willReturn($familyMapping);
 
         $familyMapping->getMagentoFamilyId()->willReturn(13);
@@ -60,10 +60,10 @@ class FamilyMappingManagerSpec extends ObjectBehavior
     function it_returns_null_if_family_is_not_found(Family $family, EntityRepository $entityRepository, $mappingCollection)
     {
         $entityRepository->findOneBy(
-            array(
+            [
                 'family'   => $family,
                 'magentoUrl' => ''
-            )
+            ]
         )->willReturn(null);
 
         $mappingCollection->getTarget('colors')->willReturn('colors');
@@ -75,7 +75,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
 
     function it_tests_if_a_family_exist_from_family_id(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
     {
-        $entityRepository->findOneBy(array('magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'))
+        $entityRepository->findOneBy(['magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'])
             ->willReturn($familyMapping);
 
         $familyMapping->getFamily()->willReturn($family);
@@ -89,7 +89,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         Family $family,
         $objectManager
     ) {
-        $entityRepository->findOneBy(array('family' => $family))->willReturn($magentoFamilyMapping);
+        $entityRepository->findOneBy(['family' => $family])->willReturn($magentoFamilyMapping);
         $magentoFamilyMapping->setFamily($family)->shouldBeCalled();
         $magentoFamilyMapping->setMagentoFamilyId(35050)->shouldBeCalled();
         $magentoFamilyMapping->setMagentoUrl('url')->shouldBeCalled();

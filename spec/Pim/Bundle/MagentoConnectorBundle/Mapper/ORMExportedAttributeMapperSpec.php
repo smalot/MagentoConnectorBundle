@@ -46,13 +46,13 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
 
     function it_should_return_a_mapping_collection_on_get_mapping(AttributeMappingManager $attributeMappingManager, MagentoSoapClientParameters $clientParameters)
     {
-        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn(array());
+        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn([]);
         $this->getMapping()->shouldReturnAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
     }
 
     function it_should_get_mapping_from_exported_attributes_table($attributeMappingManager, $clientParameters, MappingCollection $mapping, $attributeMapping, $attribute, $magentoAttributeMappingMerger)
     {
-        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn(array($attributeMapping));
+        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn([$attributeMapping]);
 
         $magentoAttributeMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget('attribute_code')->willReturn('attribute_code');
@@ -66,7 +66,7 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
 
     function it_should_get_mapping_from_exported_attributes_table_with_a_mapped_attribute($attributeMappingManager, $clientParameters, MappingCollection $mapping, $attributeMapping, $attribute, $magentoAttributeMappingMerger)
     {
-        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn(array($attributeMapping));
+        $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn([$attributeMapping]);
 
         $magentoAttributeMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget('attribute_code')->willReturn('attribute_code_mapped');

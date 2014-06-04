@@ -36,7 +36,7 @@ class CategoryNormalizer extends AbstractNormalizer
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         $normalizedCategory = $this->getDefaultCategory($object, $context);
 
@@ -70,12 +70,12 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getDefaultCategory(CategoryInterface $category, array $context)
     {
-        $normalizedCategory = array(
-            'create'    => array(),
-            'update'    => array(),
-            'move'      => array(),
-            'variation' => array()
-        );
+        $normalizedCategory = [
+            'create'    => [],
+            'update'    => [],
+            'move'      => [],
+            'variation' => []
+        ];
 
         if ($this->magentoCategoryExists($category, $context['magentoCategories'], $context['magentoUrl'])) {
             $normalizedCategory['update'][] = $this->getNormalizedUpdateCategory(
@@ -132,24 +132,24 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
     {
-        return array(
-            'magentoCategory' => array(
+        return [
+            'magentoCategory' => [
                 (string) $this->categoryMappingManager->getIdFromCategory(
                     $category->getParent(),
                     $context['magentoUrl'],
                     $context['categoryMapping']
                 ),
-                array(
+                [
                     'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
                     'is_active'         => 1,
                     'include_in_menu'   => 1,
                     'available_sort_by' => 1,
                     'default_sort_by'   => 1
-                ),
+                ],
                 $context['defaultStoreView']
-            ),
+            ],
             'pimCategory' => $category
-        );
+        ];
     }
 
     /**
@@ -161,16 +161,16 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getNormalizedUpdateCategory(CategoryInterface $category, array $context)
     {
-        return array(
+        return [
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
-            array(
+            [
                 'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
                 'available_sort_by' => 1,
                 'default_sort_by'   => 1,
                     'is_anchor'     => 1
-            ),
+            ],
             $context['defaultStoreView']
-        );
+        ];
     }
 
     /**
@@ -183,18 +183,18 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getNormalizedVariationCategory(CategoryInterface $category, $localeCode, $storeViewCode)
     {
-        return array(
-            'magentoCategory' => array(
+        return [
+            'magentoCategory' => [
                 null,
-                array(
+                [
                     'name'              => $this->getCategoryLabel($category, $localeCode),
                     'available_sort_by' => 1,
                     'default_sort_by'   => 1
-                ),
+                ],
                 $storeViewCode
-            ),
+            ],
             'pimCategory' => $category,
-        );
+        ];
     }
 
     /**
@@ -206,14 +206,14 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getNormalizedMoveCategory(CategoryInterface $category, array $context)
     {
-        return array(
+        return [
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
             $this->categoryMappingManager->getIdFromCategory(
                 $category->getParent(),
                 $context['magentoUrl'],
                 $context['categoryMapping']
             )
-        );
+        ];
     }
 
     /**

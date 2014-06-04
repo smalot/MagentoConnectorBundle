@@ -93,14 +93,14 @@ class CategoryProcessor extends AbstractProcessor
 
         $this->globalContext = array_merge(
             $this->globalContext,
-            array(
+            [
                 'magentoCategories'   => $magentoCategories,
                 'magentoUrl'          => $this->getSoapUrl(),
                 'defaultLocale'       => $this->defaultLocale,
                 'magentoStoreViews'   => $magentoStoreViews,
                 'categoryMapping'     => $this->categoryMappingMerger->getMapping(),
                 'defaultStoreView'    => $this->getDefaultStoreView()
-            )
+            ]
         );
     }
 
@@ -111,14 +111,14 @@ class CategoryProcessor extends AbstractProcessor
     {
         $this->beforeExecute();
 
-        $normalizedCategories = array(
-            'create'    => array(),
-            'update'    => array(),
-            'move'      => array(),
-            'variation' => array()
-        );
+        $normalizedCategories = [
+            'create'    => [],
+            'update'    => [],
+            'move'      => [],
+            'variation' => []
+        ];
 
-        $categories = is_array($categories) ? $categories : array($categories);
+        $categories = is_array($categories) ? $categories : [$categories];
 
         foreach ($categories as $category) {
             if ($category->getParent()) {

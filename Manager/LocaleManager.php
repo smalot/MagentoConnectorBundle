@@ -23,7 +23,7 @@ class LocaleManager extends BaseLocaleManager
     {
         $codes = $this->getActiveCodes();
 
-        $choices = array();
+        $choices = [];
         foreach ($codes as $code) {
             $choices[$code] = $code;
         }

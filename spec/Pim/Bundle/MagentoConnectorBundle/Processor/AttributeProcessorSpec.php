@@ -19,7 +19,7 @@ use Prophecy\Argument;
 
 class AttributeProcessorSpec extends ObjectBehavior
 {
-    protected $globalContext = array();
+    protected $globalContext = [];
 
     function let(
         ChannelManager $channelManager,
@@ -49,8 +49,8 @@ class AttributeProcessorSpec extends ObjectBehavior
 
         $normalizerGuesser->getAttributeNormalizer(Argument::any(), Argument::any())->willReturn($attributeNormalizer);
 
-        $this->globalContext = array(
+        $this->globalContext = [
 
-        );
+        ];
     }
 }

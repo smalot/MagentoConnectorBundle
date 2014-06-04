@@ -13,7 +13,7 @@ use Prophecy\Argument;
 
 class AttributeNormalizerSpec extends ObjectBehavior
 {
-    protected $baseNormalizedAttribute = array(
+    protected $baseNormalizedAttribute = [
         'scope'                         => 'store',
         'is_unique'                     => '1',
         'is_required'                   => '0',
@@ -25,18 +25,18 @@ class AttributeNormalizerSpec extends ObjectBehavior
         'is_used_for_promo_rules'       => '1',
         'is_visible_on_front'           => '1',
         'used_in_product_listing'       => '1',
-        'additional_fields'             => array(),
-        'frontend_label'                => array(array('store_id' => 0, 'label' => 'attribute_code_mapped')),
+        'additional_fields'             => [],
+        'frontend_label'                => [['store_id' => 0, 'label' => 'attribute_code_mapped']],
         'default_value'                 => ''
-    );
+    ];
 
-    protected $baseContext = array(
+    protected $baseContext = [
             'defaultLocale'            => 'locale',
-            'magentoAttributes'        => array(),
-            'magentoAttributesOptions' => array(),
-            'magentoStoreViews'        => array(),
+            'magentoAttributes'        => [],
+            'magentoAttributesOptions' => [],
+            'magentoStoreViews'        => [],
             'create'                   => true
-        );
+        ];
 
     function let(ProductValueNormalizer $productValueNormalizer, Attribute $attribute, MappingCollection $attributeMapping, MappingCollection $storeViewMapping, ProductValueManager $productValueManager)
     {
@@ -65,10 +65,10 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attribute->getCode()->willReturn('attribute_code');
 
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array_merge(
-            array(
+            [
                 'attribute_code'                => 'attribute_code_mapped',
                 'frontend_input'                => 'text',
-            ),
+            ],
             $this->baseNormalizedAttribute
         ));
     }
@@ -77,47 +77,47 @@ class AttributeNormalizerSpec extends ObjectBehavior
     {
         $this->baseContext = array_merge(
             $this->baseContext,
-            array(
-                'magentoAttributes' => array('attribute_code_mapped' => array('type' => 'text')),
+            [
+                'magentoAttributes' => ['attribute_code_mapped' => ['type' => 'text']],
                 'create'            => false
-            )
+            ]
         );
 
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn(null);
         $attribute->getCode()->willReturn('attribute_code');
 
-        $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array(
+        $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn([
             'attribute_code_mapped',
             $this->baseNormalizedAttribute
-        ));
+        ]);
     }
 
     function it_throws_an_exception_if_attribute_type_changed($attribute, $attributeMapping, $storeViewMapping)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
-            array(
-                'magentoAttributes' => array('attribute_code_mapped' => array('type' => 'text')),
+            [
+                'magentoAttributes' => ['attribute_code_mapped' => ['type' => 'text']],
                 'create'            => false
-            )
+            ]
         );
 
         $attribute->getAttributeType()->willReturn('pim_catalog_simpleselect');
         $attribute->getDefaultValue()->willReturn(null);
         $attribute->getCode()->willReturn('attribute_code');
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException')->during('normalize', array($attribute, 'MagentoArray', $this->baseContext));
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException')->during('normalize', [$attribute, 'MagentoArray', $this->baseContext]);
     }
 
     function it_shoulds_not_throws_an_exception_if_attribute_type_change_is_ignored($attribute, $attributeMapping, $storeViewMapping)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
-            array(
-                'magentoAttributes' => array('tax_class_id' => array('type' => 'text')),
+            [
+                'magentoAttributes' => ['tax_class_id' => ['type' => 'text']],
                 'create'            => false
-            )
+            ]
         );
 
         $attribute->getAttributeType()->willReturn('pim_catalog_simpleselect');
@@ -126,16 +126,16 @@ class AttributeNormalizerSpec extends ObjectBehavior
 
         $attributeMapping->getTarget('tax_class_id')->willReturn('tax_class_id');
 
-        $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array(
+        $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn([
             'tax_class_id',
             array_merge(
                 $this->baseNormalizedAttribute,
-                array(
+                [
                     'is_configurable' => '1',
-                    'frontend_label'  => array(array('store_id' => 0, 'label' => 'tax_class_id')),
-                )
+                    'frontend_label'  => [['store_id' => 0, 'label' => 'tax_class_id']],
+                ]
             )
-        ));
+        ]);
     }
 
     function it_should_lowercase_an_attribute_code_if_it_isnt($attribute)
@@ -145,10 +145,10 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attribute->getCode()->willReturn('Attribute_code');
 
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array_merge(
-            array(
+            [
                 'attribute_code'                => 'attribute_code_mapped',
                 'frontend_input'                => 'text',
-            ),
+            ],
             $this->baseNormalizedAttribute
         ));
     }
@@ -157,33 +157,33 @@ class AttributeNormalizerSpec extends ObjectBehavior
     {
         $this->baseContext = array_merge(
             $this->baseContext,
-            array(
-                'magentoAttributes' => array('attribute_code_mapped' => array('type' => 'text')),
-            )
+            [
+                'magentoAttributes' => ['attribute_code_mapped' => ['type' => 'text']],
+            ]
         );
 
         $attribute->getAttributeType()->willReturn('pim_catalog_simpleselect');
         $attribute->getDefaultValue()->willReturn(null);
 
         $attribute->getCode()->willReturn('2ttribute_code');
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException')->during('normalize', array($attribute, 'MagentoArray', $this->baseContext));
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException')->during('normalize', [$attribute, 'MagentoArray', $this->baseContext]);
     }
 
     function it_normalizes_all_attribute_labels($attribute, $attributeMapping, $storeViewMapping, AttributeTranslation $translation)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
-            array(
-                'magentoAttributes' => array('attribute_code_mapped' => array('type' => 'text')),
-                'magentoStoreViews' => array(array('store_id' => 1, 'code' => 'fr_fr'), array('store_id' => 2, 'code' => 'test')),
+            [
+                'magentoAttributes' => ['attribute_code_mapped' => ['type' => 'text']],
+                'magentoStoreViews' => [['store_id' => 1, 'code' => 'fr_fr'], ['store_id' => 2, 'code' => 'test']],
                 'create'            => false
-            )
+            ]
         );
 
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn(null);
         $attribute->getCode()->willReturn('attribute_code');
-        $attribute->getTranslations()->willReturn(array($translation));
+        $attribute->getTranslations()->willReturn([$translation]);
 
         $translation->getLocale()->willReturn('de_DE');
         $translation->getLabel()->willReturn('Attribut kod !');
@@ -191,19 +191,19 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $storeViewMapping->getSource('fr_fr')->willReturn('fr_FR');
         $storeViewMapping->getSource('test')->willReturn('de_DE');
 
-        $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array(
+        $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn([
             'attribute_code_mapped',
             array_merge(
                 $this->baseNormalizedAttribute,
-                array(
-                    'frontend_label'                => array(
-                        array('store_id' => 0, 'label' => 'attribute_code_mapped'),
-                        array('store_id' => 1, 'label' => 'attribute_code'),
-                        array('store_id' => 2, 'label' => 'Attribut kod !'),
-                    )
-                )
+                [
+                    'frontend_label'                => [
+                        ['store_id' => 0, 'label' => 'attribute_code_mapped'],
+                        ['store_id' => 1, 'label' => 'attribute_code'],
+                        ['store_id' => 2, 'label' => 'Attribut kod !'],
+                    ]
+                ]
             )
-        ));
+        ]);
     }
 
     function it_normalize_a_new_attribute_with_default_value($attribute, $attributeMapping, $storeViewMapping, $productValueNormalizer, ProductValueInterface $productValue)
@@ -212,17 +212,17 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attribute->getDefaultValue()->willReturn($productValue);
         $attribute->getCode()->willReturn('attribute_code');
 
-        $productValueNormalizer->normalize(Argument::cetera())->willReturn(array('test' => 'defaultValue'));
+        $productValueNormalizer->normalize(Argument::cetera())->willReturn(['test' => 'defaultValue']);
 
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array_merge(
-            array(
+            [
                 'attribute_code' => 'attribute_code_mapped',
                 'frontend_input' => 'text'
-            ),
+            ],
             $this->baseNormalizedAttribute,
-            array(
+            [
                 'default_value' => ''
-            )
+            ]
         ));
     }
 }

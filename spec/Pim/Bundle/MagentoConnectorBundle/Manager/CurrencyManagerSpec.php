@@ -17,25 +17,25 @@ class CurrencyManagerSpec extends ObjectBehavior
 
     function it_gives_currency_choices(CurrencyRepository $currencyRepository, Currency $currency)
     {
-        $currencyRepository->findBy(array('activated' => true))->willReturn(array($currency));
+        $currencyRepository->findBy(['activated' => true])->willReturn([$currency]);
         $currency->getCode()->willReturn('EUR');
 
-        $this->getCurrencyChoices()->shouldReturn(array('EUR' => 'EUR'));
+        $this->getCurrencyChoices()->shouldReturn(['EUR' => 'EUR']);
     }
 
     function it_return_active_code_choices(CurrencyRepository $currencyRepository, Currency $currency)
     {
-        $currencyRepository->findBy(array('activated' => true))->willReturn(array($currency));
+        $currencyRepository->findBy(['activated' => true])->willReturn([$currency]);
         $currency->getCode()->willReturn('EUR');
 
-        $this->getActiveCodeChoices()->shouldReturn(array('EUR' => 'EUR'));
+        $this->getActiveCodeChoices()->shouldReturn(['EUR' => 'EUR']);
     }
 
     function it_return_empty_array_when_active_code_choices_not_found(CurrencyRepository $currencyRepository, Currency $currency)
     {
-        $currencyRepository->findBy(array('activated' => true))->willReturn(array());
-        $currency->getCode()->willReturn(array());
+        $currencyRepository->findBy(['activated' => true])->willReturn([]);
+        $currency->getCode()->willReturn([]);
 
-        $this->getActiveCodeChoices()->shouldReturn(array());
+        $this->getActiveCodeChoices()->shouldReturn([]);
     }
 }

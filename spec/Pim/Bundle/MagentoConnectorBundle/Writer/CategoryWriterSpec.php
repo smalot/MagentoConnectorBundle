@@ -35,17 +35,17 @@ class CategoryWriterSpec extends ObjectBehavior
         $webservice,
         $categoryMappingManager
     ) {
-        $batches = array(
-            array(
-                'create' => array(
-                    array(
+        $batches = [
+            [
+                'create' => [
+                    [
                         'pimCategory'     => $category,
-                        'magentoCategory' => array('foo')
-                    )
-                )
-            )
-        );
-        $webservice->sendNewCategory(array('foo'))->willReturn(12);
+                        'magentoCategory' => ['foo']
+                    ]
+                ]
+            ]
+        ];
+        $webservice->sendNewCategory(['foo'])->willReturn(12);
         $categoryMappingManager
                 ->registerCategoryMapping($category, 12, MagentoSoapClientParameters::SOAP_WSDL_URL)
                 ->shouldBeCalled();
@@ -58,15 +58,15 @@ class CategoryWriterSpec extends ObjectBehavior
         Category $category,
         $webservice
     ) {
-        $batches = array(
-            array(
-                'update' => array(
-                    array('foo')
-                )
-            )
-        );
+        $batches = [
+            [
+                'update' => [
+                    ['foo']
+                ]
+            ]
+        ];
 
-        $webservice->sendUpdateCategory(array('foo'))->shouldBeCalled();
+        $webservice->sendUpdateCategory(['foo'])->shouldBeCalled();
 
         $this->write($batches);
     }
@@ -75,15 +75,15 @@ class CategoryWriterSpec extends ObjectBehavior
         Category $category,
         $webservice
     ) {
-        $batches = array(
-            array(
-                'move' => array(
-                    array('foo')
-                )
-            )
-        );
+        $batches = [
+            [
+                'move' => [
+                    ['foo']
+                ]
+            ]
+        ];
 
-        $webservice->sendMoveCategory(array('foo'))->shouldBeCalled();
+        $webservice->sendMoveCategory(['foo'])->shouldBeCalled();
 
         $this->write($batches);
     }
@@ -93,22 +93,22 @@ class CategoryWriterSpec extends ObjectBehavior
         $webservice,
         $categoryMappingManager
     ) {
-        $batches = array(
-            array(
-                'variation' => array(
-                    array(
+        $batches = [
+            [
+                'variation' => [
+                    [
                         'pimCategory'     => $category,
-                        'magentoCategory' => array('foo')
-                    )
-                )
-            )
-        );
+                        'magentoCategory' => ['foo']
+                    ]
+                ]
+            ]
+        ];
 
         $categoryMappingManager
                 ->getIdFromCategory($category, MagentoSoapClientParameters::SOAP_WSDL_URL)
                 ->willReturn(12);
 
-        $webservice->sendUpdateCategory(array(12))->shouldBeCalled();
+        $webservice->sendUpdateCategory([12])->shouldBeCalled();
 
         $this->setMagentoUrl(null);
         $this->write($batches);
@@ -119,17 +119,17 @@ class CategoryWriterSpec extends ObjectBehavior
         $webservice,
         $categoryMappingManager
     ) {
-        $batches = array(
-            array(
-                'create' => array(
-                    array(
+        $batches = [
+            [
+                'create' => [
+                    [
                         'pimCategory'     => $category,
-                        'magentoCategory' => array('foo')
-                    )
-                )
-            )
-        );
-        $webservice->sendNewCategory(array('foo'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+                        'magentoCategory' => ['foo']
+                    ]
+                ]
+            ]
+        ];
+        $webservice->sendNewCategory(['foo'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $categoryMappingManager
                 ->registerCategoryMapping(Argument::cetera())
                 ->shouldNotBeCalled();

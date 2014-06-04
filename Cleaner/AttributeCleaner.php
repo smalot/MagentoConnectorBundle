@@ -121,7 +121,7 @@ class AttributeCleaner extends Cleaner
             try {
                 $this->handleAttributeNotInPimAnymore($attribute);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($attribute['code']));
+                throw new InvalidItemException($e->getMessage(), [$attribute['code']]);
             }
         }
     }
@@ -146,7 +146,7 @@ class AttributeCleaner extends Cleaner
      */
     protected function getAttribute($attributeCode)
     {
-        return $this->em->getRepository($this->attributeClassName)->findOneBy(array('code' => $attributeCode));
+        return $this->em->getRepository($this->attributeClassName)->findOneBy(['code' => $attributeCode]);
     }
 
     /**
@@ -156,10 +156,10 @@ class AttributeCleaner extends Cleaner
     {
         $configurationFields = parent::getConfigurationFields();
 
-        $configurationFields['notInPimAnymoreAction']['options']['choices'] = array(
+        $configurationFields['notInPimAnymoreAction']['options']['choices'] = [
             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
             Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
-        );
+        ];
 
         $configurationFields['notInPimAnymoreAction']['options']['help'] =
             'pim_magento_connector.export.notInPimAnymoreAction.help';
@@ -186,7 +186,7 @@ class AttributeCleaner extends Cleaner
      */
     protected function getIgnoredAttributes()
     {
-        return array(
+        return [
             'visibility',
             'old_id',
             'news_from_date',
@@ -236,6 +236,6 @@ class AttributeCleaner extends Cleaner
             'msrp',
             'price_view',
             'gift_message_available',
-        );
+        ];
     }
 }

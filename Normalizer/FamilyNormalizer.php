@@ -19,14 +19,14 @@ class FamilyNormalizer implements NormalizerInterface
     /**
      * @var array
      */
-    protected $supportedFormats = array(self::MAGENTO_FORMAT);
+    protected $supportedFormats = [self::MAGENTO_FORMAT];
 
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        $normalizedFamily = array('attributeSetName' => $object->getCode());
+        $normalizedFamily = ['attributeSetName' => $object->getCode()];
 
         return $normalizedFamily;
     }

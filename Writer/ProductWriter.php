@@ -96,17 +96,17 @@ class ProductWriter extends AbstractWriter
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'channel' => array(
+            [
+                'channel' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->channelManager->getChannelChoices(),
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.channel.help',
                         'label'    => 'pim_magento_connector.export.channel.label'
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 
@@ -126,7 +126,7 @@ class ProductWriter extends AbstractWriter
             try {
                 $this->createCall($product[$storeViewCode], $storeViewCode);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array(json_encode($product[$storeViewCode])));
+                throw new InvalidItemException($e->getMessage(), [json_encode($product[$storeViewCode])]);
             }
         }
     }
@@ -178,7 +178,7 @@ class ProductWriter extends AbstractWriter
      * @param string $sku
      * @param array  $images
      */
-    protected function pruneImages($sku, array $images = array())
+    protected function pruneImages($sku, array $images = [])
     {
         foreach ($images as $image) {
             try {

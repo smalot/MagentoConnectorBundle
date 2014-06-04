@@ -46,13 +46,13 @@ class ORMGroupMapper extends ORMMapper
      */
     public function getAllSources(AttributeGroup $group = null)
     {
-        $sources = array();
+        $sources = [];
 
         if ($this->isValid()) {
             $groups = $this->attributeGroupManager->getAllGroups();
 
             foreach ($groups as $group) {
-                $sources[] = array('id' => $group->getCode(), 'name' => $group->getCode());
+                $sources[] = ['id' => $group->getCode(), 'name' => $group->getCode()];
             }
         }
 

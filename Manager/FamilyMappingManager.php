@@ -47,10 +47,10 @@ class FamilyMappingManager
     public function getFamilyFromId($id, $magentoUrl)
     {
         $magentoFamilyMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'magentoFamilyId' => $id,
                 'magentoUrl'      => $magentoUrl
-            )
+            ]
         );
 
         return $magentoFamilyMapping ? $magentoFamilyMapping->getFamily() : null;
@@ -67,10 +67,10 @@ class FamilyMappingManager
     public function getIdFromFamily(Family $family, $magentoUrl)
     {
         $familyMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'family'     => $family,
                 'magentoUrl' => $magentoUrl
-            )
+            ]
         );
 
         return $familyMapping ? $familyMapping->getMagentoFamilyId() : null;
@@ -88,7 +88,7 @@ class FamilyMappingManager
         $magentoFamilyId,
         $magentoUrl
     ) {
-        $familyMapping = $this->getEntityRepository()->findOneBy(array('family' => $pimFamily));
+        $familyMapping = $this->getEntityRepository()->findOneBy(['family' => $pimFamily]);
         $magentoFamilyMapping = new $this->className();
 
         if ($familyMapping) {

@@ -23,13 +23,13 @@ class WebserviceEE extends Webservice
         if (!in_array($attributeCode, $this->getIgnoredAttributes())) {
             $options = $this->client->call(
                 self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
-                array($attributeCode, self::ADMIN_STOREVIEW)
+                [$attributeCode, self::ADMIN_STOREVIEW]
             );
         } else {
-            $options = array();
+            $options = [];
         }
 
-        $formatedOptions = array();
+        $formatedOptions = [];
 
         foreach ($options as $option) {
             $formatedOptions[$option['label']] = $option['value'];
@@ -40,8 +40,8 @@ class WebserviceEE extends Webservice
 
     protected function getIgnoredAttributes()
     {
-        return array(
+        return [
             'is_returnable'
-        );
+        ];
     }
 }

@@ -65,15 +65,15 @@ class OptionProcessorSpec extends ObjectBehavior
         $optionBlue->getCode()->willReturn('blue');
 
         $webservice->getStoreViewsList()->shouldBeCalled();
-        $webservice->getAttributeOptions('color')->willReturn(array('red'));
+        $webservice->getAttributeOptions('color')->willReturn(['red']);
 
-        $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(array('foo'));
-        $optionNormalizer->normalize($optionBlue, Argument::cetera())->willReturn(array('bar'));
+        $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(['foo']);
+        $optionNormalizer->normalize($optionBlue, Argument::cetera())->willReturn(['bar']);
 
-        $this->process(array(
+        $this->process([
             $optionRed,
             $optionBlue
-        ))->shouldReturn(array(array('foo'), array('bar')));
+        ])->shouldReturn([['foo'], ['bar']]);
     }
 
     function it_raises_an_exception_if_it_can_not_get_option_list_from_webservice(
@@ -90,9 +90,9 @@ class OptionProcessorSpec extends ObjectBehavior
         $webservice->getStoreViewsList()->shouldBeCalled();
         $webservice->getAttributeOptions('color')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(array('foo'));
+        $optionNormalizer->normalize($optionRed, Argument::cetera())->willReturn(['foo']);
 
-        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', array(array($optionRed)));
+        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', [[$optionRed]]);
     }
 
     function it_raises_an_exception_if_a_error_occure_during_normalization_process(
@@ -107,93 +107,93 @@ class OptionProcessorSpec extends ObjectBehavior
         $optionRed->getCode()->willReturn('red');
 
         $webservice->getStoreViewsList()->shouldBeCalled();
-        $webservice->getAttributeOptions('color')->willReturn(array('red'));
+        $webservice->getAttributeOptions('color')->willReturn(['red']);
 
         $optionNormalizer->normalize($optionRed, Argument::cetera())->willThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException');
 
-        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', array(array($optionRed)));
+        $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', [[$optionRed]]);
     }
 
     function it_gives_a_proper_configuration_for_fields($storeViewMappingMerger, $attributeMappingMerger)
     {
-        $storeViewMappingMerger->getConfigurationField()->willReturn(array('fooo' => 'baar'));
-        $attributeMappingMerger->getConfigurationField()->willReturn(array('foo' => 'bar'));
+        $storeViewMappingMerger->getConfigurationField()->willReturn(['fooo' => 'baar']);
+        $attributeMappingMerger->getConfigurationField()->willReturn(['foo' => 'bar']);
 
-        $this->getConfigurationFields()->shouldReturn(array(
-            'soapUsername' => array(
-                'options' => array(
+        $this->getConfigurationFields()->shouldReturn([
+            'soapUsername' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUsername.help',
                     'label'    => 'pim_magento_connector.export.soapUsername.label'
-                )
-            ),
-            'soapApiKey'   => array(
+                ]
+            ],
+            'soapApiKey'   => [
                 //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
                 'type'    => 'text',
-                'options' => array(
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapApiKey.help',
                     'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                )
-            ),
-            'magentoUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'magentoUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.magentoUrl.help',
                     'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                )
-            ),
-            'wsdlUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'wsdlUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                     'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                )
-            ),
-            'httpLogin' => array(
-                'options' => array(
+                ]
+            ],
+            'httpLogin' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpLogin.help',
                     'label'    => 'pim_magento_connector.export.httpLogin.label'
-                )
-            ),
-            'httpPassword' => array(
-                'options' => array(
+                ]
+            ],
+            'httpPassword' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpPassword.help',
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
-                )
-            ),
-            'defaultStoreView' => array(
-                'options' => array(
+                ]
+            ],
+            'defaultStoreView' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                     'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                     'data'     => $this->getDefaultStoreView(),
-                )
-            ),
-            'defaultLocale' => array(
+                ]
+            ],
+            'defaultLocale' => [
                 'type' => 'choice',
-                'options' => array(
+                'options' => [
                     'choices' => null,
                     'required' => true,
-                    'attr' => array('class' => 'select2'),
+                    'attr' => ['class' => 'select2'],
                     'help'     => 'pim_magento_connector.export.defaultLocale.help',
                     'label'    => 'pim_magento_connector.export.defaultLocale.label'
-                )
-            ),
-            'website' => array(
+                ]
+            ],
+            'website' => [
                 'type' => 'text',
-                'options' => array(
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.website.help',
                     'label'    => 'pim_magento_connector.export.website.label'
-                )
-            ),
+                ]
+            ],
             'fooo' => 'baar',
             'foo' => 'bar',
-        ));
+        ]);
     }
 }

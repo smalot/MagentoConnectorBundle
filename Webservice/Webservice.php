@@ -69,13 +69,13 @@ class Webservice
 
     protected $magentoAttributeSets;
     protected $magentoStoreViewList;
-    protected $magentoAttributes = array();
+    protected $magentoAttributes = [];
 
-    protected $attributeList       = array();
-    protected $attributes          = array();
-    protected $attributeSetList    = array();
-    protected $attributeOptionList = array();
-    protected $categories          = array();
+    protected $attributeList       = [];
+    protected $attributes          = [];
+    protected $attributeSetList    = [];
+    protected $attributeOptionList = [];
+    protected $categories          = [];
 
     /**
      * Constructor
@@ -96,7 +96,7 @@ class Webservice
         $attributeList = $this->getAllAttributes();
 
         foreach ($attributeList as $attributeCode => $attribute) {
-            if (in_array($attribute['type'], array(self::SELECT, self::MULTI_SELECT))) {
+            if (in_array($attribute['type'], [self::SELECT, self::MULTI_SELECT])) {
                 if (!isset($this->attributeOptionList[$attributeCode])) {
                     $this->attributeOptionList[$attributeCode] = $this->getAttributeOptions($attributeCode);
                 }
@@ -117,7 +117,7 @@ class Webservice
             $attributeSetList = $this->getAttributeSetList();
             foreach (array_keys($attributeSetList) as $attributeSet) {
                 $attributes = $this->getAttributeList($attributeSet);
-                $this->attributeSetList[$attributeSet] = array();
+                $this->attributeSetList[$attributeSet] = [];
 
                 foreach ($attributes as $attribute) {
                     $this->attributeList[$attribute['code']]              = $attribute;
@@ -156,7 +156,7 @@ class Webservice
      *
      * @return array
      */
-    public function getProductsStatus(array $products = array())
+    public function getProductsStatus(array $products = [])
     {
         $skus = $this->getProductsIds($products);
 
@@ -169,7 +169,7 @@ class Webservice
      *
      * @return array
      */
-    public function getConfigurablesStatus(array $configurables = array())
+    public function getConfigurablesStatus(array $configurables = [])
     {
         $skus = $this->getConfigurablesIds($configurables);
 
@@ -226,14 +226,14 @@ class Webservice
         try {
             $images = $this->client->call(
                 self::SOAP_ACTION_PRODUCT_MEDIA_LIST,
-                array(
+                [
                     $sku,
                     $defaultLocalStore,
                     'sku'
-                )
+                ]
             );
         } catch (\Exception $e) {
-            $images = array();
+            $images = [];
         }
 
         return $images;
@@ -248,10 +248,10 @@ class Webservice
     {
         foreach ($images as $image) {
             $this->client->addCall(
-                array(
+                [
                     self::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
                     $image
-                )
+                ]
             );
         }
     }
@@ -267,11 +267,11 @@ class Webservice
     {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_MEDIA_REMOVE,
-            array(
+            [
                 $sku,
                 $imageFilename,
                 'sku'
-            )
+            ]
         );
     }
 
@@ -282,7 +282,7 @@ class Webservice
     public function updateProductPart($productPart)
     {
         $this->client->addCall(
-            array(self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart)
+            [self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart]
         );
     }
 
@@ -301,7 +301,7 @@ class Webservice
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
         }
 
-        $this->client->addCall(array($resource, $productPart));
+        $this->client->addCall([$resource, $productPart]);
     }
 
     /**
@@ -372,7 +372,7 @@ class Webservice
      */
     protected function flattenCategoryTree(array $tree)
     {
-        $result = array($tree['category_id'] => $tree);
+        $result = [$tree['category_id'] => $tree];
 
         foreach ($tree['children'] as $children) {
             $result = $result + $this->flattenCategoryTree($children);
@@ -391,14 +391,14 @@ class Webservice
     {
         return $this->client->call(
             self::SOAP_ACTION_CATEGORY_UPDATE,
-            array(
+            [
                 $categoryId,
-                array(
+                [
                     'is_active'         => 0,
                     'available_sort_by' => 1,
                     'default_sort_by'   => 1
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -413,9 +413,9 @@ class Webservice
     {
         return $this->client->call(
             self::SOAP_ACTION_CATEGORY_DELETE,
-            array(
+            [
                 $categoryId
-            )
+            ]
         );
     }
 
@@ -427,43 +427,43 @@ class Webservice
      */
     public function getAssociationsStatus(ProductInterface $product)
     {
-        $associationStatus = array();
+        $associationStatus = [];
         $sku               = (string) $product->getIdentifier();
 
         $associationStatus['up_sell'] = $this->client->call(
             self::SOAP_ACTION_LINK_LIST,
-            array(
+            [
                 'up_sell',
                 $sku,
                 'sku'
-            )
+            ]
         );
 
         $associationStatus['cross_sell'] = $this->client->call(
             self::SOAP_ACTION_LINK_LIST,
-            array(
+            [
                 'cross_sell',
                 $sku,
                 'sku'
-            )
+            ]
         );
 
         $associationStatus['related'] = $this->client->call(
             self::SOAP_ACTION_LINK_LIST,
-            array(
+            [
                 'related',
                 $sku,
                 'sku'
-            )
+            ]
         );
 
         $associationStatus['grouped'] = $this->client->call(
             self::SOAP_ACTION_LINK_LIST,
-            array(
+            [
                 'grouped',
                 $sku,
                 'sku'
-            )
+            ]
         );
 
         return $associationStatus;
@@ -501,12 +501,12 @@ class Webservice
     {
         $this->client->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE,
-            array(
+            [
                 $productSku,
-                array(
+                [
                     'status' => self::MAGENTO_STATUS_DISABLE
-                )
-            )
+                ]
+            ]
         );
     }
 
@@ -518,9 +518,9 @@ class Webservice
     {
         $this->client->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_DELETE,
-            array(
+            [
                 $productSku
-            )
+            ]
         );
     }
 
@@ -546,7 +546,7 @@ class Webservice
     {
         $result = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_CREATE,
-            array($attribute)
+            [$attribute]
         );
 
         return $result;
@@ -591,10 +591,10 @@ class Webservice
     {
         $options = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_LIST,
-            array($attributeCode, self::ADMIN_STOREVIEW)
+            [$attributeCode, self::ADMIN_STOREVIEW]
         );
 
-        $formatedOptions = array();
+        $formatedOptions = [];
 
         foreach ($options as $option) {
             $formatedOptions[$option['label']] = $option['value'];
@@ -612,10 +612,10 @@ class Webservice
     {
         $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE,
-            array(
+            [
                 $attributeCode,
                 $optionId,
-            )
+            ]
         );
     }
 
@@ -633,7 +633,7 @@ class Webservice
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_LIST
             );
 
-            $this->magentoAttributeSets = array();
+            $this->magentoAttributeSets = [];
 
             foreach ($attributeSets as $attributeSet) {
                 $this->magentoAttributeSets[$attributeSet['name']] = $attributeSet['set_id'];
@@ -661,12 +661,12 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_ATTRIBUTE_ADD,
-            array(
+            [
                 $attributeId,
                 $setId,
                 $attributeGroupId,
                 $sortOrder
-            )
+            ]
         );
     }
 
@@ -684,10 +684,10 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_ATTRIBUTE_REMOVE,
-            array(
+            [
                 $attributeId,
                 $setId,
-            )
+            ]
         );
     }
 
@@ -705,10 +705,10 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_CREATE,
-            array(
+            [
                 $attributeSetName,
                 $skeletonSetId,
-            )
+            ]
         );
     }
 
@@ -726,10 +726,10 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_ADD,
-            array(
+            [
                 $attributeSetId,
                 $groupName,
-            )
+            ]
         );
     }
 
@@ -745,9 +745,9 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE,
-            array(
+            [
                 $attributeGroupId,
-            )
+            ]
         );
     }
 
@@ -765,10 +765,10 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE,
-            array(
+            [
                 $attributeGroupId,
                 $groupName
-            )
+            ]
         );
     }
 
@@ -786,10 +786,10 @@ class Webservice
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE,
-            array(
+            [
                 $attributeSetId,
                 $forceProductsRemove
-            )
+            ]
         );
     }
 
@@ -804,19 +804,19 @@ class Webservice
         if ($skus) {
             $filters = json_decode(
                 json_encode(
-                    array(
-                        'complex_filter' => array(
-                            array(
+                    [
+                        'complex_filter' => [
+                            [
                                 'key' => 'sku',
-                                'value' => array('key' => 'in', 'value' => $skus)
-                            )
-                        )
-                    )
+                                'value' => ['key' => 'in', 'value' => $skus]
+                            ]
+                        ]
+                    ]
                 ),
                 false
             );
         } else {
-            $filters = array();
+            $filters = [];
         }
 
         return $this->client->call(
@@ -831,9 +831,9 @@ class Webservice
      *
      * @return string The serialization result
      */
-    protected function getProductsIds(array $products = array())
+    protected function getProductsIds(array $products = [])
     {
-        $ids = array();
+        $ids = [];
 
         foreach ($products as $product) {
             $ids[] = $product->getIdentifier();
@@ -848,9 +848,9 @@ class Webservice
      *
      * @return string The serialization result
      */
-    protected function getConfigurablesIds(array $configurables = array())
+    protected function getConfigurablesIds(array $configurables = [])
     {
-        $ids = array();
+        $ids = [];
 
         foreach ($configurables as $configurable) {
             $ids[] = sprintf(

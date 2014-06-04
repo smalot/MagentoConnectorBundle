@@ -36,18 +36,18 @@ class UrlExplorerSpec extends ObjectBehavior
         Response $response,
         Collection $curlOptions
     ) {
-        $guzzleParams = array(
+        $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array(null, null)
-        );
+            'auth'            => [null, null]
+        ];
 
         $clientParameters->getHash()->willReturn('some_hash');
         $clientParameters->getHttpLogin()->willReturn(null);
         $clientParameters->getHttpPassword()->willReturn(null);
         $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
 
-        $client->get('http://myvalidsoap.url/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
+        $client->get('http://myvalidsoap.url/api/soap/?wsdl', [], $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
         $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
         $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);
@@ -67,18 +67,18 @@ class UrlExplorerSpec extends ObjectBehavior
         Response $response,
         Collection $curlOptions
     ) {
-        $guzzleParams = array(
+        $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array('http_login', 'password')
-        );
+            'auth'            => ['http_login', 'password']
+        ];
 
         $clientParameters->getHash()->willReturn('some_hash');
         $clientParameters->getHttpLogin()->willReturn('http_login');
         $clientParameters->getHttpPassword()->willReturn('password');
         $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
 
-        $client->get('http://myvalidsoap.url/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
+        $client->get('http://myvalidsoap.url/api/soap/?wsdl', [], $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
         $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
         $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);
@@ -98,18 +98,18 @@ class UrlExplorerSpec extends ObjectBehavior
         Response $response,
         Collection $curlOptions
     ) {
-        $guzzleParams = array(
+        $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array(null, null)
-        );
+            'auth'            => [null, null]
+        ];
 
         $clientParameters->getHash()->willReturn('some_hash');
         $clientParameters->getHttpLogin()->willReturn(null);
         $clientParameters->getHttpPassword()->willReturn(null);
         $clientParameters->getSoapUrl()->willReturn('http://notvalidurlapi/soap/?wsdl');
 
-        $client->get('http://notvalidurlapi/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
+        $client->get('http://notvalidurlapi/soap/?wsdl', [], $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
         $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
         $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);
@@ -128,18 +128,18 @@ class UrlExplorerSpec extends ObjectBehavior
         Response $response,
         Collection $curlOptions
     ) {
-        $guzzleParams = array(
+        $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => array('bad_login', 'passwd')
-        );
+            'auth'            => ['bad_login', 'passwd']
+        ];
 
         $clientParameters->getHash()->willReturn('some_hash');
         $clientParameters->getHttpLogin()->willReturn('bad_login');
         $clientParameters->getHttpPassword()->willReturn('passwd');
         $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
 
-        $client->get('http://myvalidsoap.url/api/soap/?wsdl', array(), $guzzleParams)->willReturn($request);
+        $client->get('http://myvalidsoap.url/api/soap/?wsdl', [], $guzzleParams)->willReturn($request);
         $request->getCurlOptions()->willReturn($curlOptions);
         $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
         $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);

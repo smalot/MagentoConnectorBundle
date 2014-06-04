@@ -47,11 +47,11 @@ class AttributeGroupMappingManager
     public function getIdFromGroup(AttributeGroup $group, Family $family, $magentoUrl)
     {
         $groupMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'pimGroupCode'  => $group->getCode(),
                 'pimFamilyCode' => $family->getCode(),
                 'magentoUrl'    => $magentoUrl
-            )
+            ]
         );
 
         return $groupMapping ? $groupMapping->getMagentoGroupId() : null;
@@ -72,10 +72,10 @@ class AttributeGroupMappingManager
         $magentoUrl
     ) {
         $groupMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'pimGroupCode'  => $pimGroup->getCode(),
                 'pimFamilyCode' => $pimFamily->getCode()
-            )
+            ]
         );
 
         $magentoGroupMapping = new $this->className();

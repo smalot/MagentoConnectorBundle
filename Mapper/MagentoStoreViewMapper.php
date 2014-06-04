@@ -38,14 +38,14 @@ class MagentoStoreViewMapper extends MagentoMapper
      */
     public function getAllTargets()
     {
-        $targets = array();
+        $targets = [];
 
         if ($this->isValid()) {
             $storeViews = $this->webserviceGuesser->getWebservice($this->clientParameters)->getStoreViewsList();
 
             foreach ($storeViews as $storeView) {
                 if ($storeView['code'] !== $this->defaultStoreView) {
-                    $targets[] = array('id' => $storeView['code'], 'text' => $storeView['code']);
+                    $targets[] = ['id' => $storeView['code'], 'text' => $storeView['code']];
                 }
             }
         }

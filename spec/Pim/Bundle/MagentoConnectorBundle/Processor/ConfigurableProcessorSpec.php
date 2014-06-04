@@ -75,8 +75,8 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         )->willReturn($productNormalizer);
 
         $webservice->getStoreViewsList()->willReturn(
-            array(
-                array (
+            [
+                [
                     'store_id' => '1',
                     'code' => 'default',
                     'website_id' => '1',
@@ -84,24 +84,24 @@ class ConfigurableProcessorSpec extends ObjectBehavior
                     'name' => 'Default Store View',
                     'sort_order' => '0',
                     'is_active' => '1'
-                )
-            )
+                ]
+            ]
         );
 
         $webservice->getAllAttributes()->willReturn(
-            array (
+            [
                 'name' =>
-                    array (
+                    [
                         'attribute_id' => '71',
                         'code' => 'name',
                         'type' => 'text',
                         'required' => '1',
                         'scope' => 'store'
-                    )
-            )
+                    ]
+            ]
         );
 
-        $webservice->getAllAttributesOptions()->willReturn(array());
+        $webservice->getAllAttributesOptions()->willReturn([]);
 
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
@@ -123,11 +123,11 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $webservice,
         Product $product
     ) {
-        $groupRepository->getVariantGroupIds()->willReturn(array());
-        $product->getGroups()->shouldBeCalled()->willReturn(array($group));
-        $webservice->getConfigurablesStatus(array())->shouldBeCalled()->willReturn(array());
+        $groupRepository->getVariantGroupIds()->willReturn([]);
+        $product->getGroups()->shouldBeCalled()->willReturn([$group]);
+        $webservice->getConfigurablesStatus([])->shouldBeCalled()->willReturn([]);
 
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
     }
 
     function it_processes_products(
@@ -137,19 +137,19 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $configurableNormalizer,
         Product $product
     ) {
-        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+        $groupRepository->getVariantGroupIds()->willReturn([0, 1]);
 
-        $product->getGroups()->willReturn(array($group));
+        $product->getGroups()->willReturn([$group]);
 
         $group->getCode()->willReturn('abcd');
 
-        $configurable = array('group' => $group, 'products' => array($product));
+        $configurable = ['group' => $group, 'products' => [$product]];
 
-        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-abcd')));
+        $webservice->getConfigurablesStatus(['1' => $configurable])->shouldBeCalled()->willReturn([['sku' => 'conf-abcd']]);
 
         $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->shouldBeCalled();
 
-        $this->process(array($product));
+        $this->process([$product]);
     }
 
     function it_processes_products_even_if_magento_configurable_doesnt_exist(
@@ -160,23 +160,23 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         Product $product,
         Family  $family
     ) {
-        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+        $groupRepository->getVariantGroupIds()->willReturn([0, 1]);
 
-        $product->getGroups()->willReturn(array($group));
+        $product->getGroups()->willReturn([$group]);
         $product->getFamily()->shouldBeCalled()->willReturn($family);
 
         $group->getCode()->willReturn('abcd');
 
         $family->getCode()->willReturn('family_code');
 
-        $configurable = array('group' => $group, 'products' => array($product));
+        $configurable = ['group' => $group, 'products' => [$product]];
 
-        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getConfigurablesStatus(['1' => $configurable])->shouldBeCalled()->willReturn([['sku' => 'conf-adcb']]);
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('attrSet_code');
 
         $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->shouldBeCalled();
 
-        $this->process(array($product));
+        $this->process([$product]);
     }
 
     function it_throws_an_exception_if_there_are_products_products_with_different_families(
@@ -189,10 +189,10 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         Family  $family,
         Family  $family_2
     ) {
-        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+        $groupRepository->getVariantGroupIds()->willReturn([0, 1]);
 
-        $product->getGroups()->willReturn(array($group));
-        $product_2->getGroups()->willReturn(array($group));
+        $product->getGroups()->willReturn([$group]);
+        $product_2->getGroups()->willReturn([$group]);
         $product->getFamily()->shouldBeCalled()->willReturn($family);
         $product_2->getFamily()->shouldBeCalled()->willReturn($family_2);
 
@@ -200,14 +200,14 @@ class ConfigurableProcessorSpec extends ObjectBehavior
 
         $family->getCode()->willReturn('family_code');
 
-        $configurable = array('group' => $group, 'products' => array($product, $product_2));
+        $configurable = ['group' => $group, 'products' => [$product, $product_2]];
 
-        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getConfigurablesStatus(['1' => $configurable])->shouldBeCalled()->willReturn([['sku' => 'conf-adcb']]);
         $webservice->getAttributeSetId(Argument::any())->shouldNotBeCalled();
 
         $configurableNormalizer->normalize(Argument::cetera())->shouldNotBeCalled();
 
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product, $product_2));
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product, $product_2]);
     }
 
     function it_throws_an_exception_if_a_normalization_error_occured(
@@ -218,23 +218,23 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         Product $product,
         Family  $family
     ) {
-        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+        $groupRepository->getVariantGroupIds()->willReturn([0, 1]);
 
-        $product->getGroups()->willReturn(array($group));
+        $product->getGroups()->willReturn([$group]);
         $product->getFamily()->shouldBeCalled()->willReturn($family);
 
         $group->getCode()->willReturn('abcd');
 
         $family->getCode()->willReturn('family_code');
 
-        $configurable = array('group' => $group, 'products' => array($product));
+        $configurable = ['group' => $group, 'products' => [$product]];
 
-        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getConfigurablesStatus(['1' => $configurable])->shouldBeCalled()->willReturn([['sku' => 'conf-adcb']]);
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('attrSet_code');
 
         $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->willThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException');
 
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
     }
 
     function it_throws_an_exception_if_a_soap_call_error_occured_during_normalization(
@@ -245,22 +245,22 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         Product $product,
         Family  $family
     ) {
-        $groupRepository->getVariantGroupIds()->willReturn(array(0, 1));
+        $groupRepository->getVariantGroupIds()->willReturn([0, 1]);
 
-        $product->getGroups()->willReturn(array($group));
+        $product->getGroups()->willReturn([$group]);
         $product->getFamily()->shouldBeCalled()->willReturn($family);
 
         $group->getCode()->willReturn('abcd');
 
         $family->getCode()->willReturn('family_code');
 
-        $configurable = array('group' => $group, 'products' => array($product));
+        $configurable = ['group' => $group, 'products' => [$product]];
 
-        $webservice->getConfigurablesStatus(array('1' => $configurable))->shouldBeCalled()->willReturn(array(array('sku' => 'conf-adcb')));
+        $webservice->getConfigurablesStatus(['1' => $configurable])->shouldBeCalled()->willReturn([['sku' => 'conf-adcb']]);
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('attrSet_code');
 
         $configurableNormalizer->normalize($configurable, 'MagentoArray', Argument::any())->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess(array($product));
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
     }
 }

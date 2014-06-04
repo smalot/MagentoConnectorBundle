@@ -32,7 +32,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $family,
         $group
     ) {
-        $entityRepository->findOneBy(array('pimGroupCode' => 12, 'pimFamilyCode' => 5, 'magentoUrl' => 'magento_url'))
+        $entityRepository->findOneBy(['pimGroupCode' => 12, 'pimFamilyCode' => 5, 'magentoUrl' => 'magento_url'])
             ->willReturn($magentoGroupMapping);
 
         $magentoGroupMapping->getMagentoGroupId()->willReturn(4);
@@ -46,7 +46,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $family,
         $group
     ) {
-        $entityRepository->findOneBy(array('pimGroupCode' => 12, 'pimFamilyCode' => 5, 'magentoUrl' => 'magento_url'))
+        $entityRepository->findOneBy(['pimGroupCode' => 12, 'pimFamilyCode' => 5, 'magentoUrl' => 'magento_url'])
             ->willReturn(null);
 
         $magentoGroupMapping->getMagentoGroupId()->shouldNotBeCalled();
@@ -58,8 +58,8 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $entityRepository,
         MagentoGroupMapping $magentoGroupMapping
     ) {
-        $entityRepository->findAll()->willReturn(array($magentoGroupMapping));
-        $this->getAllMappings()->shouldReturn(array($magentoGroupMapping));
+        $entityRepository->findAll()->willReturn([$magentoGroupMapping]);
+        $this->getAllMappings()->shouldReturn([$magentoGroupMapping]);
     }
 
     public function it_register_mapping(
@@ -69,7 +69,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $family,
         $objectManager
     ) {
-        $entityRepository->findOneBy(array('pimGroupCode' => 12, 'pimFamilyCode' => 5))->willReturn($magentoGroupMapping);
+        $entityRepository->findOneBy(['pimGroupCode' => 12, 'pimFamilyCode' => 5])->willReturn($magentoGroupMapping);
         $magentoGroupMapping->setPimGroupCode(12)->shouldBeCalled();
         $magentoGroupMapping->setPimFamilyCode(5)->shouldBeCalled();
         $magentoGroupMapping->setMagentoGroupId(3)->shouldBeCalled();
@@ -84,7 +84,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
     public function it_return_null_if_no_mappings_found(
         $entityRepository
     ) {
-        $entityRepository->findAll()->willReturn(array());
+        $entityRepository->findAll()->willReturn([]);
         $this->getAllMappings()->shouldReturn(null);
     }
 

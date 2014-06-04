@@ -45,7 +45,7 @@ class HasValidCurrencyValidatorSpec extends ObjectBehavior
     ) {
         $value->getChannel()->willReturn('channel');
         $channelManager->getChannelByCode(Argument::any())->willReturn($channel);
-        $channel->getCurrencies()->willReturn(array($currency));
+        $channel->getCurrencies()->willReturn([$currency]);
         $currency->getCode()->willReturn('euro');
         $value->getCurrency()->willReturn('euro');
 
@@ -64,13 +64,13 @@ class HasValidCurrencyValidatorSpec extends ObjectBehavior
     ) {
         $value->getChannel()->willReturn('channel');
         $channelManager->getChannelByCode('channel')->willReturn($channel);
-        $channel->getCurrencies()->willReturn(array($currency));
+        $channel->getCurrencies()->willReturn([$currency]);
         $currency->getCode()->willReturn('dollar');
         $value->getCurrency()->willReturn('euro');
 
         $constraint->message = 'The given currency is not valid (check that the selected currency is in channel\'s currencies)';
 
-        $context->addViolationAt('currency', 'The given currency is not valid (check that the selected currency is in channel\'s currencies)', array('currency'))->shouldBeCalled();
+        $context->addViolationAt('currency', 'The given currency is not valid (check that the selected currency is in channel\'s currencies)', ['currency'])->shouldBeCalled();
 
         $this->validate($value, $constraint);
     }
@@ -87,7 +87,7 @@ class HasValidCurrencyValidatorSpec extends ObjectBehavior
 
         $constraint->message = 'The given currency is not valid (check that the selected currency is in channel\'s currencies)';
 
-        $context->addViolationAt('currency', 'The given currency is not valid (check that the selected currency is in channel\'s currencies)', array('currency'))->shouldBeCalled();
+        $context->addViolationAt('currency', 'The given currency is not valid (check that the selected currency is in channel\'s currencies)', ['currency'])->shouldBeCalled();
 
         $this->validate($value, $constraint);
     }
