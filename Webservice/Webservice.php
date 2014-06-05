@@ -385,7 +385,7 @@ class Webservice
      * Disable the given category on Magento
      * @param string $categoryId
      *
-     * @return int
+     * @return boolean
      */
     public function disableCategory($categoryId)
     {
@@ -407,7 +407,7 @@ class Webservice
      *
      * @param string $categoryId
      *
-     * @return int
+     * @return boolean
      */
     public function deleteCategory($categoryId)
     {
@@ -527,10 +527,12 @@ class Webservice
     /**
      * Create an option
      * @param array $option
+     *
+     * @return boolean
      */
     public function createOption($option)
     {
-        $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_ADD,
             $option
         );
@@ -560,21 +562,21 @@ class Webservice
      */
     public function updateAttribute($attribute)
     {
-        $result = $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_UPDATE,
             $attribute
         );
-
-        return $result;
     }
 
     /**
      * Delete an attribute
      * @param string $attributeCode
+     *
+     * @return boolean
      */
     public function deleteAttribute($attributeCode)
     {
-        $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_REMOVE,
             $attributeCode
         );
@@ -607,10 +609,12 @@ class Webservice
      * Delete an option
      * @param string $optionId
      * @param string $attributeCode
+     *
+     * @return boolean
      */
     public function deleteOption($optionId, $attributeCode)
     {
-        $this->client->call(
+        return $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_REMOVE,
             [
                 $attributeCode,
@@ -764,7 +768,7 @@ class Webservice
         $groupName
     ) {
         return $this->client->call(
-            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_REMOVE,
+            self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_GROUP_RENAME,
             [
                 $attributeGroupId,
                 $groupName
