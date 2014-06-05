@@ -4,6 +4,8 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\AbstractGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
@@ -47,6 +49,54 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $magentoSoapClient->call('core_magento.info')->willThrow(new SoapFault('foo', 'bar'));
 
         $this->getProductNormalizer($clientParameters, true, 4, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16');
+    }
+
+    function it_gets_family_normalizer_for_magento_1_8($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.8']);
+
+        $this->getFamilyNormalizer($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer');
+    }
+
+    function it_gets_family_normalizer_for_magento_1_7($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.7']);
+
+        $this->getFamilyNormalizer($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer');
+    }
+
+    function it_gets_family_normalizer_for_magento_1_6($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.6']);
+
+        $this->getFamilyNormalizer($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer');
+    }
+
+    function it_gets_family_normalizer_for_magento_1_13($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.13']);
+
+        $this->getFamilyNormalizer($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer');
+    }
+
+    function it_throw_an_exception_if_no_magento_version_are_found_for_family_normalizer(
+        $clientParameters,
+        $magentoSoapClientFactory,
+        MagentoSoapClient $magentoSoapClient
+    ) {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.1']);
+
+        $this->shouldThrow(new NotSupportedVersionException('Your Magento version is not supported yet.'))->during('getFamilyNormalizer', [$clientParameters]);
     }
 
     function it_throw_an_error_if_there_is_a_soap_call_exception($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
