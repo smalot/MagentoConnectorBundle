@@ -24,4 +24,10 @@ class WebserviceEESpec extends ObjectBehavior
 
         $this->getAttributeOptions('code')->shouldReturn(['label1' => 'value1', 'label2' => 'value2']);
     }
+
+    function it_returns_an_empty_array_if_attribute_is_returnable($client){
+        $client->call(Argument::cetera())->shouldNotBeCalled();
+
+        $this->getAttributeOptions('is_returnable')->shouldReturn(array());
+    }
 }
