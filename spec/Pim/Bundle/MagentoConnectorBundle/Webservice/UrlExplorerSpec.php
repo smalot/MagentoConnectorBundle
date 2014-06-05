@@ -2,6 +2,7 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Webservice;
 
+use Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\UrlExplorer;
@@ -60,6 +61,65 @@ class UrlExplorerSpec extends ObjectBehavior
         $this->getUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
+    function it_success_with_valid_sfoap_url(
+        $client,
+        $clientParameters,
+        Request $request,
+        Response $response,
+        Collection $curlOptions
+    ) {
+        $guzzleParams = [
+            'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
+            'timeout'         => UrlExplorer::TIMEOUT,
+            'auth'            => [null, null]
+        ];
+
+        $clientParameters->getHash()->willReturn('some_hash');
+        $clientParameters->getHttpLogin()->willReturn(null);
+        $clientParameters->getHttpPassword()->willReturn(null);
+        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
+
+        $client->get('http://myvalidsoap.url/api/soap/?wsdl', [], $guzzleParams)->willReturn($request);
+        $request->getCurlOptions()->willReturn($curlOptions);
+        $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
+        $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);
+        $client->send($request)->shouldBeCalled()->willReturn($response);
+
+        $response->setHeader('ContentType', 'text/xml');
+        $response->isContentType('text/xml')->shouldBeCalled()->willReturn(true);
+        $response->getBody(true)->shouldBeCalled()->willReturn('foo');
+
+        $this->getUrlContent($clientParameters)->shouldReturn('foo');
+        $this->getUrlContent($clientParameters)->shouldReturn('foo');
+    }
+
+    function it_throw_an_exception_if_called_twice(
+        $client,
+        $clientParameters,
+        Request $request,
+        Collection $curlOptions
+    ) {
+        $guzzleParams = [
+            'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
+            'timeout'         => UrlExplorer::TIMEOUT,
+            'auth'            => [null, null]
+        ];
+
+        $clientParameters->getHash()->willReturn('some_hash');
+        $clientParameters->getHttpLogin()->willReturn(null);
+        $clientParameters->getHttpPassword()->willReturn(null);
+        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
+
+        $client->get('http://myvalidsoap.url/api/soap/?wsdl', [], $guzzleParams)->willReturn($request);
+        $request->getCurlOptions()->willReturn($curlOptions);
+        $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
+        $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);
+        $client->send($request)->shouldBeCalled()->willThrow('\Exception');
+
+        $this->shouldThrow('\Exception')->during('getUrlContent', [$clientParameters]);
+        $this->shouldThrow('\Exception')->during('getUrlContent', [$clientParameters]);
+    }
+
     function it_success_with_valid_http_authentication_credentials(
         $client,
         $clientParameters,
@@ -89,6 +149,36 @@ class UrlExplorerSpec extends ObjectBehavior
         $response->getBody(true)->shouldBeCalled()->willReturn('<xml>Some xml as a string</xml>');
 
         $this->getUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
+    }
+
+    function it_throw_an_exception_if_content_type_is_not_text_or_html(
+        $client,
+        $clientParameters,
+        Request $request,
+        Response $response,
+        Collection $curlOptions
+    ) {
+        $guzzleParams = [
+            'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
+            'timeout'         => UrlExplorer::TIMEOUT,
+            'auth'            => ['http_login', 'password']
+        ];
+
+        $clientParameters->getHash()->willReturn('some_hash');
+        $clientParameters->getHttpLogin()->willReturn('http_login');
+        $clientParameters->getHttpPassword()->willReturn('password');
+        $clientParameters->getSoapUrl()->willReturn('http://myvalidsoap.url/api/soap/?wsdl');
+
+        $client->get('http://myvalidsoap.url/api/soap/?wsdl', [], $guzzleParams)->willReturn($request);
+        $request->getCurlOptions()->willReturn($curlOptions);
+        $curlOptions->set(CURLOPT_CONNECTTIMEOUT, UrlExplorer::CONNECT_TIMEOUT)->willReturn($request);
+        $curlOptions->set(CURLOPT_TIMEOUT, UrlExplorer::TIMEOUT)->willReturn($request);
+        $client->send($request)->shouldBeCalled()->willReturn($response);
+
+        $response->setHeader('ContentType', 'text/xml');
+        $response->isContentType('text/xml')->shouldBeCalled()->willReturn(false);
+
+        $this->shouldThrow(new InvalidSoapUrlException('Content type is not XML'))->during('getUrlContent', [$clientParameters]);
     }
 
     function it_fails_with_invalid_url(
