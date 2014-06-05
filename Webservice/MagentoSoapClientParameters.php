@@ -175,7 +175,7 @@ class MagentoSoapClientParameters
      *
      * @return string Default store view
      */
-    public function getDefaultstoreView()
+    public function getDefaultStoreView()
     {
         return $this->defaultStoreView;
     }
