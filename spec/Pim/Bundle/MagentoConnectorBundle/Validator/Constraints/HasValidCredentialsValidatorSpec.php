@@ -55,7 +55,8 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $context,
         $clientParameters,
         MagentoItemStep $step,
-        Constraint $constraint
+        Constraint $constraint,
+        Webservice $webservice
     ) {
         $clientParameters->isValid()->willReturn(true);
         $context->addViolationAt(Argument::cetera())->shouldNotBeCalled();
@@ -147,8 +148,8 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $clientParameters->isValid()->willReturn(null);
         $urlExplorer->getUrlContent($clientParameters)->willReturn('<content>Some xml as string</content>');
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
-        $webservice->getStoreViewsList()->willReturn(array());
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $webservice->getStoreViewsList()->shouldBeCalled()->willReturn(array());
+        $clientParameters->setValidation(Argument::type('bool'))->shouldBeCalled()->will(function(array $args){
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(true);

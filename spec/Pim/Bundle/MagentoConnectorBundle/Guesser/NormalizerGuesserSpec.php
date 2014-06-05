@@ -15,6 +15,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use PhpSpec\ObjectBehavior;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use SoapFault;
 
 class NormalizerGuesserSpec extends ObjectBehavior
 {
@@ -36,6 +38,24 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $clientParameters->getSoapUrl()->willReturn('http://magento.url/api/soap/?wsdl');
         $clientParameters->getSoapUsername()->willReturn('soap_username');
         $clientParameters->getSoapApiKey()->willReturn('soap_api_key');
+    }
+
+    function it_return_default_magento_version_if_an_error_is_thown($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willThrow(new SoapFault('foo', 'bar'));
+
+        $this->getProductNormalizer($clientParameters, true, 4, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16');
+    }
+
+    function it_fail_($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willThrow(new SoapCallException());
+
+        $this->shouldThrow(new SoapCallException())->during('getProductNormalizer', [$clientParameters, true, 4, 'EUR']);
     }
 
     function it_shoulds_guess_the_product_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
