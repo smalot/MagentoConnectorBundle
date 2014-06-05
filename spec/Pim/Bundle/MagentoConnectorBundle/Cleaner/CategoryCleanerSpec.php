@@ -82,4 +82,25 @@ class CategoryCleanerSpec extends ObjectBehavior
 
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
+
+    function it_is_configurable_via_magento_item_step()
+    {
+        $this->setSoapUsername('soap');
+        $this->getSoapUsername()->shouldReturn('soap');
+
+        $this->setDefaultStoreView('default');
+        $this->getDefaultStoreView()->shouldReturn('default');
+
+        $this->setSoapApiKey('key');
+        $this->getSoapApiKey()->shouldReturn('key');
+
+        $this->setMagentoUrl('http://magento.url');
+        $this->getMagentoUrl()->shouldReturn('http://magento.url');
+
+        $this->setHttpLogin('login');
+        $this->getHttpLogin()->shouldReturn('login');
+
+        $this->setHttpPassword('passwd');
+        $this->getHttpPassword()->shouldReturn('passwd');
+    }
 }
