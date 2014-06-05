@@ -33,6 +33,15 @@ class WebserviceGuesserSpec extends ObjectBehavior
         $this->getWebservice($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice');
     }
 
+    function it_shoulds_guess_webservice_for_parametrfers($magentoSoapClientFactory, $clientParameters, MagentoSoapClient $magentoSoapClient)
+    {
+        $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
+
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.13']);
+
+        $this->getWebservice($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Webservice\WebserviceEE');
+    }
+
     function it_shoulds_guess_an_old_webservice_for_parameters($magentoSoapClientFactory, $clientParameters, MagentoSoapClient $magentoSoapClient)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);

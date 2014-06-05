@@ -49,7 +49,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $this->getProductNormalizer($clientParameters, true, 4, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16');
     }
 
-    function it_fail_($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    function it_throw_an_error_if_there_is_a_soap_call_exception($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
