@@ -7,6 +7,7 @@ use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoAttributeMapping;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\ORMExportedAttributeMapper;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
@@ -42,6 +43,18 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
     function it_should_extends_mapper()
     {
         $this->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper');
+    }
+
+    function it_return_a_sha1_identifier(
+        MagentoSoapClientParameters $clientParameters
+    ){
+        $clientParameters->getSoapUrl()->willReturn('url_soap');
+        $this->getIdentifier()->shouldReturn('94bc61f223c4c61a55e35d9ab9ec0e671897dc5a');
+    }
+
+    function it_return_an_empty_string_if_is_not_valid(HasValidCredentialsValidator $hasValidCredentialsValidator){
+        $hasValidCredentialsValidator->areValidSoapCredentials(Argument::any())->willReturn(false);
+        $this->getIdentifier()->shouldReturn('');
     }
 
     function it_should_return_a_mapping_collection_on_get_mapping(AttributeMappingManager $attributeMappingManager, MagentoSoapClientParameters $clientParameters)

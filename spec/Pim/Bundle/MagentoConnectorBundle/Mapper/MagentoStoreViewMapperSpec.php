@@ -39,6 +39,11 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn([]);
     }
 
+    function it_return_empty_array_for_targets()
+    {
+        $this->getAllTargets()->shouldReturn([]);
+    }
+
     function it_returns_an_empty_collection_if_parameters_are_not_setted()
     {
         $mapping = $this->getMapping();

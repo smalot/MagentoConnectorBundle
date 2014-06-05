@@ -124,6 +124,7 @@ class ORMExportedAttributeMapper extends Mapper
 
     /**
      * Is the mapper valid ?
+     *
      * @return boolean
      */
     public function isValid()

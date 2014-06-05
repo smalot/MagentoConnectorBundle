@@ -48,4 +48,9 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         $localeManager->getActiveCodes()->willReturn([]);
         $this->getAllSources()->shouldReturn([]);
     }
+
+    function it_return_empty_array_for_targets()
+    {
+        $this->getAllTargets()->shouldReturn([]);
+    }
 }
