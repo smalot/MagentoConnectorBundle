@@ -57,9 +57,9 @@ class MagentoAttributeIdMapper extends MagentoMapper
                     'deletable' => true
                 ]);
             }
-
-            return $mapping;
         }
+
+        return $mapping;
     }
 
     /**
