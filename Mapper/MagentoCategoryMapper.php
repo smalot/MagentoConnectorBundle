@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento category mapper
@@ -43,7 +44,11 @@ class MagentoCategoryMapper extends MagentoMapper
         $targets = array();
 
         if ($this->isValid()) {
-            $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
+            try {
+                $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
+            } catch (SoapCallException $e) {
+                return array();
+            }
 
             foreach ($categories as $categoryId => $category) {
                 if ($categoryId != self::ROOT_CATEGORY_ID) {

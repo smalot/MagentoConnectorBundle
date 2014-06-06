@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento family mapper
@@ -41,7 +42,11 @@ class MagentoFamilyMapper extends MagentoMapper
         $targets = array();
 
         if ($this->isValid()) {
-            $families = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAttributeSetList();
+            try {
+                $families = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAttributeSetList();
+            } catch (SoapCallException $e) {
+                return array();
+            }
 
             foreach ($families as $familyId => $family) {
                 $targets[] = array('id' => $familyId, 'name' => $family['name']);

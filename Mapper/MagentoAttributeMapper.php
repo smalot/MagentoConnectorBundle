@@ -2,9 +2,10 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento attribute mapper
@@ -42,7 +43,11 @@ class MagentoAttributeMapper extends MagentoMapper
         if (!$this->isValid()) {
             return new MappingCollection();
         } else {
-            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            try {
+                $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            } catch (SoapCallException $e) {
+                return new MappingCollection();
+            }
 
             $mapping = new MappingCollection();
             foreach (array_keys($attributes) as $attributeCode) {
