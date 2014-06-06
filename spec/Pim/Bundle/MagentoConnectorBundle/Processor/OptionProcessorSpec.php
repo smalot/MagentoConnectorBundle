@@ -5,6 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Processor\OptionProcessor;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
@@ -167,11 +168,15 @@ class OptionProcessorSpec extends ObjectBehavior
                 ]
             ],
             'defaultStoreView' => [
+                'type'    => 'choice',
                 'options' => [
-                    'required' => false,
+                    'choices'  =>  $this->getDefaultStoreViews(),
+                    'required' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ],
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
-                    'label'    => 'pim_magento_connector.export.defaultStoreView.label',
-                    'data'     => $this->getDefaultStoreView(),
+                    'label'    => 'pim_magento_connector.export.defaultStoreView.label'
                 ]
             ],
             'defaultLocale' => [

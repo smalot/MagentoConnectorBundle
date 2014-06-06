@@ -186,13 +186,17 @@ class ProductCleanerSpec extends ObjectBehavior
                 ]
             ],
             'defaultStoreView' => [
-                    'options' => [
-                        'required' => false,
-                        'help'     => 'pim_magento_connector.export.defaultStoreView.help',
-                        'label'    => 'pim_magento_connector.export.defaultStoreView.label',
-                        'data'     => $this->getDefaultStoreView(),
-                    ]
-                ],
+                'type'    => 'choice',
+                'options' => [
+                    'choices'  =>  $this->getDefaultStoreViews(),
+                    'required' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ],
+                    'help'     => 'pim_magento_connector.export.defaultStoreView.help',
+                    'label'    => 'pim_magento_connector.export.defaultStoreView.label'
+                ]
+            ],
             'notInPimAnymoreAction' => [
                 'type'    => 'choice',
                 'options' => [

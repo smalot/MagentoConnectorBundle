@@ -171,11 +171,15 @@ class AttributeCleanerSpec extends ObjectBehavior
                     ]
                 ],
                 'defaultStoreView' => [
+                    'type'    => 'choice',
                     'options' => [
-                        'required' => false,
+                        'choices'  =>  $this->getDefaultStoreViews(),
+                        'required' => true,
+                        'attr' => [
+                            'class' => 'select2'
+                        ],
                         'help'     => 'pim_magento_connector.export.defaultStoreView.help',
-                        'label'    => 'pim_magento_connector.export.defaultStoreView.label',
-                        'data'     => $this->getDefaultStoreView(),
+                        'label'    => 'pim_magento_connector.export.defaultStoreView.label'
                     ]
                 ],
                 'notInPimAnymoreAction' => [
