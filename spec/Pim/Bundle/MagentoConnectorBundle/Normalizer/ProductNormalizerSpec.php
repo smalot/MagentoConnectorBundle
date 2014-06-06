@@ -22,7 +22,7 @@ use Prophecy\Argument;
 
 class ProductNormalizerSpec extends ObjectBehavior
 {
-    protected $globalContext = array();
+    protected $globalContext = [];
 
     function let(
         ChannelManager $channelManager,
@@ -53,23 +53,23 @@ class ProductNormalizerSpec extends ObjectBehavior
             'magento_url'
         );
 
-        $this->globalContext = array(
+        $this->globalContext = [
             'attributeSetId'           => 0,
-            'magentoAttributes'        => array(),
-            'magentoAttributesOptions' => array(),
+            'magentoAttributes'        => [],
+            'magentoAttributesOptions' => [],
             'storeViewMapping'         => $storeViewMapping,
-            'magentoStoreViews'        => array(array('code' => 'fr_fr')),
+            'magentoStoreViews'        => [['code' => 'fr_fr']],
             'defaultLocale'            => 'default_locale',
             'website'                  => 'website',
             'channel'                  => 'channel',
             'categoryMapping'          => $categoryMapping,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'     => $attributeMapping,
             'create'                   => true,
             'pimGrouped'               => 'pim_grouped',
             'created_date'             => (new \DateTime()),
             'updated_date'             => (new \DateTime()),
             'defaultStoreView'         => 'default'
-        );
+        ];
 
         $attributeMapping->getTarget('visibility')->willReturn('visibility');
         $attributeMapping->getTarget('created_at')->willReturn('created_at');
@@ -78,114 +78,114 @@ class ProductNormalizerSpec extends ObjectBehavior
         $attributeMapping->getTarget('categories')->willReturn('categories');
 
         $channelManager->getChannelByCode('channel')->willReturn($channel);
-        $channel->getLocales()->willReturn(array($localeEN, $localeFR));
+        $channel->getLocales()->willReturn([$localeEN, $localeFR]);
         $localeEN->getCode()->willReturn('default_locale');
         $localeFR->getCode()->willReturn('fr_FR');
         $channel->getCode()->willReturn('channel_code');
 
-        $product->getCategories()->willReturn(array($category));
+        $product->getCategories()->willReturn([$category]);
         $product->getIdentifier()->willReturn('sku-000');
         $product->getCreated()->willReturn($this->globalContext['created_date']);
         $product->getUpdated()->willReturn($this->globalContext['updated_date']);
-        $product->getValues()->willReturn(new ArrayCollection(array($productValue, $imageValue)));
+        $product->getValues()->willReturn(new ArrayCollection([$productValue, $imageValue]));
         $storeViewMapping->getTarget('default_locale')->willReturn('default_locale');
         $storeViewMapping->getTarget('fr_FR')->willReturn('fr_fr');
 
         $categoryMappingManager->getIdFromCategory($category, 'magento_url', $categoryMapping)->willReturn(2);
 
-        $productValueNormalizer->normalize($productValue, Argument::cetera())->willReturn(array('value' => 'productValueNormalized'));
+        $productValueNormalizer->normalize($productValue, Argument::cetera())->willReturn(['value' => 'productValueNormalized']);
         $productValueNormalizer->normalize($imageValue, Argument::cetera())->willReturn(null);
     }
 
     function it_normalizes_the_given_new_product($product)
     {
-        $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'default' => array(
+        $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'default' => [
                 'simple',
                 0,
                 'sku-000',
-                array(
-                    'categories' => array(2),
+                [
+                    'categories' => [2],
                     'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
-                    'websites'   => array('website'),
-                ),
+                    'websites'   => ['website'],
+                ],
                 'default'
-            ),
-            'fr_fr'  => array(
+            ],
+            'fr_fr'  => [
                 'sku-000',
-                array(
-                    'categories' => array(2),
+                [
+                    'categories' => [2],
                     'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
-                ),
+                ],
                 'fr_fr',
                 'sku'
-            )
-        ));
+            ]
+        ]);
     }
 
     function it_raises_an_exception_if_product_category_is_not_found($product, $categoryMappingManager, $category, $categoryMapping)
     {
         $categoryMappingManager->getIdFromCategory($category, 'magento_url', $categoryMapping)->willReturn(null);
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException')->during('normalize', array($product, 'MagentoArray', $this->globalContext));
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
     function it_normalizes_the_given_grouped_product($product, $associationTypeManager, AssociationType $associationType)
     {
         $associationTypeManager->getAssociationTypeByCode('pim_grouped')->willReturn($associationType);
-        $product->getAssociationForType($associationType)->willReturn(new Association(array('association')));
+        $product->getAssociationForType($associationType)->willReturn(new Association(['association']));
 
-        $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'default' => array(
+        $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'default' => [
                 'grouped',
                 0,
                 'sku-000',
-                array(
-                    'categories' => array(2),
+                [
+                    'categories' => [2],
                     'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
-                    'websites'   => array('website'),
-                ),
+                    'websites'   => ['website'],
+                ],
                 'default'
-            ),
-            'fr_fr'  => array(
+            ],
+            'fr_fr'  => [
                 'sku-000',
-                array(
-                    'categories' => array(2),
+                [
+                    'categories' => [2],
                     'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
-                ),
+                ],
                 'fr_fr',
                 'sku'
-            )
-        ));
+            ]
+        ]);
     }
 
     function it_raises_an_exception_if_a_storeview_is_missing($product)
     {
-        $this->globalContext['magentoStoreViews'] = array();
+        $this->globalContext['magentoStoreViews'] = [];
         $this->globalContext['magentoStoreView']  = 'default';
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', array($product, 'MagentoArray', $this->globalContext));
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
     function it_normalizes_images_for_given_product($product, $imageValue, Media $image, ArrayCollection $productValues, $mediaManager)
     {
         $product->getValues()->willReturn($productValues);
-        $productValues->filter(Argument::any())->willReturn(array($imageValue));
+        $productValues->filter(Argument::any())->willReturn([$imageValue]);
         $imageValue->getData()->willReturn($image);
 
         $mediaManager->getBase64($image)->willReturn('image_data');
@@ -193,24 +193,24 @@ class ProductNormalizerSpec extends ObjectBehavior
         $image->getFilename()->willReturn('image_filename');
         $image->getMimeType()->willReturn('jpeg');
 
-        $this->getNormalizedImages($product)->shouldReturn(array(
-            array(
+        $this->getNormalizedImages($product)->shouldReturn([
+            [
                 'sku-000',
-                array(
-                    'file' => array(
+                [
+                    'file' => [
                         'name'    => 'image_filename',
                         'content' => 'image_data',
                         'mime'    => 'jpeg',
-                    ),
+                    ],
                     'label'    => 'image_filename',
                     'position' => 0,
-                    'types'    => array('small_image', 'image', 'thumbnail'),
+                    'types'    => ['small_image', 'image', 'thumbnail'],
                     'exclude'  => 0
-                ),
+                ],
                 0,
                 'sku'
-            )
-        ));
+            ]
+        ]);
     }
 
     function it_normalizes_the_given_updated_product($product)
@@ -218,34 +218,34 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->globalContext['create'] = false;
         $this->globalContext['defaultStoreView'] = 'default';
 
-        $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn(array(
-            'default' => array(
+        $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
+            'default' => [
                 'sku-000',
-                array(
-                    'categories' => array(2),
+                [
+                    'categories' => [2],
                     'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
-                    'websites'   => array('website'),
-                ),
+                    'websites'   => ['website'],
+                ],
                 'default',
                 'sku'
-            ),
-            'fr_fr'  => array(
+            ],
+            'fr_fr'  => [
                 'sku-000',
-                array(
-                    'categories' => array(2),
+                [
+                    'categories' => [2],
                     'created_at' => $this->globalContext['created_date']->format('Y-m-d H:i:s'),
                     'status'     => 1,
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
-                ),
+                ],
                 'fr_fr',
                 'sku'
-            )
-        ));
+            ]
+        ]);
     }
 }

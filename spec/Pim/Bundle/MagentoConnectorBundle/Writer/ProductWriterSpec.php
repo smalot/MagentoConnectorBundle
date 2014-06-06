@@ -36,20 +36,20 @@ class ProductWriterSpec extends ObjectBehavior
 
     function it_updates_a_product($webservice, $stepExecution)
     {
-        $products = array(
-            'batch_1' => array(
-                'product_1' => array(
-                    'default' => array(
+        $products = [
+            'batch_1' => [
+                'product_1' => [
+                    'default' => [
                         'sku'
-                    ),
-                    'en_US' => array(),
-                    'images' => array()
-                )
-            )
-        );
+                    ],
+                    'en_US' => [],
+                    'images' => []
+                ]
+            ]
+        ];
 
-        $webservice->getImages('sku', 'default')->willReturn(array());
-        $webservice->sendProduct(array('sku'))->shouldBeCalled();
+        $webservice->getImages('sku', 'default')->willReturn([]);
+        $webservice->sendProduct(['sku'])->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
 
@@ -61,24 +61,24 @@ class ProductWriterSpec extends ObjectBehavior
 
     function it_creates_a_product($webservice, $stepExecution)
     {
-        $products = array(
-            'batch_1' => array(
-                'product_1' => array(
-                    'default' => array(
+        $products = [
+            'batch_1' => [
+                'product_1' => [
+                    'default' => [
                         'something',
                         'another',
                         'sku',
                         'again',
                         'lastone'
-                    ),
-                    'en_US' => array(),
-                    'images' => array()
-                )
-            )
-        );
+                    ],
+                    'en_US' => [],
+                    'images' => []
+                ]
+            ]
+        ];
 
-        $webservice->getImages('sku', 'default')->willReturn(array());
-        $webservice->sendProduct(array('something', 'another', 'sku', 'again', 'lastone'))->shouldBeCalled();
+        $webservice->getImages('sku', 'default')->willReturn([]);
+        $webservice->sendProduct(['something', 'another', 'sku', 'again', 'lastone'])->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
 
@@ -90,22 +90,22 @@ class ProductWriterSpec extends ObjectBehavior
 
     function it_updates_a_product_and_prunes_old_images($webservice, $stepExecution)
     {
-        $products = array(
-            'batch_1' => array(
-                'product_1' => array(
-                    'default' => array(
+        $products = [
+            'batch_1' => [
+                'product_1' => [
+                    'default' => [
                         'sku'
-                    ),
-                    'en_US' => array(),
-                    'images' => array()
-                )
-            )
-        );
+                    ],
+                    'en_US' => [],
+                    'images' => []
+                ]
+            ]
+        ];
 
-        $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
+        $webservice->getImages('sku', 'default')->willReturn([['file' => 'foo'], ['file' => 'bar']]);
         $webservice->deleteImage('sku','foo')->shouldBeCalled();
         $webservice->deleteImage('sku','bar')->shouldBeCalled();
-        $webservice->sendProduct(array('sku'))->shouldBeCalled();
+        $webservice->sendProduct(['sku'])->shouldBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
 
@@ -117,20 +117,20 @@ class ProductWriterSpec extends ObjectBehavior
 
     function it_fails_if_something_went_wrong_when_it_updates_a_product($webservice, $stepExecution)
     {
-        $products = array(
-            'batch_1' => array(
-                'product_1' => array(
-                    'default' => array(
+        $products = [
+            'batch_1' => [
+                'product_1' => [
+                    'default' => [
                         'sku'
-                    ),
-                    'en_US' => array(),
-                    'images' => array()
-                )
-            )
-        );
+                    ],
+                    'en_US' => [],
+                    'images' => []
+                ]
+            ]
+        ];
 
-        $webservice->getImages('sku', 'default')->willReturn(array());
-        $webservice->sendProduct(array('sku'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->getImages('sku', 'default')->willReturn([]);
+        $webservice->sendProduct(['sku'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $webservice->sendImages(Argument::any())->shouldNotBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldNotBeCalled();
 
@@ -142,19 +142,19 @@ class ProductWriterSpec extends ObjectBehavior
 
     function it_fails_if_something_went_wrong_when_it_prunes_images($webservice, $stepExecution)
     {
-        $products = array(
-            'batch_1' => array(
-                'product_1' => array(
-                    'default' => array(
+        $products = [
+            'batch_1' => [
+                'product_1' => [
+                    'default' => [
                         'sku'
-                    ),
-                    'en_US' => array(),
-                    'images' => array()
-                )
-            )
-        );
+                    ],
+                    'en_US' => [],
+                    'images' => []
+                ]
+            ]
+        ];
 
-        $webservice->getImages('sku', 'default')->willReturn(array(array('file' => 'foo'), array('file' => 'bar')));
+        $webservice->getImages('sku', 'default')->willReturn([['file' => 'foo'], ['file' => 'bar']]);
         $webservice->deleteImage('sku','foo')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $webservice->sendProduct(Argument::any())->shouldNotBeCalled();
         $webservice->sendImages(Argument::any())->shouldNotBeCalled();
@@ -169,69 +169,69 @@ class ProductWriterSpec extends ObjectBehavior
     function it_gives_a_configuration_field()
     {
         $this->getConfigurationFields()->shouldReturn(
-            array(
-                'soapUsername' => array(
-                    'options' => array(
+            [
+                'soapUsername' => [
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapUsername.help',
                         'label'    => 'pim_magento_connector.export.soapUsername.label'
-                    )
-                ),
-                'soapApiKey'   => array(
+                    ]
+                ],
+                'soapApiKey'   => [
                     'type'    => 'text',
-                    'options' => array(
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapApiKey.help',
                         'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                    )
-                ),
-                'magentoUrl' => array(
-                    'options' => array(
+                    ]
+                ],
+                'magentoUrl' => [
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.magentoUrl.help',
                         'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                    )
-                ),
-                'wsdlUrl' => array(
-                    'options' => array(
+                    ]
+                ],
+                'wsdlUrl' => [
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                         'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                         'data'     => '/api/soap/?wsdl'
-                    )
-                ),
-                'httpLogin' => array(
-                    'options' => array(
+                    ]
+                ],
+                'httpLogin' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpLogin.help',
                         'label'    => 'pim_magento_connector.export.httpLogin.label'
-                    )
-                ),
-                'httpPassword' => array(
-                    'options' => array(
+                    ]
+                ],
+                'httpPassword' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpPassword.help',
                         'label'    => 'pim_magento_connector.export.httpPassword.label'
-                    )
-                ),
-                'defaultStoreView' => array(
-                    'options' => array(
+                    ]
+                ],
+                'defaultStoreView' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                         'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                         'data'     => 'default'
-                    )
-                ),
-                'channel' => array(
+                    ]
+                ],
+                'channel' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => null,
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.channel.help',
                         'label'    => 'pim_magento_connector.export.channel.label'
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 }

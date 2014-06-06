@@ -42,7 +42,7 @@ class PruneStep extends AbstractStep
      */
     public function getConfiguration()
     {
-        $configuration = array();
+        $configuration = [];
         foreach ($this->getConfigurableStepElements() as $stepElement) {
             if ($stepElement instanceof AbstractConfigurableStepElement) {
                 foreach ($stepElement->getConfiguration() as $key => $value) {
@@ -100,7 +100,7 @@ class PruneStep extends AbstractStep
      */
     public function getConfigurableStepElements()
     {
-        return array('cleaner' => $this->getCleaner());
+        return ['cleaner' => $this->getCleaner()];
     }
 
     /**

@@ -37,7 +37,7 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * @var array
      */
-    protected $supportedFormats = array(self::MAGENTO_FORMAT);
+    protected $supportedFormats = [self::MAGENTO_FORMAT];
 
     /**
      * Constructor
@@ -63,9 +63,9 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        $normalizedAttribute = array(
+        $normalizedAttribute = [
             'scope'                         => $this->getNormalizedScope($object),
             'is_unique'                     => $this->getNormalizedUnique($object),
             'is_required'                   => $this->getNormalizedRequired($object),
@@ -77,25 +77,25 @@ class AttributeNormalizer implements NormalizerInterface
             'is_used_for_promo_rules'       => '1',
             'is_visible_on_front'           => '1',
             'used_in_product_listing'       => '1',
-            'additional_fields'             => array(),
+            'additional_fields'             => [],
             'frontend_label'                => $this->getNormalizedLabels(
                 $object,
                 $context['magentoStoreViews'],
                 $context['defaultLocale'],
                 $context['storeViewMapping'],
-                $context['attributeMapping']
+                $context['attributeCodeMapping']
             ),
             'default_value'                 => ''
-        );
+        ];
 
         $mappedAttributeType = $this->getNormalizedType($object);
 
         if ($context['create']) {
             $normalizedAttribute = array_merge(
-                array(
-                    'attribute_code' => $this->getNormalizedCode($object, $context['attributeMapping']),
+                [
+                    'attribute_code' => $this->getNormalizedCode($object, $context['attributeCodeMapping']),
                     'frontend_input' => $mappedAttributeType,
-                ),
+                ],
                 $normalizedAttribute
             );
 
@@ -105,10 +105,10 @@ class AttributeNormalizer implements NormalizerInterface
                 $context['defaultLocale'],
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
-                $context['attributeMapping']
+                $context['attributeCodeMapping']
             );
 
-            $magentoAttributeCode = strtolower($context['attributeMapping']->getTarget($object->getCode()));
+            $magentoAttributeCode = strtolower($context['attributeCodeMapping']->getTarget($object->getCode()));
             $magentoAttributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
             if ($mappedAttributeType !== $magentoAttributeType &&
                 !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
@@ -124,10 +124,10 @@ class AttributeNormalizer implements NormalizerInterface
                 );
             }
 
-            $normalizedAttribute = array(
+            $normalizedAttribute = [
                 $magentoAttributeCode,
                 $normalizedAttribute
-            );
+            ];
         }
 
         return $normalizedAttribute;
@@ -152,7 +152,7 @@ class AttributeNormalizer implements NormalizerInterface
      */
     protected function getTypeMapping()
     {
-        return array(
+        return [
             'pim_catalog_identifier'       => 'text',
             'pim_catalog_text'             => 'text',
             'pim_catalog_textarea'         => 'textarea',
@@ -165,7 +165,7 @@ class AttributeNormalizer implements NormalizerInterface
             'pim_catalog_file'             => 'text',
             'pim_catalog_image'            => 'text',
             'pim_catalog_metric'           => 'text'
-        );
+        ];
     }
 
     /**
@@ -224,18 +224,18 @@ class AttributeNormalizer implements NormalizerInterface
     ) {
         $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
 
-        $context = array(
+        $context = [
             'identifier'               => null,
             'scopeCode'                => null,
             'localeCode'               => $defaultLocale,
             'onlyLocalized'            => false,
-            'magentoAttributes'        => array($attributeCode => array(
+            'magentoAttributes'        => [$attributeCode => [
                 'scope' => !$attribute->isLocalizable() ? ProductValueNormalizer::GLOBAL_SCOPE : ''
-            )),
+            ]],
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'         => $attributeMapping,
             'currencyCode'             => ''
-        );
+        ];
 
         if ($attribute->getDefaultValue() instanceof ProductValueInterface) {
             return reset(
@@ -302,24 +302,24 @@ class AttributeNormalizer implements NormalizerInterface
         MappingCollection $storeViewMapping,
         MappingCollection $attributeMapping
     ) {
-        $localizedLabels = array();
+        $localizedLabels = [];
 
         foreach ($magentoStoreViews as $magentoStoreView) {
             $localeCode = $storeViewMapping->getSource($magentoStoreView['code']);
 
-            $localizedLabels[] = array(
+            $localizedLabels[] = [
                 'store_id' => $magentoStoreView['store_id'],
                 'label'    => $this->getAttributeTranslation($attribute, $localeCode, $defaultLocale)
-            );
+            ];
         }
 
         return array_merge(
-            array(
-                array(
+            [
+                [
                     'store_id' => 0,
                     'label'    => strtolower($attributeMapping->getTarget($attribute->getCode()))
-                )
-            ),
+                ]
+            ],
             $localizedLabels
         );
     }
@@ -354,9 +354,9 @@ class AttributeNormalizer implements NormalizerInterface
      */
     protected function getIgnoredAttributesForTypeChangeDetection()
     {
-        return array(
+        return [
             'tax_class_id',
             'weight'
-        );
+        ];
     }
 }

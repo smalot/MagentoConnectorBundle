@@ -32,32 +32,32 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
-        $webservice->getCategoriesStatus()->willReturn(array('category_id_1' => array(), 'categorie_id_2' => array()));
+        $webservice->getCategoriesStatus()->willReturn(['category_id_1' => [], 'categorie_id_2' => []]);
 
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
-        $mapping->toArray()->shouldReturn(array());
+        $mapping->toArray()->shouldReturn([]);
     }
 
     function it_returns_an_empty_collection_if_parameters_are_not_setted()
     {
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
-        $mapping->toArray()->shouldReturn(array());
+        $mapping->toArray()->shouldReturn([]);
     }
 
     function it_returns__nothing_to_save_mapping()
     {
-        $this->setMapping(array())->shouldReturn(null);
+        $this->setMapping([])->shouldReturn(null);
     }
 
     function it_returns_all_magento_categories_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
-        $webservice->getCategoriesStatus()->willReturn(array('foo' => array('name' => 'Foo'), 'bar' => array('name' => 'Bar')));
+        $webservice->getCategoriesStatus()->willReturn(['foo' => ['name' => 'Foo'], 'bar' => ['name' => 'Bar']]);
 
-        $this->getAllTargets()->shouldReturn(array(array('id' => 'foo', 'text' => 'Foo'), array('id' => 'bar', 'text' => 'Bar')));
+        $this->getAllTargets()->shouldReturn([['id' => 'foo', 'text' => 'Foo'], ['id' => 'bar', 'text' => 'Bar']]);
     }
 
     function it_returns_a_proper_identifier($hasValidCredentialsValidator, $clientParameters)

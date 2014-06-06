@@ -92,9 +92,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        $processedItem = array();
+        $processedItem = [];
 
         $processedItem[$context['defaultStoreView']] = $this->getDefaultProduct(
             $object,
@@ -105,7 +105,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['channel'],
             $context['website'],
             $context['categoryMapping'],
-            $context['attributeMapping'],
+            $context['attributeCodeMapping'],
             $context['pimGrouped'],
             $context['create'],
             $context['defaultStoreView']
@@ -134,16 +134,16 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $locale,
                     $context['channel'],
                     $context['categoryMapping'],
-                    $context['attributeMapping'],
+                    $context['attributeCodeMapping'],
                     true
                 );
 
-                $processedItem[$storeView['code']] = array(
+                $processedItem[$storeView['code']] = [
                     (string) $object->getIdentifier(),
                     $values,
                     $storeView['code'],
                     'sku'
-                );
+                ];
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
                     $this->localeNotFound($locale);
@@ -174,28 +174,28 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $sku = $product->getIdentifier();
         }
 
-        $images = array();
+        $images = [];
 
         foreach ($imageValues as $imageValue) {
             $data = $imageValue->getData();
 
             if ($imageData = $this->mediaManager->getBase64($data)) {
-                $images[] = array(
+                $images[] = [
                     (string) $sku,
-                    array(
-                        'file' => array(
+                    [
+                        'file' => [
                             'name'    => $data->getFilename(),
                             'content' => $imageData,
                             'mime'    => $data->getMimeType()
-                        ),
+                        ],
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => array(Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL),
+                        'types'    => [Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL],
                         'exclude'  => 0
-                    ),
+                    ],
                     0,
                     'sku'
-                );
+                ];
             }
         }
 
@@ -246,7 +246,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             false
         );
 
-        $defaultValues['websites'] = array($website);
+        $defaultValues['websites'] = [$website];
 
         if ($create) {
             if ($this->hasGroupedProduct($product, $pimGrouped)) {
@@ -256,20 +256,20 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             }
 
             //For the default storeview we create an entire product
-            $defaultProduct = array(
+            $defaultProduct = [
                 $productType,
                 $attributeSetId,
                 $sku,
                 $defaultValues,
                 $defaultStoreValue
-            );
+            ];
         } else {
-            $defaultProduct = array(
+            $defaultProduct = [
                 $sku,
                 $defaultValues,
                 $defaultStoreValue,
                 'sku'
-            );
+            ];
         }
 
         return $defaultProduct;
@@ -304,7 +304,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param string            $localeCode               The locale to apply
      * @param string            $scopeCode                The akeno scope
      * @param MappingCollection $categoryMapping          Root category mapping
-     * @param MappingCollection $attributeMapping         Attribute mapping
+     * @param MappingCollection $attributeCodeMapping     Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
      *
      * @return array Computed data
@@ -316,21 +316,21 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $localeCode,
         $scopeCode,
         MappingCollection $categoryMapping,
-        MappingCollection $attributeMapping,
+        MappingCollection $attributeCodeMapping,
         $onlyLocalized
     ) {
-        $normalizedValues = array();
+        $normalizedValues = [];
 
-        $context = array(
+        $context = [
             'identifier'               => $product->getIdentifier(),
             'scopeCode'                => $scopeCode,
             'localeCode'               => $localeCode,
             'onlyLocalized'            => $onlyLocalized,
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'attributeMapping'         => $attributeMapping,
+            'attributeCodeMapping'     => $attributeCodeMapping,
             'currencyCode'             => $this->currencyCode
-        );
+        ];
 
         foreach ($product->getValues() as $value) {
             $normalizedValue = $this->productValueNormalizer->normalize($value, 'MagentoArray', $context);
@@ -346,8 +346,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $normalizedValues,
             $this->getCustomValue(
                 $product,
-                $attributeMapping,
-                array('categoryMapping' => $categoryMapping)
+                $attributeCodeMapping,
+                ['categoryMapping' => $categoryMapping]
             )
         );
 
@@ -365,7 +365,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected function getProductCategories(ProductInterface $product, MappingCollection $categoryMapping)
     {
-        $productCategories = array();
+        $productCategories = [];
 
         foreach ($product->getCategories() as $category) {
             $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory(
@@ -393,27 +393,27 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     /**
      * Get custom values (not provided by the PIM product)
      * @param ProductInterface  $product
-     * @param MappingCollection $attributeMapping
+     * @param MappingCollection $attributeCodeMapping
      * @param array             $parameters
      *
      * @return mixed
      */
     protected function getCustomValue(
         ProductInterface $product,
-        MappingCollection $attributeMapping,
-        array $parameters = array()
+        MappingCollection $attributeCodeMapping,
+        array $parameters = []
     ) {
-        return array(
-            strtolower($attributeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
-            strtolower($attributeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
-            strtolower($attributeMapping->getTarget('created_at'))     => $product->getCreated()
+        return [
+            strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
+            strtolower($attributeCodeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
+            strtolower($attributeCodeMapping->getTarget('created_at'))     => $product->getCreated()
                 ->format(AbstractNormalizer::DATE_FORMAT),
-            strtolower($attributeMapping->getTarget('updated_at'))     => $product->getUpdated()
+            strtolower($attributeCodeMapping->getTarget('updated_at'))     => $product->getUpdated()
                 ->format(AbstractNormalizer::DATE_FORMAT),
-            strtolower($attributeMapping->getTarget('categories'))     => $this->getProductCategories(
+            strtolower($attributeCodeMapping->getTarget('categories'))     => $this->getProductCategories(
                 $product,
                 $parameters['categoryMapping']
             )
-        );
+        ];
     }
 }

@@ -35,7 +35,7 @@ class OptionProcessor extends AbstractProcessor
     /**
      * @var string
      */
-    protected $attributeMapping;
+    protected $attributeCodeMapping;
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
@@ -50,7 +50,7 @@ class OptionProcessor extends AbstractProcessor
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
-        MagentoMappingMerger $attributeMappingMerger,
+        MagentoMappingMerger $attributeCodeMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct(
@@ -61,29 +61,31 @@ class OptionProcessor extends AbstractProcessor
             $clientParametersRegistry
         );
 
-        $this->attributeMappingMerger = $attributeMappingMerger;
+        $this->attributeCodeMappingMerger = $attributeCodeMappingMerger;
     }
 
     /**
-     * Set attribute mapping
-     * @param string $attributeMapping
+     * Set attribute code mapping
+     *
+     * @param string $attributeCodeMapping
      *
      * @return AttributeProcessor
      */
-    public function setAttributeMapping($attributeMapping)
+    public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeMapping, true));
+        $this->attributeCodeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get attribute code mapping
+     *
      * @return string
      */
-    public function getAttributeMapping()
+    public function getAttributeCodeMapping()
     {
-        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        return json_encode($this->attributeCodeMappingMerger->getMapping()->toArray());
     }
 
     /**
@@ -97,8 +99,8 @@ class OptionProcessor extends AbstractProcessor
 
         $magentoStoreViews = $this->webservice->getStoreViewsList();
 
-        $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
-        $this->globalContext['attributeMapping']  = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['magentoStoreViews']    = $magentoStoreViews;
+        $this->globalContext['attributeCodeMapping'] = $this->attributeCodeMappingMerger->getMapping();
     }
 
     /**
@@ -109,7 +111,7 @@ class OptionProcessor extends AbstractProcessor
         $this->beforeExecute();
 
         $attribute     = $groupedOptions[0]->getAttribute();
-        $attributeCode = strtolower($this->globalContext['attributeMapping']->getTarget($attribute->getCode()));
+        $attributeCode = strtolower($this->globalContext['attributeCodeMapping']->getTarget($attribute->getCode()));
 
         try {
             $optionsStatus = $this->webservice->getAttributeOptions($attributeCode);
@@ -124,13 +126,13 @@ class OptionProcessor extends AbstractProcessor
                     $attributeCode,
                     $e->getMessage()
                 ),
-                array($attribute)
+                [$attribute]
             );
         }
 
         $this->globalContext['attributeCode'] = $attributeCode;
 
-        $normalizedOptions = array();
+        $normalizedOptions = [];
 
         foreach ($groupedOptions as $option) {
             if (!array_key_exists($option->getCode(), $optionsStatus)) {
@@ -157,7 +159,7 @@ class OptionProcessor extends AbstractProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($option));
+            throw new InvalidItemException($e->getMessage(), [$option]);
         }
 
         return $normalizedOption;
@@ -170,7 +172,7 @@ class OptionProcessor extends AbstractProcessor
     {
         parent::afterConfigurationSet();
 
-        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->attributeCodeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**
@@ -180,7 +182,7 @@ class OptionProcessor extends AbstractProcessor
     {
         return array_merge(
             parent::getConfigurationFields(),
-            $this->attributeMappingMerger->getConfigurationField()
+            $this->attributeCodeMappingMerger->getConfigurationField()
         );
     }
 }

@@ -35,9 +35,9 @@ class ProductValueNormalizer implements NormalizerInterface
      *
      * @return array|scalar
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        $attributeCode = strtolower($context['attributeMapping']->getTarget($object->getAttribute()->getCode()));
+        $attributeCode = strtolower($context['attributeCodeMapping']->getTarget($object->getAttribute()->getCode()));
 
         if ($this->isValueNormalizable(
             $object,
@@ -52,7 +52,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $attributeCode,
                 $context['magentoAttributes'],
                 $context['magentoAttributesOptions'],
-                $context['attributeMapping'],
+                $context['attributeCodeMapping'],
                 $context['currencyCode']
             );
         } else {
@@ -210,7 +210,7 @@ class ProductValueNormalizer implements NormalizerInterface
             $attributeMapping
         );
 
-        return array($attributeCode => $normalizedValue);
+        return [$attributeCode => $normalizedValue];
     }
 
     /**
@@ -240,11 +240,11 @@ class ProductValueNormalizer implements NormalizerInterface
         if (in_array($attributeCode, $this->getIgnoredScopeMatchingAttributes()) ||
             $this->scopeMatches($attribute, $attributeScope)
         ) {
-            $normalizedValue = $normalizer($data, array(
+            $normalizedValue = $normalizer($data, [
                 'attributeCode'            => $attributeCode,
                 'magentoAttributesOptions' => $magentoAttributesOptions,
                 'currencyCode'             => $currencyCode
-            ));
+            ]);
         } else {
             throw new InvalidScopeMatchException(
                 sprintf(
@@ -289,31 +289,31 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getProductValueNormalizers()
     {
-        return array(
-            array(
+        return [
+            [
                 'filter'     => function ($data) {
                     return is_bool($data);
                 },
                 'normalizer' => function ($data, $parameters) {
                     return ($data) ? 1 : 0;
                 }
-            ),
-            array(
+            ],
+            [
                 'filter'     => function ($data) {
                     return $data instanceof \DateTime;
                 },
                 'normalizer' => function ($data, $parameters) {
                     return $data->format(AbstractNormalizer::DATE_FORMAT);
                 }
-            ),
-            array(
+            ],
+            [
                 'filter'     => function ($data) {
                     return $data instanceof AttributeOption;
                 },
                 'normalizer' => function ($data, $parameters) {
-                    if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
-                        return $data->getCode();
-                    }
+            if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
+                return $data->getCode();
+            }
 
                     return $this->getOptionId(
                         $parameters['attributeCode'],
@@ -321,8 +321,8 @@ class ProductValueNormalizer implements NormalizerInterface
                         $parameters['magentoAttributesOptions']
                     );
                 }
-            ),
-            array(
+            ],
+            [
                 'filter'     => function ($data) {
                     return $data instanceof Collection || is_array($data);
                 },
@@ -334,24 +334,24 @@ class ProductValueNormalizer implements NormalizerInterface
                         $parameters['currencyCode']
                     );
                 }
-            ),
-            array(
+            ],
+            [
                 'filter'     => function ($data) {
                     return $data instanceof Metric;
                 },
                 'normalizer' => function ($data, $parameters) {
                     return (string) $data->getData();
                 }
-            ),
-            array(
+            ],
+            [
                 'filter'     => function ($data) {
                     return true;
                 },
                 'normalizer' => function ($data, $parameters) {
                     return $data;
                 }
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -361,7 +361,7 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getIgnoredAttributes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -371,9 +371,9 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getIgnoredAttributesForLocalization()
     {
-        return array(
+        return [
             'price'
-        );
+        ];
     }
 
     /**
@@ -383,9 +383,9 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getIgnoredScopeMatchingAttributes()
     {
-        return array(
+        return [
             'visibility'
-        );
+        ];
     }
 
     /**
@@ -395,7 +395,7 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getIgnoredOptionMatchingAttributes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -435,7 +435,7 @@ class ProductValueNormalizer implements NormalizerInterface
         array $magentoAttributesOptions,
         $currencyCode
     ) {
-        $result = array();
+        $result = [];
         foreach ($collection as $item) {
             if ($item instanceof AttributeOption) {
                 $optionCode = $item->getCode();

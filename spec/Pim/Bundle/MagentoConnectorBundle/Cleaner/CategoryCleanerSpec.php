@@ -33,11 +33,11 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getCategoriesStatus()->willReturn(
-            array(
-                array('category_id' => '1'),
-                array('category_id' => '12', 'level' => '0'),
-                array('category_id' => '13', 'level' => '2')
-            )
+            [
+                ['category_id' => '1'],
+                ['category_id' => '12', 'level' => '0'],
+                ['category_id' => '13', 'level' => '2']
+            ]
         );
 
         $categoryMappingManager->magentoCategoryExists('1', Argument::cetera())->willReturn(true);
@@ -54,9 +54,9 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('disable');
 
         $webservice->getCategoriesStatus()->willReturn(
-            array(
-                array('category_id' => '13', 'level' => '2')
-            )
+            [
+                ['category_id' => '13', 'level' => '2']
+            ]
         );
 
         $categoryMappingManager->magentoCategoryExists('13', Argument::cetera())->willReturn(false);
@@ -71,9 +71,9 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('disable');
 
         $webservice->getCategoriesStatus()->willReturn(
-            array(
-                array('category_id' => '13', 'level' => '2')
-            )
+            [
+                ['category_id' => '13', 'level' => '2']
+            ]
         );
 
         $categoryMappingManager->magentoCategoryExists('13', Argument::cetera())->willReturn(false);
@@ -81,5 +81,26 @@ class CategoryCleanerSpec extends ObjectBehavior
         $webservice->disableCategory('13')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
+    }
+
+    function it_is_configurable_via_magento_item_step()
+    {
+        $this->setSoapUsername('soap');
+        $this->getSoapUsername()->shouldReturn('soap');
+
+        $this->setDefaultStoreView('default');
+        $this->getDefaultStoreView()->shouldReturn('default');
+
+        $this->setSoapApiKey('key');
+        $this->getSoapApiKey()->shouldReturn('key');
+
+        $this->setMagentoUrl('http://magento.url');
+        $this->getMagentoUrl()->shouldReturn('http://magento.url');
+
+        $this->setHttpLogin('login');
+        $this->getHttpLogin()->shouldReturn('login');
+
+        $this->setHttpPassword('passwd');
+        $this->getHttpPassword()->shouldReturn('passwd');
     }
 }

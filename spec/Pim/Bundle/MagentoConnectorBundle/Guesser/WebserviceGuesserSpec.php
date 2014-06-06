@@ -28,7 +28,7 @@ class WebserviceGuesserSpec extends ObjectBehavior
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
-        $magentoSoapClient->call('core_magento.info')->willReturn(array('magento_version' => '1.8'));
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.8']);
 
         $this->getWebservice($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice');
     }
@@ -37,7 +37,7 @@ class WebserviceGuesserSpec extends ObjectBehavior
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
-        $magentoSoapClient->call('core_magento.info')->willReturn(array('magento_version' => '1.6'));
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.6']);
 
         $this->getWebservice($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice16');
     }
@@ -46,8 +46,8 @@ class WebserviceGuesserSpec extends ObjectBehavior
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
-        $magentoSoapClient->call('core_magento.info')->willReturn(array('magento_version' => 'v1.6'));
+        $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => 'v1.6']);
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getWebservice', array($clientParameters));
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getWebservice', [$clientParameters]);
     }
 }

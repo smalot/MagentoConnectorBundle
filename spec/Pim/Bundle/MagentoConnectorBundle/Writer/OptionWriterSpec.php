@@ -28,17 +28,17 @@ class OptionWriterSpec extends ObjectBehavior
 
     function it_calls_soap_client_to_create_options($webservice)
     {
-        $webservice->createOption(array('foo'))->shouldBeCalled();
-        $webservice->createOption(array('bar'))->shouldBeCalled();
+        $webservice->createOption(['foo'])->shouldBeCalled();
+        $webservice->createOption(['bar'])->shouldBeCalled();
 
-        $this->write(array(array(array('foo'), array('bar'))));
+        $this->write([[['foo'], ['bar']]]);
     }
 
     function it_fails_if_something_went_wrong_during_create_option_call($webservice, $stepExecution)
     {
-        $webservice->createOption(array('foo'))->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->createOption(['foo'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $stepExecution->incrementSummaryInfo(Argument::any())->shouldNotBeCalled();
 
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite(array(array(array('foo'), array('bar'))));
+        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite([[['foo'], ['bar']]]);
     }
 }

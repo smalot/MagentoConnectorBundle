@@ -16,18 +16,18 @@ class OptionNormalizer extends AbstractNormalizer
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        $label = array(
-            array(
+        $label = [
+            [
                 'store_id' => '0',
                 'value'    => $object->getCode()
-            ),
-            array(
+            ],
+            [
                 'store_id' => '1',
                 'value'    => $this->getOptionLabel($object, $context['defaultLocale'])
-            )
-        );
+            ]
+        ];
 
         foreach ($this->getOptionLocales($object) as $locale) {
             $storeView = $this->getStoreViewForLocale(
@@ -37,24 +37,24 @@ class OptionNormalizer extends AbstractNormalizer
             );
 
             if ($storeView) {
-                $label[] = array(
+                $label[] = [
                     'store_id' => (string) $storeView['store_id'],
                     'value'    => $this->getOptionLabel(
                         $object,
                         $locale,
                         $context['defaultLocale']
                     )
-                );
+                ];
             }
         }
 
-        return array(
+        return [
             $context['attributeCode'],
-            array(
+            [
                 'label'      => $label,
                 'order'      => $object->getSortOrder()
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -65,7 +65,7 @@ class OptionNormalizer extends AbstractNormalizer
      */
     protected function getOptionLocales(AttributeOption $option)
     {
-        $locales = array();
+        $locales = [];
 
         foreach ($option->getOptionValues() as $optionValue) {
             $locales[] = $optionValue->getLocale();

@@ -45,11 +45,11 @@ class ProductCleanerSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
 
         $webservice->getProductsStatus()->willReturn(
-            array(
-                array('sku' => 'sku-000'),
-                array('sku' => 'sku-001'),
-                array('sku' => 'sku-002')
-            )
+            [
+                ['sku' => 'sku-000'],
+                ['sku' => 'sku-001'],
+                ['sku' => 'sku-002']
+            ]
         );
 
         $channelManager->getChannelByCode(Argument::any())->willReturn($channel);
@@ -62,11 +62,11 @@ class ProductCleanerSpec extends ObjectBehavior
         $secondProduct->getIdentifier()->willReturn('sku-001');
         $thirdProduct->getIdentifier()->willReturn('sku-002');
 
-        $this->products = array(
+        $this->products = [
             $firstProduct,
             $secondProduct,
             $thirdProduct
-        );
+        ];
     }
 
     function it_tells_magento_to_disable_deleted_products($webservice, $productRepository, $query)
@@ -74,8 +74,8 @@ class ProductCleanerSpec extends ObjectBehavior
         $this->setNotCompleteAnymoreAction('do_nothing');
         $this->setNotInPimAnymoreAction('disable');
 
-        $query->getResult()->willReturn(array($this->products[0], $this->products[1]));
-        $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1]));
+        $query->getResult()->willReturn([$this->products[0], $this->products[1]]);
+        $productRepository->findAll()->willReturn([$this->products[0], $this->products[1]]);
 
         $webservice->disableProduct('sku-002')->shouldBeCalled();
 
@@ -87,8 +87,8 @@ class ProductCleanerSpec extends ObjectBehavior
         $this->setNotCompleteAnymoreAction('do_nothing');
         $this->setNotInPimAnymoreAction('delete');
 
-        $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
-        $productRepository->findAll()->willReturn(array($this->products[0], $this->products[2]));
+        $query->getResult()->willReturn([$this->products[0], $this->products[2]]);
+        $productRepository->findAll()->willReturn([$this->products[0], $this->products[2]]);
 
         $webservice->deleteProduct('sku-001')->shouldBeCalled();
 
@@ -100,8 +100,8 @@ class ProductCleanerSpec extends ObjectBehavior
         $this->setNotCompleteAnymoreAction('disable');
         $this->setNotInPimAnymoreAction('do_nothing');
 
-        $query->getResult()->willReturn(array($this->products[1], $this->products[2]));
-        $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
+        $query->getResult()->willReturn([$this->products[1], $this->products[2]]);
+        $productRepository->findAll()->willReturn([$this->products[0], $this->products[1], $this->products[2]]);
 
         $webservice->disableProduct('sku-000')->shouldBeCalled();
 
@@ -113,8 +113,8 @@ class ProductCleanerSpec extends ObjectBehavior
         $this->setNotCompleteAnymoreAction('delete');
         $this->setNotInPimAnymoreAction('do_nothing');
 
-        $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
-        $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
+        $query->getResult()->willReturn([$this->products[0], $this->products[2]]);
+        $productRepository->findAll()->willReturn([$this->products[0], $this->products[1], $this->products[2]]);
 
         $webservice->deleteProduct('sku-001')->shouldBeCalled();
 
@@ -126,8 +126,8 @@ class ProductCleanerSpec extends ObjectBehavior
         $this->setNotCompleteAnymoreAction('delete');
         $this->setNotInPimAnymoreAction('do_nothing');
 
-        $query->getResult()->willReturn(array($this->products[0], $this->products[2]));
-        $productRepository->findAll()->willReturn(array($this->products[0], $this->products[1], $this->products[2]));
+        $query->getResult()->willReturn([$this->products[0], $this->products[2]]);
+        $productRepository->findAll()->willReturn([$this->products[0], $this->products[1], $this->products[2]]);
 
         $webservice->deleteProduct('sku-001')->willThrow('Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
 
@@ -136,97 +136,97 @@ class ProductCleanerSpec extends ObjectBehavior
 
     function it_shoulds_have_a_well_formed_form_configuration($channelManager)
     {
-        $channelManager->getChannelChoices()->willReturn(array('channel' => 'channel'));
+        $channelManager->getChannelChoices()->willReturn(['channel' => 'channel']);
 
-        $this->getConfigurationFields()->shouldReturn(array(
-            'soapUsername' => array(
-                'options' => array(
+        $this->getConfigurationFields()->shouldReturn([
+            'soapUsername' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUsername.help',
                     'label'    => 'pim_magento_connector.export.soapUsername.label'
-                )
-            ),
-            'soapApiKey'   => array(
+                ]
+            ],
+            'soapApiKey'   => [
                 //Should be remplaced by a password formType but who doesn't
                 //empty the field at each edit
                 'type'    => 'text',
-                'options' => array(
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapApiKey.help',
                     'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                )
-            ),
-            'magentoUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'magentoUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.magentoUrl.help',
                     'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                )
-            ),
-            'wsdlUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'wsdlUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                     'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                )
-            ),
-            'httpLogin' => array(
-                'options' => array(
+                ]
+            ],
+            'httpLogin' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpLogin.help',
                     'label'    => 'pim_magento_connector.export.httpLogin.label'
-                )
-            ),
-            'httpPassword' => array(
-                'options' => array(
+                ]
+            ],
+            'httpPassword' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpPassword.help',
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
-                )
-            ),
-            'defaultStoreView' => array(
-                    'options' => array(
+                ]
+            ],
+            'defaultStoreView' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                         'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                         'data'     => $this->getDefaultStoreView(),
-                    )
-                ),
-            'notInPimAnymoreAction' => array(
+                    ]
+                ],
+            'notInPimAnymoreAction' => [
                 'type'    => 'choice',
-                'options' => array(
-                    'choices'  => array(
+                'options' => [
+                    'choices'  => [
                         'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
                         'disable'    => 'pim_magento_connector.export.disable.label',
                         'delete'     => 'pim_magento_connector.export.delete.label'
-                    ),
+                    ],
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
                     'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
-                )
-            ),
-            'notCompleteAnymoreAction' => array(
+                ]
+            ],
+            'notCompleteAnymoreAction' => [
                 'type'    => 'choice',
-                'options' => array(
-                    'choices'  => array(
+                'options' => [
+                    'choices'  => [
                         'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
                         'disable'    => 'pim_magento_connector.export.disable.label',
                         'delete'     => 'pim_magento_connector.export.delete.label'
-                    ),
+                    ],
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
                     'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label'
-                )
-            ),
-            'channel'      => array(
+                ]
+            ],
+            'channel'      => [
                 'type'    => 'choice',
-                'options' => array(
+                'options' => [
                     'choices'  => $this->channelManager->getChannelChoices(),
                     'required' => true
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
     }
 
     function it_shoulds_be_configurable()

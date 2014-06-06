@@ -134,62 +134,62 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     public function getConfigurationFields()
     {
-        return array(
-            'soapUsername' => array(
-                'options' => array(
+        return [
+            'soapUsername' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUsername.help',
                     'label'    => 'pim_magento_connector.export.soapUsername.label'
-                )
-            ),
-            'soapApiKey'   => array(
+                ]
+            ],
+            'soapApiKey'   => [
                 //Should be replaced by a password formType but which doesn't
                 //empty the field at each edit
                 'type'    => 'text',
-                'options' => array(
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapApiKey.help',
                     'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                )
-            ),
-            'magentoUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'magentoUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.magentoUrl.help',
                     'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                )
-            ),
-            'wsdlUrl' => array(
-                'options' => array(
+                ]
+            ],
+            'wsdlUrl' => [
+                'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                     'data'     => $this->getWsdlUrl()
-                )
-            ),
-            'httpLogin' => array(
-                'options' => array(
+                ]
+            ],
+            'httpLogin' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpLogin.help',
                     'label'    => 'pim_magento_connector.export.httpLogin.label'
-                )
-            ),
-            'httpPassword' => array(
-                'options' => array(
+                ]
+            ],
+            'httpPassword' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpPassword.help',
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
-                )
-            ),
-            'defaultStoreView' => array(
-                'options' => array(
+                ]
+            ],
+            'defaultStoreView' => [
+                'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                     'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                     'data'     => $this->getDefaultStoreView()
-                )
-            )
-        );
+                ]
+            ]
+        ];
     }
 
     /**

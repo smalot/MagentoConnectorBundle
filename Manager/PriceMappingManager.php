@@ -51,11 +51,11 @@ class PriceMappingManager
     public function getPriceMapping(Group $group, array $products, MappingCollection $attributeMapping, $lowest = true)
     {
         $attributes = $group->getAttributes();
-        $basePrice  = $this->getLimitPrice($products, $attributeMapping, array(), $lowest);
+        $basePrice  = $this->getLimitPrice($products, $attributeMapping, [], $lowest);
 
         $sortedAttributes = $this->getSortedAttributes($attributes, $products, $basePrice, $attributeMapping, $lowest);
 
-        $priceChanges = array();
+        $priceChanges = [];
 
         foreach ($sortedAttributes as $attribute) {
             $attributePriceMapping = $this->getAttributePriceMapping(
@@ -80,10 +80,10 @@ class PriceMappingManager
 
         ksort($priceChanges);
 
-        return array(
+        return [
             ConfigurableNormalizer::PRICE_CHANGES => $priceChanges,
             ConfigurableNormalizer::BASE_PRICE    => $basePrice
-        );
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class PriceMappingManager
     public function getLimitPrice(
         array $products,
         MappingCollection $attributeMapping,
-        array $priceChanges = array(),
+        array $priceChanges = [],
         $lowest = true
     ) {
         $limitPrice = $this->getProductPrice($products[0], $attributeMapping, $priceChanges, $lowest);
@@ -133,15 +133,15 @@ class PriceMappingManager
         MappingCollection $attributeMapping,
         $lowest
     ) {
-        $attributeDelta = array();
-        $attributeMap   = array();
+        $attributeDelta = [];
+        $attributeMap   = [];
 
         foreach ($attributes as $attribute) {
             $absoluteAttributeMapping = $this->getAttributePriceMapping(
                 $attribute,
                 $basePrice,
                 $products,
-                array(),
+                [],
                 $attributeMapping,
                 $lowest
             );
@@ -174,7 +174,7 @@ class PriceMappingManager
     protected function getProductPrice(
         ProductInterface $product,
         MappingCollection $attributeMapping,
-        array $priceChanges = array(),
+        array $priceChanges = [],
         $lowest = true
     ) {
         $toSubstract = 0;
@@ -214,7 +214,7 @@ class PriceMappingManager
         MappingCollection $attributeMapping,
         $lowest
     ) {
-        $attributePriceMapping = array();
+        $attributePriceMapping = [];
 
         foreach ($attribute->getOptions() as $option) {
             $productsWithOption = $this->getProductsWithOption($products, $option);
@@ -243,7 +243,7 @@ class PriceMappingManager
      */
     protected function getProductsWithOption(array $products, AttributeOption $option)
     {
-        $productsWithOption = array();
+        $productsWithOption = [];
         $attributeCode      = $option->getAttribute()->getCode();
 
         foreach ($products as $product) {

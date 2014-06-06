@@ -48,7 +48,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
     /**
      *{@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         $group    = $object['group'];
         $products = $object['products'];
@@ -66,7 +66,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['website'],
             $context['channel'],
             $context['categoryMapping'],
-            $context['attributeMapping'],
+            $context['attributeCodeMapping'],
             $context['create']
         );
 
@@ -93,15 +93,15 @@ class ConfigurableNormalizer extends AbstractNormalizer
                     $locale->getCode(),
                     $context['channel'],
                     $context['categoryMapping'],
-                    $context['attributeMapping'],
+                    $context['attributeCodeMapping'],
                     true
                 );
 
-                $processedItem[$storeView['code']] = array(
+                $processedItem[$storeView['code']] = [
                     $sku,
                     $values,
                     $storeView['code']
-                );
+                ];
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
                     $this->localeNotFound($locale);
@@ -180,10 +180,10 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,
             $priceMapping,
-            array(self::ASSOCIATED_SKUS => $associatedSkus)
+            [self::ASSOCIATED_SKUS => $associatedSkus]
         );
 
-        $defaultConfigurableValues['websites'] = array($website);
+        $defaultConfigurableValues['websites'] = [$website];
 
         if ($create) {
             $defaultConfigurable = $this->getNewConfigurable($sku, $defaultConfigurableValues, $attributeSetId);
@@ -204,12 +204,12 @@ class ConfigurableNormalizer extends AbstractNormalizer
      */
     protected function getNewConfigurable($sku, array $configurableValues, $attributeSetId)
     {
-        return array(
+        return [
             AbstractNormalizer::MAGENTO_CONFIGURABLE_PRODUCT_KEY,
             $attributeSetId,
             $sku,
             $configurableValues
-        );
+        ];
     }
 
     /**
@@ -221,10 +221,10 @@ class ConfigurableNormalizer extends AbstractNormalizer
      */
     protected function getUpdatedConfigurable($sku, array $configurableValues)
     {
-        return array(
+        return [
             $sku,
             $configurableValues
-        );
+        ];
     }
 
     /**

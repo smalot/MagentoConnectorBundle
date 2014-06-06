@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Webservice;
 
+use Pim\Bundle\MagentoConnectorBundle\Guesser\AbstractGuesser;
+
 /**
  * A magento soap client to abstract interaction with the php soap client
  *
@@ -31,14 +33,14 @@ class MagentoSoapClient
 
         if (!$soapClient) {
             $wsdlUrl     = $this->clientParameters->getSoapUrl();
-            $soapOptions = array(
+            $soapOptions = [
                 'encoding'   => 'UTF-8',
                 'trace'      => true,
                 'exceptions' => true,
                 'login'      => $this->clientParameters->getHttpLogin(),
                 'password'   => $this->clientParameters->getHttpPassword(),
                 'cache_wsdl' => WSDL_CACHE_BOTH
-            );
+            ];
 
             try {
                 $this->client = new \SoapClient($wsdlUrl, $soapOptions);
@@ -101,14 +103,31 @@ class MagentoSoapClient
             try {
                 $response = $this->client->call($this->session, $resource, $params);
             } catch (\SoapFault $e) {
-                throw new SoapCallException(
-                    sprintf(
-                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s',
-                        $e->getMessage(),
-                        $resource,
-                        json_encode($params)
-                    )
-                );
+                if ($resource === 'core_magento.info' && $e->getMessage()
+                    === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
+                    $response = ['magento_version' => AbstractGuesser::UNKNOWN_VERSION];
+                } elseif ($e->getMessage() === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
+                    throw new SoapCallException(
+                        sprintf(
+                            '%s Called resource : "%s" with parameters : %s.' .
+                            ' Soap user needs access on this resource. Please ' .
+                            'check in your Magento webservice soap roles and ' .
+                            'users configuration.',
+                            $e->getMessage(),
+                            $resource,
+                            json_encode($params)
+                        )
+                    );
+                } else {
+                    throw new SoapCallException(
+                        sprintf(
+                            'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s',
+                            $e->getMessage(),
+                            $resource,
+                            json_encode($params)
+                        )
+                    );
+                }
             }
 
             if (is_array($response) && isset($response['isFault']) && $response['isFault']) {
@@ -165,7 +184,7 @@ class MagentoSoapClient
                 throw new NotConnectedException();
             }
 
-            $this->calls = array();
+            $this->calls = [];
         }
     }
 }

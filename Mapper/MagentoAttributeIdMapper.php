@@ -4,19 +4,17 @@ namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 
 /**
- * Magento category mapper
+ * Magento attribute id mapper
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoCategoryMapper extends MagentoMapper
+class MagentoAttributeIdMapper extends MagentoMapper
 {
-    const ROOT_CATEGORY_ID = 1;
-
     /**
      * @var WebserviceGuesser
      */
@@ -36,37 +34,57 @@ class MagentoCategoryMapper extends MagentoMapper
     }
 
     /**
+     * Get mapping
+     *
+     * @return array
+     */
+    public function getMapping()
+    {
+        if ($this->isValid()) {
+            return new MappingCollection();
+        } else {
+            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            $mapping = new MappingCollection();
+            foreach ($attributes as $attribute) {
+                $mapping->add([
+                    'source'    => $attribute['code'],
+                    'target'    => $attribute['attribute_id'],
+                    'deletable' => true
+                ]);
+            }
+
+            return $mapping;
+        }
+    }
+
+    /**
      * Get all targets
+     *
      * @return array
      */
     public function getAllTargets()
     {
-        $targets = [];
+        return [];
+    }
 
-        if ($this->isValid()) {
-            try {
-                $categories = $this->webserviceGuesser->getWebservice($this->clientParameters)->getCategoriesStatus();
-            } catch (SoapCallException $e) {
-                return array();
-            }
-
-            foreach ($categories as $categoryId => $category) {
-                if ($categoryId != self::ROOT_CATEGORY_ID) {
-                    $targets[] = ['id' => $categoryId, 'text' => $category['name']];
-                }
-            }
-        }
-
-        return $targets;
+    /**
+     * Get all sources
+     *
+     * @return array
+     */
+    public function getAllSources()
+    {
+        return [];
     }
 
     /**
      * Get mapper identifier
+     *
      * @param string $rootIdentifier
      *
      * @return string
      */
-    public function getIdentifier($rootIdentifier = 'category')
+    public function getIdentifier($rootIdentifier = 'attribute_id')
     {
         return parent::getIdentifier($rootIdentifier);
     }

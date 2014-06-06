@@ -18,7 +18,7 @@ class BulkEntityReader extends EntityReader
      */
     public function read()
     {
-        $entities = array();
+        $entities = [];
         while ($entity = parent::read()) {
             $entities[] = $entity;
         }

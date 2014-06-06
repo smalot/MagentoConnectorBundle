@@ -36,7 +36,7 @@ class UrlExplorer
     public function __construct(ClientInterface $client)
     {
         $this->client      = $client;
-        $this->resultCache = array();
+        $this->resultCache = [];
     }
 
     /**
@@ -80,16 +80,16 @@ class UrlExplorer
         $parametersHash = $clientParameters->getHash();
 
         if (!isset($this->resultCache[$parametersHash])) {
-            $guzzleParams = array(
+            $guzzleParams = [
                 'connect_timeout' => self::CONNECT_TIMEOUT,
                 'timeout'         => self::TIMEOUT,
-                'auth'            => array(
+                'auth'            => [
                     $clientParameters->getHttpLogin(),
                     $clientParameters->getHttpPassword()
-                )
-            );
+                ]
+            ];
 
-            $request = $this->client->get($clientParameters->getSoapUrl(), array(), $guzzleParams);
+            $request = $this->client->get($clientParameters->getSoapUrl(), [], $guzzleParams);
             $request->getCurlOptions()->set(CURLOPT_CONNECTTIMEOUT, self::CONNECT_TIMEOUT);
             $request->getCurlOptions()->set(CURLOPT_TIMEOUT, self::TIMEOUT);
 

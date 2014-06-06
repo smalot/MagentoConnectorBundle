@@ -6,6 +6,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\UrlExplorer;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Checks\XmlChecker;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Symfony\Component\Validator\ExecutionContextInterface;
@@ -138,14 +139,15 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
     }
 
     function it_returns_true_with_good_credentials_and_valid_soap_url(
-        $webservice,
         $clientParameters,
         $urlExplorer,
-        $webserviceGuesser
+        $webserviceGuesser,
+        Webservice $webservice
     ) {
         $clientParameters->isValid()->willReturn(null);
         $urlExplorer->getUrlContent($clientParameters)->willReturn('<content>Some xml as string</content>');
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+        $webservice->getStoreViewsList()->willReturn(array());
         $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
             $this->isValid()->willReturn($args[0]);
         });
@@ -180,12 +182,26 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);
     }
 
-    function it_returns_false_with_invalid_soap_credentials_or_user_has_no_right_on_magento(
+    function it_returns_false_with_invalid_soap_credentials(
         $webserviceGuesser,
         $clientParameters
     ) {
         $clientParameters->isValid()->willReturn(null);
         $webserviceGuesser->getWebservice($clientParameters)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException');
+        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+            $this->isValid()->willReturn($args[0]);
+        });
+        $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);
+    }
+
+    function it_returns_false_if_user_has_no_right_on_magento(
+        $webserviceGuesser,
+        $clientParameters,
+        Webservice $webservice
+    ) {
+        $clientParameters->isValid()->willReturn(null);
+        $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
+        $webservice->getStoreViewsList()->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
             $this->isValid()->willReturn($args[0]);
         });

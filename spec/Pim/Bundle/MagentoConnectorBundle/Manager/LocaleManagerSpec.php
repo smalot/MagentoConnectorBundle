@@ -17,9 +17,9 @@ class LocaleManagerSpec extends ObjectBehavior
 
     function it_gives_currency_choices($localeRepository, Locale $locale)
     {
-        $localeRepository->getActivatedLocales()->willReturn(array($locale));
+        $localeRepository->getActivatedLocales()->willReturn([$locale]);
         $locale->getCode()->willReturn('en_US');
 
-        $this->getLocaleChoices()->shouldReturn(array('en_US' => 'en_US'));
+        $this->getLocaleChoices()->shouldReturn(['en_US' => 'en_US']);
     }
 }

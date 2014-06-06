@@ -4,10 +4,13 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoAttributeCodeMapper;
+use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
@@ -27,8 +30,10 @@ class AttributeWriterSpec extends ObjectBehavior
         AttributeGroupMappingManager        $attributeGroupMappingManager,
         Webservice                          $webservice,
         StepExecution                       $stepExecution,
+        MagentoMappingMerger                $magentoMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters         $clientParameters
+
     ) {
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
@@ -38,6 +43,7 @@ class AttributeWriterSpec extends ObjectBehavior
             $familyMappingManager,
             $attributeMappingManager,
             $attributeGroupMappingManager,
+            $magentoMappingMerger,
             $clientParametersRegistry
         );
         $this->setStepExecution($stepExecution);
@@ -46,27 +52,36 @@ class AttributeWriterSpec extends ObjectBehavior
     function it_sends_attribute_to_create_on_magento_webservice(
         $webservice,
         AbstractAttribute $attribute,
-        AttributeMappingManager $attributeMappingManager
+        AttributeMappingManager $attributeMappingManager,
+        $magentoMappingMerger,
+        MappingCollection $mapping
     ) {
-        $attributes = array(
-            array(
+        $attributes = [
+            [
                 $attribute,
-                array(
-                    'create' => array(
+                [
+                    'create' => [
                         'attributeName' => 'attribute_code'
-                    ),
-                )
-            )
-        );
+                    ],
+                ]
+            ]
+        ];
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
 
-        $attribute->getFamilies()->willReturn(array());
+        $attribute->getCode()->willReturn('attributeName');
+        $attribute->getFamilies()->willReturn([]);
         $attribute->getGroup()->willReturn(null);
 
         $webservice->createAttribute(Argument::any())->willReturn(12);
 
+
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget(Argument::any())->willReturn(12);
+        $mapping->getSource(12)->willReturn(12);
+
         $attributeMappingManager->registerAttributeMapping($attribute, 12, '/api/soap/?wsdl')->shouldBeCalled();
+
 
         $this->write($attributes);
     }
@@ -78,23 +93,31 @@ class AttributeWriterSpec extends ObjectBehavior
         AttributeGroupMappingManager $attributeGroupMappingManager,
         FamilyMappingManager         $familyMappingManager,
         AttributeGroup               $group,
-        Family                       $family
+        Family                       $family,
+        $magentoMappingMerger,
+        MappingCollection $mapping
     ) {
-        $attributes = array(
-            array(
+        $attributes = [
+            [
                 $attribute,
-                array(
-                    'create' => array(
+                [
+                    'create' => [
                         'attributeName' => 'attribute_code'
-                    ),
-                )
-            )
-        );
+                    ],
+                ]
+            ]
+        ];
+
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
 
-        $attribute->getFamilies()->willReturn(array($family));
+        $attribute->getCode()->willReturn('attributeName');
+        $attribute->getFamilies()->willReturn([$family]);
         $attribute->getGroup()->willReturn($group);
+
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget($attribute)->willReturn(12);
+        $mapping->getSource(12)->willReturn(12);
 
         $group->getCode()->willReturn('group_name');
 
@@ -120,29 +143,37 @@ class AttributeWriterSpec extends ObjectBehavior
         FamilyMappingManager         $familyMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
         StepExecution                $stepExecution,
-        Family                       $family
+        Family                       $family,
+        $magentoMappingMerger,
+        MappingCollection $mapping
     ) {
-        $attributes = array(
-            array(
+        $attributes = [
+            [
                 $attribute,
-                array(
-                    'create' => array(
+                [
+                    'create' => [
                         'attributeName' => 'attribute_code'
-                    ),
-                )
-            )
-        );
+                    ],
+                ]
+            ]
+        ];
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
 
-        $attribute->getFamilies()->willReturn(array($family));
+        $attribute->getCode()->willReturn('attributeName');
+        $attribute->getFamilies()->willReturn([$family]);
         $attribute->getGroup()->willReturn($group);
+
+        $magentoMappingMerger->getMapping()->willReturn($mapping);
+        $mapping->getTarget($attribute)->willReturn(12);
+        $mapping->getSource(12)->willReturn(12);
 
         $group->getCode()->willReturn('group_name');
 
         $familyMappingManager->getIdFromFamily($family, '/api/soap/?wsdl')->willReturn(414);
 
         $webservice->addAttributeGroupToAttributeSet('414', 'group_name')->willThrow(new SoapCallException('Group already exists.'));
+
         $webservice->createAttribute(Argument::any())->willReturn(12);
         $webservice->addAttributeToAttributeSet(12, 414, 797)->shouldBeCalled();
 

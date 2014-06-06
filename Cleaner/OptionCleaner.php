@@ -92,7 +92,7 @@ class OptionCleaner extends Cleaner
                 try {
                     $this->handleOptionNotInPimAnymore($optionValue, $attribute->getCode());
                 } catch (SoapCallException $e) {
-                    throw new InvalidItemException($e->getMessage(), array($optionLabel));
+                    throw new InvalidItemException($e->getMessage(), [$optionLabel]);
                 }
             }
         }
@@ -110,7 +110,7 @@ class OptionCleaner extends Cleaner
                 $this->webservice->deleteOption($optionId, $attributeCode);
                 $this->stepExecution->incrementSummaryInfo(self::OPTION_DELETED);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($optionId));
+                throw new InvalidItemException($e->getMessage(), [$optionId]);
             }
         }
     }
@@ -123,7 +123,7 @@ class OptionCleaner extends Cleaner
      */
     protected function getAttribute($attributeCode)
     {
-        return $this->em->getRepository($this->attributeClassName)->findOneBy(array('code' => $attributeCode));
+        return $this->em->getRepository($this->attributeClassName)->findOneBy(['code' => $attributeCode]);
     }
 
     /**
@@ -136,7 +136,7 @@ class OptionCleaner extends Cleaner
     protected function getOption($optionLabel, AbstractAttribute $attribute)
     {
         return $this->em->getRepository($this->optionClassName)->findOneBy(
-            array('code' => $optionLabel, 'attribute' => $attribute)
+            ['code' => $optionLabel, 'attribute' => $attribute]
         );
     }
 
@@ -147,10 +147,10 @@ class OptionCleaner extends Cleaner
     {
         $configurationFields = parent::getConfigurationFields();
 
-        $configurationFields['notInPimAnymoreAction']['options']['choices'] = array(
+        $configurationFields['notInPimAnymoreAction']['options']['choices'] = [
             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
             Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
-        );
+        ];
 
         $configurationFields['notInPimAnymoreAction']['options']['help'] =
             'pim_magento_connector.export.notInPimAnymoreAction.help';
@@ -166,9 +166,9 @@ class OptionCleaner extends Cleaner
      */
     protected function getIgnoredAttributes()
     {
-        return array(
+        return [
             'visibility',
             'tax_class_id'
-        );
+        ];
     }
 }

@@ -8,13 +8,13 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsV
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
- * Magento attribute mapper
+ * Magento attribute code mapper
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoAttributeMapper extends MagentoMapper
+class MagentoAttributeCodeMapper extends MagentoMapper
 {
     /**
      * @var WebserviceGuesser
@@ -36,6 +36,7 @@ class MagentoAttributeMapper extends MagentoMapper
 
     /**
      * Get mapping
+     *
      * @return array
      */
     public function getMapping()
@@ -53,11 +54,11 @@ class MagentoAttributeMapper extends MagentoMapper
             foreach (array_keys($attributes) as $attributeCode) {
                 if (in_array($attributeCode, $this->mandatoryAttributes())) {
                     $mapping->add(
-                        array(
+                        [
                             'source'    => $attributeCode,
                             'target'    => $attributeCode,
                             'deletable' => false
-                        )
+                        ]
                     );
                 }
             }
@@ -68,11 +69,12 @@ class MagentoAttributeMapper extends MagentoMapper
 
     /**
      * Get all sources
+     *
      * @return array
      */
     public function getAllTargets()
     {
-        $sources = array();
+        $sources = [];
 
         if ($this->isValid()) {
             $attributeCodes = array_keys(
@@ -80,7 +82,7 @@ class MagentoAttributeMapper extends MagentoMapper
             );
 
             foreach ($attributeCodes as $attributeCode) {
-                $sources[] = array('id' => $attributeCode, 'text' => $attributeCode);
+                $sources[] = ['id' => $attributeCode, 'text' => $attributeCode];
             }
         }
 
@@ -89,6 +91,7 @@ class MagentoAttributeMapper extends MagentoMapper
 
     /**
      * Get mapper identifier
+     *
      * @param string $rootIdentifier
      *
      * @return string
@@ -100,17 +103,18 @@ class MagentoAttributeMapper extends MagentoMapper
 
     /**
      * Get mandatory attributes
+     *
      * @return array
      */
     protected function mandatoryAttributes()
     {
-        return array(
+        return [
             'name',
             'price',
             'description',
             'short_description',
             'tax_class_id',
             'weight'
-        );
+        ];
     }
 }

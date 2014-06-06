@@ -119,7 +119,7 @@ class ProductCleaner extends Cleaner
                     $this->handleProductNotCompleteAnymore($product);
                 }
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array(json_encode($product)));
+                throw new InvalidItemException($e->getMessage(), [json_encode($product)]);
             }
         }
     }
@@ -155,7 +155,7 @@ class ProductCleaner extends Cleaner
      */
     protected function getProductsSkus(array $products)
     {
-        $productsSkus = array();
+        $productsSkus = [];
 
         foreach ($products as $product) {
             $productsSkus[] = (string) $product->getIdentifier();
@@ -205,28 +205,28 @@ class ProductCleaner extends Cleaner
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'notCompleteAnymoreAction' => array(
+            [
+                'notCompleteAnymoreAction' => [
                     'type'    => 'choice',
-                    'options' => array(
-                        'choices'  => array(
+                    'options' => [
+                        'choices'  => [
                             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
                             Cleaner::DISABLE    => 'pim_magento_connector.export.disable.label',
                             Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
-                        ),
+                        ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label'
-                    )
-                ),
-                'channel'      => array(
+                    ]
+                ],
+                'channel'      => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices'  => $this->channelManager->getChannelChoices(),
                         'required' => true
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 }

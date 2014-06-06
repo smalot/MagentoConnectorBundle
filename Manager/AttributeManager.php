@@ -20,7 +20,7 @@ class AttributeManager extends BaseAttributeManager
      *
      * @return array
      */
-    public function getAttributes(array $criterias = array())
+    public function getAttributes(array $criterias = [])
     {
         return $this->getRepository()->findBy($criterias);
     }

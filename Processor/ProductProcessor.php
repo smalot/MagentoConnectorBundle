@@ -119,11 +119,11 @@ class ProductProcessor extends AbstractProductProcessor
      */
     public function process($items)
     {
-        $items = is_array($items) ? $items : array($items);
+        $items = is_array($items) ? $items : [$items];
 
         $this->beforeExecute();
 
-        $processedItems = array();
+        $processedItems = [];
 
         $magentoProducts = $this->webservice->getProductsStatus($items);
 
@@ -132,7 +132,7 @@ class ProductProcessor extends AbstractProductProcessor
         foreach ($items as $product) {
             $context = array_merge(
                 $this->globalContext,
-                array('attributeSetId' => $this->getAttributeSetId($product->getFamily()->getCode(), $product))
+                ['attributeSetId' => $this->getAttributeSetId($product->getFamily()->getCode(), $product)]
             );
 
             if ($this->magentoProductExists($product, $magentoProducts)) {
@@ -141,7 +141,7 @@ class ProductProcessor extends AbstractProductProcessor
                         'The product family has changed of this product. This modification cannot be applied to ' .
                         'magento. In order to change the family of this product, please manualy delete this product ' .
                         'in magento and re-run this connector.',
-                        array($product)
+                        [$product]
                     );
                 }
 
@@ -176,7 +176,7 @@ class ProductProcessor extends AbstractProductProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), array($product));
+            throw new InvalidItemException($e->getMessage(), [$product]);
         }
 
         return $processedItem;
@@ -229,16 +229,16 @@ class ProductProcessor extends AbstractProductProcessor
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'pimGrouped' => array(
+            [
+                'pimGrouped' => [
                     'type'    => 'choice',
-                    'options' => array(
+                    'options' => [
                         'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimGrouped.help',
                         'label'    => 'pim_magento_connector.export.pimGrouped.label'
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 }

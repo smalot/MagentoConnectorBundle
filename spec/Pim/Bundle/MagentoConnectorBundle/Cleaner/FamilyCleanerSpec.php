@@ -33,11 +33,11 @@ class FamilyCleanerSpec extends ObjectBehavior
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getAttributeSetList()->willReturn(
-            array(
+            [
                 'family set name 1' => 1,
                 'family set name 5' => 5,
                 'family set name 151' => 151
-            )
+            ]
         );
 
         $familyMappingManager->magentoFamilyExists(1, Argument::cetera())->shouldBeCalled()->willReturn(true);

@@ -55,7 +55,7 @@ class FamilyCleaner extends Cleaner
             try {
                 $this->handleFamilyNotInPimAnymore($name, $id);
             } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), array($name));
+                throw new InvalidItemException($e->getMessage(), [$name]);
             }
         }
     }
@@ -79,20 +79,20 @@ class FamilyCleaner extends Cleaner
     {
         return array_merge(
             parent::getConfigurationFields(),
-            array(
-                'notInPimAnymoreAction' => array(
+            [
+                'notInPimAnymoreAction' => [
                     'type'    => 'choice',
-                    'options' => array(
-                        'choices'  => array(
+                    'options' => [
+                        'choices'  => [
                             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
                             Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
-                        ),
+                        ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
-                    )
-                )
-            )
+                    ]
+                ]
+            ]
         );
     }
 
@@ -103,8 +103,8 @@ class FamilyCleaner extends Cleaner
      */
     protected function getIgnoredFamilies()
     {
-        return array(
+        return [
             'Default',
-        );
+        ];
     }
 }

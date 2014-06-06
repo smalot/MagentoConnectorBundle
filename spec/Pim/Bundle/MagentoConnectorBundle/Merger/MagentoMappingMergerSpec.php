@@ -21,7 +21,7 @@ class MagentoMappingMergerSpec extends ObjectBehavior
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith(array($mapper1, $mapper2), 'generic', 'export', true);
+        $this->beConstructedWith([$mapper1, $mapper2], 'generic', 'export', true);
 
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
@@ -37,7 +37,7 @@ class MagentoMappingMergerSpec extends ObjectBehavior
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters $clientParameters
     ) {
-        $this->beConstructedWith(array($mapper2, $mapper1), 'generic', 'export', true);
+        $this->beConstructedWith([$mapper2, $mapper1], 'generic', 'export', true);
 
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
 
@@ -45,27 +45,27 @@ class MagentoMappingMergerSpec extends ObjectBehavior
         $mapper2->setParameters($clientParameters, 'default')->shouldBeCalled();
         $this->setParameters($clientParameters, 'default');
 
-        $mapper1->getAllSources()->willReturn(array('id' => 'test', 'text' => 'Text3'));
-        $mapper2->getAllSources()->willReturn(array('id' => 'test', 'text' => 'Text4'));
+        $mapper1->getAllSources()->willReturn(['id' => 'test', 'text' => 'Text3']);
+        $mapper2->getAllSources()->willReturn(['id' => 'test', 'text' => 'Text4']);
 
-        $mapper1->getAllTargets()->willReturn(array('id' => 'test', 'text' => 'Text1'));
-        $mapper2->getAllTargets()->willReturn(array('id' => 'test', 'text' => 'Text2'));
+        $mapper1->getAllTargets()->willReturn(['id' => 'test', 'text' => 'Text1']);
+        $mapper2->getAllTargets()->willReturn(['id' => 'test', 'text' => 'Text2']);
 
-        $this->getConfigurationField()->shouldReturn(array(
-            'genericMapping' => array(
+        $this->getConfigurationField()->shouldReturn([
+            'genericMapping' => [
                 'type'    => 'textarea',
-                'options' => array(
+                'options' => [
                     'required' => false,
-                    'attr'     => array(
+                    'attr'     => [
                         'class' => 'mapping-field',
                         'data-sources' => '{"sources":{"id":"test","text":"Text4"}}',
                         'data-targets' => '{"targets":{"id":"test","text":"Text2"},"allowAddition":true}',
                         'data-name'    => 'generic'
-                    ),
+                    ],
                     'label' => 'pim_magento_connector.export.genericMapping.label',
                     'help'  => 'pim_magento_connector.export.genericMapping.help'
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
     }
 }

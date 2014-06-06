@@ -42,7 +42,7 @@ class GroupedOptionReader extends BulkEntityReader
      */
     protected function getGroupedOptions(array $options)
     {
-        $groupedOptions = array();
+        $groupedOptions = [];
 
         foreach ($options as $option) {
             $attributeCode = $option->getAttribute()->getCode();
@@ -52,8 +52,8 @@ class GroupedOptionReader extends BulkEntityReader
             ) {
                 $groupedOptions[$attributeCode] =
                     isset($groupedOptions[$attributeCode]) ?
-                        array_merge($groupedOptions[$attributeCode], array($option)) :
-                        array($option);
+                        array_merge($groupedOptions[$attributeCode], [$option]) :
+                        [$option];
             }
         }
 
@@ -66,8 +66,8 @@ class GroupedOptionReader extends BulkEntityReader
      */
     protected function getIgnoredAttributes()
     {
-        return array(
+        return [
             'visibility'
-        );
+        ];
     }
 }

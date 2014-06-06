@@ -39,10 +39,10 @@ class PriceMappingManagerSpec extends ObjectBehavior
     ) {
         $this->beConstructedWith('locale', 'currency');
 
-        $group->getAttributes()->willReturn(array($attribute1, $attribute2));
+        $group->getAttributes()->willReturn([$attribute1, $attribute2]);
 
         //get attribute options
-        $attribute1->getOptions()->willReturn(array($attributeOption11, $attributeOption12));
+        $attribute1->getOptions()->willReturn([$attributeOption11, $attributeOption12]);
         $attribute1->getCode()->willReturn('attribute_1');
 
         $attributeOption11->getAttribute()->willReturn($attribute1);
@@ -53,7 +53,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $attributeOption12->getCode()->willReturn('attribute_1_option_2');
         $productValueOption12->getData()->willReturn($attributeOption12);
 
-        $attribute2->getOptions()->willReturn(array($attributeOption21, $attributeOption22));
+        $attribute2->getOptions()->willReturn([$attributeOption21, $attributeOption22]);
         $attribute2->getCode()->willReturn('attribute_2');
 
         $attributeOption21->getAttribute()->willReturn($attribute2);
@@ -96,18 +96,18 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $product1->getValue('attribute_1', 'locale')->willReturn($productValueOption11);
         $product1->getValue('attribute_2', 'locale')->willReturn($productValueOption21);
 
-        $this->getPriceMapping($group, array($product1), $attributeMapping)->shouldReturn(
-            array(
-                'price_changes' => array(
-                    'attribute_1' => array(
+        $this->getPriceMapping($group, [$product1], $attributeMapping)->shouldReturn(
+            [
+                'price_changes' => [
+                    'attribute_1' => [
                         'attribute_1_option_1' => 0.0
-                    ),
-                    'attribute_2' => array(
+                    ],
+                    'attribute_2' => [
                         'attribute_2_option_1' => 0.0
-                    )
-                ),
+                    ]
+                ],
                 'price' => 5.0
-            )
+            ]
         );
     }
 
@@ -122,7 +122,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $productValueOption22,
         $attributeMapping
     ) {
-        $products = array($product1, $product2, $product3);
+        $products = [$product1, $product2, $product3];
 
         //Product values
         $product1->getValue('attribute_1', 'locale')->willReturn($productValueOption11);
@@ -135,19 +135,19 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $product3->getValue('attribute_2', 'locale')->willReturn($productValueOption22);
 
         $priceMapping = $this->getPriceMapping($group, $products, $attributeMapping)->shouldReturn(
-            array(
-                'price_changes' => array(
-                    'attribute_1' => array(
+            [
+                'price_changes' => [
+                    'attribute_1' => [
                         'attribute_1_option_1' => 0.0,
                         'attribute_1_option_2' => -5.0,
-                    ),
-                    'attribute_2' => array(
+                    ],
+                    'attribute_2' => [
                         'attribute_2_option_1' => -10.0,
                         'attribute_2_option_2' => 0.0,
-                    )
-                ),
+                    ]
+                ],
                 'price' => 15.0
-            )
+            ]
         );
 
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);
@@ -174,22 +174,22 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $product3->getValue('attribute_1', 'locale')->willReturn($productValueOption12);
         $product3->getValue('attribute_2', 'locale')->willReturn($productValueOption22);
 
-        $products = array($product3, $product2, $product1);
+        $products = [$product3, $product2, $product1];
 
         $priceMapping = $this->getPriceMapping($group, $products, $attributeMapping)->shouldReturn(
-            array(
-                'price_changes' => array(
-                    'attribute_1' => array(
+            [
+                'price_changes' => [
+                    'attribute_1' => [
                         'attribute_1_option_1' => 5.0,
                         'attribute_1_option_2' => 0.0,
-                    ),
-                    'attribute_2' => array(
+                    ],
+                    'attribute_2' => [
                         'attribute_2_option_1' => 0.0,
                         'attribute_2_option_2' => 5.0,
-                    )
-                ),
+                    ]
+                ],
                 'price' => 5.0
-            )
+            ]
         );
 
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);
@@ -216,22 +216,22 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $product3->getValue('attribute_1', 'locale')->willReturn($productValueOption11);
         $product3->getValue('attribute_2', 'locale')->willReturn($productValueOption21);
 
-        $products = array($product3, $product2, $product1);
+        $products = [$product3, $product2, $product1];
 
         $priceMapping = $this->getPriceMapping($group, $products, $attributeMapping)->shouldReturn(
-            array(
-                'price_changes' => array(
-                    'attribute_1' => array(
+            [
+                'price_changes' => [
+                    'attribute_1' => [
                         'attribute_1_option_1' => 5.0,
                         'attribute_1_option_2' => 0.0,
-                    ),
-                    'attribute_2' => array(
+                    ],
+                    'attribute_2' => [
                         'attribute_2_option_1' => 0.0,
                         'attribute_2_option_2' => 10.0,
-                    )
-                ),
+                    ]
+                ],
                 'price' => 5.0
-            )
+            ]
         );
 
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);

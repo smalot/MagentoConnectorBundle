@@ -45,10 +45,10 @@ class AttributeMappingManager
     public function getAttributeFromId($id, $magentoUrl)
     {
         $magentoAttributeMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'magentoAttributeId' => $id,
                 'magentoUrl'         => $magentoUrl
-            )
+            ]
         );
 
         return $magentoAttributeMapping ? $magentoAttributeMapping->getAttribute() : null;
@@ -64,10 +64,10 @@ class AttributeMappingManager
     public function getIdFromAttribute(AbstractAttribute $attribute, $magentoUrl)
     {
         $attributeMapping = $this->getEntityRepository()->findOneBy(
-            array(
+            [
                 'attribute'   => $attribute,
                 'magentoUrl'  => $magentoUrl
-            )
+            ]
         );
 
         return $attributeMapping ? $attributeMapping->getMagentoAttributeId() : null;
@@ -81,13 +81,13 @@ class AttributeMappingManager
      */
     public function getAllMagentoAttribute($magentoUrl)
     {
-        $attributeMapping = $this->getEntityRepository()->findAll(
-            array(
-                'magentoUrl'  => $magentoUrl
-            )
+        $attributeMappings = $this->getEntityRepository()->findAll(
+            [
+                'magentoUrl' => $magentoUrl
+            ]
         );
 
-        return $attributeMapping;
+        return $attributeMappings;
     }
 
     /**
@@ -101,7 +101,7 @@ class AttributeMappingManager
         $magentoAttributeId,
         $magentoUrl
     ) {
-        $attributeMapping = $this->getEntityRepository()->findOneByAttribute($pimAttribute->getId());
+        $attributeMapping = $this->getEntityRepository()->findOneBy(['attribute' => $pimAttribute]);
         $magentoAttributeMapping = new $this->className();
 
         if ($attributeMapping) {
@@ -130,6 +130,7 @@ class AttributeMappingManager
 
     /**
      * Get the entity repository
+     *
      * @return EntityRepository
      */
     protected function getEntityRepository()

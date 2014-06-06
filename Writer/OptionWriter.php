@@ -29,7 +29,7 @@ class OptionWriter extends AbstractWriter
                     $this->webservice->createOption($option);
                     $this->stepExecution->incrementSummaryInfo(self::OPTION_CREATED);
                 } catch (SoapCallException $e) {
-                    throw new InvalidItemException($e->getMessage(), array(json_encode($option)));
+                    throw new InvalidItemException($e->getMessage(), [json_encode($option)]);
                 }
             }
         }

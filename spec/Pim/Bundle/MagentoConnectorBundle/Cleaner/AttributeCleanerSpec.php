@@ -41,8 +41,8 @@ class AttributeCleanerSpec extends ObjectBehavior
     {
         $this->setNotInPimAnymoreAction('delete');
 
-        $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
-        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn(null);
+        $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
+        $entityRepository->findOneBy(['code' => 'foo'])->willReturn(null);
         $mappingCollection->getSource('foo')->willReturn('foo');
 
         $webservice->deleteAttribute('foo')->shouldBeCalled();
@@ -54,8 +54,8 @@ class AttributeCleanerSpec extends ObjectBehavior
     {
         $this->setNotInPimAnymoreAction('do_nothing');
 
-        $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
-        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn(null);
+        $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
+        $entityRepository->findOneBy(['code' => 'foo'])->willReturn(null);
         $mappingCollection->getSource('foo')->willReturn('foo');
 
         $webservice->deleteAttribute('foo')->shouldNotBeCalled();
@@ -67,8 +67,8 @@ class AttributeCleanerSpec extends ObjectBehavior
     {
         $this->setNotInPimAnymoreAction('delete');
 
-        $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
-        $entityRepository->findOneBy(array('code' => 'foo'))->willReturn($attribute);
+        $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
+        $entityRepository->findOneBy(['code' => 'foo'])->willReturn($attribute);
         $attribute->getFamilies()->willReturn(null);
         $mappingCollection->getSource('foo')->willReturn('foo');
 
@@ -81,8 +81,8 @@ class AttributeCleanerSpec extends ObjectBehavior
     {
         $this->setNotInPimAnymoreAction('delete');
 
-        $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
-        $entityRepository->findOneBy(array('code' => null))->willReturn($attribute);
+        $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
+        $entityRepository->findOneBy(['code' => null])->willReturn($attribute);
         $attribute->getFamilies()->willReturn(false);
         $mappingCollection->getSource('foo')->willReturn(null);
 
@@ -95,8 +95,8 @@ class AttributeCleanerSpec extends ObjectBehavior
     {
         $this->setNotInPimAnymoreAction('delete');
 
-        $webservice->getAllAttributes()->willReturn(array(array('code' => 'foo')));
-        $entityRepository->findOneBy(array('code' => null))->willReturn($attribute);
+        $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
+        $entityRepository->findOneBy(['code' => null])->willReturn($attribute);
         $attribute->getFamilies()->willReturn(false);
         $mappingCollection->getSource('foo')->willReturn(null);
 
@@ -105,93 +105,93 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
-    function it_shoulds_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
+    function it_should_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
     {
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
-        $mappingCollection->toArray()->willReturn(array());
+        $mappingCollection->toArray()->willReturn([]);
 
-        $this->getAttributeMapping()->shouldReturn('[]');
+        $this->getAttributeCodeMapping()->shouldReturn('[]');
     }
 
     function it_shoulds_set_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
     {
-        $attributeMappingMerger->setMapping(array())->shouldBeCalled();
+        $attributeMappingMerger->setMapping([])->shouldBeCalled();
 
-        $this->setAttributeMapping('[]');
+        $this->setAttributeCodeMapping('[]');
     }
 
     function it_shoulds_give_configuration_fields($attributeMappingMerger)
     {
-        $attributeMappingMerger->getConfigurationField()->willReturn(array('attributeMapping' => array()));
+        $attributeMappingMerger->getConfigurationField()->willReturn(['attributeMapping' => []]);
 
         $this->getConfigurationFields()->shouldReturn(
-            array(
-                'soapUsername' => array(
-                    'options' => array(
+            [
+                'soapUsername' => [
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapUsername.help',
                         'label'    => 'pim_magento_connector.export.soapUsername.label'
-                    )
-                ),
-                'soapApiKey'   => array(
+                    ]
+                ],
+                'soapApiKey'   => [
                     'type'    => 'text',
-                    'options' => array(
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapApiKey.help',
                         'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                    )
-                ),
-                'magentoUrl' => array(
-                    'options' => array(
+                    ]
+                ],
+                'magentoUrl' => [
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.magentoUrl.help',
                         'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                    )
-                ),
-                'wsdlUrl' => array(
-                    'options' => array(
+                    ]
+                ],
+                'wsdlUrl' => [
+                    'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                         'label'    => 'pim_magento_connector.export.wsdlUrl.label',
                         'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                    )
-                ),
-                'httpLogin' => array(
-                    'options' => array(
+                    ]
+                ],
+                'httpLogin' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpLogin.help',
                         'label'    => 'pim_magento_connector.export.httpLogin.label'
-                    )
-                ),
-                'httpPassword' => array(
-                    'options' => array(
+                    ]
+                ],
+                'httpPassword' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpPassword.help',
                         'label'    => 'pim_magento_connector.export.httpPassword.label'
-                    )
-                ),
-                'defaultStoreView' => array(
-                    'options' => array(
+                    ]
+                ],
+                'defaultStoreView' => [
+                    'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                         'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                         'data'     => $this->getDefaultStoreView(),
-                    )
-                ),
-                'notInPimAnymoreAction' => array(
+                    ]
+                ],
+                'notInPimAnymoreAction' => [
                     'type'    => 'choice',
-                    'options' => array(
-                        'choices'  => array(
+                    'options' => [
+                        'choices'  => [
                             'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
                             'delete'     => 'pim_magento_connector.export.delete.label'
-                        ),
+                        ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
-                    )
-                ),
-                'attributeMapping' => array()
-            )
+                    ]
+                ],
+                'attributeMapping' => []
+            ]
         );
     }
 }

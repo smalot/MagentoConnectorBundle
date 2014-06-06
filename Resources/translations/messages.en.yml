@@ -98,9 +98,9 @@ pim_magento_connector:
         pimRelated:
             label: Association type for related products
             help:  Association type corresponding to related products
-        attributeMapping:
-            label: Attribute mapping
-            help: Map attribute code between Akeneo PIM and Magento
+        attributeCodeMapping:
+            label: Attribute code mapping
+            help:  Map attribute code between Akeneo PIM and Magento
         notInPimAnymoreAction:
             label: Action for item not in PIM anymore
             help:  What to do on Magento if an item is not in the Pim anymore ?

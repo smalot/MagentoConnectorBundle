@@ -69,8 +69,8 @@ class ProductProcessorSpec extends ObjectBehavior
         $storeViewMappingMerger->getMapping()->willReturn($mappingCollection);
 
         $webservice->getStoreViewsList()->willReturn(
-            array(
-                array(
+            [
+                [
                     'store_id' => '1',
                     'code' => 'default',
                     'website_id' => '1',
@@ -78,20 +78,20 @@ class ProductProcessorSpec extends ObjectBehavior
                     'name' => 'Default Store View',
                     'sort_order' => '0',
                     'is_active' => '1'
-                )
-            )
+                ]
+            ]
         );
 
         $webservice->getAllAttributes()->willReturn(
-            array(
-                'name' => array(
+            [
+                'name' => [
                     'attribute_id' => '71',
                     'code' => 'name',
                     'type' => 'text',
                     'required' => '1',
                     'scope' => 'store'
-                )
-            )
+                ]
+            ]
         );
 
         $normalizerGuesser->getProductNormalizer(
@@ -102,19 +102,19 @@ class ProductProcessorSpec extends ObjectBehavior
         )
         ->willReturn($productNormalizer);
 
-        $webservice->getAllAttributesOptions()->willReturn(array());
-        $webservice->getProductsStatus(array($product))->willReturn(
-            array(
-                array(
+        $webservice->getAllAttributesOptions()->willReturn([]);
+        $webservice->getProductsStatus([$product])->willReturn(
+            [
+                [
                     'product_id' => '1',
                     'sku' => 'sku-000',
                     'name' => 'Product example',
                     'set' => '4',
                     'type' => 'simple',
-                    'category_ids' => array('207'),
-                    'website_ids' => array('1')
-                )
-            )
+                    'category_ids' => ['207'],
+                    'website_ids' => ['1']
+                ]
+            ]
         );
 
         $channelManager->getChannelByCode(null)->willReturn($channel);
@@ -130,16 +130,16 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->setEnabled('true');
         $this->setVisibility('4');
         $this->setCategoryMapping('{"categoryMapping" : "category"}');
-        $this->setAttributeMapping('{"attributeMapping" : "attribute"}');
+        $this->setAttributeCodeMapping('{"attributeCodeMapping" : "attribute"}');
         $this->setPimGrouped('group');
 
-        $categoryMappingMerger->setMapping(array('categoryMapping' => 'category'))->shouldBeCalled();
+        $categoryMappingMerger->setMapping(['categoryMapping' => 'category'])->shouldBeCalled();
         $categoryMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
         $this->getCategoryMapping();
 
-        $attributeMappingMerger->setMapping(array('attributeMapping' => 'attribute'))->shouldBeCalled();
+        $attributeMappingMerger->setMapping(['attributeCodeMapping' => 'attribute'])->shouldBeCalled();
         $attributeMappingMerger->getMapping()->shouldBeCalled()->willReturn($mappingCollection);
-        $this->getAttributeMapping();
+        $this->getAttributeCodeMapping();
 
         $this->getChannel()->shouldReturn('channel');
         $this->getCurrency()->shouldReturn('EUR');
