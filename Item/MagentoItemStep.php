@@ -44,6 +44,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $defaultStoreView = Webservice::SOAP_DEFAULT_STORE_VIEW;
 
     /**
+     * @var array
+     */
+    protected $defaultStoreViews = [];
+
+    /**
      * @Assert\NotBlank(groups={"Execution"})
      */
     protected $soapUsername;
@@ -181,14 +186,18 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
                 ]
             ],
-            'defaultStoreView' => [
-                'options' => [
-                    'required' => false,
+            'defaultStoreView' => array(
+                'type'    => 'choice',
+                'options' => array(
+                    'choices'  =>  $this->getDefaultStoreViews(),
+                    'required' => true,
+                    'attr' => array(
+                        'class' => 'select2'
+                    ),
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
-                    'label'    => 'pim_magento_connector.export.defaultStoreView.label',
-                    'data'     => $this->getDefaultStoreView()
-                ]
-            ]
+                    'label'    => 'pim_magento_connector.export.defaultStoreView.label'
+                )
+            )
         ];
     }
 
@@ -236,6 +245,30 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     public function setDefaultStoreView($defaultStoreView)
     {
         $this->defaultStoreView = $defaultStoreView;
+
+        return $this;
+    }
+
+    /**
+     * Get default store views
+     *
+     * @return array Default store view
+     */
+    public function getDefaultStoreViews()
+    {
+        return $this->defaultStoreViews;
+    }
+
+    /**
+     * Set default store views
+     *
+     * @param string $defaultStoreViews
+     *
+     * @return MagentoItemStep
+     */
+    public function setDefaultStoreViews($defaultStoreViews)
+    {
+        $this->defaultStoreViews = $defaultStoreViews;
 
         return $this;
     }
@@ -389,6 +422,16 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     protected function afterConfigurationSet()
     {
+        $webservice = $this->webserviceGuesser->getWebservice($this->getClientParameters());
+        $storeViewList = $webservice->getStoreViewsList();
+
+        $storeViews = [];
+
+        foreach ($storeViewList as $storeView) {
+            $storeViews[$storeView['code']] = $storeView['name'];
+        }
+
+        $this->setDefaultStoreViews($storeViews);
     }
 
     /**
