@@ -186,18 +186,18 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                     'label'    => 'pim_magento_connector.export.httpPassword.label'
                 ]
             ],
-            'defaultStoreView' => array(
+            'defaultStoreView' => [
                 'type'    => 'choice',
-                'options' => array(
+                'options' => [
                     'choices'  =>  $this->getDefaultStoreViews(),
                     'required' => true,
-                    'attr' => array(
+                    'attr' => [
                         'class' => 'select2'
-                    ),
+                    ],
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                     'label'    => 'pim_magento_connector.export.defaultStoreView.label'
-                )
-            )
+                ]
+            ]
         ];
     }
 
