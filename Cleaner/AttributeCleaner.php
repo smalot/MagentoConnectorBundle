@@ -166,6 +166,8 @@ class AttributeCleaner extends Cleaner
         $configurationFields['notInPimAnymoreAction']['options']['label'] =
             'pim_magento_connector.export.notInPimAnymoreAction.label';
 
+
+
         return array_merge(
             $configurationFields,
             $this->attributeCodeMappingMerger->getConfigurationField()

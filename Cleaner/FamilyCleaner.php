@@ -89,7 +89,8 @@ class FamilyCleaner extends Cleaner
                         ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
-                        'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
+                        'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label',
+                        'attr'     => ['class' => 'select2']
                     ]
                 ]
             ]

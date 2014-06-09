@@ -310,7 +310,10 @@ class ProductAssociationProcessor extends AbstractProcessor
                     'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimUpSell.help',
-                        'label'    => 'pim_magento_connector.export.pimUpSell.label'
+                        'label'    => 'pim_magento_connector.export.pimUpSell.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
                     ]
                 ],
                 'pimCrossSell' => [
@@ -318,7 +321,10 @@ class ProductAssociationProcessor extends AbstractProcessor
                     'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimCrossSell.help',
-                        'label'    => 'pim_magento_connector.export.pimCrossSell.label'
+                        'label'    => 'pim_magento_connector.export.pimCrossSell.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
                     ]
                 ],
                 'pimRelated' => [
@@ -326,7 +332,10 @@ class ProductAssociationProcessor extends AbstractProcessor
                     'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimRelated.help',
-                        'label'    => 'pim_magento_connector.export.pimRelated.label'
+                        'label'    => 'pim_magento_connector.export.pimRelated.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
                     ]
                 ],
                 'pimGrouped' => [
@@ -334,7 +343,10 @@ class ProductAssociationProcessor extends AbstractProcessor
                     'options' => [
                         'choices'  => $this->associationTypeManager->getAssociationTypeChoices(),
                         'help'     => 'pim_magento_connector.export.pimGrouped.help',
-                        'label'    => 'pim_magento_connector.export.pimGrouped.label'
+                        'label'    => 'pim_magento_connector.export.pimGrouped.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
                     ]
                 ]
             ]

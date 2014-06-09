@@ -216,7 +216,8 @@ class ProductCleaner extends Cleaner
                         ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
-                        'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label'
+                        'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label',
+                        'attr'     => ['class' => 'select2']
                     ]
                 ],
                 'channel'      => [
