@@ -2,11 +2,13 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
@@ -122,11 +124,15 @@ class CategoryProcessor extends AbstractProcessor
 
         foreach ($categories as $category) {
             if ($category->getParent()) {
-                $normalizedCategory = $this->categoryNormalizer->normalize(
-                    $category,
-                    AbstractNormalizer::MAGENTO_FORMAT,
-                    $this->globalContext
-                );
+                try {
+                    $normalizedCategory = $this->categoryNormalizer->normalize(
+                        $category,
+                        AbstractNormalizer::MAGENTO_FORMAT,
+                        $this->globalContext
+                    );
+                } catch (NormalizeException $e) {
+                    throw new InvalidItemException($e->getMessage(), array($category));
+                }
 
                 $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
             }
