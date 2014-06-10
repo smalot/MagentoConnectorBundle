@@ -2,9 +2,10 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 
 /**
  * Magento attribute id mapper
@@ -40,11 +41,15 @@ class MagentoAttributeIdMapper extends MagentoMapper
      */
     public function getMapping()
     {
+        $mapping = new MappingCollection();
+
         if ($this->isValid()) {
-            return new MappingCollection();
-        } else {
-            $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
-            $mapping = new MappingCollection();
+            try {
+                $attributes = $this->webserviceGuesser->getWebservice($this->clientParameters)->getAllAttributes();
+            } catch(SoapCallException $e) {
+                return $mapping;
+            }
+
             foreach ($attributes as $attribute) {
                 $mapping->add([
                     'source'    => $attribute['code'],
@@ -52,9 +57,9 @@ class MagentoAttributeIdMapper extends MagentoMapper
                     'deletable' => true
                 ]);
             }
-
-            return $mapping;
         }
+
+        return $mapping;
     }
 
     /**
