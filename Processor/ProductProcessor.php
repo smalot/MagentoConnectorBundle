@@ -2,19 +2,20 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\TransformBundle\Converter\MetricConverter;
-use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 
 /**
  * Magento product processor
@@ -41,6 +42,21 @@ class ProductProcessor extends AbstractProductProcessor
     protected $pimGrouped;
 
     /**
+     * @var string
+     */
+    protected $smallImageAttribute;
+
+    /**
+     * @var string
+     */
+    protected $baseImageAttribute;
+
+    /**
+     * @var string
+     */
+    protected $thumbnailAttribute;
+
+    /**
      * @param WebserviceGuesser        $webserviceGuesser
      * @param ProductNormalizerGuesser $normalizerGuesser
      * @param LocaleManager            $localeManager
@@ -63,7 +79,8 @@ class ProductProcessor extends AbstractProductProcessor
         MagentoMappingMerger $attributeMappingMerger,
         MetricConverter $metricConverter,
         AssociationTypeManager $associationTypeManager,
-        MagentoSoapClientParametersRegistry $clientParametersRegistry
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        AttributeManager $attributeManager
     ) {
         parent::__construct(
             $webserviceGuesser,
@@ -79,6 +96,7 @@ class ProductProcessor extends AbstractProductProcessor
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;
+        $this->attributeManager       = $attributeManager;
     }
 
     /**
@@ -104,14 +122,83 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
+     * Get small image
+     * @return string
+     */
+    public function getSmallImageAttribute()
+    {
+        return $this->smallImageAttribute;
+    }
+
+    /**
+     * Set small image
+     * @param string $smallImageAttribute
+     *
+     * @return ProductProcessor
+     */
+    public function setSmallImageAttribute($smallImageAttribute)
+    {
+        $this->smallImageAttribute = $smallImageAttribute;
+
+        return $this;
+    }
+
+    /**
+     * Get base image attribute
+     * @return string
+     */
+    public function getBaseImageAttribute()
+    {
+        return $this->baseImageAttribute;
+    }
+
+    /**
+     * Set base image attribute
+     * @param string $baseImageAttribute
+     *
+     * @return ProductProcessor
+     */
+    public function setBaseImageAttribute($baseImageAttribute)
+    {
+        $this->baseImageAttribute = $baseImageAttribute;
+
+        return $this;
+    }
+
+    /**
+     * Get thumbnail attribute
+     * @return string
+     */
+    public function getThumbnailAttribute()
+    {
+        return $this->thumbnailAttribute;
+    }
+
+    /**
+     * Set thumbnail attribute
+     * @param string $thumbnailAttribute
+     *
+     * @return ProductProcessor
+     */
+    public function setThumbnailAttribute($thumbnailAttribute)
+    {
+        $this->thumbnailAttribute = $thumbnailAttribute;
+
+        return $this;
+    }
+
+    /**
      * Function called before all process
      */
     protected function beforeExecute()
     {
         parent::beforeExecute();
 
-        $this->globalContext['pimGrouped']       = $this->pimGrouped;
-        $this->globalContext['defaultStoreView'] = $this->getDefaultStoreView();
+        $this->globalContext['pimGrouped']          = $this->pimGrouped;
+        $this->globalContext['smallImageAttribute'] = $this->smallImageAttribute;
+        $this->globalContext['baseImageAttribute']  = $this->baseImageAttribute;
+        $this->globalContext['thumbnailAttribute']  = $this->thumbnailAttribute;
+        $this->globalContext['defaultStoreView']    = $this->getDefaultStoreView();
     }
 
     /**
@@ -230,14 +317,50 @@ class ProductProcessor extends AbstractProductProcessor
         return array_merge(
             parent::getConfigurationFields(),
             [
+                'smallImageAttribute' => [
+                    'type' => 'choice',
+                    'options' => [
+                        'choices' => $this->attributeManager->getImageAttributeChoice(),
+                        'help'    => 'pim_magento_connector.export.smallImageAttribute.help',
+                        'label'   => 'pim_magento_connector.export.smallImageAttribute.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
+                    ]
+                ],
+                'baseImageAttribute' => [
+                    'type' => 'choice',
+                    'options' => [
+                        'choices' => $this->attributeManager->getImageAttributeChoice(),
+                        'help'    => 'pim_magento_connector.export.baseImageAttribute.help',
+                        'label'   => 'pim_magento_connector.export.baseImageAttribute.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
+                    ]
+                ],
+                'thumbnailAttribute' => [
+                    'type' => 'choice',
+                    'options' => [
+                        'choices' => $this->attributeManager->getImageAttributeChoice(),
+                        'help'    => 'pim_magento_connector.export.thumbnailAttribute.help',
+                        'label'   => 'pim_magento_connector.export.thumbnailAttribute.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
+                    ]
+                ],
                 'pimGrouped' => [
                     'type'    => 'choice',
                     'options' => [
                         'choices' => $this->associationTypeManager->getAssociationTypeChoices(),
-                        'help'     => 'pim_magento_connector.export.pimGrouped.help',
-                        'label'    => 'pim_magento_connector.export.pimGrouped.label'
+                        'help'    => 'pim_magento_connector.export.pimGrouped.help',
+                        'label'   => 'pim_magento_connector.export.pimGrouped.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
                     ]
-                ]
+                ],
             ]
         );
     }

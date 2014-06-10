@@ -111,7 +111,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $context['defaultStoreView']
         );
 
-        $images = $this->getNormalizedImages($object);
+        $images = $this->getNormalizedImages(
+            $object,
+            $object->getIdentifier(),
+            $context['smallImageAttribute'],
+            $context['baseImageAttribute'],
+            $context['thumbnailAttribute']
+        );
 
         if (count($images) > 0) {
             $processedItem[Webservice::IMAGES] = $images;
@@ -162,8 +168,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      *
      * @return array
      */
-    public function getNormalizedImages(ProductInterface $product, $sku = '')
-    {
+    public function getNormalizedImages(
+        ProductInterface $product,
+        $sku = '',
+        $smallImageAttribute = '',
+        $baseImageAttribute = '',
+        $thumbnailAttribute = ''
+    ) {
         $imageValues = $product->getValues()->filter(
             function ($value) {
                 return $value->getData() instanceof Media;
@@ -180,6 +191,12 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $data = $imageValue->getData();
 
             if ($imageData = $this->mediaManager->getBase64($data)) {
+                $imageTypes = array_merge(
+                    $imageValue->getAttribute()->getCode() == $smallImageAttribute ? [Webservice::SMALL_IMAGE] : [],
+                    $imageValue->getAttribute()->getCode() == $baseImageAttribute ? [Webservice::BASE_IMAGE] : [],
+                    $imageValue->getAttribute()->getCode() == $thumbnailAttribute ? [Webservice::THUMBNAIL] : []
+                );
+
                 $images[] = [
                     (string) $sku,
                     [
@@ -190,7 +207,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         ],
                         'label'    => $data->getFilename(),
                         'position' => 0,
-                        'types'    => [Webservice::SMALL_IMAGE, Webservice::BASE_IMAGE, Webservice::THUMBNAIL],
+                        'types'    => $imageTypes,
                         'exclude'  => 0
                     ],
                     0,

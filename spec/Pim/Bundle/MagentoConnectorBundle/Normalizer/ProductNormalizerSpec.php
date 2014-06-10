@@ -193,7 +193,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $image->getFilename()->willReturn('image_filename');
         $image->getMimeType()->willReturn('jpeg');
 
-        $this->getNormalizedImages($product)->shouldReturn([
+        $this->getNormalizedImages($product, 'sku-000')->shouldReturn([
             [
                 'sku-000',
                 [
