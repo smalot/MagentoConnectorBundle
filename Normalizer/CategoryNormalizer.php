@@ -2,9 +2,10 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotMappedException;
 
 /**
  * A normalizer to transform a category entity into an array
@@ -132,24 +133,38 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
     {
-        return [
-            'magentoCategory' => [
-                (string) $this->categoryMappingManager->getIdFromCategory(
-                    $category->getParent(),
-                    $context['magentoUrl'],
-                    $context['categoryMapping']
-                ),
-                [
-                    'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
-                    'is_active'         => 1,
-                    'include_in_menu'   => 1,
-                    'available_sort_by' => 1,
-                    'default_sort_by'   => 1
+        $categoryId = $this->categoryMappingManager->getIdFromCategory(
+            $category->getParent(),
+            $context['magentoUrl'],
+            $context['categoryMapping']
+        );
+
+        if (null === $categoryId) {
+            throw new CategoryNotMappedException(
+                printf(
+                    'An error occured during the category creation on Magento. The Magento '.
+                    'connector was unable to find the parent category for "%s (%s)". Remember that you need to map your '.
+                    'Magento root categories to Akeneo categories.',
+                    $category->getLabel(),
+                    $category->getCode()
+                )
+            );
+        } else {
+            return [
+                'magentoCategory' => [
+                    (string) $categoryId,
+                    [
+                        'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
+                        'is_active'         => 1,
+                        'include_in_menu'   => 1,
+                        'available_sort_by' => 1,
+                        'default_sort_by'   => 1
+                    ],
+                    $context['defaultStoreView']
                 ],
-                $context['defaultStoreView']
-            ],
-            'pimCategory' => $category
-        ];
+                'pimCategory' => $category
+            ];
+        }
     }
 
     /**
