@@ -117,19 +117,6 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group->getId()->willReturn(1);
     }
 
-    function it_throws_an_exception_if_groups_dont_matched_with_variant_group(
-        $group,
-        $groupRepository,
-        $webservice,
-        Product $product
-    ) {
-        $groupRepository->getVariantGroupIds()->willReturn([]);
-        $product->getGroups()->shouldBeCalled()->willReturn([$group]);
-        $webservice->getConfigurablesStatus([])->shouldBeCalled()->willReturn([]);
-
-        $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
-    }
-
     function it_processes_products(
         $groupRepository,
         $webservice,

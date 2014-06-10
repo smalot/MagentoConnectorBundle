@@ -100,41 +100,43 @@ class ConfigurableProcessor extends AbstractProductProcessor
         $this->beforeExecute();
 
         $processedItems = [];
-
         $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
-        $configurables        = $this->getProductsForGroups($items, $groupsIds);
-        $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
 
-        if (empty($configurables)) {
-            throw new InvalidItemException('Groups didn\'t match with variants groups', [$configurables]);
-        }
+        if (count($groupsIds) > 0) {
+            $configurables        = $this->getProductsForGroups($items, $groupsIds);
+            $magentoConfigurables = $this->webservice->getConfigurablesStatus($configurables);
 
-        foreach ($configurables as $configurable) {
-
-            if (empty($configurable['products'])) {
-                throw new InvalidItemException(
-                    'The variant group is not associated to any products',
-                    [$configurable]
-                );
+            if (empty($configurables)) {
+                throw new InvalidItemException('Groups didn\'t match with variants groups', [$configurables]);
             }
 
-            if ($this->magentoConfigurableExist($configurable, $magentoConfigurables)) {
-                $context = array_merge(
-                    $this->globalContext,
-                    ['attributeSetId' => 0, 'create' => false]
-                );
-            } else {
-                $groupFamily = $this->getGroupFamily($configurable);
-                $context     = array_merge(
-                    $this->globalContext,
-                    [
-                        'attributeSetId' => $this->getAttributeSetId($groupFamily->getCode(), $configurable),
-                        'create'         => true
-                    ]
-                );
-            }
+            foreach ($configurables as $configurable) {
 
-            $processedItems[] = $this->normalizeConfigurable($configurable, $context);
+                if (empty($configurable['products'])) {
+                    throw new InvalidItemException(
+                        'The variant group is not associated to any products',
+                        [$configurable]
+                    );
+                }
+
+                if ($this->magentoConfigurableExist($configurable, $magentoConfigurables)) {
+                    $context = array_merge(
+                        $this->globalContext,
+                        ['attributeSetId' => 0, 'create' => false]
+                    );
+                } else {
+                    $groupFamily = $this->getGroupFamily($configurable);
+                    $context     = array_merge(
+                        $this->globalContext,
+                        [
+                            'attributeSetId' => $this->getAttributeSetId($groupFamily->getCode(), $configurable),
+                            'create'         => true
+                        ]
+                    );
+                }
+
+                $processedItems[] = $this->normalizeConfigurable($configurable, $context);
+            }
         }
 
         return $processedItems;
