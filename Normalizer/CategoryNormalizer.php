@@ -139,7 +139,7 @@ class CategoryNormalizer extends AbstractNormalizer
             $context['categoryMapping']
         );
 
-        if ($categoryId === null) {
+        if (null === $categoryId) {
             throw new CategoryNotMappedException(
                 printf(
                     'An error occured during the category creation on Magento. The Magento '.
