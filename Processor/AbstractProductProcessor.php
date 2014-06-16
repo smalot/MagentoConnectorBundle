@@ -343,10 +343,10 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                     'options' => [
                         'choices'  => $this->currencyManager->getCurrencyChoices(),
                         'required' => true,
+                        'help'     => 'pim_magento_connector.export.currency.help',
+                        'label'    => 'pim_magento_connector.export.currency.label',
                         'attr' => [
-                            'class' => 'select2',
-                            'help'     => 'pim_magento_connector.export.currency.help',
-                            'label'    => 'pim_magento_connector.export.currency.label'
+                            'class' => 'select2'
                         ]
                     ]
                 ]

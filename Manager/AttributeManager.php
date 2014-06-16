@@ -26,6 +26,24 @@ class AttributeManager extends BaseAttributeManager
     }
 
     /**
+     * Get choices for image attributes
+     *
+     * @return array
+     */
+    public function getImageAttributeChoice()
+    {
+        $imageAttributes = $this->getAttributes(['attributeType' => 'pim_catalog_image']);
+
+        $result = [];
+
+        foreach ($imageAttributes as $attribute) {
+            $result[$attribute->getCode()] = $attribute->getLabel();
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the entity repository
      *
      * @return \Doctrine\ORM\EntityRepository
