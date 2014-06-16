@@ -25,8 +25,6 @@ class AttributeWriter extends AbstractWriter
     const ATTRIBUTE_UPDATE_SIZE = 2;
     const ATTRIBUTE_UPDATED     = 'Attributes updated';
     const ATTRIBUTE_CREATED     = 'Attributes created';
-    const ATTRIBUTE_EXISTS      = 'Attribute already in magento';
-    const GROUP_EXISTS          = 'Group was already in attribute set on magento';
 
     /**
      * @var AttributeMappingManager
@@ -94,8 +92,6 @@ class AttributeWriter extends AbstractWriter
                 $this->addGroupToAttributeSet($pimAttribute);
                 $this->handleAttribute($attribute[1], $pimAttribute);
             } catch (SoapCallException $e) {
-                $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
-
                 throw new InvalidItemException($e->getMessage(), [$pimAttribute]);
             }
         }
@@ -141,9 +137,7 @@ class AttributeWriter extends AbstractWriter
      */
     protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
     {
-        if ($this->attributeIdMappingMerger->getMapping()->getSource($magentoAttributeId) == $pimAttribute->getCode()) {
-            $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
-        } else {
+        if ($this->attributeIdMappingMerger->getMapping()->getSource($magentoAttributeId) != $pimAttribute->getCode()) {
             $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
         }
     }

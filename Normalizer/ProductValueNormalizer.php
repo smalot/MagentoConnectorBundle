@@ -467,19 +467,34 @@ class ProductValueNormalizer implements NormalizerInterface
      */
     protected function getOptionId($attributeCode, $optionCode, $magentoAttributesOptions)
     {
-        if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {
-            throw new InvalidOptionException(
-                sprintf(
-                    'The attribute "%s" doesn\'t have any option named "%s" on ' .
-                    'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
-                    'options using this Magento connector.',
-                    $attributeCode,
-                    $optionCode,
-                    $attributeCode
-                )
-            );
-        }
+        if (!in_array($attributeCode, $this->getIgnoredAttributesForOptionIdTransformation())) {
+            if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {
+                throw new InvalidOptionException(
+                    sprintf(
+                        'The attribute "%s" doesn\'t have any option named "%s" on ' .
+                        'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
+                        'options using this Magento connector.',
+                        $attributeCode,
+                        $optionCode,
+                        $attributeCode
+                    )
+                );
+            }
 
-        return $magentoAttributesOptions[$attributeCode][$optionCode];
+            return $magentoAttributesOptions[$attributeCode][$optionCode];
+        } else {
+            return (int) $optionCode;
+        }
+    }
+
+    /**
+     * Return all excluded attributes from the magento option id mapping
+     *
+     * @return array
+     */
+    protected function getIgnoredAttributesForOptionIdTransformation() {
+        return [
+            'tax_class_id'
+        ];
     }
 }
