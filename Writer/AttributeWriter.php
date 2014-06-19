@@ -191,9 +191,7 @@ class AttributeWriter extends AbstractWriter
                     );
                 }
             } catch (SoapCallException $e) {
-                if (strpos($e->getMessage(), 'already') !== false) {
-                    $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_EXISTS);
-                } else {
+                if (!strpos($e->getMessage(), 'already') !== false) {
                     throw $e;
                 }
             }
