@@ -2,25 +2,25 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
-
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Product;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
+use Prophecy\Argument;
 
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
@@ -47,7 +47,8 @@ class ProductProcessorSpec extends ObjectBehavior
         Product                             $product,
         Channel                             $channel,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters         $clientParameters
+        MagentoSoapClientParameters         $clientParameters,
+        AttributeManager                    $attributeManager
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -60,7 +61,8 @@ class ProductProcessorSpec extends ObjectBehavior
             $attributeMappingMerger,
             $metricConverter,
             $associationTypeManager,
-            $clientParametersRegistry
+            $clientParametersRegistry,
+            $attributeManager
         );
 
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);

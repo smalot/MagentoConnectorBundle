@@ -203,7 +203,10 @@ class ProductCleanerSpec extends ObjectBehavior
                     ],
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
-                    'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label'
+                    'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label',
+                    'attr'     => [
+                        'class' => 'select2'
+                    ]
                 ]
             ],
             'notCompleteAnymoreAction' => [
@@ -216,7 +219,10 @@ class ProductCleanerSpec extends ObjectBehavior
                     ],
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
-                    'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label'
+                    'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label',
+                    'attr'     => [
+                        'class' => 'select2'
+                    ]
                 ]
             ],
             'channel'      => [

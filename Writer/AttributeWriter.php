@@ -235,9 +235,7 @@ class AttributeWriter extends AbstractWriter
                         $this->getSoapUrl()
                     );
                 } catch (SoapCallException $e) {
-                    if (strpos($e->getMessage(), 'already') !== false) {
-                        $this->stepExecution->incrementSummaryInfo(self::GROUP_EXISTS);
-                    } else {
+                    if (!strpos($e->getMessage(), 'already') !== false) {
                         throw $e;
                     }
                 }

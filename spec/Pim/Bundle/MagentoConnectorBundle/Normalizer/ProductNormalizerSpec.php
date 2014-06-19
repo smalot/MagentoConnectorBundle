@@ -2,22 +2,23 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\CatalogBundle\Manager\MediaManager;
-use Pim\Bundle\CatalogBundle\Model\Product;
-use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\CatalogBundle\Entity\Category;
-use Pim\Bundle\CatalogBundle\Model\Media;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
-use Pim\Bundle\CatalogBundle\Model\Association;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpSpec\ObjectBehavior;
+use Pim\Bundle\CatalogBundle\Entity\AssociationType;
+use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Locale;
-use Pim\Bundle\CatalogBundle\Entity\AssociationType;
-use PhpSpec\ObjectBehavior;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\CatalogBundle\Manager\MediaManager;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Model\Association;
+use Pim\Bundle\CatalogBundle\Model\Media;
+use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Prophecy\Argument;
 
 class ProductNormalizerSpec extends ObjectBehavior
@@ -68,7 +69,10 @@ class ProductNormalizerSpec extends ObjectBehavior
             'pimGrouped'               => 'pim_grouped',
             'created_date'             => (new \DateTime()),
             'updated_date'             => (new \DateTime()),
-            'defaultStoreView'         => 'default'
+            'defaultStoreView'         => 'default',
+            'smallImageAttribute'      => 'small_image_attribute',
+            'baseImageAttribute'       => 'image_attribute',
+            'thumbnailAttribute'       => 'image_attribute',
         ];
 
         $attributeMapping->getTarget('visibility')->willReturn('visibility');
@@ -182,10 +186,12 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_images_for_given_product($product, $imageValue, Media $image, ArrayCollection $productValues, $mediaManager)
+    function it_normalizes_images_for_given_product($product, $imageValue, Media $image, ArrayCollection $productValues, AbstractAttribute $imageAttribute, $mediaManager)
     {
         $product->getValues()->willReturn($productValues);
         $productValues->filter(Argument::any())->willReturn([$imageValue]);
+        $imageValue->getAttribute()->willReturn($imageAttribute);
+        $imageAttribute->getCode()->willReturn('small_image_attribute');
         $imageValue->getData()->willReturn($image);
 
         $mediaManager->getBase64($image)->willReturn('image_data');
@@ -193,7 +199,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $image->getFilename()->willReturn('image_filename');
         $image->getMimeType()->willReturn('jpeg');
 
-        $this->getNormalizedImages($product, 'sku-000')->shouldReturn([
+        $this->getNormalizedImages($product, 'sku-000', 'small_image_attribute')->shouldReturn([
             [
                 'sku-000',
                 [
@@ -204,7 +210,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     ],
                     'label'    => 'image_filename',
                     'position' => 0,
-                    'types'    => ['small_image', 'image', 'thumbnail'],
+                    'types'    => ['small_image'],
                     'exclude'  => 0
                 ],
                 0,
