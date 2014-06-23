@@ -41,7 +41,7 @@ pim_magento_connector:
     export:
         soapUsername:
             label: "Nom d'utilisateur soap"
-            help: Votre nom d'utilisateur soap magento
+            help: Votre nom d'utilisateur soap Magento
         soapApiKey:
             label: Clé d'API Magento
             help: Votre clé d'API soap Magento
@@ -50,7 +50,7 @@ pim_magento_connector:
             help: L'url de votre installation Magento
         wsdlUrl:
             label: Suffix wsdl
-            help: Vous pouvez personnaliser le suffix wsdl de l'API Soap. Si vous ne savez pas à quoi correspond ce paramètre, laissez ce paramètre inchangé.
+            help: Vous pouvez personnaliser le suffixe wsdl de l'API Soap. Si vous ne savez pas à quoi correspond ce paramètre, laissez ce paramètre inchangé.
         httpLogin:
             label: "Nom d'utilisateur http"
             help: "Si vous avez une authentification par http fournissez ici votre nom d'utilisateur de votre connection http"
@@ -103,7 +103,7 @@ pim_magento_connector:
             label: Action pour les items qui ne sont plus dans la PIM
             help:  Que faire sur Magento si un item n'est plus dans la PIM ?
         notCompleteAnymoreAction:
-            label: Action pour les items quine sont pas complet
+            label: Action pour les items qui ne sont pas complet
             help:  Que faire sur Magento si un item n'est pas complet dans Akeneo PIM ?
         delete:
             label: Les supprimer
@@ -116,4 +116,19 @@ pim_magento_connector:
             url_not_reachable: "L'url magento n'est pas joignable"
             soap_url_not_valid: "L'url de l'api soap n'est pas valide"
             xml_not_valid: "L'xml de magento n'est pas valide"
-            authentication_failed: "Le nom d'utilisteur fourni n'est pas valide ou l'utilisateur magento n'a pas les droits d'accéder à l'api soap de Magento"
+            authentication_failed: "Le nom d'utilisateur fourni n'est pas valide ou l'utilisateur magento n'a pas les droits d'accéder à l'api soap de Magento"
+        smallImageAttribute:
+            label: Attribut petite image
+            help: Choisissez l'attribut Akeneo correspondant à la petite image du produit dans Magento
+        baseImageAttribute:
+            label: Attribut image de base
+            help: Choisissez l'attribut Akeneo correspondant à l'image de base du produit dans Magento
+        thumbnailAttribute:
+            label: Attribut image de vignette
+            help: Choisissez l'attribut Akeneo correspondant à l'image vignette (thumbnail) du produit dans Magento
+
+pim_connector_mapping:
+    mapping:
+        attributeCode:
+            source: Code d'attributs Akeneo
+            target: Code d'attributs Magento
