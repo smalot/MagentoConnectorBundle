@@ -127,8 +127,3 @@ pim_magento_connector:
             label: Attribut image de vignette
             help: Choisissez l'attribut Akeneo correspondant à l'image vignette (thumbnail) du produit dans Magento
 
-pim_connector_mapping:
-    mapping:
-        attributeCode:
-            source: Code d'attributs Akeneo
-            target: Code d'attributs Magento

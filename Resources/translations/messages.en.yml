@@ -129,8 +129,3 @@ pim_magento_connector:
             label: Thumbnail image attribute
             help: Choose the Akeneo attribute which is corresponding to thumbnail image of the product in Magento
 
-pim_connector_mapping:
-    mapping:
-        attributeCode:
-            source: Akeneo attribute code
-            target: Magento attribute code
