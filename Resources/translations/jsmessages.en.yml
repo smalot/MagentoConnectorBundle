@@ -13,3 +13,6 @@ pim_connector_mapping:
             empty: 'To start, please create a root category on Magento'
         add: Add
         not_blank: This field is required
+        attributeCode:
+            source: Akeneo attribute code
+            target: Magento attribute code
