@@ -119,13 +119,16 @@ pim_magento_connector:
             authentication_failed: "Le nom d'utilisateur fourni n'est pas valide ou l'utilisateur magento n'a pas les droits d'accéder à l'api soap de Magento"
         smallImageAttribute:
             label: Attribut petite image
+            help: Choisissez l'attribut Akeneo correspondant à la petite image du produit dans Magento
         baseImageAttribute:
             label: Attribut image de base
+            help: Choisissez l'attribut Akeneo correspondant à l'image de base du produit dans Magento
         thumbnailAttribute:
             label: Attribut image de vignette
+            help: Choisissez l'attribut Akeneo correspondant à l'image vignette (thumbnail) du produit dans Magento
 
 pim_connector_mapping:
     mapping:
         attributeCode:
-            source: Code d'attributs source
-            target: Code d'attributs cible
+            source: Code d'attributs Akeneo
+            target: Code d'attributs Magento
