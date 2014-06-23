@@ -14,7 +14,7 @@ Warning : this connector is not production ready and is intended for evaluation 
 
  - php5-xml
  - php5-soap
- - Akeneo PIM 1.0.0 or above
+ - Akeneo PIM 1.1.0
 
 # Installation instructions
 
