@@ -6,7 +6,6 @@ Every PR should start with:
 Bug fix: [yes|no]
 Feature addition: [yes|no]
 Backwards compatibility break: [yes|no]
-Unit test passes: [yes|no]
 Phpspec specification passes: [yes|no]
 Checkstyle issues: [yes|no]*
 ChangeLog updated: [yes|no]
