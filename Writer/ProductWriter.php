@@ -114,6 +114,8 @@ class ProductWriter extends AbstractWriter
      * Compute an individual product and all his parts (translations)
      *
      * @param array $product The product and his parts
+     *
+     * @throws InvalidItemException
      */
     protected function computeProduct($product)
     {
@@ -135,7 +137,7 @@ class ProductWriter extends AbstractWriter
      * Create a call for the given product part
      *
      * @param array  $productPart   A product part
-     * @param string $storeViewCode The storeview code
+     * @param string $storeViewCode The store view code
      */
     protected function createCall($productPart, $storeViewCode)
     {
@@ -163,12 +165,12 @@ class ProductWriter extends AbstractWriter
      */
     protected function getProductSku($product)
     {
-        $defaultStoreviewProduct = $product[$this->getDefaultStoreView()];
+        $defaultStoreViewProduct = $product[$this->getDefaultStoreView()];
 
-        if (count($defaultStoreviewProduct) == Webservice::CREATE_PRODUCT_SIZE) {
-            return (string) $defaultStoreviewProduct[2];
+        if (count($defaultStoreViewProduct) == Webservice::CREATE_PRODUCT_SIZE) {
+            return (string) $defaultStoreViewProduct[2];
         } else {
-            return (string) $defaultStoreviewProduct[0];
+            return (string) $defaultStoreViewProduct[0];
         }
     }
 
@@ -177,6 +179,8 @@ class ProductWriter extends AbstractWriter
      *
      * @param string $sku
      * @param array  $images
+     *
+     * @throws InvalidItemException
      */
     protected function pruneImages($sku, array $images = [])
     {

@@ -57,16 +57,18 @@ class ProductProcessor extends AbstractProductProcessor
     protected $thumbnailAttribute;
 
     /**
-     * @param WebserviceGuesser        $webserviceGuesser
-     * @param ProductNormalizerGuesser $normalizerGuesser
-     * @param LocaleManager            $localeManager
-     * @param MagentoMappingMerger     $storeViewMappingMerger
-     * @param CurrencyManager          $currencyManager
-     * @param ChannelManager           $channelManager
-     * @param MagentoMappingMerger     $categoryMappingMerger
-     * @param MagentoMappingMerger     $attributeMappingMerger
-     * @param MetricConverter          $metricConverter
-     * @param AssociationTypeManager   $associationTypeManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param NormalizerGuesser                   $normalizerGuesser
+     * @param LocaleManager                       $localeManager
+     * @param MagentoMappingMerger                $storeViewMappingMerger
+     * @param CurrencyManager                     $currencyManager
+     * @param ChannelManager                      $channelManager
+     * @param MagentoMappingMerger                $categoryMappingMerger
+     * @param MagentoMappingMerger                $attributeMappingMerger
+     * @param MetricConverter                     $metricConverter
+     * @param AssociationTypeManager              $associationTypeManager
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
+     * @param AttributeManager                    $attributeManager
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
@@ -251,7 +253,8 @@ class ProductProcessor extends AbstractProductProcessor
      * @param ProductInterface $product [description]
      * @param array            $context The context
      *
-     * @throws InvalidItemException If a normalization error occure
+     * @throws InvalidItemException If a normalization error occurs
+     *
      * @return array                processed item
      */
     protected function normalizeProduct(ProductInterface $product, $context)
@@ -270,7 +273,7 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
-     * Test if a product allready exists on magento platform
+     * Test if a product already exists on magento platform
      *
      * @param ProductInterface $product         The product
      * @param array            $magentoProducts Magento products

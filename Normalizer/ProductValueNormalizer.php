@@ -283,7 +283,7 @@ class ProductValueNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get all value normalizer (filter and normlizer)
+     * Get all value normalizer (filter and normalizer)
      *
      * @return array
      */

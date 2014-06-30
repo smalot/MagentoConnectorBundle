@@ -38,7 +38,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
-     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param NormalizerGuesser                   $normalizerGuesser
      * @param LocaleManager                       $localeManager
      * @param MagentoMappingMerger                $storeViewMappingMerger
      * @param CurrencyManager                     $currencyManager
@@ -100,7 +100,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
         $this->beforeExecute();
 
         $processedItems = [];
-        $groupsIds            = $this->getGroupRepository()->getVariantGroupIds();
+        $groupsIds      = $this->getGroupRepository()->getVariantGroupIds();
 
         if (count($groupsIds) > 0) {
             $configurables        = $this->getProductsForGroups($items, $groupsIds);
@@ -193,9 +193,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
     /**
      * Get the family of the given configurable
+     *
      * @param array $configurable
      *
      * @throws InvalidItemException If there are two products with different families
+     *
      * @return Family
      */
     protected function getGroupFamily($configurable)
@@ -217,6 +219,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
     /**
      * Get products association for each groups
+     *
      * @param array $products
      * @param array $groupsIds
      *
