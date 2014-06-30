@@ -137,7 +137,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $object,
                     $context['magentoAttributes'],
                     $context['magentoAttributesOptions'],
-                    $locale,
+                    $locale->getCode(),
                     $context['channel'],
                     $context['categoryMapping'],
                     $context['attributeCodeMapping'],
