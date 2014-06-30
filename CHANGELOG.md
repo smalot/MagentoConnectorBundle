@@ -1,3 +1,11 @@
+# 1.0.0-RC5 -
+## Bug fixes
+- Fix bug during localizable products export
+
+## Improvements
+- Fix some php doc
+- Fix errors in README
+
 # 1.0.0-RC4 -
 - Attribute can be exported into families (AttributeSets)
 - Groups can be added into AttributeSets
