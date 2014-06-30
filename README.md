@@ -54,11 +54,11 @@ Don't forget to add guzzle in the composer.json of the pim
 
 If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
  
-## Installation the Magento Connector in an Akeneo PIM developpement environnement
+## Installation the Magento Connector in an Akeneo PIM development environment
 
-The following installation instructions are meant for developement on the Magento Connector itself.
+The following installation instructions are meant for development on the Magento Connector itself.
 
-To install the magento connector for developpement purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
+To install the Magento connector for development purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
 
 After that, add bundles to your `AppKernel.php` :
 
