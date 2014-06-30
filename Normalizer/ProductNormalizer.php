@@ -220,7 +220,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     }
 
     /**
-     * Get the default product with all attributes (ie : event the non localizables ones)
+     * Get the default product with all attributes (ie : event the non localizable ones)
      *
      * @param ProductInterface  $product                  The given product
      * @param array             $magentoAttributes        Attribute list from Magento
@@ -319,7 +319,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param array             $magentoAttributes        Attribute list from Magento
      * @param array             $magentoAttributesOptions Attribute options list from Magento
      * @param string            $localeCode               The locale to apply
-     * @param string            $scopeCode                The akeno scope
+     * @param string            $scopeCode                The akeneo scope
      * @param MappingCollection $categoryMapping          Root category mapping
      * @param MappingCollection $attributeCodeMapping     Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
