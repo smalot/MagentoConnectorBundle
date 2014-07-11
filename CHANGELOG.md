@@ -1,3 +1,7 @@
+# 1.0.0-RC6 -
+## Bug fixes
+- Fix bug with configurable product export
+
 # 1.0.0-RC5 -
 ## Bug fixes
 - Fix bug during localizable products export
