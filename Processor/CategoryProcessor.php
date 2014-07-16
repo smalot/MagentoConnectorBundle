@@ -10,6 +10,7 @@ use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotMappedException;
 
 /**
  * Magento category processor
@@ -130,11 +131,25 @@ class CategoryProcessor extends AbstractProcessor
                         AbstractNormalizer::MAGENTO_FORMAT,
                         $this->globalContext
                     );
-                } catch (NormalizeException $e) {
-                    throw new InvalidItemException($e->getMessage(), array($category));
-                }
 
-                $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
+                    $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
+                } catch (CategoryNotMappedException $e) {
+                    if ($category->isRoot()) {
+                        throw new InvalidItemException($e->getMessage(), array(
+                            'category_id'      => $category->getId(),
+                            'category_code'    => $category->getCode(),
+                            'category_label'   => $category->getLabel(),
+                            'root_category_id' => $category->getRoot()
+                        ));
+                    }
+                } catch (NormalizeException $e) {
+                    throw new InvalidItemException($e->getMessage(), array(
+                        'category_id'      => $category->getId(),
+                        'category_code'    => $category->getCode(),
+                        'category_label'   => $category->getLabel(),
+                        'root_category_id' => $category->getRoot()
+                    ));
+                }
             }
         }
 

@@ -141,11 +141,12 @@ class CategoryNormalizer extends AbstractNormalizer
 
         if (null === $categoryId) {
             throw new CategoryNotMappedException(
-                printf(
-                    'An error occured during the category creation on Magento. The Magento '.
-                    'connector was unable to find the parent category for "%s (%s)". Remember that you need to map your '.
-                    'Magento root categories to Akeneo categories.',
+                sprintf(
+                    'An error occured during the root category creation on Magento. The Magento '.
+                    'connector was unable to find the mapped category "%s (%s)". Remember that you need to map your '.
+                    'Magento root categories to Akeneo categories. All sub categories of %s will not be exported.',
                     $category->getLabel(),
+                    $category->getCode(),
                     $category->getCode()
                 )
             );

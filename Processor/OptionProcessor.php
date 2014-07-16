@@ -126,7 +126,11 @@ class OptionProcessor extends AbstractProcessor
                     $attributeCode,
                     $e->getMessage()
                 ),
-                [$attribute]
+                [
+                    'code'  => $attribute->getCode(),
+                    'label' => $attribute->getLabel(),
+                    'type'  => $attribute->getAttributeType()
+                ]
             );
         }
 
