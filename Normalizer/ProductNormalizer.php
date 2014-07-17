@@ -364,7 +364,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $this->getCustomValue(
                 $product,
                 $attributeCodeMapping,
-                ['categoryMapping' => $categoryMapping]
+                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode]
             )
         );
 
@@ -377,31 +377,36 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * Get categories for the given product
      * @param ProductInterface  $product
      * @param MappingCollection $categoryMapping
+     * @param string            $scopeCode
      *
      * @return array
      */
-    protected function getProductCategories(ProductInterface $product, MappingCollection $categoryMapping)
+    protected function getProductCategories(ProductInterface $product, MappingCollection $categoryMapping, $scopeCode)
     {
         $productCategories = [];
 
+        $channelCategoryTree = $this->channelManager->getChannelByCode($scopeCode)->getCategory();
+
         foreach ($product->getCategories() as $category) {
-            $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory(
-                $category,
-                $this->magentoUrl,
-                $categoryMapping
-            );
-
-            if (!$magentoCategoryId) {
-                throw new CategoryNotFoundException(
-                    sprintf(
-                        'The category %s was not found. Please export categories first or add it to the root ' .
-                        'category mapping',
-                        $category->getLabel()
-                    )
+            if ($category->getRoot() == $channelCategoryTree->getId()) {
+                $magentoCategoryId = $this->categoryMappingManager->getIdFromCategory(
+                    $category,
+                    $this->magentoUrl,
+                    $categoryMapping
                 );
-            }
 
-            $productCategories[] = $magentoCategoryId;
+                if (!$magentoCategoryId) {
+                    throw new CategoryNotFoundException(
+                        sprintf(
+                            'The category %s was not found. Please export categories first or add it to the root ' .
+                            'category mapping',
+                            $category->getLabel()
+                        )
+                    );
+                }
+
+                $productCategories[] = $magentoCategoryId;
+            }
         }
 
         return $productCategories;
@@ -429,7 +434,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 ->format(AbstractNormalizer::DATE_FORMAT),
             strtolower($attributeCodeMapping->getTarget('categories'))     => $this->getProductCategories(
                 $product,
-                $parameters['categoryMapping']
+                $parameters['categoryMapping'],
+                $parameters['scopeCode']
             )
         ];
     }

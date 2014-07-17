@@ -230,7 +230,11 @@ class ProductProcessor extends AbstractProductProcessor
                         'The product family has changed of this product. This modification cannot be applied to ' .
                         'magento. In order to change the family of this product, please manualy delete this product ' .
                         'in magento and re-run this connector.',
-                        [$product]
+                        [
+                            'id'                                                 => $product->getId(),
+                            $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
+                            'family'                                             => $product->getFamily()->getCode()
+                        ]
                     );
                 }
 
@@ -266,7 +270,15 @@ class ProductProcessor extends AbstractProductProcessor
                 $context
             );
         } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), [$product]);
+            throw new InvalidItemException(
+                $e->getMessage(),
+                [
+                    'id'                                                 => $product->getId(),
+                    $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
+                    'label'                                              => $product->getLabel(),
+                    'family'                                             => $product->getFamily()->getCode()
+                ]
+            );
         }
 
         return $processedItem;
@@ -283,7 +295,7 @@ class ProductProcessor extends AbstractProductProcessor
     protected function magentoProductExists(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if ($magentoProduct['sku'] == $product->getIdentifier()) {
+            if ($magentoProduct['sku'] == $product->getIdentifier()->getData()) {
                 return true;
             }
         }
@@ -302,7 +314,7 @@ class ProductProcessor extends AbstractProductProcessor
     protected function attributeSetChanged(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if ($magentoProduct['sku'] == $product->getIdentifier() &&
+            if ($magentoProduct['sku'] == $product->getIdentifier()->getData() &&
                 $magentoProduct['set'] != $this->getAttributeSetId($product->getFamily()->getCode(), $product)
             ) {
                 return true;

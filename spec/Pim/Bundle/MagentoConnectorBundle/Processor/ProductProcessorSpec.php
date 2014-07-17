@@ -6,7 +6,9 @@ use PhpSpec\ObjectBehavior;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\Product;
+use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
@@ -159,7 +161,8 @@ class ProductProcessorSpec extends ObjectBehavior
         Product         $product,
         Channel         $channel,
         Family          $family,
-        MetricConverter $metricConverter
+        MetricConverter $metricConverter,
+        ProductValue $sku
     ) {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
@@ -169,7 +172,8 @@ class ProductProcessorSpec extends ObjectBehavior
 
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('4');
 
-        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-001');
+        $product->getIdentifier()->shouldBeCalled()->willReturn($sku);
+        $sku->getData()->willReturn('sku-001');
 
         $metricConverter->convert($product, $channel)->shouldBeCalled();
 
@@ -187,7 +191,8 @@ class ProductProcessorSpec extends ObjectBehavior
         Product         $product,
         Channel         $channel,
         Family          $family,
-        MetricConverter $metricConverter
+        MetricConverter $metricConverter,
+        ProductValue $sku
     ) {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
@@ -197,7 +202,8 @@ class ProductProcessorSpec extends ObjectBehavior
 
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('4');
 
-        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-000');
+        $product->getIdentifier()->shouldBeCalled()->willReturn($sku);
+        $sku->getData()->willReturn('sku-000');
 
         $metricConverter->convert($product, $channel)->shouldBeCalled();
 
@@ -214,7 +220,9 @@ class ProductProcessorSpec extends ObjectBehavior
         $mappingCollection,
         Product         $product,
         Family          $family,
-        MetricConverter $metricConverter
+        MetricConverter $metricConverter,
+        AbstractAttribute $skuAttribute,
+        ProductValue $sku
     ) {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
@@ -224,7 +232,12 @@ class ProductProcessorSpec extends ObjectBehavior
 
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('5');
 
-        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-000');
+        $product->getIdentifier()->shouldBeCalled()->willReturn($sku);
+        $sku->getData()->willReturn('sku-000');
+        $sku->getAttribute()->willReturn($skuAttribute);
+        $skuAttribute->getCode()->willReturn('SKU');
+        $product->getId()->willReturn(12);
+        $product->getLabel()->willReturn('my product');
 
         $metricConverter->convert(Argument::cetera())->shouldNotBeCalled();
 
@@ -242,7 +255,9 @@ class ProductProcessorSpec extends ObjectBehavior
         Product         $product,
         Channel         $channel,
         Family          $family,
-        MetricConverter $metricConverter
+        MetricConverter $metricConverter,
+        AbstractAttribute $skuAttribute,
+        ProductValue $sku
     ) {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
@@ -252,7 +267,13 @@ class ProductProcessorSpec extends ObjectBehavior
 
         $webservice->getAttributeSetId('family_code')->shouldBeCalled()->willReturn('4');
 
-        $product->getIdentifier()->shouldBeCalled()->willReturn('sku-001');
+        $product->getIdentifier()->shouldBeCalled()->willReturn($sku);
+        $sku->getData()->willReturn('sku-000');
+        $sku->getAttribute()->willReturn($skuAttribute);
+        $skuAttribute->getCode()->willReturn('SKU');
+
+        $product->getId()->willReturn(12);
+        $product->getLabel()->willReturn('my product');
 
         $metricConverter->convert($product, $channel)->shouldBeCalled();
 

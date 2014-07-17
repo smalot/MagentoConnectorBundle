@@ -311,9 +311,10 @@ class ProductValueNormalizer implements NormalizerInterface
                     return $data instanceof AttributeOption;
                 },
                 'normalizer' => function ($data, $parameters) {
-            if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
-                return $data->getCode();
-            }
+
+                    if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
+                        return $data->getCode();
+                    }
 
                     return $this->getOptionId(
                         $parameters['attributeCode'],

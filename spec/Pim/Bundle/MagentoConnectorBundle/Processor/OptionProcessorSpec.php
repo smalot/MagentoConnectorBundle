@@ -84,6 +84,8 @@ class OptionProcessorSpec extends ObjectBehavior
     ) {
         $optionRed->getAttribute()->willReturn($attribute);
         $attribute->getCode()->willReturn('color');
+        $attribute->getLabel()->willReturn('Color');
+        $attribute->getAttributeType()->willReturn('pim_catalog_simpleselect');
 
         $optionRed->getCode()->willReturn('red');
 
