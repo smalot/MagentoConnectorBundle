@@ -232,7 +232,7 @@ class ProductProcessor extends AbstractProductProcessor
                         'in magento and re-run this connector.',
                         [
                             'id'                                                 => $product->getId(),
-                            $product->getIdentifier()->getAttribute()->getCode() => (string) $product->getIdentifier(),
+                            $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
                             'family'                                             => $product->getFamily()->getCode()
                         ]
                     );
@@ -274,7 +274,7 @@ class ProductProcessor extends AbstractProductProcessor
                 $e->getMessage(),
                 [
                     'id'                                                 => $product->getId(),
-                    $product->getIdentifier()->getAttribute()->getCode() => (string) $product->getIdentifier(),
+                    $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
                     'label'                                              => $product->getLabel(),
                     'family'                                             => $product->getFamily()->getCode()
                 ]
@@ -295,7 +295,7 @@ class ProductProcessor extends AbstractProductProcessor
     protected function magentoProductExists(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if ($magentoProduct['sku'] == $product->getIdentifier()) {
+            if ($magentoProduct['sku'] == $product->getIdentifier()->getData()) {
                 return true;
             }
         }
@@ -314,7 +314,7 @@ class ProductProcessor extends AbstractProductProcessor
     protected function attributeSetChanged(ProductInterface $product, $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
-            if ($magentoProduct['sku'] == $product->getIdentifier() &&
+            if ($magentoProduct['sku'] == $product->getIdentifier()->getData() &&
                 $magentoProduct['set'] != $this->getAttributeSetId($product->getFamily()->getCode(), $product)
             ) {
                 return true;

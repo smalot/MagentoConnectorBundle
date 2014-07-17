@@ -86,6 +86,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $localeEN->getCode()->willReturn('default_locale');
         $localeFR->getCode()->willReturn('fr_FR');
         $channel->getCode()->willReturn('channel_code');
+        $channel->getCategory()->willReturn($category);
 
         $product->getCategories()->willReturn([$category]);
         $product->getIdentifier()->willReturn('sku-000');
