@@ -22,6 +22,6 @@ class CategoryRepository extends BaseCategoryRepository
         return $this
             ->createQueryBuilder('c')
             ->select('c')
-            ->orderBy('c.level, c.created', 'ASC');
+            ->orderBy('c.level, c.left', 'ASC');
     }
 }
