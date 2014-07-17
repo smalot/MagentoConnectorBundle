@@ -2,8 +2,6 @@
 ## Bug fixes
 - Products not assigned to an exported category are not assigned anymore
 
-## Improvements
-
 # 1.0.0-RC5 -
 ## Bug fixes
 - Fix bug during localizable products export
