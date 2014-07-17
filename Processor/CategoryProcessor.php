@@ -134,7 +134,7 @@ class CategoryProcessor extends AbstractProcessor
 
                     $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
                 } catch (CategoryNotMappedException $e) {
-                    if ($category->isRoot()) {
+                    if (null !== $category->getParent() && $category->getParent()->isRoot()) {
                         throw new InvalidItemException($e->getMessage(), array(
                             'category_id'      => $category->getId(),
                             'category_code'    => $category->getCode(),
