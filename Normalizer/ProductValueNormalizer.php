@@ -10,6 +10,7 @@ use Pim\Bundle\CatalogBundle\Model\Metric;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\CustomEntityBundle\Entity\AbstractCustomEntity;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
@@ -311,9 +312,9 @@ class ProductValueNormalizer implements NormalizerInterface
                     return $data instanceof AttributeOption;
                 },
                 'normalizer' => function ($data, $parameters) {
-            if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
-                return $data->getCode();
-            }
+                    if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
+                        return $data->getCode();
+                    }
 
                     return $this->getOptionId(
                         $parameters['attributeCode'],
@@ -346,7 +347,7 @@ class ProductValueNormalizer implements NormalizerInterface
             [
                 'filter'     => function ($data) {
                     return class_exists('Pim\Bundle\CustomEntityBundle\Entity\AbstractCustomEntity') &&
-                        $data instanceof Pim\Bundle\CustomEntityBundle\Entity\AbstractCustomEntity;
+                        $data instanceof AbstractCustomEntity;
                 },
                 'normalizer' => function ($data, $parameters) {
                     return $data->getCode();
