@@ -2,18 +2,19 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
+use Doctrine\Common\Collections\Collection;
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\Media;
 use Pim\Bundle\CatalogBundle\Model\Metric;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
-use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
-use Doctrine\Common\Collections\Collection;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
+use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
+use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\CustomEntityBundle\Entity\AbstractCustomEntity;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * A normalizer to transform a product value into an array
@@ -311,7 +312,6 @@ class ProductValueNormalizer implements NormalizerInterface
                     return $data instanceof AttributeOption;
                 },
                 'normalizer' => function ($data, $parameters) {
-
                     if (in_array($parameters['attributeCode'], $this->getIgnoredOptionMatchingAttributes())) {
                         return $data->getCode();
                     }
@@ -342,6 +342,15 @@ class ProductValueNormalizer implements NormalizerInterface
                 },
                 'normalizer' => function ($data, $parameters) {
                     return (string) $data->getData();
+                }
+            ],
+            [
+                'filter'     => function ($data) {
+                    return class_exists('Pim\Bundle\CustomEntityBundle\Entity\AbstractCustomEntity') &&
+                        $data instanceof AbstractCustomEntity;
+                },
+                'normalizer' => function ($data, $parameters) {
+                    return $data->getCode();
                 }
             ],
             [

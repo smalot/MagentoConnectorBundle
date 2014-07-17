@@ -1,4 +1,7 @@
 # 1.0.0-RC7 -
+## Features
+- Custom entity support
+
 ## Bug fixes
 - Products not assigned to an exported category are not assigned anymore
 
