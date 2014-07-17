@@ -5,6 +5,9 @@
 ## Bug fixes
 - Products not assigned to an exported category are not assigned anymore
 
+## Improvements
+- Categories are now exported in the right order
+
 # 1.0.0-RC6 -
 ## Bug fixes
 - Fix bug with configurable product export
