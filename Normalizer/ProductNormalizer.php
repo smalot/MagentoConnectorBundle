@@ -177,7 +177,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
     ) {
         $imageValues = $product->getValues()->filter(
             function ($value) {
-                return $value->getData() instanceof Media;
+                return $value->getData() instanceof Media &&
+                    in_array($value->getData()->getMimeType(), array('image/jpeg', 'image/png', 'image/gif'));
             }
         );
 
