@@ -2,6 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Manager\AttributeManager as BaseAttributeManager;
 use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
 
@@ -12,8 +13,24 @@ use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class AttributeManager extends BaseAttributeManager
+class AttributeManager
 {
+    /** @var BaseAttributeManager $baseAttributeManager */
+    protected $baseAttributeManager;
+
+    /** @var ObjectManager $objectManager */
+    protected $objectManager;
+
+    /**
+     * @param BaseAttributeManager $baseAttributeManager
+     * @param ObjectManager        $objectManager
+     */
+    public function __construct(BaseAttributeManager $baseAttributeManager, ObjectManager $objectManager)
+    {
+        $this->baseAttributeManager = $baseAttributeManager;
+        $this->objectManager        = $objectManager;
+    }
+
     /**
      * Get attributes
      * @param array $criterias
@@ -41,6 +58,78 @@ class AttributeManager extends BaseAttributeManager
         }
 
         return $result;
+    }
+
+    /**
+     * Create an attribute
+     *
+     * @param string $type
+     *
+     * @return \Pim\Bundle\CatalogBundle\Model\AbstractAttribute
+     */
+    public function createAttribute($type = null)
+    {
+        return $this->baseAttributeManager->createAttribute($type);
+    }
+
+    /**
+     * Create an attribute option
+     *
+     * @return \Pim\Bundle\CatalogBundle\Entity\AttributeOption
+     */
+    public function createAttributeOption()
+    {
+        return $this->baseAttributeManager->createAttributeOption();
+    }
+
+    /**
+     * Create an attribute option value
+     *
+     * @return \Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue
+     */
+    public function createAttributeOptionValue()
+    {
+        return $this->baseAttributeManager->createAttributeOptionValue();
+    }
+
+    /**
+     * Get the attribute FQCN
+     *
+     * @return string
+     */
+    public function getAttributeClass()
+    {
+        return $this->baseAttributeManager->getAttributeClass();
+    }
+
+    /**
+     * Get the attribute option FQCN
+     *
+     * @return string
+     */
+    public function getAttributeOptionClass()
+    {
+        return $this->baseAttributeManager->getAttributeOptionClass();
+    }
+
+    /**
+     * Get a list of available attribute types
+     *
+     * @return string[]
+     */
+    public function getAttributeTypes()
+    {
+        return $this->baseAttributeManager->getAttributeTypes();
+    }
+
+    /**
+     * Remove an attribute
+     *
+     * @param AbstractAttribute $attribute
+     */
+    public function remove(AbstractAttribute $attribute)
+    {
+        $this->baseAttributeManager->remove($attribute);
     }
 
     /**

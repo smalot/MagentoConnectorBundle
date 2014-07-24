@@ -16,9 +16,8 @@ services:
     pim_magento_connector.manager.group:
         class: %pim_magento_connector.manager.group.class%
         arguments:
+            - '@pim_catalog.manager.group'
             - '@doctrine'
-            - %pim_catalog.entity.product.class%
-            - %pim_catalog.entity.attribute.class%
             - %pim_catalog.entity.group.class%
 
     pim_magento_connector.manager.category_mapping:
@@ -60,21 +59,14 @@ services:
     pim_magento_connector.manager.locale:
         class: %pim_magento_connector.manager.locale.class%
         arguments:
-            - '@pim_catalog.repository.locale'
+            - '@pim_catalog.manager.locale'
     pim_magento_connector.manager.currency:
         class: %pim_magento_connector.manager.currency.class%
         arguments:
-            - '@pim_catalog.repository.currency'
-            - '@pim_magento_connector.repository.currency'
+            - '@pim_catalog.manager.currency'
 
     pim_magento_connector.manager.attribute:
         class: %pim_magento_connector.manager.attribute.class%
         arguments:
-            - %pim_catalog.entity.attribute.class%
-            - %pim_catalog.entity.attribute_option.class%
-            - %pim_catalog.entity.attribute_option_value.class%
-            - %pim_catalog.entity.product.class%
+            - '@pim_catalog.manager.attribute'
             - '@doctrine.orm.entity_manager'
-            - '@pim_catalog.factory.attribute_type'
-            - '@pim_catalog.manager.locale'
-            - '@pim_catalog.factory.attribute_type'

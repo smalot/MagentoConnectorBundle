@@ -11,8 +11,18 @@ use Pim\Bundle\CatalogBundle\Manager\CurrencyManager as BaseCurrencyManager;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class CurrencyManager extends BaseCurrencyManager
+class CurrencyManager
 {
+    /** @var BaseCurrencyManager $baseCurrencyManager */
+    protected $baseCurrencyManager;
+
+    /**
+     * @param BaseCurrencyManager $baseCurrencyManager
+     */
+    public function __construct(BaseCurrencyManager $baseCurrencyManager)
+    {
+        $this->baseCurrencyManager = $baseCurrencyManager;
+    }
 
     /**
      * Get active code choices
@@ -26,7 +36,7 @@ class CurrencyManager extends BaseCurrencyManager
      */
     public function getActiveCodeChoices()
     {
-        $codes = $this->getActiveCodes();
+        $codes = $this->baseCurrencyManager->getActiveCodes();
         if (empty($codes)) {
             return [];
         }
@@ -50,5 +60,37 @@ class CurrencyManager extends BaseCurrencyManager
         }
 
         return $choices;
+    }
+
+    /**
+     * Get active currencies
+     *
+     * @return \Doctrine\Common\Persistence\mixed
+     */
+    public function getActiveCurrencies()
+    {
+        return $this->baseCurrencyManager->getActiveCurrencies();
+    }
+
+    /**
+     * Get currencies with criterias
+     *
+     * @param array $criterias
+     *
+     * @return \Doctrine\Common\Persistence\mixed
+     */
+    public function getCurrencies($criterias = array())
+    {
+        return $this->baseCurrencyManager->getCurrencies($criterias);
+    }
+
+    /**
+     * Get active codes
+     *
+     * @return string[]
+     */
+    public function getActiveCodes()
+    {
+        return $this->baseCurrencyManager->getActiveCodes();
     }
 }
