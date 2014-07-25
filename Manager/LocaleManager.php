@@ -19,7 +19,7 @@ class LocaleManager
     /**
      * @param BaseLocaleManager $baseLocaleManager
      */
-    public function __constructor(BaseLocaleManager $baseLocaleManager)
+    public function __construct(BaseLocaleManager $baseLocaleManager)
     {
         $this->baseLocaleManager = $baseLocaleManager;
     }
