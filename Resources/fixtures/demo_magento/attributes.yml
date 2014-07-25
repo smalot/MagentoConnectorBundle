@@ -79,23 +79,6 @@ attributes:
         sortOrder:           1
         defaultValue:        4
         localizable:        false
-        options:
-            1:
-                labels:
-                    fr_FR: Non visible individuellement
-                    en_US: Not visible individually
-            2:
-                labels:
-                    fr_FR: Catalogue
-                    en_US: Catalog
-            3:
-                labels:
-                    fr_FR: Recherche
-                    en_US: Search
-            4:
-                labels:
-                    fr_FR: Catalogue et recherche
-                    en_US: Catalog and search
     color:
         labels:
             en_US: Color
@@ -106,15 +89,6 @@ attributes:
         useableAsGridFilter: true
         sortOrder:           1
         localizable:        false
-        options:
-            Red:
-                labels:
-                    en_US: Red
-                    fr_FR: Rouge
-            Blue:
-                labels:
-                    en_US: Blue
-                    fr_FR: Bleu
     weight:
         labels:
             en_US: Weight
@@ -139,27 +113,6 @@ attributes:
         sortOrder:           1
         defaultValue:        M
         localizable:        false
-        options:
-            XS:
-                labels:
-                    fr_FR: XS
-                    en_US: XS
-            S:
-                labels:
-                    fr_FR: S
-                    en_US: S
-            M:
-                labels:
-                    fr_FR: M
-                    en_US: M
-            L:
-                labels:
-                    fr_FR: L
-                    en_US: L
-            XL:
-                labels:
-                    fr_FR: XL
-                    en_US: XL
     unique_color:
         labels:
             en_US: Unique color
@@ -169,39 +122,6 @@ attributes:
         useableAsGridColumn: true
         useableAsGridFilter: true
         sortOrder:           2
-        options:
-            uc_black:
-                labels:
-                    en_US: Black
-                    fr_FR: Noir
-            uc_blue:
-                labels:
-                    en_US: Blue
-                    fr_FR: Bleu
-            uc_green:
-                labels:
-                    en_US: Green
-                    fr_FR: Vert
-            uc_orange:
-                labels:
-                    en_US: Orange
-                    fr_FR: Orange
-            uc_purple:
-                labels:
-                    en_US: Purple
-                    fr_FR: Violet
-            uc_red:
-                labels:
-                    en_US: Red
-                    fr_FR: Rouge
-            uc_yellow:
-                labels:
-                    en_US: Yellow
-                    fr_FR: Jaune
-            uc_white:
-                labels:
-                    en_US: White
-                    fr_FR: Blanc
     tax_class_id:
         labels:
             en_US: Tax class id
