@@ -2,14 +2,15 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Cleaner;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Doctrine\ORM\Query;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Bundle\CatalogBundle\Manager\ProductManager;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Magento product cleaner
@@ -108,8 +109,8 @@ class ProductCleaner extends Cleaner
         parent::beforeExecute();
 
         $magentoProducts  = $this->webservice->getProductsStatus();
-        $exportedProducts = $this->getExportedProductsSkus();
-        $pimProducts      = $this->getPimProductsSkus();
+        $exportedProducts = $this->getProductsSkus($this->getExportedProductsSkus());
+        $pimProducts      = $this->getProductsSkus($this->getPimProductsSkus());
 
         foreach ($magentoProducts as $product) {
             try {
@@ -130,12 +131,15 @@ class ProductCleaner extends Cleaner
      */
     protected function getExportedProductsSkus()
     {
-        $products = $this->productManager->getProductRepository()
-            ->buildByChannelAndCompleteness($this->channelManager->getChannelByCode($this->channel))
-            ->getQuery()
-            ->getResult();
 
-        return $this->getProductsSkus($products);
+        return $this->productManager->getProductRepository()
+            ->buildByChannelAndCompleteness($this->channelManager->getChannelByCode($this->channel))
+            ->select('Value.varchar as sku')
+            ->andWhere('Attribute.attributeType = :identifier_type')
+            ->setParameter(':identifier_type', 'pim_catalog_identifier')
+            ->getQuery()
+            ->setHydrationMode(Query::HYDRATE_ARRAY)
+            ->getResult();
     }
 
     /**
@@ -144,7 +148,14 @@ class ProductCleaner extends Cleaner
      */
     protected function getPimProductsSkus()
     {
-        return $this->getProductsSkus($this->productManager->getProductRepository()->findAll());
+        return $this->productManager->getProductRepository()
+            ->buildByScope($this->channel)
+            ->select('Value.varchar as sku')
+            ->andWhere('Attribute.attributeType = :identifier_type')
+            ->setParameter(':identifier_type', 'pim_catalog_identifier')
+            ->getQuery()
+            ->setHydrationMode(Query::HYDRATE_ARRAY)
+            ->getResult();
     }
 
     /**
@@ -158,7 +169,7 @@ class ProductCleaner extends Cleaner
         $productsSkus = [];
 
         foreach ($products as $product) {
-            $productsSkus[] = (string) $product->getIdentifier();
+            $productsSkus[] = (string) reset($product);
         };
 
         return $productsSkus;
