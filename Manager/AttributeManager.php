@@ -21,14 +21,22 @@ class AttributeManager
     /** @var ObjectManager $objectManager */
     protected $objectManager;
 
+    /** @var string */
+    protected $attributeClass;
+
     /**
      * @param BaseAttributeManager $baseAttributeManager
      * @param ObjectManager        $objectManager
+     * @param string               $attributeClass   Attribute class
      */
-    public function __construct(BaseAttributeManager $baseAttributeManager, ObjectManager $objectManager)
-    {
+    public function __construct(
+        BaseAttributeManager $baseAttributeManager,
+        ObjectManager $objectManager,
+        $attributeClass
+    ) {
         $this->baseAttributeManager = $baseAttributeManager;
         $this->objectManager        = $objectManager;
+        $this->attributeClass       = $attributeClass;
     }
 
     /**

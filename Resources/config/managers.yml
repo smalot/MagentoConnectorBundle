@@ -70,3 +70,4 @@ services:
         arguments:
             - '@pim_catalog.manager.attribute'
             - '@doctrine.orm.entity_manager'
+            - %pim_catalog.entity.attribute.class%
