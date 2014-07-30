@@ -3,13 +3,14 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
-use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
@@ -25,6 +26,11 @@ class AttributeProcessor extends AbstractProcessor
      * @var MagentoMappingMerger
      */
     protected $attributeMappingMerger;
+
+    /**
+     * @var GroupManager
+     */
+    protected $groupManager;
 
     /**
      * @var string
@@ -45,7 +51,8 @@ class AttributeProcessor extends AbstractProcessor
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
-        MagentoSoapClientParametersRegistry $clientParametersRegistry
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        GroupManager $groupManager
     ) {
         parent::__construct(
             $webserviceGuesser,
@@ -56,6 +63,7 @@ class AttributeProcessor extends AbstractProcessor
         );
 
         $this->attributeMappingMerger = $attributeMappingMerger;
+        $this->groupManager           = $groupManager;
     }
 
     /**
@@ -95,6 +103,7 @@ class AttributeProcessor extends AbstractProcessor
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
         $this->globalContext['attributeCodeMapping']     = $this->attributeMappingMerger->getMapping();
         $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
+        $this->globalContext['axisAttributes']           = $this->getAxisAttributes();
     }
 
     /**
@@ -157,6 +166,24 @@ class AttributeProcessor extends AbstractProcessor
         parent::afterConfigurationSet();
 
         $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+    }
+
+    /**
+     * Get attribute axis
+     *
+     * @return array
+     */
+    protected function getAxisAttributes()
+    {
+        $result = [];
+
+        $attributeAxis = $this->groupManager->getRepository()->getAxisAttributes();
+
+        foreach ($attributeAxis as $attribute) {
+            $result[] = $attribute['code'];
+        }
+
+        return array_unique($result);
     }
 
     /**

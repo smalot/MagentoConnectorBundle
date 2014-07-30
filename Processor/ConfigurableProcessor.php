@@ -136,8 +136,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
                 }
 
                 $processedItems[] = $this->normalizeConfigurable($configurable, $context);
+
+
             }
         }
+
 
         return $processedItems;
     }
@@ -179,7 +182,6 @@ class ConfigurableProcessor extends AbstractProductProcessor
     protected function magentoConfigurableExist($configurable, $magentoConfigurables)
     {
         foreach ($magentoConfigurables as $magentoConfigurable) {
-
             if ($magentoConfigurable['sku'] == sprintf(
                 Webservice::CONFIGURABLE_IDENTIFIER_PATTERN,
                 $configurable['group']->getCode()
