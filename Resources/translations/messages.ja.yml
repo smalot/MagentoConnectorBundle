@@ -1,0 +1,131 @@
+pim_magento_connector:
+    jobs:
+        product_export.title: Magentoに商品をエクスポート
+        product_delta_export.title: 商品の差分エクスポート
+        category_export.title: Magentoにカテゴリをエクスポート
+        option_export.title: Magentoにオプションをエクスポート
+        attribute_export.title: Magentoに属性をエクスポート
+        attributeset_export.title: Magentoにファミリーをエクスポート
+        full_export.title: Magentoに商品以外をエクスポート
+    steps:
+        simple_product_export.export.title: シンプル商品をエクスポート
+        configurable_product_export.export.title: コンフィグ商品をエクスポート
+        association_product_export.export.title: 商品の関連付けをエクスポート
+        simple_product_clean.clean.title: シンプル商品のクリーンアップ
+        configurable_product_clean.clean.title: コンフィグ商品のクリーンアップ
+        category_export.export.title: カテゴリをエクスポート
+        category_clean.clean.title: カテゴリのクリーンアップ
+        attribute_export.export.title: 属性をエクスポート
+        attribute_clean.clean.title: 属性のクリーンアップ
+        option_export.export.title: オプションをエクスポート
+        option_clean.clean.title: オプションのクリーンアップ
+
+        product_processor.title: 商品プロセッサー
+        attribute_processor.title: 属性プロセッサー
+        category_processor.title: カテゴリプロセッサー
+        configurable_processor.title: コンフィグ商品プロセッサー
+        option_processor.title: オプションプロセッサー
+        product_association_processor.title: 商品関連付けプロセッサー
+        attribute_writer.title: 属性ライター
+        category_writer.title: カテゴリライター
+        option_writer.title: オプションライター
+        product_association_writer.title: 商品関連付けライター
+        product_writer.title: 商品ライター
+        attribute_cleaner.title: 属性クリーナー
+        category_cleaner.title: カテゴリクリーナー
+        configurable_cleaner.title: コンフィグ商品クリーナー
+        option_cleaner.title: オプションクリーナー
+        product_cleaner.title: 商品クリーナー
+        attributeset_export.export.title: ファミリーをエクスポート
+        family_clean.clean.title: ファミリークリーナー
+        group_clean.clean.title: グループクリーナー
+        family_cleaner.title: ファミリークリーナー
+    export:
+        soapUsername:
+            label: SOAPユーザー名
+            help: MagentoのSOAP APIユーザー名
+        soapApiKey:
+            label: SOAP APIキー
+            help: MagentoのSOAP APIキー
+        magentoUrl:
+            label: Magento URL
+            help: 接続するMagentoのURL
+        wsdlUrl:
+            label: WSDL URL
+            help: WSDLを取得するURL。わからない場合はデフォルトのままにしておいてください。 (/api/soap/?wsdl)
+        httpLogin:
+            label: BASIC認証ユーザー名
+            help: BASIC認証がかかっている場合はユーザー名を入力してください
+        httpPassword:
+            label: BASIC認証パスワード
+            help: BASIC認証がかかっている場合はパスワードを入力してください
+        defaultStoreView:
+            label: デフォルトストアビュー
+            help: Magentoのデフォルトストアビューを入力してください
+        channel:
+            label: チャンネル
+            help:
+        defaultLocale:
+            label: デフォルトロケール
+            help: 管理者ストアビューに割り当てるロケールを指定してください
+        enabled:
+            label: Magento上のステータス
+            help:
+        visibility:
+            label: Magento上の表示位置
+            help:
+        website:
+            label: ウェブサイト
+            help: 商品を登録するMagento上のウェブサイト
+        currency:
+            label: 通貨
+            help: Magento上の通貨
+        storeviewMapping:
+            label: ストアビューマッピング
+            help:  PIM上のロケールとMagentoのストアビューをマッピングできます
+        categoryMapping:
+            label: カテゴリマッピング
+            help:  MagentoとPIM上のカテゴリをマッピングします。
+        pimGrouped:
+            label: グループ商品の関連タイプ
+            help:  グループ商品に対応する関連タイプ
+        pimUpSell:
+            label: アップセル商品の関連タイプ
+            help:  アップセル商品に対応する関連タイプ
+        pimCrossSell:
+            label: クロスセル商品の関連タイプ
+            help:  クロスセル商品に対応する関連タイプ
+        pimRelated:
+            label: おすすめ商品の関連タイプ
+            help:  おすすめ商品に対応する関連タイプ
+        attributeCodeMapping:
+            label: 属性コードマッピング
+            help:  Akeneo PIMとMagentoの属性コードマッピング
+        notInPimAnymoreAction:
+            label: PIM上に存在しない商品に対する操作
+            help:  PIM上に存在しない商品でMagento上にある商品はどう処理しますか？
+        notCompleteAnymoreAction:
+            label: 入力が完了していない商品に対する操作
+            help:  データの入力が完了していないPIM上の商品はどう処理しますか？
+        delete:
+            label: 削除する
+        do_nothing:
+            label: 何もしない
+        disable:
+            label: 無効にする
+        validator:
+            url_syntax_not_valid: URLが正しくありません
+            url_not_reachable: URLにアクセスできません
+            soap_url_not_valid: SOAP APIのURLが正しくありません
+            xml_not_valid: Magento XMLが正しくありません
+            authentication_failed: Magento APIユーザー名が正しくないか、権限が不足している可能性があります
+        smallImageAttribute:
+            label: 一覧画像属性
+            help: Magentoの一覧画像に対応するAkeneo上の画像を選択してください
+        baseImageAttribute:
+            label: 基本画像属性
+            help: Magentoの基本画像に対応するAkeneo上の画像を選択してください
+        thumbnailAttribute:
+            label: サムネイル画像属性
+            help: Magentoのサムネイル画像に対応するAkeneo上の画像を選択してください
+
