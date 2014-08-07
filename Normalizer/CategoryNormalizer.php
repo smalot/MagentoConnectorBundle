@@ -133,13 +133,13 @@ class CategoryNormalizer extends AbstractNormalizer
      */
     protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
     {
-        $categoryId = $this->categoryMappingManager->getIdFromCategory(
+        $parentCategoryId = $this->categoryMappingManager->getIdFromCategory(
             $category->getParent(),
             $context['magentoUrl'],
             $context['categoryMapping']
         );
 
-        if (null === $categoryId) {
+        if (null === $parentCategoryId) {
             throw new CategoryNotMappedException(
                 sprintf(
                     'An error occured during the root category creation on Magento. The Magento '.
@@ -153,7 +153,7 @@ class CategoryNormalizer extends AbstractNormalizer
         } else {
             return [
                 'magentoCategory' => [
-                    (string) $categoryId,
+                    (string) $parentCategoryId,
                     [
                         'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
                         'is_active'         => 1,
