@@ -183,7 +183,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
                 'available_sort_by' => 1,
                 'default_sort_by'   => 1,
-                    'is_anchor'     => 1
+                'is_anchor'         => 1
             ],
             $context['defaultStoreView']
         ];
