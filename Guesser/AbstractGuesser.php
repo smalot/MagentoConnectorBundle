@@ -53,7 +53,7 @@ abstract class AbstractGuesser
                 throw $e;
             }
 
-            $pattern = '/^(?P<version>[0-9]\.[0-9])(\.[0-9])*/';
+            $pattern = '/^(?P<version>[0-9]\.[0-9]{1,2})(\.[0-9])*/';
 
             if (preg_match($pattern, $magentoVersion, $matches)) {
                 $this->version = $matches['version'];
