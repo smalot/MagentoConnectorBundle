@@ -35,7 +35,8 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'magentoAttributes'        => [],
             'magentoAttributesOptions' => [],
             'magentoStoreViews'        => [],
-            'create'                   => true
+            'create'                   => true,
+            'axisAttributes'           => ['configurableAttributeCode']
         ];
 
     function let(ProductValueNormalizer $productValueNormalizer, Attribute $attribute, MappingCollection $attributeMapping, MappingCollection $storeViewMapping, ProductValueManager $productValueManager)
@@ -131,7 +132,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
             array_merge(
                 $this->baseNormalizedAttribute,
                 [
-                    'is_configurable' => '1',
+                    'is_configurable' => '0',
                     'frontend_label'  => [['store_id' => 0, 'label' => 'tax_class_id']],
                 ]
             )
