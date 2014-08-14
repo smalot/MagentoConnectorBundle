@@ -70,7 +70,7 @@ class AttributeNormalizer implements NormalizerInterface
             'is_unique'                     => $this->getNormalizedUnique($object),
             'is_required'                   => $this->getNormalizedRequired($object),
             'apply_to'                      => '',
-            'is_configurable'               => $this->getNormalizedConfigurable($object),
+            'is_configurable'               => $this->getNormalizedConfigurable($object, $context['axisAttributes']),
             'is_searchable'                 => '1',
             'is_visible_in_advanced_search' => '1',
             'is_comparable'                 => '1',
@@ -277,12 +277,16 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized configurable for attribute
      * @param AbstractAttribute $attribute
+     * @param array             $axisAttributes
      *
      * @return string
      */
-    protected function getNormalizedConfigurable(AbstractAttribute $attribute)
+    protected function getNormalizedConfigurable(AbstractAttribute $attribute, array $axisAttributes)
     {
-        return ($attribute->getAttributeType() === 'pim_catalog_simpleselect') ? '1' : '0';
+        return ($attribute->getAttributeType() === 'pim_catalog_simpleselect') &&
+            in_array($attribute->getCode(), $axisAttributes)
+            ? '1'
+            : '0';
     }
 
     /**

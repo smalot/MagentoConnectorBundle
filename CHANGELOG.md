@@ -1,3 +1,8 @@
+# 1.0.0-RC8 -
+## Bug fixes
+- Product cleaner is cleaner
+- Version detection fix
+
 # 1.0.0-RC7 -
 ## Features
 - Custom entity support

@@ -70,4 +70,16 @@ class GroupRepository extends BaseGroupRepository
             ->andWhere('t.code = :variant_code')
             ->setParameter(':variant_code', self::VARIANT_GROUP_CODE);
     }
+
+    public function getAxisAttributes()
+    {
+        return $this
+            ->createQueryBuilder('g')
+            ->select('DISTINCT(a.code) as code')
+            ->leftJoin('g.type', 't', \Doctrine\ORM\Query\Expr\Join::WITH, 'g.code = :variant')
+            ->setParameter(':variant', 'VARIANT')
+            ->leftJoin('g.attributes', 'a')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

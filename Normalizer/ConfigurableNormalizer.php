@@ -85,7 +85,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             );
 
             //If a locale for this storeview exist in PIM, we create a translated group in this locale
-            if ($storeView) {
+            if ($storeView && $storeView['code'] !== $context['defaultStoreView']) {
                 $values = $this->productNormalizer->getValues(
                     $products[0],
                     $context['magentoAttributes'],

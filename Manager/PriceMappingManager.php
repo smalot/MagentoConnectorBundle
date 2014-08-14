@@ -192,7 +192,11 @@ class PriceMappingManager
 
         $toSubstract = ($lowest * -1) * $toSubstract;
 
-        return $product->getValue('price', $this->locale)->getPrice($this->currency)->getData() + $toSubstract;
+        $price = $product->getValue('price', $this->locale);
+
+        $data = (null != $price) ? $price->getPrice($this->currency)->getData() : 0;
+
+        return $data + $toSubstract;
     }
 
     /**
