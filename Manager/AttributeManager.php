@@ -27,7 +27,7 @@ class AttributeManager
     /**
      * @param BaseAttributeManager $baseAttributeManager
      * @param ObjectManager        $objectManager
-     * @param string               $attributeClass   Attribute class
+     * @param string               $attributeClass
      */
     public function __construct(
         BaseAttributeManager $baseAttributeManager,

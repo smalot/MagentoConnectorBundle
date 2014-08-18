@@ -115,11 +115,11 @@ class ProductCleaner extends Cleaner
 
         foreach ($magentoProducts as $product) {
             try {
-                if ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY &&
-                    !in_array($product['sku'], $pimProducts)) {
+                if ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY
+                    && !in_array($product['sku'], $pimProducts)) {
                     $this->handleProductNotInPimAnymore($product);
-                } elseif ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY &&
-                    !in_array($product['sku'], $exportedProducts)) {
+                } elseif ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY
+                    && !in_array($product['sku'], $exportedProducts)) {
                     $this->handleProductNotCompleteAnymore($product);
                 }
             } catch (SoapCallException $e) {
