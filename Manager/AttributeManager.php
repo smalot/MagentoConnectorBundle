@@ -7,6 +7,8 @@ use Pim\Bundle\CatalogBundle\Manager\AttributeManager as BaseAttributeManager;
 use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
 
 /**
+ * @Deprecated
+ *
  * Custom attribute manager
  *
  * @author    Julien Sanchez <julien@akeneo.com>
@@ -40,6 +42,8 @@ class AttributeManager
     }
 
     /**
+     * @Deprecated
+     *
      * Get attributes
      * @param array $criterias
      *
@@ -51,6 +55,8 @@ class AttributeManager
     }
 
     /**
+     * @Deprecated
+     *
      * Get choices for image attributes
      *
      * @return array
@@ -141,6 +147,8 @@ class AttributeManager
     }
 
     /**
+     * @Deprecated
+     *
      * Returns the entity repository
      *
      * @return \Doctrine\ORM\EntityRepository

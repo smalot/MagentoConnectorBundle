@@ -5,6 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 use Pim\Bundle\CatalogBundle\Manager\LocaleManager as BaseLocaleManager;
 
 /**
+ * @Deprecated
+ *
  * Custom locale manager
  *
  * @author    Julien Sanchez <julien@akeneo.com>
@@ -25,6 +27,8 @@ class LocaleManager
     }
 
     /**
+     * @Deprecated
+     *
      * Get locale choices
      * Allow to list locales in an array like array[<code>] = <code>
      *

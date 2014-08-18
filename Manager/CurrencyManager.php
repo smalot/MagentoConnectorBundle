@@ -5,6 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 use Pim\Bundle\CatalogBundle\Manager\CurrencyManager as BaseCurrencyManager;
 
 /**
+ * @Deprecated
+ *
  * Custom currency manager
  *
  * @author    Julien Sanchez <julien@akeneo.com>
@@ -25,6 +27,8 @@ class CurrencyManager
     }
 
     /**
+     * @Deprecated
+     *
      * Get active code choices
      *
      * Prior to PHP 5.4 array_combine() does not accept
@@ -45,6 +49,8 @@ class CurrencyManager
     }
 
     /**
+     * @Deprecated
+     *
      * Get currency choices
      * Allow to list currencys in an array like array[<code>] = <code>
      *
