@@ -64,7 +64,7 @@ options:
         attribute: unique_color
         labels: { fr_FR: 'Violet', en_US: 'Purple' }
     uc_red:
-        code: uc_purple
+        code: uc_red
         attribute: unique_color
         labels: { fr_FR: 'Rouge', en_US: 'Red' }
     uc_yellow:
