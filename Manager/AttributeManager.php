@@ -157,6 +157,6 @@ class AttributeManager
     {
         $classMetadata = $this->objectManager->getMetadataFactory()->getMetadataFor($this->attributeClass);
 
-        return new AttributeRepository($this->objectManager, $classMetadata);
+        return $this->objectManager->getRepository($classMetadata);
     }
 }
