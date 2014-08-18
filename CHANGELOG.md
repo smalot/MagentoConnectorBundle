@@ -3,6 +3,12 @@
 - Product cleaner is cleaner
 - Version detection fix
 
+## Improvement
+- Compatibility with pim-community 1.2
+
+## BC Breaks
+- Stop compatibility with pim-community 1.1
+
 # 1.0.0-RC7 -
 ## Features
 - Custom entity support
