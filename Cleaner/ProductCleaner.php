@@ -9,6 +9,7 @@ use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -114,9 +115,11 @@ class ProductCleaner extends Cleaner
 
         foreach ($magentoProducts as $product) {
             try {
-                if (!in_array($product['sku'], $pimProducts)) {
+                if ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY &&
+                    !in_array($product['sku'], $pimProducts)) {
                     $this->handleProductNotInPimAnymore($product);
-                } elseif (!in_array($product['sku'], $exportedProducts)) {
+                } elseif ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY &&
+                    !in_array($product['sku'], $exportedProducts)) {
                     $this->handleProductNotCompleteAnymore($product);
                 }
             } catch (SoapCallException $e) {
