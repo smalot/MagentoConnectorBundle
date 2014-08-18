@@ -49,15 +49,15 @@ class ConfigurableProcessor extends AbstractProductProcessor
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser                   $webserviceGuesser,
-        NormalizerGuesser                   $normalizerGuesser,
-        LocaleManager                       $localeManager,
-        MagentoMappingMerger                $storeViewMappingMerger,
-        CurrencyManager                     $currencyManager,
-        ChannelManager                      $channelManager,
-        MagentoMappingMerger                $categoryMappingMerger,
-        MagentoMappingMerger                $attributeMappingMerger,
-        GroupManager                        $groupManager,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MagentoMappingMerger $storeViewMappingMerger,
+        CurrencyManager $currencyManager,
+        ChannelManager $channelManager,
+        MagentoMappingMerger $categoryMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
+        GroupManager $groupManager,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct(

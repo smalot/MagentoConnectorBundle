@@ -35,8 +35,8 @@ class CategoryWriter extends AbstractWriter
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser                   $webserviceGuesser,
-        CategoryMappingManager              $categoryMappingManager,
+        WebserviceGuesser $webserviceGuesser,
+        CategoryMappingManager $categoryMappingManager,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $clientParametersRegistry);

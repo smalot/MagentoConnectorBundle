@@ -53,9 +53,9 @@ class HasValidCredentialsValidator extends ConstraintValidator
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser                   $webserviceGuesser,
-        UrlExplorer                         $urlExplorer,
-        XmlChecker                          $xmlChecker,
+        WebserviceGuesser $webserviceGuesser,
+        UrlExplorer $urlExplorer,
+        XmlChecker $xmlChecker,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         $this->webserviceGuesser        = $webserviceGuesser;

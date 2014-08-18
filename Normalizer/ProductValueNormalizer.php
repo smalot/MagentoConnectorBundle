@@ -482,8 +482,8 @@ class ProductValueNormalizer implements NormalizerInterface
                 throw new InvalidOptionException(
                     sprintf(
                         'The attribute "%s" doesn\'t have any option named "%s" on ' .
-                        'Magento side. You should add this option in your "%s" attribute on Magento or export the PIM ' .
-                        'options using this Magento connector.',
+                        'Magento side. You should add this option in your "%s" attribute on Magento or export' .
+                        ' the PIM options using this Magento connector.',
                         $attributeCode,
                         $optionCode,
                         $attributeCode
@@ -502,7 +502,8 @@ class ProductValueNormalizer implements NormalizerInterface
      *
      * @return array
      */
-    protected function getIgnoredAttributesForOptionIdTransformation() {
+    protected function getIgnoredAttributesForOptionIdTransformation()
+    {
         return [
             'tax_class_id'
         ];

@@ -36,9 +36,9 @@ class DeltaProductWriter extends ProductWriter
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser                   $webserviceGuesser,
-        ChannelManager                      $channelManager,
-        ProductExportManager                $productExportManager,
+        WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager,
+        ProductExportManager $productExportManager,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $channelManager, $clientParametersRegistry);
