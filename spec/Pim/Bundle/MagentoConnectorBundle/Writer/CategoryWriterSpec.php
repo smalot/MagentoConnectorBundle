@@ -54,10 +54,8 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_sends_categories_to_update_on_magento_webservice(
-        Category $category,
-        $webservice
-    ) {
+    function it_sends_categories_to_update_on_magento_webservice($webservice)
+    {
         $batches = [
             [
                 'update' => [
@@ -71,10 +69,8 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_sends_categories_to_move_on_magento_webservice(
-        Category $category,
-        $webservice
-    ) {
+    function it_sends_categories_to_move_on_magento_webservice($webservice)
+    {
         $batches = [
             [
                 'move' => [

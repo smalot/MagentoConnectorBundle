@@ -37,7 +37,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
     }
 
-    function it_shoulds_delete_attribute_not_in_pim_anymore($webservice, $entityRepository, $mappingCollection)
+    function it_deletes_attribute_not_in_pim_anymore($webservice, $entityRepository, $mappingCollection)
     {
         $this->setNotInPimAnymoreAction('delete');
 
@@ -50,8 +50,11 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_shoulds_not_delete_attribute_not_in_pim_anymore_if_parameters_doesnt_say_to_do_so($webservice, $entityRepository, $mappingCollection)
-    {
+    function it_not_deletes_attribute_not_in_pim_anymore_if_parameters_doesnt_say_to_do_so(
+        $webservice,
+        $entityRepository,
+        $mappingCollection
+    ) {
         $this->setNotInPimAnymoreAction('do_nothing');
 
         $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
@@ -63,8 +66,12 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_shoulds_delete_attribute_not_in_family_anymore($webservice, $entityRepository, $mappingCollection, Attribute $attribute)
-    {
+    function it_deletes_attribute_not_in_family_anymore(
+        $webservice,
+        $entityRepository,
+        $mappingCollection,
+        Attribute $attribute
+    ) {
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
@@ -77,8 +84,12 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_shoulds_delete_attribute_which_got_renamed($webservice, $entityRepository, $mappingCollection, Attribute $attribute)
-    {
+    function it_deletes_attribute_which_got_renamed(
+        $webservice,
+        $entityRepository,
+        $mappingCollection,
+        Attribute $attribute
+    ) {
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
@@ -91,8 +102,12 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api($webservice, $entityRepository, $mappingCollection, Attribute $attribute)
-    {
+    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api(
+        $webservice,
+        $entityRepository,
+        $mappingCollection,
+        Attribute $attribute
+    ) {
         $this->setNotInPimAnymoreAction('delete');
 
         $webservice->getAllAttributes()->willReturn([['code' => 'foo']]);
@@ -105,22 +120,24 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
-    function it_should_get_attribute_mapping_from_attribute_mapping_merger($attributeMappingMerger, MappingCollection $mappingCollection)
-    {
+    function it_get_attribute_mapping_from_attribute_mapping_merger(
+        $attributeMappingMerger,
+        MappingCollection $mappingCollection
+    ) {
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
         $mappingCollection->toArray()->willReturn([]);
 
         $this->getAttributeCodeMapping()->shouldReturn('[]');
     }
 
-    function it_shoulds_set_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
+    function it_sets_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
     {
         $attributeMappingMerger->setMapping([])->shouldBeCalled();
 
         $this->setAttributeCodeMapping('[]');
     }
 
-    function it_shoulds_give_configuration_fields($attributeMappingMerger)
+    function it_gives_configuration_fields($attributeMappingMerger)
     {
         $attributeMappingMerger->getConfigurationField()->willReturn(['attributeMapping' => []]);
 

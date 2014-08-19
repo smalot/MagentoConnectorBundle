@@ -29,8 +29,10 @@ class CurrencyManagerSpec extends ObjectBehavior
         $this->getActiveCodeChoices()->shouldReturn(['EUR' => 'EUR']);
     }
 
-    function it_returns_empty_array_when_active_code_choices_not_found(CurrencyRepository $currencyRepository, Currency $currency)
-    {
+    function it_returns_empty_array_when_active_code_choices_not_found(
+        CurrencyRepository $currencyRepository,
+        Currency $currency
+    ) {
         $currencyRepository->findBy(['activated' => true])->willReturn([]);
         $currency->getCode()->willReturn([]);
 

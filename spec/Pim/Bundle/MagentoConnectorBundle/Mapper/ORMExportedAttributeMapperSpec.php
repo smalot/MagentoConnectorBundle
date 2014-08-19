@@ -39,19 +39,23 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
         $this->shouldHaveType('Pim\Bundle\MagentoConnectorBundle\Mapper\ORMExportedAttributeMapper');
     }
 
-    function it_should_extends_mapper()
+    function it_extends_mapper()
     {
         $this->shouldBeAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper');
     }
 
-    function it_should_return_a_mapping_collection_on_get_mapping(AttributeMappingManager $attributeMappingManager, MagentoSoapClientParameters $clientParameters)
+    function it_returns_a_mapping_collection_on_get_mapping(AttributeMappingManager $attributeMappingManager)
     {
         $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn([]);
         $this->getMapping()->shouldReturnAnInstanceOf('Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection');
     }
 
-    function it_should_get_mapping_from_exported_attributes_table($attributeMappingManager, $clientParameters, MappingCollection $mapping, $attributeMapping, $attribute, $magentoAttributeMappingMerger)
-    {
+    function it_gets_mapping_from_exported_attributes_table(
+        $attributeMappingManager,
+        MappingCollection $mapping,
+        $attributeMapping,
+        $magentoAttributeMappingMerger
+    ) {
         $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn([$attributeMapping]);
 
         $magentoAttributeMappingMerger->getMapping()->willReturn($mapping);
@@ -64,8 +68,12 @@ class ORMExportedAttributeMapperSpec extends ObjectBehavior
         $mappingCollection->getTarget('attribute_code')->shouldReturn(12);
     }
 
-    function it_should_get_mapping_from_exported_attributes_table_with_a_mapped_attribute($attributeMappingManager, $clientParameters, MappingCollection $mapping, $attributeMapping, $attribute, $magentoAttributeMappingMerger)
-    {
+    function it_gets_mapping_from_exported_attributes_table_with_a_mapped_attribute(
+        $attributeMappingManager,
+        MappingCollection $mapping,
+        $attributeMapping,
+        $magentoAttributeMappingMerger
+    ) {
         $attributeMappingManager->getAllMagentoAttribute('http://test.dev/api')->willReturn([$attributeMapping]);
 
         $magentoAttributeMappingMerger->getMapping()->willReturn($mapping);

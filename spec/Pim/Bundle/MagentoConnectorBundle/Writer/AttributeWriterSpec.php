@@ -24,15 +24,15 @@ use Prophecy\Argument;
 class AttributeWriterSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser                   $webserviceGuesser,
-        FamilyMappingManager                $familyMappingManager,
-        AttributeMappingManager             $attributeMappingManager,
-        AttributeGroupMappingManager        $attributeGroupMappingManager,
-        Webservice                          $webservice,
-        StepExecution                       $stepExecution,
-        MagentoMappingMerger                $magentoMappingMerger,
+        WebserviceGuesser $webserviceGuesser,
+        FamilyMappingManager $familyMappingManager,
+        AttributeMappingManager $attributeMappingManager,
+        AttributeGroupMappingManager $attributeGroupMappingManager,
+        Webservice $webservice,
+        StepExecution $stepExecution,
+        MagentoMappingMerger $magentoMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters         $clientParameters
+        MagentoSoapClientParameters $clientParameters
 
     ) {
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
@@ -88,12 +88,12 @@ class AttributeWriterSpec extends ObjectBehavior
 
     function it_sends_attribute_with_group_and_family_to_create_on_magento_webservice(
         $webservice,
-        AbstractAttribute            $attribute,
-        AttributeMappingManager      $attributeMappingManager,
+        AbstractAttribute $attribute,
+        AttributeMappingManager $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        FamilyMappingManager         $familyMappingManager,
-        AttributeGroup               $group,
-        Family                       $family,
+        FamilyMappingManager $familyMappingManager,
+        AttributeGroup $group,
+        Family $family,
         $magentoMappingMerger,
         MappingCollection $mapping
     ) {

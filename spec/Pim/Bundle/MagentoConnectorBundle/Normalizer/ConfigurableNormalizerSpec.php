@@ -124,8 +124,12 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_raises_an_expcetion_if_the_locale_does_not_have_a_corresponding_storeview($group, $product, $priceMappingManager, $attributeMapping)
-    {
+    function it_raises_an_expcetion_if_the_locale_does_not_have_a_corresponding_storeview(
+        $group,
+        $product,
+        $priceMappingManager,
+        $attributeMapping
+    ) {
         $this->globalContext['create']            = false;
         $this->globalContext['magentoStoreViews'] = [];
         $this->globalContext['magentoStoreView']  = 'default';
@@ -141,8 +145,12 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         ], 'MagentoArray', $this->globalContext]);
     }
 
-    function it_raises_an_expcetion_if_the_price_mapping_is_not_valid($group, $product, $priceMappingManager, $attributeMapping)
-    {
+    function it_raises_an_expcetion_if_the_price_mapping_is_not_valid(
+        $group,
+        $product,
+        $priceMappingManager,
+        $attributeMapping
+    ) {
         $this->globalContext['create'] = false;
         $this->globalContext['magentoStoreView'] = 'default';
 

@@ -27,12 +27,12 @@ use Prophecy\Argument;
 class HasValidCredentialsValidatorSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser                   $webserviceGuesser,
-        UrlExplorer                         $urlExplorer,
-        XmlChecker                          $xmlChecker,
-        ExecutionContextInterface           $context,
+        WebserviceGuesser $webserviceGuesser,
+        UrlExplorer $urlExplorer,
+        XmlChecker $xmlChecker,
+        ExecutionContextInterface $context,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters         $clientParameters
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($webserviceGuesser, $urlExplorer, $xmlChecker, $clientParametersRegistry);
 
