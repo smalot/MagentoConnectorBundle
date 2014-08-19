@@ -8,7 +8,6 @@ parameters:
     pim_magento_connector.webservice.url_explorer.class: Pim\Bundle\MagentoConnectorBundle\Webservice\UrlExplorer
     pim_magento_connector.webservice.magento_soap_client_parameters_registry.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry
     pim_magento_connector.repository.group.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository
-    pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
     pim_magento_connector.factory.magento_soap_client.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory
     pim_magento_connector.repository.currency.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CurrencyRepository

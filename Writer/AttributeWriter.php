@@ -62,11 +62,11 @@ class AttributeWriter extends AbstractWriter
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser            $webserviceGuesser,
-        FamilyMappingManager         $familyMappingManager,
-        AttributeMappingManager      $attributeMappingManager,
+        WebserviceGuesser $webserviceGuesser,
+        FamilyMappingManager $familyMappingManager,
+        AttributeMappingManager $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        MagentoMappingMerger         $attributeIdMappingMerger,
+        MagentoMappingMerger $attributeIdMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $clientParametersRegistry);

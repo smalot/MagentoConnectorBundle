@@ -97,12 +97,12 @@ class CategoryProcessor extends AbstractProcessor
         $this->globalContext = array_merge(
             $this->globalContext,
             [
-                'magentoCategories'   => $magentoCategories,
-                'magentoUrl'          => $this->getSoapUrl(),
-                'defaultLocale'       => $this->defaultLocale,
-                'magentoStoreViews'   => $magentoStoreViews,
-                'categoryMapping'     => $this->categoryMappingMerger->getMapping(),
-                'defaultStoreView'    => $this->getDefaultStoreView()
+                'magentoCategories' => $magentoCategories,
+                'magentoUrl'        => $this->getSoapUrl(),
+                'defaultLocale'     => $this->defaultLocale,
+                'magentoStoreViews' => $magentoStoreViews,
+                'categoryMapping'   => $this->categoryMappingMerger->getMapping(),
+                'defaultStoreView'  => $this->getDefaultStoreView()
             ]
         );
     }
@@ -135,20 +135,26 @@ class CategoryProcessor extends AbstractProcessor
                     $normalizedCategories = array_merge_recursive($normalizedCategories, $normalizedCategory);
                 } catch (CategoryNotMappedException $e) {
                     if (null !== $category->getParent() && $category->getParent()->isRoot()) {
-                        throw new InvalidItemException($e->getMessage(), array(
+                        throw new InvalidItemException(
+                            $e->getMessage(),
+                            [
+                                'category_id'      => $category->getId(),
+                                'category_code'    => $category->getCode(),
+                                'category_label'   => $category->getLabel(),
+                                'root_category_id' => $category->getRoot()
+                            ]
+                        );
+                    }
+                } catch (NormalizeException $e) {
+                    throw new InvalidItemException(
+                        $e->getMessage(),
+                        [
                             'category_id'      => $category->getId(),
                             'category_code'    => $category->getCode(),
                             'category_label'   => $category->getLabel(),
                             'root_category_id' => $category->getRoot()
-                        ));
-                    }
-                } catch (NormalizeException $e) {
-                    throw new InvalidItemException($e->getMessage(), array(
-                        'category_id'      => $category->getId(),
-                        'category_code'    => $category->getCode(),
-                        'category_label'   => $category->getLabel(),
-                        'root_category_id' => $category->getRoot()
-                    ));
+                        ]
+                    );
                 }
             }
         }

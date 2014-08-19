@@ -8,7 +8,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ProductManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
+use Pim\Bundle\CatalogBundle\Manager\GroupManager;
 
 /**
  * Magento configurable cleaner

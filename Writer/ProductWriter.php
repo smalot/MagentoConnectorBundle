@@ -41,8 +41,8 @@ class ProductWriter extends AbstractWriter
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
-        WebserviceGuesser                   $webserviceGuesser,
-        ChannelManager                      $channelManager,
+        WebserviceGuesser $webserviceGuesser,
+        ChannelManager $channelManager,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $clientParametersRegistry);

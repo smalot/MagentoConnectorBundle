@@ -6,7 +6,7 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
+use Pim\Bundle\CatalogBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;

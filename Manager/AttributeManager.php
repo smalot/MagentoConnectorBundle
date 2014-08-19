@@ -2,19 +2,48 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Manager\AttributeManager as BaseAttributeManager;
 use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
 
 /**
+ * @Deprecated
+ *
  * Custom attribute manager
  *
  * @author    Julien Sanchez <julien@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class AttributeManager extends BaseAttributeManager
+class AttributeManager
 {
+    /** @var BaseAttributeManager $baseAttributeManager */
+    protected $baseAttributeManager;
+
+    /** @var ObjectManager $objectManager */
+    protected $objectManager;
+
+    /** @var string */
+    protected $attributeClass;
+
     /**
+     * @param BaseAttributeManager $baseAttributeManager
+     * @param ObjectManager        $objectManager
+     * @param string               $attributeClass
+     */
+    public function __construct(
+        BaseAttributeManager $baseAttributeManager,
+        ObjectManager $objectManager,
+        $attributeClass
+    ) {
+        $this->baseAttributeManager = $baseAttributeManager;
+        $this->objectManager        = $objectManager;
+        $this->attributeClass       = $attributeClass;
+    }
+
+    /**
+     * @Deprecated
+     *
      * Get attributes
      * @param array $criterias
      *
@@ -26,6 +55,8 @@ class AttributeManager extends BaseAttributeManager
     }
 
     /**
+     * @Deprecated
+     *
      * Get choices for image attributes
      *
      * @return array
@@ -44,6 +75,80 @@ class AttributeManager extends BaseAttributeManager
     }
 
     /**
+     * Create an attribute
+     *
+     * @param string $type
+     *
+     * @return \Pim\Bundle\CatalogBundle\Model\AbstractAttribute
+     */
+    public function createAttribute($type = null)
+    {
+        return $this->baseAttributeManager->createAttribute($type);
+    }
+
+    /**
+     * Create an attribute option
+     *
+     * @return \Pim\Bundle\CatalogBundle\Entity\AttributeOption
+     */
+    public function createAttributeOption()
+    {
+        return $this->baseAttributeManager->createAttributeOption();
+    }
+
+    /**
+     * Create an attribute option value
+     *
+     * @return \Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue
+     */
+    public function createAttributeOptionValue()
+    {
+        return $this->baseAttributeManager->createAttributeOptionValue();
+    }
+
+    /**
+     * Get the attribute FQCN
+     *
+     * @return string
+     */
+    public function getAttributeClass()
+    {
+        return $this->baseAttributeManager->getAttributeClass();
+    }
+
+    /**
+     * Get the attribute option FQCN
+     *
+     * @return string
+     */
+    public function getAttributeOptionClass()
+    {
+        return $this->baseAttributeManager->getAttributeOptionClass();
+    }
+
+    /**
+     * Get a list of available attribute types
+     *
+     * @return string[]
+     */
+    public function getAttributeTypes()
+    {
+        return $this->baseAttributeManager->getAttributeTypes();
+    }
+
+    /**
+     * Remove an attribute
+     *
+     * @param AbstractAttribute $attribute
+     */
+    public function remove(AbstractAttribute $attribute)
+    {
+        $this->baseAttributeManager->remove($attribute);
+    }
+
+    /**
+     * @Deprecated
+     *
      * Returns the entity repository
      *
      * @return \Doctrine\ORM\EntityRepository
