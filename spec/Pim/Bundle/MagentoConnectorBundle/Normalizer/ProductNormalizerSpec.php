@@ -12,7 +12,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\Association;
-use Pim\Bundle\CatalogBundle\Model\Media;
+use Pim\Bundle\CatalogBundle\Model\ProductMedia;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
@@ -187,7 +187,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_images_for_given_product($product, $imageValue, Media $image, ArrayCollection $productValues, AbstractAttribute $imageAttribute, $mediaManager)
+    function it_normalizes_images_for_given_product($product, $imageValue, ProductMedia $image, ArrayCollection $productValues, AbstractAttribute $imageAttribute, $mediaManager)
     {
         $product->getValues()->willReturn($productValues);
         $productValues->filter(Argument::any())->willReturn([$imageValue]);
