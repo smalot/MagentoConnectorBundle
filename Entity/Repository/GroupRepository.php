@@ -71,6 +71,10 @@ class GroupRepository extends BaseGroupRepository
             ->setParameter(':variant_code', self::VARIANT_GROUP_CODE);
     }
 
+    /**
+     * Get axis attributes
+     * @return array
+     */
     public function getAxisAttributes()
     {
         return $this
