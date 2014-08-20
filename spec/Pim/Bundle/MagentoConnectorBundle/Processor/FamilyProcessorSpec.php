@@ -19,15 +19,15 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 class FamilyProcessorSpec extends ObjectBehavior
 {
     function let(
-        LocaleManager                       $localeManager,
-        MagentoMappingMerger                $storeViewMappingMerger,
-        WebserviceGuesser                   $webserviceGuesser,
-        NormalizerGuesser                   $normalizerGuesser,
-        Webservice                          $webservice,
-        FamilyNormalizer                    $familyNormalizer,
-        StepExecution                       $stepExecution,
+        LocaleManager $localeManager,
+        MagentoMappingMerger $storeViewMappingMerger,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        Webservice $webservice,
+        FamilyNormalizer $familyNormalizer,
+        StepExecution $stepExecution,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters         $clientParameters
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,

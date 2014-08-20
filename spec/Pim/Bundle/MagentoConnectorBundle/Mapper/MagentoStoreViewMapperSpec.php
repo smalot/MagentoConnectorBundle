@@ -28,7 +28,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $this->setParameters($clientParameters, '');
     }
 
-    function it_shoulds_get_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
+    function it_gets_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
@@ -46,12 +46,12 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn([]);
     }
 
-    function it_shoulds_do_nothing_to_save_mapping()
+    function it_does_nothing_to_save_mapping()
     {
         $this->setMapping([])->shouldReturn(null);
     }
 
-    function it_shoulds_get_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
+    function it_gets_all_magento_storeviews_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
@@ -60,7 +60,7 @@ class MagentoStoreViewMapperSpec extends ObjectBehavior
         $this->getAllTargets()->shouldReturn([['id' => 'attribute_code', 'text' => 'attribute_code']]);
     }
 
-    function it_should_give_an_proper_identifier($hasValidCredentialsValidator, $clientParameters)
+    function it_gives_an_proper_identifier($hasValidCredentialsValidator, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
         $clientParameters->getSoapUrl()->willReturn('soap_urlwsdl_url');

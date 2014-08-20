@@ -38,7 +38,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $clientParameters->getSoapApiKey()->willReturn('soap_api_key');
     }
 
-    function it_shoulds_guess_the_product_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    function it_guesses_the_product_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
@@ -47,7 +47,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $this->getProductNormalizer($clientParameters, true, 4, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer');
     }
 
-    function it_should_return_an_old_version_if_soap_give_an_old_version($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    function it_returns_an_old_version_if_soap_give_an_old_version($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
@@ -69,7 +69,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getAttributeNormalizer', [$clientParameters]);
     }
 
-    function it_shoulds_guess_the_configurable_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
+    function it_guesses_the_configurable_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
@@ -87,7 +87,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getConfigurableNormalizer', [$clientParameters, $productNormalizer, $priceMappingManager]);
     }
 
-    function it_shoulds_guess_the_category_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
+    function it_guesses_the_category_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
@@ -96,7 +96,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $this->getCategoryNormalizer($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer');
     }
 
-    function it_shoulds_guess_the_option_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    function it_guesses_the_option_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 
@@ -105,7 +105,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
         $this->getOptionNormalizer($clientParameters)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer');
     }
 
-    function it_shoulds_guess_the_attribute_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
+    function it_guesses_the_attribute_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn($magentoSoapClient);
 

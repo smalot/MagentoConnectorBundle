@@ -21,7 +21,6 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 class CategoryProcessorSpec extends ObjectBehavior
 {
     function let(
-        ChannelManager $channelManager,
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $categoryMappingMerger,

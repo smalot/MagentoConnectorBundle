@@ -136,15 +136,22 @@ class ProductNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_raises_an_exception_if_product_category_is_not_found($product, $categoryMappingManager, $category, $categoryMapping)
-    {
+    function it_raises_an_exception_if_product_category_is_not_found(
+        $product,
+        $categoryMappingManager,
+        $category,
+        $categoryMapping
+    ) {
         $categoryMappingManager->getIdFromCategory($category, 'magento_url', $categoryMapping)->willReturn(null);
 
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_the_given_grouped_product($product, $associationTypeManager, AssociationType $associationType)
-    {
+    function it_normalizes_the_given_grouped_product(
+        $product,
+        $associationTypeManager,
+        AssociationType $associationType
+    ) {
         $associationTypeManager->getAssociationTypeByCode('pim_grouped')->willReturn($associationType);
         $product->getAssociationForType($associationType)->willReturn(new Association(['association']));
 
@@ -187,8 +194,14 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_images_for_given_product($product, $imageValue, ProductMedia $image, ArrayCollection $productValues, AbstractAttribute $imageAttribute, $mediaManager)
-    {
+    function it_normalizes_images_for_given_product(
+        $product,
+        $imageValue,
+        ProductMedia $image,
+        ArrayCollection $productValues,
+        AbstractAttribute $imageAttribute,
+        $mediaManager
+    ) {
         $product->getValues()->willReturn($productValues);
         $productValues->filter(Argument::any())->willReturn([$imageValue]);
         $imageValue->getAttribute()->willReturn($imageAttribute);

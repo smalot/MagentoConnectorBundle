@@ -14,12 +14,12 @@ use Prophecy\Argument;
 class FamilyCleanerSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser                   $webserviceGuesser,
-        FamilyMappingManager                $familyMappingManager,
-        Webservice                          $webservice,
-        StepExecution                       $stepExecution,
+        WebserviceGuesser $webserviceGuesser,
+        FamilyMappingManager $familyMappingManager,
+        Webservice $webservice,
+        StepExecution $stepExecution,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters         $clientParameters
+        MagentoSoapClientParameters $clientParameters
     ) {
         $this->beConstructedWith($webserviceGuesser, $familyMappingManager, $clientParametersRegistry);
         $this->setStepExecution($stepExecution);

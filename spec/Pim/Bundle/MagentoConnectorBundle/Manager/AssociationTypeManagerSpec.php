@@ -5,13 +5,12 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
-use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class AssociationTypeManagerSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager, EntityRepository $entityRepository, ArrayCollection $arrayCollection)
+    function let(ObjectManager $objectManager, EntityRepository $entityRepository)
     {
         $this->beConstructedWith($objectManager, 'class_name');
         $objectManager->getRepository('class_name')->willReturn($entityRepository);
@@ -24,7 +23,7 @@ class AssociationTypeManagerSpec extends ObjectBehavior
         $this->getAssociationTypes()->shouldReturn($arrayCollection);
     }
 
-    function it_gets_association_type_from_repository_by_code($entityRepository, AssociationType $associationType, $arrayCollection)
+    function it_gets_association_type_from_repository_by_code($entityRepository, AssociationType $associationType)
     {
         $entityRepository->findOneBy(['code' => 'foo'])->willReturn($associationType);
 

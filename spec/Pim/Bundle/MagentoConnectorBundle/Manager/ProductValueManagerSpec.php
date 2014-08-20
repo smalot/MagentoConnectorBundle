@@ -2,12 +2,7 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Manager;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

@@ -32,25 +32,25 @@ use Prophecy\Argument;
 class ProductProcessorSpec extends ObjectBehavior
 {
     function let(
-        WebserviceGuesser                   $webserviceGuesser,
-        NormalizerGuesser                   $normalizerGuesser,
-        LocaleManager                       $localeManager,
-        MagentoMappingMerger                $storeViewMappingMerger,
-        CurrencyManager                     $currencyManager,
-        ChannelManager                      $channelManager,
-        MagentoMappingMerger                $categoryMappingMerger,
-        MagentoMappingMerger                $attributeMappingMerger,
-        MetricConverter                     $metricConverter,
-        AssociationTypeManager              $associationTypeManager,
-        Webservice                          $webservice,
-        MappingCollection                   $mappingCollection,
-        NormalizerGuesser                   $normalizerGuesser,
-        ProductNormalizer                   $productNormalizer,
-        Product                             $product,
-        Channel                             $channel,
+        WebserviceGuesser $webserviceGuesser,
+        NormalizerGuesser $normalizerGuesser,
+        LocaleManager $localeManager,
+        MagentoMappingMerger $storeViewMappingMerger,
+        CurrencyManager $currencyManager,
+        ChannelManager $channelManager,
+        MagentoMappingMerger $categoryMappingMerger,
+        MagentoMappingMerger $attributeMappingMerger,
+        MetricConverter $metricConverter,
+        AssociationTypeManager $associationTypeManager,
+        Webservice $webservice,
+        MappingCollection $mappingCollection,
+        NormalizerGuesser $normalizerGuesser,
+        ProductNormalizer $productNormalizer,
+        Product $product,
+        Channel $channel,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters         $clientParameters,
-        AttributeManager                    $attributeManager
+        MagentoSoapClientParameters $clientParameters,
+        AttributeManager $attributeManager
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -158,9 +158,9 @@ class ProductProcessorSpec extends ObjectBehavior
         $categoryMappingMerger,
         $productNormalizer,
         $mappingCollection,
-        Product         $product,
-        Channel         $channel,
-        Family          $family,
+        Product $product,
+        Channel $channel,
+        Family $family,
         MetricConverter $metricConverter,
         ProductValue $sku
     ) {
@@ -188,9 +188,9 @@ class ProductProcessorSpec extends ObjectBehavior
         $categoryMappingMerger,
         $productNormalizer,
         $mappingCollection,
-        Product         $product,
-        Channel         $channel,
-        Family          $family,
+        Product $product,
+        Channel $channel,
+        Family $family,
         MetricConverter $metricConverter,
         ProductValue $sku
     ) {
@@ -218,8 +218,8 @@ class ProductProcessorSpec extends ObjectBehavior
         $categoryMappingMerger,
         $productNormalizer,
         $mappingCollection,
-        Product         $product,
-        Family          $family,
+        Product $product,
+        Family $family,
         MetricConverter $metricConverter,
         AbstractAttribute $skuAttribute,
         ProductValue $sku
@@ -252,9 +252,9 @@ class ProductProcessorSpec extends ObjectBehavior
         $categoryMappingMerger,
         $productNormalizer,
         $mappingCollection,
-        Product         $product,
-        Channel         $channel,
-        Family          $family,
+        Product $product,
+        Channel $channel,
+        Family $family,
         MetricConverter $metricConverter,
         AbstractAttribute $skuAttribute,
         ProductValue $sku

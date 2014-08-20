@@ -12,8 +12,11 @@ use Prophecy\Argument;
 
 class FamilyMappingManagerSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager, EntityRepository $entityRepository, MappingCollection $mappingCollection)
-    {
+    function let(
+        ObjectManager $objectManager,
+        EntityRepository $entityRepository,
+        MappingCollection $mappingCollection
+    ) {
         $this->beConstructedWith($objectManager, 'Pim\Bundle\MagentoConnectorBundle\Entity\MagentoFamilyMapping');
         $objectManager->getRepository('Pim\Bundle\MagentoConnectorBundle\Entity\MagentoFamilyMapping')
             ->willReturn($entityRepository);
@@ -21,8 +24,11 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $mappingCollection->getTarget('default')->willReturn(12);
     }
 
-    function it_gets_family_from_id(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
-    {
+    function it_gets_family_from_id(
+        $entityRepository,
+        MagentoFamilyMapping $familyMapping,
+        Family $family
+    ) {
         $entityRepository->findOneBy(['magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'])
             ->willReturn($familyMapping);
 
@@ -31,7 +37,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getFamilyFromId(12, 'magento_url')->shouldReturn($family);
     }
 
-    function it_returns_null_if_family_mapping_is_not_found(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
+    function it_returns_null_if_family_mapping_is_not_found($entityRepository)
     {
         $entityRepository->findOneBy(['magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'])
             ->willReturn(null);
@@ -39,8 +45,12 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getFamilyFromId(12, 'magento_url')->shouldReturn(null);
     }
 
-    function it_gets_id_from_family_mapping_stored_in_database(Family $family, $entityRepository, MagentoFamilyMapping $familyMapping, $mappingCollection)
-    {
+    function it_gets_id_from_family_mapping_stored_in_database(
+        Family $family,
+        $entityRepository,
+        MagentoFamilyMapping $familyMapping,
+        $mappingCollection
+    ) {
         $entityRepository->findOneBy(
             [
                 'family'   => $family,
@@ -57,8 +67,11 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getIdFromFamily($family, '', $mappingCollection)->shouldReturn(13);
     }
 
-    function it_returns_null_if_family_is_not_found(Family $family, EntityRepository $entityRepository, $mappingCollection)
-    {
+    function it_returns_null_if_family_is_not_found(
+        Family $family,
+        $entityRepository,
+        $mappingCollection
+    ) {
         $entityRepository->findOneBy(
             [
                 'family'   => $family,
@@ -73,8 +86,11 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->getIdFromFamily($family, '', $mappingCollection)->shouldReturn(null);
     }
 
-    function it_tests_if_a_family_exist_from_family_id(EntityRepository $entityRepository, MagentoFamilyMapping $familyMapping, Family $family)
-    {
+    function it_tests_if_a_family_exist_from_family_id(
+        $entityRepository,
+        MagentoFamilyMapping $familyMapping,
+        Family $family
+    ) {
         $entityRepository->findOneBy(['magentoFamilyId' => 12, 'magentoUrl' => 'magento_url'])
             ->willReturn($familyMapping);
 
@@ -83,7 +99,7 @@ class FamilyMappingManagerSpec extends ObjectBehavior
         $this->magentoFamilyExists(12, 'magento_url')->shouldReturn(true);
     }
 
-    public function it_register_mapping(
+    public function it_registers_mapping(
         EntityRepository $entityRepository,
         MagentoFamilyMapping $magentoFamilyMapping,
         Family $family,

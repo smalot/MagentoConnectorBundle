@@ -6,7 +6,6 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
-use Pim\Bundle\CatalogBundle\Entity\Locale;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
@@ -29,11 +28,7 @@ class OptionNormalizerSpec extends ObjectBehavior
         AttributeOptionValue $optionValueUS,
         AttributeOptionValue $optionValueFR,
         AttributeOptionValue $optionValueDE,
-        Locale $localeUS,
-        Locale $localeFR,
-        Locale $localeDE,
         Attribute $attribute,
-        $channel,
         MappingCollection $storeViewMapping
     ) {
         $magentoStoreViews = [

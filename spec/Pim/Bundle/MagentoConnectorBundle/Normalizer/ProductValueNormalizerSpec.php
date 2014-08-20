@@ -2,12 +2,10 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
-use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\CatalogBundle\Model\Metric;
 use PhpSpec\ObjectBehavior;
@@ -17,8 +15,11 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext;
 
-    function let(ProductValue $value, MappingCollection $attributeMapping, AbstractAttribute $attribute)
-    {
+    function let(
+        ProductValue $value,
+        MappingCollection $attributeMapping,
+        AbstractAttribute $attribute
+    ) {
         $this->globalContext = [
             'identifier'               => 'identifier',
             'scopeCode'                => 'scope_code',
@@ -150,8 +151,11 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => '2000-01-01 00:00:00']);
     }
 
-    function it_normalizes_an_option_value($value, $attribute, AttributeOption $option)
-    {
+    function it_normalizes_an_option_value(
+        $value,
+        $attribute,
+        AttributeOption $option
+    ) {
         $this->globalContext['magentoAttributesOptions'] = ['attribute_code' => ['option_code' => 'option_id']];
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
@@ -162,8 +166,11 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 'option_id']);
     }
 
-    function it_raises_an_exception_if_an_option_value_does_not_exists_in_magento($value, $attribute, AttributeOption $option)
-    {
+    function it_raises_an_exception_if_an_option_value_does_not_exists_in_magento(
+        $value,
+        $attribute,
+        AttributeOption $option
+    ) {
         $this->globalContext['magentoAttributesOptions'] = ['attribute_code' => ['option_code2' => 'option_id']];
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
@@ -174,8 +181,12 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException')->during('normalize', [$value, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_a_collection_of_option_values($value, $attribute, AttributeOption $option1, AttributeOption $option2)
-    {
+    function it_normalizes_a_collection_of_option_values(
+        $value,
+        $attribute,
+        AttributeOption $option1,
+        AttributeOption $option2
+    ) {
         $this->globalContext['magentoAttributesOptions'] = ['attribute_code' => ['option_code_1' => 'option_id_1', 'option_code_2' => 'option_id_2']];
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
@@ -187,8 +198,12 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => ['option_id_1', 'option_id_2']]);
     }
 
-    function it_normalizes_a_collection_of_product_prices($value, $attribute, ProductPrice $price1, ProductPrice $price2)
-    {
+    function it_normalizes_a_collection_of_product_prices(
+        $value,
+        $attribute,
+        ProductPrice $price1,
+        ProductPrice $price2
+    ) {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
 

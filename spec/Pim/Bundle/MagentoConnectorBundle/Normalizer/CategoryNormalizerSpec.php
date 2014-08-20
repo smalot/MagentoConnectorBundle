@@ -33,8 +33,12 @@ class CategoryNormalizerSpec extends ObjectBehavior
         ];
     }
 
-    function it_normalizes_a_new_category(Category $category, Category $parentCategory, $categoryMapping, $categoryMappingManager)
-    {
+    function it_normalizes_a_new_category(
+        Category $category,
+        Category $parentCategory,
+        $categoryMapping,
+        $categoryMappingManager
+    ) {
         $category->getParent()->willReturn($parentCategory);
         $category->getLabel()->willReturn('category_label');
         $category->setLocale('default_locale')->shouldBeCalled();
@@ -69,8 +73,12 @@ class CategoryNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_normalizes_a_updated_category(Category $category, Category $parentCategory, $categoryMapping, $categoryMappingManager)
-    {
+    function it_normalizes_a_updated_category(
+        Category $category,
+        Category $parentCategory,
+        $categoryMapping,
+        $categoryMappingManager
+    ) {
         $this->globalContext = array_merge(
             $this->globalContext,
             [
@@ -112,8 +120,12 @@ class CategoryNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_normalizes_a_updated_category_who_have_moved(Category $category, Category $parentCategory, $categoryMapping, $categoryMappingManager)
-    {
+    function it_normalizes_a_updated_category_who_have_moved(
+        Category $category,
+        Category $parentCategory,
+        $categoryMapping,
+        $categoryMappingManager
+    ) {
         $this->globalContext = array_merge(
             $this->globalContext,
             [
@@ -160,8 +172,13 @@ class CategoryNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_normalizes_category_variations(Category $category, Category $parentCategory, CategoryTranslation $translation, $categoryMapping, $storeViewMapping, $categoryMappingManager)
-    {
+    function it_normalizes_category_variations(
+        Category $category,
+        Category $parentCategory,
+        CategoryTranslation $translation,
+        $categoryMapping, $storeViewMapping,
+        $categoryMappingManager
+    ) {
         $this->globalContext = array_merge(
             $this->globalContext,
             [

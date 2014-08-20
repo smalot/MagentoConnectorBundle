@@ -6,7 +6,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoGroupMapping;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use PhpSpec\ObjectBehavior;
 
@@ -26,7 +25,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $family->getCode()->willReturn(5);
     }
 
-    public function it_return_id_from_group(
+    public function it_returns_id_from_group(
         $entityRepository,
         MagentoGroupMapping $magentoGroupMapping,
         $family,
@@ -54,7 +53,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $this->getIdFromGroup($group, $family, 'magento_url')->shouldReturn(null);
     }
 
-    public function it_return_all_mappings(
+    public function it_returns_all_mappings(
         $entityRepository,
         MagentoGroupMapping $magentoGroupMapping
     ) {
@@ -62,7 +61,7 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $this->getAllMappings()->shouldReturn([$magentoGroupMapping]);
     }
 
-    public function it_register_mapping(
+    public function it_registers_mapping(
         $entityRepository,
         MagentoGroupMapping $magentoGroupMapping,
         $group,
@@ -81,9 +80,8 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $this->registerGroupMapping($group, $family, 3, 'url');
     }
 
-    public function it_return_null_if_no_mappings_found(
-        $entityRepository
-    ) {
+    public function it_returns_null_if_no_mappings_found($entityRepository)
+    {
         $entityRepository->findAll()->willReturn([]);
         $this->getAllMappings()->shouldReturn(null);
     }

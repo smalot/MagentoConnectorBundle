@@ -39,8 +39,13 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'axisAttributes'           => ['configurableAttributeCode']
         ];
 
-    function let(ProductValueNormalizer $productValueNormalizer, Attribute $attribute, MappingCollection $attributeMapping, MappingCollection $storeViewMapping, ProductValueManager $productValueManager)
-    {
+    function let(
+        ProductValueNormalizer $productValueNormalizer,
+        Attribute $attribute,
+        MappingCollection $attributeMapping,
+        MappingCollection $storeViewMapping,
+        ProductValueManager $productValueManager
+    ) {
         $this->beConstructedWith($productValueNormalizer, $productValueManager);
         $attribute->isUnique()->willReturn(true);
         $attribute->isRequired()->willReturn(false);
@@ -59,7 +64,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->supportsNormalization($attribute, 'MagentoArray')->shouldReturn(true);
     }
 
-    function it_normalize_a_new_attribute($attribute)
+    function it_normalizes_a_new_attribute($attribute)
     {
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn(null);
@@ -74,7 +79,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ));
     }
 
-    function it_normalize_an_updated_attribute($attribute, $attributeMapping, $storeViewMapping)
+    function it_normalizes_an_updated_attribute($attribute)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -94,7 +99,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_throws_an_exception_if_attribute_type_changed($attribute, $attributeMapping, $storeViewMapping)
+    function it_throws_an_exception_if_attribute_type_changed($attribute)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -111,7 +116,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException')->during('normalize', [$attribute, 'MagentoArray', $this->baseContext]);
     }
 
-    function it_shoulds_not_throws_an_exception_if_attribute_type_change_is_ignored($attribute, $attributeMapping, $storeViewMapping)
+    function it_doesnt_throw_an_exception_if_attribute_type_change_is_ignored($attribute, $attributeMapping)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -139,7 +144,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_should_lowercase_an_attribute_code_if_it_isnt($attribute)
+    function it_lowercases_an_attribute_code_if_it_isnt($attribute)
     {
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn(null);
@@ -154,7 +159,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ));
     }
 
-    function it_throws_an_exception_if_attribute_code_is_note_valid_type_changed($attribute, $attributeMapping, $storeViewMapping)
+    function it_throws_an_exception_if_attribute_code_is_note_valid_type_changed($attribute)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -170,8 +175,11 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException')->during('normalize', [$attribute, 'MagentoArray', $this->baseContext]);
     }
 
-    function it_normalizes_all_attribute_labels($attribute, $attributeMapping, $storeViewMapping, AttributeTranslation $translation)
-    {
+    function it_normalizes_all_attribute_labels(
+        $attribute,
+        $storeViewMapping,
+        AttributeTranslation $translation
+    ) {
         $this->baseContext = array_merge(
             $this->baseContext,
             [
@@ -207,8 +215,11 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ]);
     }
 
-    function it_normalize_a_new_attribute_with_default_value($attribute, $attributeMapping, $storeViewMapping, $productValueNormalizer, ProductValueInterface $productValue)
-    {
+    function it_normalizes_a_new_attribute_with_default_value(
+        $attribute,
+        $productValueNormalizer,
+        ProductValueInterface $productValue
+    ) {
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn($productValue);
         $attribute->getCode()->willReturn('attribute_code');
