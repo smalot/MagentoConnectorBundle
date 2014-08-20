@@ -4,7 +4,7 @@
 - Version detection fix
 
 ## Improvement
-- Compatibility with pim-community 1.2
+- Compatibility with pim-community 1.2.0-RC3
 
 ## BC Breaks
 - Stop compatibility with pim-community 1.1
