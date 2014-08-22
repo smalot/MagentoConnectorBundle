@@ -59,7 +59,7 @@ class CategoryProcessor extends AbstractProcessor
     }
 
     /**
-     * get categoryMapping
+     * Get categoryMapping
      *
      * @return string categoryMapping
      */
