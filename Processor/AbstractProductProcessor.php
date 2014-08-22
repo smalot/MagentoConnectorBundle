@@ -221,7 +221,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     public function getCategoryMapping()
     {
-        return json_encode($this->categoryMappingMerger->getMapping()->toArray());
+        $mapping = null;
+
+        if ($this->categoryMappingMerger->getMapping() !== null) {
+            $mapping = json_encode($this->categoryMappingMerger->getMapping()->toArray());
+        }
+
+        return $mapping;
     }
 
     /**
@@ -253,7 +259,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     public function getAttributeCodeMapping()
     {
-        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        $mapping = null;
+
+        if ($this->attributeMappingMerger->getMapping() !== null) {
+            $mapping = json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        }
+
+        return $mapping;
     }
 
     /**
