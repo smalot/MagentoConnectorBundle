@@ -233,7 +233,15 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     public function setCategoryMapping($categoryMapping)
     {
-        $this->categoryMappingMerger->setMapping(json_decode($categoryMapping, true));
+        $decodedCategoryMapping = json_decode($categoryMapping, true);
+
+        if (!is_array($decodedCategoryMapping)) {
+            $decodedCategoryMapping = [$decodedCategoryMapping];
+        }
+
+        $this->categoryMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->categoryMappingMerger->setMapping($decodedCategoryMapping);
+        $this->categoryMapping = $this->getCategoryMapping();
 
         return $this;
     }
@@ -257,7 +265,15 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $this->attributeMappingMerger->setMapping(json_decode($attributeCodeMapping, true));
+        $decodedAttributeCodeMapping = json_decode($attributeCodeMapping, true);
+
+        if (!is_array($decodedAttributeCodeMapping)) {
+            $decodedAttributeCodeMapping = [$decodedAttributeCodeMapping];
+        }
+
+        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
+        $this->attributeMappingMerger->setMapping($decodedAttributeCodeMapping);
+        $this->attributeCodeMapping = $this->getAttributeCodeMapping();
 
         return $this;
     }
