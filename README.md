@@ -14,7 +14,7 @@ Warning : this connector is not production ready and is intended for evaluation 
 
  - php5-xml
  - php5-soap
- - Akeneo PIM 1.1.0
+ - Akeneo PIM 1.2.0 RC-3
 
 # Installation instructions
 
@@ -33,7 +33,7 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
-    $ php composer.phar require akeneo/magento-connector-bundle:1.0.0-RC7
+    $ php composer.phar require akeneo/magento-connector-bundle:1.0.0-RC8
 
 Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
