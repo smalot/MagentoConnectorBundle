@@ -1,3 +1,7 @@
+# 1.0.0-RC9 (2014-09-09)
+## Bug fixes
+- Fix check on Magento 1.9
+
 # 1.0.0-RC8 -
 ## Bug fixes
 - Product cleaner is cleaner
