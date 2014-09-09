@@ -19,6 +19,34 @@
 
 {% block content %}
 
+    {% if form.permissions is defined %}
+        <script type="text/javascript">
+            require(
+                ['jquery', 'pimee/manage-permissions'],
+                function ($, managePermissions) {
+                    'use strict';
+
+                    $(function () {
+                        var options = {
+                            elementId: '#{{form.permissions.vars.id}}',
+                            changeBlockLabel: '{{ 'Changes'|trans }}',
+                            grantMessage: 'permission-changes.job profile.grant',
+                            revokeMessage: 'permission-changes.job profile.revoke',
+                            update: {
+                                add: {
+                                    '{{ form.permissions.edit.vars.id }}': ['{{ form.permissions.execute.vars.id }}']
+                                },
+                                remove: {
+                                    '{{ form.permissions.execute.vars.id }}': ['{{ form.permissions.edit.vars.id }}'],
+                                }
+                            }
+                        };
+                        managePermissions(options);
+                    });
+                });
+        </script>
+    {% endif %}
+
     {{ JSFV(form) }}
     {{ form_start(form, {
         'action': actionRoute,
@@ -46,6 +74,10 @@
         {{ elements.form_errors(form) }}
 
         {% set navbarTabs = ['General properties', 'History'] %}
+        {% if form.permissions is defined %}
+            {% set navbarTabs = navbarTabs|merge(['Permissions']) %}
+        {% endif %}
+        {% set navbarTabs = navbarTabs|merge(['History']) %}
 
         {{ elements.form_navbar(navbarTabs) }}
 
@@ -66,6 +98,12 @@
                 {% endset %}
                 {{ elements.accordion({ 'pane.accordion.global_settings': globalSettings }, 2) }}
             </div>
+
+            {% if form.permissions is defined %}
+            <div class="tab-pane buffer-top" id="permissions">
+                {{ elements.accordion({ 'pane.accordion.permissions': form_widget(form.permissions) }) }}
+            </div>
+            {% endif %}
 
             <div class="tab-pane" id="history">
                 {{ dataGrid.renderHistoryGrid(form.vars.value) }}
