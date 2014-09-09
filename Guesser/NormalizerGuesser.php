@@ -158,6 +158,7 @@ class NormalizerGuesser extends AbstractGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_14:
             case AbstractGuesser::MAGENTO_VERSION_1_13:
             case AbstractGuesser::MAGENTO_VERSION_1_9:
             case AbstractGuesser::MAGENTO_VERSION_1_8:
@@ -185,6 +186,7 @@ class NormalizerGuesser extends AbstractGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_14:
             case AbstractGuesser::MAGENTO_VERSION_1_13:
             case AbstractGuesser::MAGENTO_VERSION_1_9:
             case AbstractGuesser::MAGENTO_VERSION_1_8:
@@ -211,6 +213,7 @@ class NormalizerGuesser extends AbstractGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_14:
             case AbstractGuesser::MAGENTO_VERSION_1_13:
             case AbstractGuesser::MAGENTO_VERSION_1_9:
             case AbstractGuesser::MAGENTO_VERSION_1_8:
@@ -234,6 +237,7 @@ class NormalizerGuesser extends AbstractGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_14:
             case AbstractGuesser::MAGENTO_VERSION_1_13:
             case AbstractGuesser::MAGENTO_VERSION_1_9:
             case AbstractGuesser::MAGENTO_VERSION_1_8:
@@ -258,6 +262,7 @@ class NormalizerGuesser extends AbstractGuesser
         $magentoVersion = $this->getMagentoVersion($client);
 
         switch ($magentoVersion) {
+            case AbstractGuesser::MAGENTO_VERSION_1_14:
             case AbstractGuesser::MAGENTO_VERSION_1_13:
             case AbstractGuesser::MAGENTO_VERSION_1_9:
             case AbstractGuesser::MAGENTO_VERSION_1_8:
