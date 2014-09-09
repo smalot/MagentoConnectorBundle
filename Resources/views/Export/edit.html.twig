@@ -73,7 +73,7 @@
 
         {{ elements.form_errors(form) }}
 
-        {% set navbarTabs = ['General properties', 'History'] %}
+        {% set navbarTabs = ['General properties'] %}
         {% if form.permissions is defined %}
             {% set navbarTabs = navbarTabs|merge(['Permissions']) %}
         {% endif %}
