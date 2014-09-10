@@ -398,7 +398,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     protected function getClientParameters()
     {
-        if (!$this->clientParameters) {
             $this->clientParameters = $this->clientParametersRegistry->getInstance(
                 $this->soapUsername,
                 $this->soapApiKey,
@@ -408,7 +407,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
                 $this->httpLogin,
                 $this->httpPassword
             );
-        }
 
         return $this->clientParameters;
     }
