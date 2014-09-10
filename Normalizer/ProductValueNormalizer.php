@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
-use Pim\Bundle\CatalogBundle\Model\Media;
+use Pim\Bundle\CatalogBundle\Model\ProductMedia;
 use Pim\Bundle\CatalogBundle\Model\Metric;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
@@ -104,7 +104,7 @@ class ProductValueNormalizer implements NormalizerInterface
             ) &&
             $this->forceLocalization($attributeCode, $onlyLocalized) &&
             $this->attributeIsNotIgnored($attributeCode) &&
-            !($value->getData() instanceof Media)
+            !($value->getData() instanceof ProductMedia)
         );
     }
 
