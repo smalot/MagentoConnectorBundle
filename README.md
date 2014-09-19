@@ -33,7 +33,7 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
-    $ php composer.phar require akeneo/magento-connector-bundle:1.0.0-RC9
+    $ php composer.phar require akeneo/magento-connector-bundle:1.0.*
 
 Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
@@ -53,7 +53,7 @@ Don't forget to add guzzle in the composer.json of the pim
 
 
 If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
- 
+
 ## Installation the Magento Connector in an Akeneo PIM development environment
 
 The following installation instructions are meant for development on the Magento Connector itself.
