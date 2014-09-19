@@ -1,3 +1,9 @@
+# 1.0.0 (2014-09-19)
+
+# 1.0.0-RC10 (2014-09-11)
+## Bug fixes
+- Fixes on media attribute when updating product
+
 # 1.0.0-RC9 (2014-09-09)
 ## Bug fixes
 - Fix check on Magento 1.9
