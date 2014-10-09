@@ -1,7 +1,7 @@
 Akeneo to Magento Mapping and Transformations Specifications
 ============================================================
 
-This document descibes how *Akeneo entitiies* are mapped and transformed into *Magento Entities*
+This document descibes how *Akeneo entitities* are mapped and transformed into *Magento Entities*
 
 Entities mapping overview
 -------------------------
@@ -22,7 +22,7 @@ associations        linked products
 Akeneo Attribute to Magento attribute
 -------------------------------------
 
-Please not that no validation rules (number min, max characters, validation regexp, etc...) are sent to Magento, as the
+Please note that no validation rule (number min, max characters, validation regexp, etc...) are sent to Magento, as the
 content of the attributes is already checked on Akeneo's side.
 
 =======================  ====================
@@ -64,7 +64,7 @@ Metric attribute transformation
 '''''''''''''''''''''''''''''''
  - transformed into Text field
  - format : "VALUE UNIT"
- - UNIT: if defined: channel unit, else default unit of the family ? TO CHECK
+ - UNIT: if defined: channel unit with conversion, else unit of the metric
 
 
 Attribute scope mapping
@@ -74,7 +74,7 @@ Akeneo has only Channel as scope, but attribute content can be translated (local
 
 On Magento, there's no localizable property on attribute, only scopes Global, Website and storeview.
 As storeviews are usually used for translation on Magento, we map localizable to scope storeview.
-Storeviews are children of website
+Storeviews are children of website.
 
 ===================   ===========  ====================
            Akeneo side                Magento side
@@ -107,7 +107,7 @@ Akeneo category to Magento category
 ========================  ===========================
 Akeneo category property   Magento category property
 ========================  ===========================
-code                         ? url-key ?
+code                         url-key
 title (localizable)          Name
 N.A.                         Description
 N.A.                         Thumbnail image
@@ -125,16 +125,16 @@ Akeneo product to Magento product
 
 Magento mandatory attributes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Some attributes are mandatory in Magento and must be sent with products
+Some attributes are mandatory in Magento and must be sent with products.
 
 
 Magento specific
 ^^^^^^^^^^^^^^^^
 
-Some attributes properties on Magento don't have their counterparts on Akeneo. Here is how we defined them:
+Some attributes in Magento don't have their counterparts on Akeneo. Here is how we defined them:
 
-===========================  ===========================
-Magento attribute property             Origin
-===========================  ===========================
-   visibility                    defined by configuration ?
-===========================  ===========================
+==================  ===========================
+Magento attribute    Origin
+==================  ===========================
+   visibility        defined by configuration
+==================  ===========================
