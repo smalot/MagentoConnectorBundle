@@ -1,3 +1,7 @@
+# 1.0.0 (2014-09-29)
+## Bug fixes
+- Fixes associations fixtures
+
 # 1.0.0 (2014-09-19)
 
 # 1.0.0-RC10 (2014-09-11)
