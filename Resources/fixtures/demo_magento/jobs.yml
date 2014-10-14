@@ -1,0 +1,6 @@
+jobs:
+    magento_product_export:
+        connector: Magento Connector
+        alias:     magento_product_export
+        label:     Magento product export
+        type:      export
