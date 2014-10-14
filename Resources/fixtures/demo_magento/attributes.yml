@@ -29,7 +29,7 @@ attributes:
         numberMax:           500
         sortOrder:           1
         decimalsAllowed:     true
-        localizable:        true
+        localizable:         true
     short_description:
         labels:
             en_US: Short Description

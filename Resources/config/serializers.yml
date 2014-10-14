@@ -1,0 +1,16 @@
+parameters:
+    pim_magento_connector.normalizer.product.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
+    pim_magento_connector.normalizer.product_value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer
+
+services:
+   pim_magento_connector.serializer:
+       class: %pim_serializer.class%
+
+   pim_magento_connector.normalizer.product:
+       class: %pim_magento_connector.normalizer.product.class%
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 90 }
+   pim_magento_connector.normalizer.product_value:
+       class: %pim_magento_connector.normalizer.product_value.class%
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 90 }
