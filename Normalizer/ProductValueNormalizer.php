@@ -2,9 +2,13 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\scalar;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
+use Pim\Bundle\CatalogBundle\AttributeType\AbstractAttributeType;
 
 /**
  * Product value normalizer
@@ -13,78 +17,77 @@ use Symfony\Component\Serializer\Normalizer\scalar;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductValueNormalizer implements NormalizerInterface
+class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     /** @var string[] $supportedFormats */
-    protected $supportedFormats = ['api_import'];
+    protected $supportedFormats = [ProductNormalizer::API_IMPORT_FORMAT];
+
+    /** @var SerializerInterface */
+    protected $serializer;
 
     /**
      * {@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $defaultStoreView = $context['defaultStoreView'];
-        $locale           = $object->getLocale();
-        $attribute        = $object->getAttribute();
-        $code             = $attribute->getCode();
-        $values           = [];
+        $locale        = $object->getLocale();
+        $attribute     = $object->getAttribute();
+        $attributeCode = $attribute->getCode();
+        $data          = $object->getData();
+        $value         = null;
 
-        switch ($attribute->getAttributeType()) {
-            case 'pim_catalog_identifier':
-                $values[$defaultStoreView][ProductNormalizer::HEADER_SKU] = $object->__toString();
-            break;
+        if (AbstractAttributeType::BACKEND_TYPE_PRICE === $attribute->getBackendType()) {
+            $productPrice = $object->getPrice($context['defaultCurrency']);
 
-            case 'pim_catalog_text':
-            case 'pim_catalog_textarea':
-                $value = $object->getData();
-            break;
-
-            case 'pim_catalog_number':
-            case 'pim_catalog_boolean':
-                $value = floatval($object->getData());
-            break;
-
-            case 'pim_catalog_price_collection':
-                $price = $object->getPrice($context['defaultCurrency']);
-
-                if (null !== $price) {
-                    $value = $price->getData();
-                }
-            break;
-
-            case 'pim_catalog_metric':
-                $value = $object->getMetric()->getData();
-            break;
-
-            case 'pim_catalog_simpleselect':
-                $value = $object->getOption()->getCode();
-            break;
-
-            case 'pim_catalog_multiselect':
-                foreach ($object->getOptions() as $option) {
-                    $values[] = [ProductNormalizer::HEADER_STORE => '', $code => $option->getCode()];
-                }
-            break;
-
-            case 'pim_catalog_date':
-                $value = $object->getDate()->format(ProductNormalizer::DATE_FORMAT);
-            break;
-
-            // TODO : implement image and file attribute types
-            default:
-                $value = $object->__toString();
-            break;
-        }
-
-        if (isset($value)) {
-            if (null === $locale || $locale === $context['defaultLocale']) {
-                $values[$defaultStoreView][$code] = $value;
+            if (null !== $productPrice) {
+                $value = $this->serializer->normalize($productPrice, $format, $context);
+            }
+        } elseif ($data instanceof Collection) {
+            $value = $this->normalizeCollection($data, $format, $context);
+        } elseif (AbstractAttributeType::BACKEND_TYPE_DECIMAL === $object->getAttribute()->getBackendType()) {
+            $value = $this->normalizeDecimal($data, $format, $context);
+        } elseif (null !== $data) {
+            if (is_bool($data)) {
+                $value = intval($data);
             } else {
-                $values[$context['storeViewMapping'][$locale]][$code] = $value;
+                $value = $this->serializer->normalize($data, $format, $context);
             }
         }
 
-        return $values;
+        $normalized = [];
+        if (null === $locale || $context['defaultLocale'] === $locale) {
+            if (is_array($value)) {
+                foreach ($value as $option) {
+                    $normalized[] = [
+                        ProductNormalizer::HEADER_STORE => '',
+                        $attributeCode                  => $option
+                    ];
+                }
+            } else {
+                $normalized[$context['defaultStoreView']][$attributeCode] = $value;
+            }
+        } else {
+            if (is_array($value)) {
+                foreach ($value as $option) {
+                    $normalized[] = [
+                        ProductNormalizer::HEADER_STORE => $context['storeViewMapping'][$locale],
+                        $attributeCode                  => $option
+                    ];
+                }
+            } else {
+                $normalized[$context['storeViewMapping'][$locale]][$attributeCode] = $value;
+            }
+        }
+
+        return null !== $value ? $normalized : [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSerializer(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
     }
 
     /**
@@ -93,5 +96,44 @@ class ProductValueNormalizer implements NormalizerInterface
     public function supportsNormalization($data, $format = null)
     {
         return $data instanceof ProductValueInterface && in_array($format, $this->supportedFormats);
+    }
+
+    /**
+     * Normalize a collection attribute value
+     *
+     * @param Collection $collection
+     * @param string     $format
+     * @param array      $context
+     *
+     * @return array|null
+     */
+    protected function normalizeCollection(Collection $collection, $format, $context)
+    {
+        $normalized = [];
+        foreach ($collection as $item) {
+            $normalized[] = $this->serializer->normalize($item, $format, $context);
+        }
+
+        return (count($normalized) > 0) ? $normalized : null;
+    }
+
+    /**
+     * Normalize a decimal attribute value
+     *
+     * @param mixed  $data
+     * @param string $format
+     * @param array  $context
+     *
+     * @return mixed|null
+     */
+    protected function normalizeDecimal($data, $format, $context)
+    {
+        if (false === is_numeric($data)) {
+            $normalized = $this->serializer->normalize($data, $format, $context);
+        } else {
+            $normalized = floatval($data);
+        }
+
+        return $normalized;
     }
 }

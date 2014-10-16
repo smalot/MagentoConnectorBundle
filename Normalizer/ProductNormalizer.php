@@ -33,10 +33,12 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     // Constants for default value attributes
     const PRODUCT_TYPE_SIMPLE    = 'simple';
 
+    // Constants for formats
     const DATE_FORMAT            = 'Y-m-d H:i:s';
+    const API_IMPORT_FORMAT      = 'api_import';
 
     /** @var string[] $supportedFormats */
-    protected $supportedFormats  = ['api_import'];
+    protected $supportedFormats  = [self::API_IMPORT_FORMAT];
 
     /** @var SerializerInterface */
     protected $serializer;
@@ -56,7 +58,9 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         );
 
         foreach ($productValues as $storeView => &$values) {
-            $values[self::HEADER_STORE] = $storeView;
+            if (!isset($values[self::HEADER_STORE])) {
+                $values[self::HEADER_STORE] = $storeView;
+            }
         }
         $processedProduct = array_values($productValues);
 

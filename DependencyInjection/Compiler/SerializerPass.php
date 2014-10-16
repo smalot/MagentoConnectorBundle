@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Pim\Bundle\MagentoConnectorBundle\DependencyInjection\Reference\ReferenceFactory;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Compiler pass to register tagged normalizers into the magento connector serializer
@@ -17,9 +17,6 @@ use Pim\Bundle\MagentoConnectorBundle\DependencyInjection\Reference\ReferenceFac
  */
 class SerializerPass implements CompilerPassInterface
 {
-    /** @var ReferenceFactory */
-    protected $factory;
-
     /** @var string  */
     protected $serializerServiceId;
 
@@ -27,13 +24,11 @@ class SerializerPass implements CompilerPassInterface
     const DEFAULT_PRIORITY = 100;
 
     /**
-     * @param string                $serializerServiceId
-     * @param ReferenceFactory|null $factory
+     * @param string $serializerServiceId
      */
-    public function __construct($serializerServiceId, ReferenceFactory $factory = null)
+    public function __construct($serializerServiceId)
     {
         $this->serializerServiceId  = $serializerServiceId;
-        $this->factory = $factory ?: new ReferenceFactory();
     }
 
     /**
@@ -76,7 +71,7 @@ class SerializerPass implements CompilerPassInterface
         foreach ($services as $serviceId => $tags) {
             foreach ($tags as $tag) {
                 $priority = isset($tag['priority']) ? $tag['priority'] : self::DEFAULT_PRIORITY;
-                $sortedServices[$priority][] = $this->factory->createReference($serviceId);
+                $sortedServices[$priority][] = new Reference($serviceId);
             }
         }
 
