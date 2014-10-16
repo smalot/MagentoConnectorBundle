@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -36,9 +35,6 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     // Constants for formats
     const DATE_FORMAT            = 'Y-m-d H:i:s';
     const API_IMPORT_FORMAT      = 'api_import';
-
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats  = [self::API_IMPORT_FORMAT];
 
     /** @var SerializerInterface */
     protected $serializer;
@@ -72,7 +68,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof ProductInterface && in_array($format, $this->supportedFormats);
+        return $data instanceof ProductInterface && static::API_IMPORT_FORMAT === $format;
     }
 
     /**

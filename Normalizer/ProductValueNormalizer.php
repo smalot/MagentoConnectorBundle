@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
@@ -19,9 +18,6 @@ use Pim\Bundle\CatalogBundle\AttributeType\AbstractAttributeType;
  */
 class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats = [ProductNormalizer::API_IMPORT_FORMAT];
-
     /** @var SerializerInterface */
     protected $serializer;
 
@@ -93,7 +89,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof ProductValueInterface && in_array($format, $this->supportedFormats);
+        return $data instanceof ProductValueInterface && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
 
     /**

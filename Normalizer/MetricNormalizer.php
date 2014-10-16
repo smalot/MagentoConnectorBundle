@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
 use Pim\Bundle\CatalogBundle\Model\AbstractMetric;
 
 /**
@@ -15,9 +14,6 @@ use Pim\Bundle\CatalogBundle\Model\AbstractMetric;
  */
 class MetricNormalizer implements NormalizerInterface
 {
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats = [ProductNormalizer::API_IMPORT_FORMAT];
-
     /**
      * {@inheritdoc}
      */
@@ -31,6 +27,6 @@ class MetricNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractMetric && in_array($format, $this->supportedFormats);
+        return $data instanceof AbstractMetric && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
 }

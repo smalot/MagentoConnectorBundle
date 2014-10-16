@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 
 /**
@@ -15,9 +14,6 @@ use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
  */
 class AttributeOptionNormalizer implements NormalizerInterface
 {
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats = [ProductNormalizer::API_IMPORT_FORMAT];
-
     /**
      * {@inheritdoc}
      */
@@ -31,6 +27,6 @@ class AttributeOptionNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AttributeOption && in_array($format, $this->supportedFormats);
+        return $data instanceof AttributeOption && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
 }

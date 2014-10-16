@@ -16,18 +16,8 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats;
-
     /** @var  */
     protected $serializer;
-    /**
-     * @param array $formats
-     */
-    public function __construct(array $formats)
-    {
-        $this->supportedFormats = $formats;
-    }
 
     /**
      * {@inheritdoc}
@@ -47,7 +37,7 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Collection && in_array($format, $this->supportedFormats);
+        return $data instanceof Collection && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
 
     /**

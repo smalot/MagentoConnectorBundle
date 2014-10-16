@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
 
 /**
  * Date time normalizer
@@ -14,9 +13,6 @@ use Symfony\Component\Serializer\Normalizer\scalar;
  */
 class DateTimeNormalizer implements NormalizerInterface
 {
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats = [ProductNormalizer::API_IMPORT_FORMAT];
-
     /**
      * {@inheritdoc}
      */
@@ -30,6 +26,6 @@ class DateTimeNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof \DateTime && in_array($format, $this->supportedFormats);
+        return $data instanceof \DateTime && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
 }

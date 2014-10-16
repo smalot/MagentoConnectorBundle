@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Model\AbstractProductPrice;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
 
 /**
  * Product price normalizer
@@ -15,9 +14,6 @@ use Symfony\Component\Serializer\Normalizer\scalar;
  */
 class ProductPriceNormalizer implements NormalizerInterface
 {
-    /** @var string[] $supportedFormats */
-    protected $supportedFormats = [ProductNormalizer::API_IMPORT_FORMAT];
-
     /**
      * {@inheritdoc}
      */
@@ -31,6 +27,6 @@ class ProductPriceNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractProductPrice && in_array($format, $this->supportedFormats);
+        return $data instanceof AbstractProductPrice && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
 }
