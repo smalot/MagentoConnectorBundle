@@ -7,6 +7,7 @@ parameters:
     pim_magento_connector.normalizer.metric.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\MetricNormalizer
     pim_magento_connector.normalizer.generic.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\GenericNormalizer
     pim_magento_connector.normalizer.datetime.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\DateTimeNormalizer
+    pim_magento_connector.normalizer.collection.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\CollectionNormalizer
 
 services:
    pim_magento_connector.serializer:
@@ -34,6 +35,12 @@ services:
           - { name: pim_magento_connector.serializer.normalizer, priority: 90 }
    pim_magento_connector.datetime.metric:
        class: %pim_magento_connector.normalizer.datetime.class%
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 90 }
+   pim_magento_connector.normalizer.collection:
+       class: %pim_magento_connector.normalizer.collection.class%
+       arguments:
+          - [%pim_magento_connector.normalizer.format.magento_api_import%]
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 90 }
    pim_magento_connector.normalizer.generic:

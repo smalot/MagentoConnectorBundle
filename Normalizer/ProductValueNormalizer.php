@@ -42,8 +42,6 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             if (null !== $productPrice) {
                 $value = $this->serializer->normalize($productPrice, $format, $context);
             }
-        } elseif ($data instanceof Collection) {
-            $value = $this->normalizeCollection($data, $format, $context);
         } elseif (AbstractAttributeType::BACKEND_TYPE_DECIMAL === $object->getAttribute()->getBackendType()) {
             $value = $this->normalizeDecimal($data, $format, $context);
         } elseif (null !== $data) {
