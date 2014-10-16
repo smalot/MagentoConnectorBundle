@@ -58,8 +58,8 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         );
 
         foreach ($productValues as $storeView => &$values) {
-            if (!isset($values[self::HEADER_STORE])) {
-                $values[self::HEADER_STORE] = $storeView;
+            if (!isset($values[static::HEADER_STORE])) {
+                $values[static::HEADER_STORE] = $storeView;
             }
         }
         $processedProduct = array_values($productValues);
@@ -97,13 +97,13 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         $defaultStoreView = $context['defaultStoreView'];
 
         $customValues[$defaultStoreView] = [
-            self::HEADER_PRODUCT_TYPE    => self::PRODUCT_TYPE_SIMPLE,
-            self::HEADER_PRODUCT_WEBSITE => $context['website'],
-            self::HEADER_STATUS          => (integer) $product->isEnabled(),
-            self::HEADER_VISIBILITY      => (integer) $context['visibility'],
-            self::HEADER_ATTRIBUTE_SET   => $product->getFamily()->getCode(),
-            self::HEADER_CREATED_AT      => $product->getCreated()->format(self::DATE_FORMAT),
-            self::HEADER_UPDATED_AT      => $product->getUpdated()->format(self::DATE_FORMAT),
+            static::HEADER_PRODUCT_TYPE    => static::PRODUCT_TYPE_SIMPLE,
+            static::HEADER_PRODUCT_WEBSITE => $context['website'],
+            static::HEADER_STATUS          => (integer) $product->isEnabled(),
+            static::HEADER_VISIBILITY      => (integer) $context['visibility'],
+            static::HEADER_ATTRIBUTE_SET   => $product->getFamily()->getCode(),
+            static::HEADER_CREATED_AT      => $product->getCreated()->format(static::DATE_FORMAT),
+            static::HEADER_UPDATED_AT      => $product->getUpdated()->format(static::DATE_FORMAT),
         ];
 
         return $customValues;
