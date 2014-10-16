@@ -99,8 +99,8 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         $customValues[$defaultStoreView] = [
             static::HEADER_PRODUCT_TYPE    => static::PRODUCT_TYPE_SIMPLE,
             static::HEADER_PRODUCT_WEBSITE => $context['website'],
-            static::HEADER_STATUS          => (integer) $product->isEnabled(),
-            static::HEADER_VISIBILITY      => (integer) $context['visibility'],
+            static::HEADER_STATUS          => (int) $product->isEnabled(),
+            static::HEADER_VISIBILITY      => (int) $context['visibility'],
             static::HEADER_ATTRIBUTE_SET   => $product->getFamily()->getCode(),
             static::HEADER_CREATED_AT      => $product->getCreated()->format(static::DATE_FORMAT),
             static::HEADER_UPDATED_AT      => $product->getUpdated()->format(static::DATE_FORMAT),
