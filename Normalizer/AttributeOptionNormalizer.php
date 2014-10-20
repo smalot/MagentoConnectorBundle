@@ -2,8 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Attribute option

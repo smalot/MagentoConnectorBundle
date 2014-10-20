@@ -2,9 +2,9 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Pim\Bundle\MagentoConnectorBundle\DependencyInjection\Compiler;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Magento connector bundle

@@ -2,8 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\CatalogBundle\Model\AbstractMetric;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Metric normalizer
