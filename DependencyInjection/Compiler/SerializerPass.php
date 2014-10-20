@@ -46,7 +46,18 @@ class SerializerPass implements CompilerPassInterface
         $normalizerTag = sprintf("%s.normalizer", $this->serializerServiceId);
         $normalizers = $this->findAndSortTaggedServices($normalizerTag, $container);
 
-        $container->getDefinition($this->serializerServiceId)->setArguments([$normalizers]);
+        // Looks for all the services tagged "serializer.encoders" and adds them to the Serializer service
+        $encoderTag = sprintf("%s.encoder", $this->serializerServiceId);
+        $encoders = $this->findAndSortTaggedServices($encoderTag, $container);
+
+        if (empty($normalizers) && empty($encoders)) {
+            throw new \RuntimeException(
+                sprintf('You must tag at least one normalizer or encoder as "%s" to use the Serializer service',
+                    $this->serializerServiceId)
+            );
+        }
+
+        $container->getDefinition($this->serializerServiceId)->setArguments([$normalizers, $encoders]);
     }
 
     /**
@@ -62,9 +73,7 @@ class SerializerPass implements CompilerPassInterface
         $services = $container->findTaggedServiceIds($tagName);
 
         if (empty($services)) {
-            throw new \RuntimeException(
-                sprintf('You must tag at least one service as "%s" to use the Serializer service', $tagName)
-            );
+            return [];
         }
 
         $sortedServices = array();
