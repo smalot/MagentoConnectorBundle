@@ -1,10 +1,10 @@
 <?php
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
 /**
  * Normalize a product in ApiImport format
@@ -59,6 +59,14 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
             }
         }
         $processedProduct = array_values($productValues);
+
+        $categories = $this->getProductCategories($object, $format, $context);
+        foreach ($categories[static::HEADER_CATEGORY] as $key => $category) {
+            $processedProduct[] = [
+                static::HEADER_CATEGORY      => $category,
+                static::HEADER_CATEGORY_ROOT => $categories[static::HEADER_CATEGORY_ROOT][$key]
+            ];
+        }
 
         return $processedProduct;
     }
@@ -123,5 +131,39 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
 
         return $values;
+    }
+
+    /**
+     * Get normalized categories for the given product
+     * Return
+     * [
+     *   '_root_category' => ['rootOfCategory_1_path', 'rootOfCategory_2_path', ...],
+     *   '_category' => [ 'category_1_path', 'category_2_path', ...]
+     * ]
+     *
+     * @param ProductInterface $product
+     * @param string           $format
+     * @param array            $context
+     *
+     * @throws MappingException
+     *
+     * @return array
+     */
+    protected function getProductCategories(ProductInterface $product, $format, $context)
+    {
+        $productCategories = [];
+        foreach ($product->getCategories() as $category) {
+            $normalized = $this->serializer->normalize($category, $format, $context);
+
+            if (!isset($context['userCategoryMapping'][$normalized['root']])) {
+                throw new MappingException(
+                    sprintf('Category root "%s" not corresponding with user category mapping', $normalized['root'])
+                );
+            }
+            $productCategories[static::HEADER_CATEGORY_ROOT][] = $context['userCategoryMapping'][$normalized['root']];
+            $productCategories[static::HEADER_CATEGORY][] = $normalized['category'];
+        }
+
+        return $productCategories;
     }
 }

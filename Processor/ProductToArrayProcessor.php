@@ -41,16 +41,19 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($item)
     {
+        // Temporary for the need of POC
         $context = [
-            'defaultStoreView' => 'Default',
-            'defaultLocale'    => 'en_US',
-            'website'          => 'base',
-            'defaultCurrency'  => 'USD',
-            'visibility'       => '4',
-            'enabled'          => '1',
-            // Temporary for the need of POC
-            'storeViewMapping' => [
+            'defaultStoreView'    => 'Default',
+            'defaultLocale'       => 'en_US',
+            'website'             => 'base',
+            'defaultCurrency'     => 'USD',
+            'visibility'          => '4',
+            'enabled'             => '1',
+            'storeViewMapping'    => [
                 'fr_FR' => 'fr_fr'
+            ],
+            'userCategoryMapping' => [
+                'Master catalog' => 'Default Category'
             ]
         ];
 
