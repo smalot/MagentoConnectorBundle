@@ -93,25 +93,6 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     }
 
     /**
-     * Normalize a collection attribute value
-     *
-     * @param Collection $collection
-     * @param string     $format
-     * @param array      $context
-     *
-     * @return array|null
-     */
-    protected function normalizeCollection(Collection $collection, $format, $context)
-    {
-        $normalized = [];
-        foreach ($collection as $item) {
-            $normalized[] = $this->serializer->normalize($item, $format, $context);
-        }
-
-        return (count($normalized) > 0) ? $normalized : null;
-    }
-
-    /**
      * Normalize a decimal attribute value
      *
      * @param mixed  $data
