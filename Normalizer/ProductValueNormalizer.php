@@ -49,29 +49,10 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             }
         }
 
-        $normalized = [];
-        if (null === $locale || $context['defaultLocale'] === $locale) {
-            if (is_array($value)) {
-                foreach ($value as $option) {
-                    $normalized[] = [
-                        ProductNormalizer::HEADER_STORE => '',
-                        $attributeCode                  => $option
-                    ];
-                }
-            } else {
-                $normalized[$context['defaultStoreView']][$attributeCode] = $value;
-            }
+        if ($data instanceof AbstractProductMedia) {
+            $normalized[] = $value;
         } else {
-            if (is_array($value)) {
-                foreach ($value as $option) {
-                    $normalized[] = [
-                        ProductNormalizer::HEADER_STORE => $context['storeViewMapping'][$locale],
-                        $attributeCode                  => $option
-                    ];
-                }
-            } else {
-                $normalized[$context['storeViewMapping'][$locale]][$attributeCode] = $value;
-            }
+            $normalized = $this->localizeValue($locale, $attributeCode, $value, $context);
         }
 
         return null !== $value ? $normalized : [];
@@ -91,6 +72,57 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     public function supportsNormalization($data, $format = null)
     {
         return $data instanceof ProductValueInterface && ProductNormalizer::API_IMPORT_FORMAT === $format;
+    }
+
+    /**
+     * Localize a value
+     *
+     * @param       $locale
+     * @param       $attributeCode
+     * @param       $value
+     * @param array $context
+     *
+     * @return array
+     */
+    protected function localizeValue($locale, $attributeCode, $value, array $context)
+    {
+        if (null === $locale || $context['defaultLocale'] === $locale) {
+            if (is_array($value)) {
+                $localized = $this->normalizeLocalizedValue('', $value, $attributeCode);
+            } else {
+                $localized = $this->normalizeLocalizedValue($context['defaultStoreView'], $value, $attributeCode);
+            }
+        } else {
+            $localized = $this->normalizeLocalizedValue($context['storeViewMapping'][$locale], $value, $attributeCode);
+        }
+
+        return $localized;
+    }
+
+    /**
+     * Normalize a localized value
+     *
+     * @param $store
+     * @param $value
+     * @param $attributeCode
+     *
+     * @return array
+     */
+    protected function normalizeLocalizedValue($store, $value, $attributeCode)
+    {
+        $normalized = [];
+        if (is_array($value)) {
+            foreach ($value as $option) {
+                $normalized[] = [
+                    ProductNormalizer::HEADER_STORE => $store,
+                    $attributeCode                  => $option
+                ];
+            }
+        } else {
+            $normalized[$store][$attributeCode] = $value;
+        }
+
+        return $normalized;
     }
 
     /**
