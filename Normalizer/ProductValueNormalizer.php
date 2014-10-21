@@ -19,8 +19,8 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
-    /** @var SerializerInterface */
-    protected $serializer;
+    /** @var NormalizerInterface */
+    protected $normalizer;
 
     /**
      * {@inheritdoc}
@@ -37,7 +37,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             $productPrice = $object->getPrice($context['defaultCurrency']);
 
             if (null !== $productPrice) {
-                $value = $this->serializer->normalize($productPrice, $format, $context);
+                $value = $this->normalizer->normalize($productPrice, $format, $context);
             }
         } elseif (AbstractAttributeType::BACKEND_TYPE_DECIMAL === $attribute->getBackendType()) {
             $value = $this->normalizeDecimal($data, $format, $context);
@@ -45,7 +45,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             if (is_bool($data)) {
                 $value = intval($data);
             } else {
-                $value = $this->serializer->normalize($data, $format, $context);
+                $value = $this->normalizer->normalize($data, $format, $context);
             }
         }
 
@@ -63,7 +63,11 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
      */
     public function setSerializer(SerializerInterface $serializer)
     {
-        $this->serializer = $serializer;
+        if ($serializer instanceof NormalizerInterface) {
+            $this->normalizer = $serializer;
+        } else {
+            throw new \LogicException('Serializer must be a normalizer');
+        }
     }
 
     /**
@@ -137,7 +141,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     protected function normalizeDecimal($data, $format, $context)
     {
         if (false === is_numeric($data)) {
-            $normalized = $this->serializer->normalize($data, $format, $context);
+            $normalized = $this->normalizer->normalize($data, $format, $context);
         } else {
             $normalized = floatval($data);
         }

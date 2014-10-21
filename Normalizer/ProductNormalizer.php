@@ -36,18 +36,14 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     const DATE_FORMAT            = 'Y-m-d H:i:s';
     const API_IMPORT_FORMAT      = 'api_import';
 
-    /** @var SerializerInterface */
-    protected $serializer;
+    /** @var NormalizerInterface */
+    protected $normalizer;
 
     /**
      * {@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        if (!$this->serializer instanceof NormalizerInterface) {
-            throw new \LogicException('Serializer must be a normalizer');
-        }
-
         $productValues = array_merge_recursive(
             $this->getProductValues($object, $format, $context),
             $this->getCustomProductValues($object, $context)
@@ -84,7 +80,11 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
      */
     public function setSerializer(SerializerInterface $serializer)
     {
-        $this->serializer = $serializer;
+        if ($serializer instanceof NormalizerInterface) {
+            $this->normalizer = $serializer;
+        } else {
+            throw new \LogicException('Serializer must be a normalizer');
+        }
     }
 
     /**
@@ -127,7 +127,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     {
         $values = [];
         foreach ($product->getValues() as $productValue) {
-            $values = array_merge_recursive($values, $this->serializer->normalize($productValue, $format, $context));
+            $values = array_merge_recursive($values, $this->normalizer->normalize($productValue, $format, $context));
         }
 
         return $values;
@@ -153,7 +153,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     {
         $productCategories = [];
         foreach ($product->getCategories() as $category) {
-            $normalized = $this->serializer->normalize($category, $format, $context);
+            $normalized = $this->normalizer->normalize($category, $format, $context);
 
             if (!isset($context['userCategoryMapping'][$normalized['root']])) {
                 throw new MappingException(

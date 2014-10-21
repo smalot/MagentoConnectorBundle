@@ -16,8 +16,8 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
-    /** @var  */
-    protected $serializer;
+    /** @var NormalizerInterface */
+    protected $normalizer;
 
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
     {
         $normalized = [];
         foreach ($object as $item) {
-            $normalized[] = $this->serializer->normalize($item, $format, $context);
+            $normalized[] = $this->normalizer->normalize($item, $format, $context);
         }
 
         return (count($normalized) > 0) ? $normalized : null;
@@ -41,12 +41,14 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
     }
 
     /**
-     * Sets the owning Serializer object
-     *
-     * @param SerializerInterface $serializer
+     * {@inheritdoc}
      */
     public function setSerializer(SerializerInterface $serializer)
     {
-        $this->serializer = $serializer;
+        if ($serializer instanceof NormalizerInterface) {
+            $this->normalizer = $serializer;
+        } else {
+            throw new \LogicException('Serializer must be a normalizer');
+        }
     }
 }
