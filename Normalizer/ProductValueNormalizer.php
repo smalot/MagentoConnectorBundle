@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\AttributeType\AbstractAttributeType;
+use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -38,7 +39,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             if (null !== $productPrice) {
                 $value = $this->serializer->normalize($productPrice, $format, $context);
             }
-        } elseif (AbstractAttributeType::BACKEND_TYPE_DECIMAL === $object->getAttribute()->getBackendType()) {
+        } elseif (AbstractAttributeType::BACKEND_TYPE_DECIMAL === $attribute->getBackendType()) {
             $value = $this->normalizeDecimal($data, $format, $context);
         } elseif (null !== $data) {
             if (is_bool($data)) {
