@@ -11,3 +11,14 @@ connector:
                         reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.product_to_array
                         writer:    pim_base_connector.writer.dummy
+
+        magento_configurable_export:
+            title: pim_magento_connector.jobs.magento_configurable_export.title
+            type:  export
+            steps:
+                export:
+                    title: pim_magento_connector.jobs.magento_configurable_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.variant_group
+                        processor: pim_magento_connector.processor.variant_group_to_array
+                        writer:    pim_base_connector.writer.dummy

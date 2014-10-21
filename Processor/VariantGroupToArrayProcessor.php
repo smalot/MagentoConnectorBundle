@@ -6,16 +6,17 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+use Pim\Bundle\CatalogBundle\Manager\GroupManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Product to array processor
+ * Variant group to array processor
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
+class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement implements
     ItemProcessorInterface,
     StepExecutionAwareInterface
 {
@@ -34,40 +35,15 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * Process item
-     *
-     * @param ProductInterface $item
-     *
-     * @return array $product
+     * {@inheritdoc}
      */
     public function process($item)
     {
-        // Temporary for the need of POC
-        $context = [
-            'defaultStoreView'    => 'Default',
-            'defaultLocale'       => 'en_US',
-            'website'             => 'base',
-            'defaultCurrency'     => 'USD',
-            'visibility'          => '4',
-            'enabled'             => '1',
-            'storeViewMapping'    => [
-                'fr_FR' => 'fr_fr'
-            ],
-            'userCategoryMapping' => [
-                'Master catalog' => 'Default Category'
-            ]
-        ];
-
-        $product = $this->normalizer->normalize($item, 'api_import', $context);
-
-        return $product;
+        return null;
     }
 
     /**
-     * Return an array of fields for the configuration form
-     *
-     * @return array
-     *
+     * {@inheritdoc}
      */
     public function getConfigurationFields()
     {

@@ -4,3 +4,7 @@ pim_magento_connector:
             title: Magento Product Export
             export:
                 title: Product Export Step
+        magento_configurable_export:
+            title: Magento Configurable Export
+            export:
+                title: Configurable Export Step
