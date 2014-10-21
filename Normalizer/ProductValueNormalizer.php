@@ -49,13 +49,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             }
         }
 
-        if ($data instanceof AbstractProductMedia) {
-            $normalized[] = $value;
-        } else {
-            $normalized = $this->localizeValue($locale, $attributeCode, $value, $context);
-        }
-
-        return null !== $value ? $normalized : [];
+        return null !== $value ? $this->localizeValue($locale, $attributeCode, $value, $context) : [];
     }
 
     /**
@@ -117,10 +111,14 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         $normalized = [];
         if (is_array($value)) {
             foreach ($value as $option) {
-                $normalized[] = [
-                    ProductNormalizer::HEADER_STORE => $store,
-                    $attributeCode                  => $option
-                ];
+                if (is_array($option)) {
+                    $normalized[] = array_merge($option, [ProductNormalizer::HEADER_STORE => $store]);
+                } else {
+                    $normalized[] = [
+                        ProductNormalizer::HEADER_STORE => $store,
+                        $attributeCode                  => $option
+                    ];
+                }
             }
         } else {
             $normalized[$store][$attributeCode] = $value;
