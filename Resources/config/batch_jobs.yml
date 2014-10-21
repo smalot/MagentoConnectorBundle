@@ -10,4 +10,4 @@ connector:
                     services:
                         reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.product_to_array
-                        writer:    pim_magento_connector.writer.api_import
+                        writer:    pim_base_connector.writer.dummy
