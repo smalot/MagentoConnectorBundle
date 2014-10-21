@@ -22,7 +22,7 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         $normalized = [];
         foreach ($object as $item) {

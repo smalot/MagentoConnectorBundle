@@ -42,7 +42,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         $productValues = array_merge_recursive(
             $this->getProductValues($object, $format, $context),
@@ -149,7 +149,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
      *
      * @return array
      */
-    protected function getProductCategories(ProductInterface $product, $format, $context)
+    protected function getProductCategories(ProductInterface $product, $format, array $context)
     {
         $productCategories = [];
         foreach ($product->getCategories() as $category) {

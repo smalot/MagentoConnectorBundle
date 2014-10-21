@@ -25,7 +25,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         $locale        = $object->getLocale();
         $attribute     = $object->getAttribute();
@@ -75,10 +75,10 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     /**
      * Localize a value
      *
-     * @param       $locale
-     * @param       $attributeCode
-     * @param       $value
-     * @param array $context
+     * @param string $locale
+     * @param string $attributeCode
+     * @param mixed  $value
+     * @param array  $context
      *
      * @return array
      */
@@ -100,9 +100,9 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     /**
      * Normalize a localized value
      *
-     * @param $store
-     * @param $value
-     * @param $attributeCode
+     * @param string $store
+     * @param mixed  $value
+     * @param string $attributeCode
      *
      * @return array
      */
@@ -136,7 +136,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
      *
      * @return mixed|null
      */
-    protected function normalizeDecimal($data, $format, $context)
+    protected function normalizeDecimal($data, $format, array $context)
     {
         if (false === is_numeric($data)) {
             $normalized = $this->normalizer->normalize($data, $format, $context);
