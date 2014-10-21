@@ -1,0 +1,12 @@
+code;parent;label-en_US;label-fr_FR
+default;;"Master catalog";"Catalog principal"
+computers;default;Computers;Ordinateurs
+desktops;computers;Desktops;"Ordinateurs de bureau"
+laptops;computers;Laptops;"Ordinateurs portables"
+notebooks;laptops;Notebooks;"Ordinateurs ultra-portables"
+apparels;default;"Apparels & Shoes";"Habillements & chaussures"
+shirts;apparels;Shirts;Chemises
+jeans;apparels;Jeans;Jeans
+shoes;apparels;Shoes;Chaussures
+shoes_male;shoes;"Shoes Male";"Chaussures homme"
+shoes_female;shoes;"Shoes Female";"Chaussures femme"

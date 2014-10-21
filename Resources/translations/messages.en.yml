@@ -1,0 +1,6 @@
+pim_magento_connector:
+    jobs:
+        magento_product_export:
+            title: Magento Product Export
+            export:
+                title: Product Export Step
