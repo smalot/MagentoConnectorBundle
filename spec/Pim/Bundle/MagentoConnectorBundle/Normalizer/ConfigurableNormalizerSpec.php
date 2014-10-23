@@ -30,7 +30,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         Locale $localeEN,
         Group $group
     ) {
-        $this->beConstructedWith($channelManager, $productNormalizer, $priceMappingManager, $attributeMapping);
+        $this->beConstructedWith($channelManager, $productNormalizer, $priceMappingManager, 4);
 
         $this->globalContext = [
             'attributeSetId'           => 0,
@@ -79,6 +79,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
                 0,
                 'conf-group_code',
                 [
+                    'visibility'      => 4,
                     'price_changes'   => [],
                     'price'           => [],
                     'associated_skus' => ['sku-000'],
@@ -110,6 +111,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'default' => [
                 'conf-group_code',
                 [
+                    'visibility'      => 4,
                     'price_changes'   => [],
                     'price'           => [],
                     'associated_skus' => ['sku-000'],

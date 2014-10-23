@@ -136,6 +136,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->associationTypeManager,
                     $enabled,
                     $visibility,
+                    $variantMemberVisibility,
                     $currencyCode,
                     $clientParameters->getSoapUrl()
                 );

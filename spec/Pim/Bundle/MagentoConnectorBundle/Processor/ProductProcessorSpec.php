@@ -102,6 +102,7 @@ class ProductProcessorSpec extends ObjectBehavior
             $clientParameters,
             null,
             4,
+            1,
             null
         )
         ->willReturn($productNormalizer);

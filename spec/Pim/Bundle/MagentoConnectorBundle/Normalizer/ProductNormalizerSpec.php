@@ -50,6 +50,7 @@ class ProductNormalizerSpec extends ObjectBehavior
             $associationTypeManager,
             1,
             4,
+            1,
             'currency',
             'magento_url'
         );
@@ -104,6 +105,7 @@ class ProductNormalizerSpec extends ObjectBehavior
 
     function it_normalizes_the_given_new_product($product)
     {
+        $product->getGroups()->willReturn([]);
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
             'default' => [
                 'simple',
@@ -142,6 +144,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $category,
         $categoryMapping
     ) {
+        $product->getGroups()->willReturn([]);
         $categoryMappingManager->getIdFromCategory($category, 'magento_url', $categoryMapping)->willReturn(null);
 
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
@@ -154,6 +157,7 @@ class ProductNormalizerSpec extends ObjectBehavior
     ) {
         $associationTypeManager->getAssociationTypeByCode('pim_grouped')->willReturn($associationType);
         $product->getAssociationForType($associationType)->willReturn(new Association(['association']));
+        $product->getGroups()->willReturn([]);
 
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
             'default' => [
@@ -189,6 +193,7 @@ class ProductNormalizerSpec extends ObjectBehavior
 
     function it_raises_an_exception_if_a_storeview_is_missing($product)
     {
+        $product->getGroups()->willReturn([]);
         $this->globalContext['magentoStoreViews'] = [];
         $this->globalContext['magentoStoreView']  = 'default';
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
@@ -237,6 +242,7 @@ class ProductNormalizerSpec extends ObjectBehavior
     {
         $this->globalContext['create'] = false;
         $this->globalContext['defaultStoreView'] = 'default';
+        $product->getGroups()->willReturn([]);
 
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
             'default' => [
