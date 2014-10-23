@@ -63,6 +63,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param AssociationTypeManager $associationTypeManager
      * @param bool                   $enabled
      * @param bool                   $visibility
+     * @param bool                   $variantMemberVisibility
      * @param string                 $currencyCode
      * @param string                 $magentoUrl
      */
@@ -74,19 +75,21 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         AssociationTypeManager $associationTypeManager,
         $enabled,
         $visibility,
+        $variantMemberVisibility,
         $currencyCode,
         $magentoUrl
     ) {
         parent::__construct($channelManager);
 
-        $this->mediaManager           = $mediaManager;
-        $this->productValueNormalizer = $productValueNormalizer;
-        $this->categoryMappingManager = $categoryMappingManager;
-        $this->associationTypeManager = $associationTypeManager;
-        $this->enabled                = $enabled;
-        $this->visibility             = $visibility;
-        $this->currencyCode           = $currencyCode;
-        $this->magentoUrl             = $magentoUrl;
+        $this->mediaManager            = $mediaManager;
+        $this->productValueNormalizer  = $productValueNormalizer;
+        $this->categoryMappingManager  = $categoryMappingManager;
+        $this->associationTypeManager  = $associationTypeManager;
+        $this->enabled                 = $enabled;
+        $this->visibility              = $visibility;
+        $this->variantMemberVisibility = $variantMemberVisibility;
+        $this->currencyCode            = $currencyCode;
+        $this->magentoUrl              = $magentoUrl;
     }
 
     /**
@@ -426,8 +429,14 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         MappingCollection $attributeCodeMapping,
         array $parameters = []
     ) {
+        if ($this->belongsToVariant($product)) {
+            $visibility = $this->variantMemberVisibility;
+        } else {
+            $visibility = $this->visibility;
+        }
+
         return [
-            strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
+            strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $visibility,
             strtolower($attributeCodeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
             strtolower($attributeCodeMapping->getTarget('created_at'))     => $product->getCreated()
                 ->format(AbstractNormalizer::DATE_FORMAT),
@@ -439,5 +448,23 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $parameters['scopeCode']
             )
         ];
+    }
+
+    /**
+     * Check if the product belongs to a variant group
+     *
+     * @param ProductInterface $product
+     *
+     * @return boolean
+     */
+    protected function belongsToVariant(ProductInterface $product)
+    {
+        foreach ($product->getGroups() as $group) {
+            if ($group->getType()->isVariant()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

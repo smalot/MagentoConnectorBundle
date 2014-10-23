@@ -1,3 +1,15 @@
+# 1.1.0 (2014-10-23)
+## New feature
+ - Add visibility option for products members of variant group
+   for example to avoid displaying simple product only
+
+# BC Breaks
+ - ProductNormalizer and ConfigurableNormalizer constructors have now a new visibility parameter
+
+# 1.0.1 (2014-09-30)
+## Bug fixes
+ - Fix association fixtures #252
+
 # 1.0.0 (2014-09-19)
 
 # 1.0.0-RC10 (2014-09-11)

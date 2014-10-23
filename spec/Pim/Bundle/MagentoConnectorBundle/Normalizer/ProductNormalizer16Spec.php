@@ -27,6 +27,7 @@ class ProductNormalizer16Spec extends ObjectBehavior
             $associationTypeManager,
             1,
             4,
+            1,
             'currency',
             'magento_url'
         );

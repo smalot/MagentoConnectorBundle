@@ -71,6 +71,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
             $clientParameters,
             null,
             4,
+            1,
             null
         )->willReturn($productNormalizer);
 
@@ -109,7 +110,8 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $normalizerGuesser->getConfigurableNormalizer(
             $clientParameters,
             $productNormalizer,
-            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager')
+            Argument::type('\Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager'),
+            4
         )->willReturn($configurableNormalizer);
 
         $groupManager->getRepository()->willReturn($groupRepository);

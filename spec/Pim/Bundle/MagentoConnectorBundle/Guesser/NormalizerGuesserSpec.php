@@ -44,7 +44,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
 
         $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.8']);
 
-        $this->getProductNormalizer($clientParameters, true, 4, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer');
+        $this->getProductNormalizer($clientParameters, true, 4, 1, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer');
     }
 
     function it_returns_an_old_version_if_soap_give_an_old_version($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient)
@@ -53,7 +53,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
 
         $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.6']);
 
-        $this->getProductNormalizer($clientParameters, true, 4, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16');
+        $this->getProductNormalizer($clientParameters, true, 4, 1, 'EUR')->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16');
     }
 
     function it_raises_an_exception_if_the_version_number_is_not_well_formed($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
@@ -62,8 +62,8 @@ class NormalizerGuesserSpec extends ObjectBehavior
 
         $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => 'v1.0.4']);
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getProductNormalizer', [$clientParameters, true, 4, 'EUR']);
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getConfigurableNormalizer', [$clientParameters, $productNormalizer, $priceMappingManager]);
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getProductNormalizer', [$clientParameters, true, 4, 1, 'EUR']);
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getConfigurableNormalizer', [$clientParameters, $productNormalizer, $priceMappingManager, 4]);
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getCategoryNormalizer', [$clientParameters]);
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getOptionNormalizer', [$clientParameters]);
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getAttributeNormalizer', [$clientParameters]);
@@ -75,7 +75,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
 
         $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.8']);
 
-        $this->getConfigurableNormalizer($clientParameters, $productNormalizer, $priceMappingManager)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer');
+        $this->getConfigurableNormalizer($clientParameters, $productNormalizer, $priceMappingManager, 4)->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer');
     }
 
     function it_raises_an_exception_if_the_version_is_not_supported($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
@@ -84,7 +84,7 @@ class NormalizerGuesserSpec extends ObjectBehavior
 
         $magentoSoapClient->call('core_magento.info')->willReturn(['magento_version' => '1.4']);
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getConfigurableNormalizer', [$clientParameters, $productNormalizer, $priceMappingManager]);
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getConfigurableNormalizer', [$clientParameters, $productNormalizer, $priceMappingManager, 1]);
     }
 
     function it_guesses_the_category_normalizer_for_parameters($clientParameters, $magentoSoapClientFactory, MagentoSoapClient $magentoSoapClient, ProductNormalizer $productNormalizer, PriceMappingManager $priceMappingManager)
@@ -118,6 +118,6 @@ class NormalizerGuesserSpec extends ObjectBehavior
     {
         $magentoSoapClientFactory->getMagentoSoapClient($clientParameters)->willReturn(null);
 
-        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getProductNormalizer', [$clientParameters, true, 4, 'EUR']);
+        $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Guesser\NotSupportedVersionException')->during('getProductNormalizer', [$clientParameters, true, 4, 1, 'EUR']);
     }
 }

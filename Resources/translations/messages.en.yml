@@ -73,7 +73,10 @@ pim_magento_connector:
             help:
         visibility:
             label: Visibility on Magento
-            help:
+            help: 1: Not visibible individually, 2: Catalog, 3: Search, 4: Catalog, Search
+        variant_member_visibility:
+            label: Visibility for configurables members
+            help: 1: Not visibible individually, 2: Catalog, 3: Search, 4: Catalog, Search.  Applies only for products members of configurable products
         website:
             label: Website
             help: The website to which the products will be sent

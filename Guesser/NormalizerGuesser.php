@@ -93,6 +93,7 @@ class NormalizerGuesser extends AbstractGuesser
      * @param MagentoSoapClientParameters $clientParameters
      * @param boolean                     $enabled
      * @param boolean                     $visibility
+     * @param boolean                     $variantMemberVisibility
      * @param string                      $currencyCode
      *
      * @throws NotSupportedVersionException If the magento version is not supported
@@ -102,6 +103,7 @@ class NormalizerGuesser extends AbstractGuesser
         MagentoSoapClientParameters $clientParameters,
         $enabled,
         $visibility,
+        $variantMemberVisibility,
         $currencyCode
     ) {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
@@ -121,6 +123,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->associationTypeManager,
                     $enabled,
                     $visibility,
+                    $variantMemberVisibility,
                     $currencyCode,
                     $clientParameters->getSoapUrl()
                 );
@@ -133,6 +136,7 @@ class NormalizerGuesser extends AbstractGuesser
                     $this->associationTypeManager,
                     $enabled,
                     $visibility,
+                    $variantMemberVisibility,
                     $currencyCode,
                     $clientParameters->getSoapUrl()
                 );
@@ -146,13 +150,15 @@ class NormalizerGuesser extends AbstractGuesser
      * @param MagentoSoapClientParameters $clientParameters
      * @param ProductNormalizerInterface  $productNormalizer
      * @param PriceMappingManager         $priceMappingManager
+     * @param boolean                     $visibility
      *
      * @return AbstractNormalizer
      */
     public function getConfigurableNormalizer(
         MagentoSoapClientParameters $clientParameters,
         ProductNormalizerInterface $productNormalizer,
-        PriceMappingManager $priceMappingManager
+        PriceMappingManager $priceMappingManager,
+        $visibility
     ) {
         $client         = $this->magentoSoapClientFactory->getMagentoSoapClient($clientParameters);
         $magentoVersion = $this->getMagentoVersion($client);
@@ -167,7 +173,8 @@ class NormalizerGuesser extends AbstractGuesser
                 return new ConfigurableNormalizer(
                     $this->channelManager,
                     $productNormalizer,
-                    $priceMappingManager
+                    $priceMappingManager,
+                    $visibility
                 );
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
