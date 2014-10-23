@@ -29,20 +29,28 @@ class ConfigurableNormalizer extends AbstractNormalizer
     protected $productNormalizer;
 
     /**
+     * @var boolean
+     */
+    protected $visibility;
+
+    /**
      * Constructor
      * @param ChannelManager      $channelManager
      * @param ProductNormalizer   $productNormalizer
      * @param PriceMappingManager $priceMappingManager
+     * @param boolean             $visibility
      */
     public function __construct(
         ChannelManager $channelManager,
         ProductNormalizer $productNormalizer,
-        PriceMappingManager $priceMappingManager
+        PriceMappingManager $priceMappingManager,
+        $visibility
     ) {
         parent::__construct($channelManager);
 
         $this->productNormalizer   = $productNormalizer;
         $this->priceMappingManager = $priceMappingManager;
+        $this->visibility          = $visibility;
     }
 
     /**
@@ -176,6 +184,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $attributeMapping,
             false
         );
+
+        $defaultProductValues[ProductNormalizer::VISIBILITY] = $this->visibility;
 
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,

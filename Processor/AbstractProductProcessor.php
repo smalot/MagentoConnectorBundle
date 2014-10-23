@@ -27,6 +27,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
 {
     const MAGENTO_VISIBILITY_CATALOG_SEARCH = 4;
 
+    const MAGENTO_VISIBILITY_NONE = 1;
+
     /**
      * @var ProductNormalizer
      */
@@ -62,6 +64,11 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      * @var integer
      */
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
+
+    /**
+     * @var integer
+     */
+    protected $variantMemberVisibility = self::MAGENTO_VISIBILITY_NONE;
 
     /**
      * @var string
@@ -201,6 +208,30 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
+     * Set variant member visibility
+     *
+     * @param string $visibility visibility
+     *
+     * @return AbstractProcessor
+     */
+    public function setVariantMemberVisibility($visibility)
+    {
+        $this->variantMemberVisibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * get visibility for variant member
+     *
+     * @return string visibility
+     */
+    public function getVariantMemberVisibility()
+    {
+        return $this->variantMemberVisibility;
+    }
+
+    /**
      * Set visibility
      *
      * @param string $visibility visibility
@@ -301,6 +332,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             $this->getClientParameters(),
             $this->enabled,
             $this->visibility,
+            $this->variantMemberVisibility,
             $this->currency
         );
 
@@ -364,6 +396,14 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.visibility.help',
                         'label'    => 'pim_magento_connector.export.visibility.label'
+                    ]
+                ],
+                'variantMemberVisibility' => [
+                    'type'    => 'text',
+                    'options' => [
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.variant_member_visibility.help',
+                        'label'    => 'pim_magento_connector.export.variant_member_visibility.label'
                     ]
                 ],
                 'currency' => [

@@ -86,7 +86,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
         $this->configurableNormalizer = $this->normalizerGuesser->getConfigurableNormalizer(
             $this->getClientParameters(),
             $this->productNormalizer,
-            $priceMappingManager
+            $priceMappingManager,
+            $this->visibility
         );
     }
 
