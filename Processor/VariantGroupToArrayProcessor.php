@@ -6,11 +6,12 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Manager\GroupManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Variant group to array processor
+ * Process variant group in array of Magento configurable products
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -26,12 +27,19 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
     /** @var StepExecution */
     protected $stepExecution;
 
+    /** @var string */
+    protected $channel;
+
+    /** @var ChannelManager */
+    protected $channelManager;
+
     /**
      * @param NormalizerInterface $normalizer
      */
-    public function __construct(NormalizerInterface $normalizer)
+    public function __construct(NormalizerInterface $normalizer, ChannelManager $channelManager)
     {
-        $this->normalizer = $normalizer;
+        $this->normalizer     = $normalizer;
+        $this->channelManager = $channelManager;
     }
 
     /**
@@ -39,7 +47,26 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
      */
     public function process($item)
     {
-        return null;
+        $normalized = [];
+        $context = [
+            'channel' => $this->channelManager->getChannelByCode($this->getChannel()),
+            'defaultStoreView'    => 'Default',
+            'defaultLocale'       => 'en_US',
+            'website'             => 'base',
+            'defaultCurrency'     => 'USD',
+            'visibility'          => '4',
+            'enabled'             => '1',
+            'storeViewMapping'    => [
+                'fr_FR' => 'fr_fr'
+            ],
+            'userCategoryMapping' => [
+                'Master catalog' => 'Default Category'
+            ]
+        ];
+
+        $normalized = $this->normalizer->normalize($item, 'api_import', $context);
+
+        return $normalized;
     }
 
     /**
@@ -47,7 +74,18 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
      */
     public function getConfigurationFields()
     {
-        return [];
+        return [
+            'channel' => [
+                'type'    => 'choice',
+                'options' => [
+                    'choices'  => $this->channelManager->getChannelChoices(),
+                    'required' => true,
+                    'select2'  => true,
+                    'label'    => 'pim_base_connector.export.channel.label',
+                    'help'     => 'pim_base_connector.export.channel.help'
+                ]
+            ]
+        ];
     }
 
     /**
@@ -56,5 +94,21 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
     public function setStepExecution(StepExecution $stepExecution)
     {
         $this->stepExecution = $stepExecution;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @param string $channel
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
     }
 }
