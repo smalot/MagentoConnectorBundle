@@ -111,7 +111,7 @@ class AttributeNormalizer implements NormalizerInterface
             $magentoAttributeCode = strtolower($context['attributeCodeMapping']->getTarget($object->getCode()));
             $magentoAttributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
             if ($mappedAttributeType !== $magentoAttributeType &&
-                !in_array($object->getCode(), $this->getIgnoredAttributesForTypeChangeDetection())) {
+                !in_array($magentoAttributeCode, $this->getIgnoredAttributesForTypeChangeDetection())) {
                 throw new AttributeTypeChangedException(
                     sprintf(
                         'The type for the attribute "%s" has changed (Is "%s" in Magento and is %s in Akeneo PIM. ' .
