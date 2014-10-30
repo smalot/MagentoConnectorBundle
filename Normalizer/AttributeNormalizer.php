@@ -67,7 +67,7 @@ class AttributeNormalizer implements NormalizerInterface
     {
         $normalizedAttribute = [
             'scope'                         => $this->getNormalizedScope($object),
-            'is_unique'                     => $this->getNormalizedUnique($object),
+            'is_unique'                     => '0',
             'is_required'                   => $this->getNormalizedRequired($object),
             'apply_to'                      => '',
             'is_configurable'               => $this->getNormalizedConfigurable($object, $context['axisAttributes']),
