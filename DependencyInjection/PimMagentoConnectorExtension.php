@@ -28,5 +28,6 @@ class PimMagentoConnectorExtension extends Extension
         $loader->load('serializers.yml');
         $loader->load('processors.yml');
         $loader->load('readers.yml');
+        $loader->load('helpers.yml');
     }
 }

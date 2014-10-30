@@ -18,10 +18,10 @@ class VariantGroupReader extends AbstractConfigurableStepElement implements Prod
     /** @var ProductReaderInterface */
     protected $productReader;
 
-    /** @var array */
+    /** @var array $sentVariantGroups Buffer to keep variant groups which are already sent */
     protected $sentVariantGroups;
 
-    /** @var \ArrayIterator */
+    /** @var \ArrayIterator $variantGroupsToSend Buffer to keep variant groups to send */
     protected $variantGroupsToSend;
 
     /**
@@ -35,6 +35,9 @@ class VariantGroupReader extends AbstractConfigurableStepElement implements Prod
     }
 
     /**
+     * This reader send variant groups one by one to prevent to keep all of them in memory.
+     * It use a double buffer to know which variant groups have been already send and which are ones to send.
+     *
      * {@inheritdoc}
      */
     public function read()
@@ -44,15 +47,10 @@ class VariantGroupReader extends AbstractConfigurableStepElement implements Prod
         if (!$this->variantGroupsToSend->valid()) {
             $this->variantGroupsToSend = new \ArrayIterator();
 
-            $nextGroups = $this->getNextVariantGroups();
+            $nextGroups = $this->getNextVariantGroupsToSend($this->sentVariantGroups);
             if (null !== $nextGroups) {
-                while ($nextGroups->valid()) {
-                    if (!in_array($nextGroups->current()->getId(), $this->sentVariantGroups)) {
-                        $this->variantGroupsToSend->append($nextGroups->current());
-                    }
-
-                    $nextGroups->next();
-                }
+                $this->variantGroupsToSend = $nextGroups;
+                $this->variantGroupsToSend->rewind();
             } else {
                 $this->variantGroupsToSend = null;
             }
@@ -117,11 +115,26 @@ class VariantGroupReader extends AbstractConfigurableStepElement implements Prod
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function initialize()
+    {
+        $this->productReader->initialize();
+        $this->variantGroupsToSend = new \ArrayIterator();
+        $this->sentVariantGroups   = [];
+    }
+
+    /**
      * Get the next bunch of variant groups
+     * If there is no more variant groups to send, we continue to verify in
+     * next products if there are new variant groups.
+     * At the moment we have found new variant groups, we send them to avoid to keep all of them in memory.
+     *
+     * @param array $sentVariantGroups
      *
      * @return null|\ArrayIterator
      */
-    protected function getNextVariantGroups()
+    protected function getNextVariantGroupsToSend(array $sentVariantGroups = [])
     {
         $nextVariantGroups = new \ArrayIterator();
 
@@ -136,7 +149,7 @@ class VariantGroupReader extends AbstractConfigurableStepElement implements Prod
 
             if (!empty($variantGroups)) {
                 foreach ($variantGroups as $variantGroup) {
-                    if (!in_array($variantGroup->getId(), $this->sentVariantGroups)) {
+                    if (!in_array($variantGroup->getId(), $sentVariantGroups)) {
                         $nextVariantGroups->append($variantGroup);
                     }
                 }

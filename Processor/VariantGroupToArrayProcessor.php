@@ -7,7 +7,7 @@ use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\CatalogBundle\Manager\GroupManager;
+use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -33,13 +33,24 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
     /** @var ChannelManager */
     protected $channelManager;
 
+    /** @var PriceHelper */
+    protected $priceHelper;
+
     /**
+     * Constructor
+     *
      * @param NormalizerInterface $normalizer
+     * @param ChannelManager      $channelManager
+     * @param PriceHelper         $priceHelper
      */
-    public function __construct(NormalizerInterface $normalizer, ChannelManager $channelManager)
-    {
+    public function __construct(
+        NormalizerInterface $normalizer,
+        ChannelManager $channelManager,
+        PriceHelper $priceHelper
+    ) {
         $this->normalizer     = $normalizer;
         $this->channelManager = $channelManager;
+        $this->priceHelper    = $priceHelper;
     }
 
     /**
@@ -47,7 +58,6 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
      */
     public function process($item)
     {
-        $normalized = [];
         $context = [
             'channel' => $this->channelManager->getChannelByCode($this->getChannel()),
             'defaultStoreView'    => 'Default',
@@ -66,7 +76,7 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
 
         $normalized = $this->normalizer->normalize($item, 'api_import', $context);
 
-        return $normalized;
+        return empty($normalized) ? null : $normalized;
     }
 
     /**
