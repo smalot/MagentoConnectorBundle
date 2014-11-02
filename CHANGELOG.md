@@ -1,9 +1,17 @@
+# 1.1.1 (2014-11-0x)
+## Bug fixes:
+ - required property on attribute conflicts with Configurables
+
+## BC Breaks:
+ - required property is not sent anymore to Magento, as the data is already checked
+   on Akeneo''s side
+
 # 1.1.0 (2014-10-23)
 ## New feature
  - Add visibility option for products members of variant group
    for example to avoid displaying simple product only
 
-# BC Breaks
+## BC Breaks
  - ProductNormalizer and ConfigurableNormalizer constructors have now a new visibility parameter
 
 # 1.0.1 (2014-09-30)
