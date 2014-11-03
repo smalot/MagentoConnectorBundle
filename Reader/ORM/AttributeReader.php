@@ -128,7 +128,6 @@ class AttributeReader extends EntityReader
             'sku',
             'name',
             'description',
-            'collection'
         ];
     }
 
