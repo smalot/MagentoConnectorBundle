@@ -29,14 +29,21 @@ class PriceMappingManager
     protected $currency;
 
     /**
+     * @var string
+     */
+    protected $channel;
+
+    /**
      * Constructor
      * @param string $locale
      * @param string $currency
+     * @param string $channel
      */
-    public function __construct($locale, $currency)
+    public function __construct($locale, $currency, $channel)
     {
         $this->locale   = $locale;
         $this->currency = $currency;
+        $this->channel  = $channel;
     }
 
     /**
@@ -192,7 +199,9 @@ class PriceMappingManager
 
         $toSubstract = ($lowest * -1) * $toSubstract;
 
-        $price = $product->getValue('price', $this->locale);
+        $priceAttr = $attributeMapping->getSource('price');
+
+        $price = $product->getValue($priceAttr, $this->locale, $this->channel);
 
         $data = (null != $price) ? $price->getPrice($this->currency)->getData() : 0;
 
