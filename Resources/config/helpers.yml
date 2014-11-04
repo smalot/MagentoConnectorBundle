@@ -1,0 +1,6 @@
+parameters:
+    pim_magento_connector.helper.price.class: Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper
+
+services:
+    pim_magento_connector.helper.price:
+        class: %pim_magento_connector.helper.price.class%

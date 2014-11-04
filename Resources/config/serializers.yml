@@ -8,6 +8,8 @@ parameters:
     pim_magento_connector.normalizer.collection.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\CollectionNormalizer
     pim_magento_connector.normalizer.product_category.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCategoryNormalizer
     pim_magento_connector.normalizer.product_media.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductMediaNormalizer
+    pim_magento_connector.normalizer.variant_group_helper.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\VariantGroupHelper
+    pim_magento_connector.normalizer.group.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\GroupNormalizer
 
 services:
    pim_magento_connector.serializer:
@@ -59,3 +61,15 @@ services:
        class: %pim_magento_connector.normalizer.product_media.class%
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
+
+   pim_magento_connector.normalizer.group:
+       class: %pim_magento_connector.normalizer.group.class%
+       arguments:
+          - '@pim_magento_connector.normalizer.variant_group_helper'
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
+
+   pim_magento_connector.normalizer.variant_group_helper:
+       class: %pim_magento_connector.normalizer.variant_group_helper.class%
+       arguments:
+           - '@pim_magento_connector.helper.price'

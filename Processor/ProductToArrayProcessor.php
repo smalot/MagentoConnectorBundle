@@ -1,4 +1,5 @@
 <?php
+
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
