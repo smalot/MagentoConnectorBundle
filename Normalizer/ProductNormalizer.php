@@ -80,11 +80,11 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
      */
     public function setSerializer(SerializerInterface $serializer)
     {
-        if ($serializer instanceof NormalizerInterface) {
-            $this->normalizer = $serializer;
-        } else {
+        if (!$serializer instanceof NormalizerInterface) {
             throw new \LogicException('Serializer must be a normalizer');
         }
+
+        $this->normalizer = $serializer;
     }
 
     /**
