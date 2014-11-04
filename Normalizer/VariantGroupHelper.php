@@ -172,7 +172,6 @@ class VariantGroupHelper
      *
      * @param ProductInterface $product
      * @param string           $format
-     * @param array            $priceChanges
      * @param Collection       $variationAxes
      * @param array            $context
      *

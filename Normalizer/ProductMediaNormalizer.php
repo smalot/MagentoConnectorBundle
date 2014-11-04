@@ -17,7 +17,7 @@ class ProductMediaNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = NULL, array $context = [])
+    public function normalize($object, $format = null, array $context = [])
     {
         $attributeCode = $object->getValue()->getAttribute()->getCode();
 
@@ -32,9 +32,8 @@ class ProductMediaNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsNormalization($data, $format = NULL)
+    public function supportsNormalization($data, $format = null)
     {
         return $data instanceof AbstractProductMedia && ProductNormalizer::API_IMPORT_FORMAT === $format;
     }
-
 }

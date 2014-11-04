@@ -2,9 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\AttributeType\AbstractAttributeType;
-use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -57,11 +55,11 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
      */
     public function setSerializer(SerializerInterface $serializer)
     {
-        if ($serializer instanceof NormalizerInterface) {
-            $this->normalizer = $serializer;
-        } else {
+        if (!$serializer instanceof NormalizerInterface) {
             throw new \LogicException('Serializer must be a normalizer');
         }
+
+        $this->normalizer = $serializer;
     }
 
     /**
