@@ -16,18 +16,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     // Constants for default attributes header
-    const HEADER_ATTRIBUTE_SET   = '_attribute_set';
-    const HEADER_CATEGORY        = '_category';
-    const HEADER_CATEGORY_ROOT   = '_root_category';
-    const HEADER_CREATED_AT      = 'created_at';
-    const HEADER_PRODUCT_TYPE    = '_type';
-    const HEADER_PRODUCT_WEBSITE = '_product_websites';
-    const HEADER_SKU             = 'sku';
-    const HEADER_STATUS          = 'status';
-    const HEADER_STORE           = '_store';
-    const HEADER_TAX_CLASS_ID    = 'tax_class_id';
-    const HEADER_UPDATED_AT      = 'updated_at';
-    const HEADER_VISIBILITY      = 'visibility';
+    const HEADER_ATTRIBUTE_SET     = '_attribute_set';
+    const HEADER_CATEGORY          = '_category';
+    const HEADER_CATEGORY_ROOT     = '_root_category';
+    const HEADER_CREATED_AT        = 'created_at';
+    const HEADER_PRODUCT_TYPE      = '_type';
+    const HEADER_PRODUCT_WEBSITE   = '_product_websites';
+    const HEADER_SKU               = 'sku';
+    const HEADER_STATUS            = 'status';
+    const HEADER_STORE             = '_store';
+    const HEADER_TAX_CLASS_ID      = 'tax_class_id';
+    const HEADER_UPDATED_AT        = 'updated_at';
+    const HEADER_VISIBILITY        = 'visibility';
+    const HEADER_NAME              = 'name';
+    const HEADER_DESCRIPTION       = 'description';
+    const HEADER_SHORT_DESCRIPTION = 'short_description';
 
     // Constants for default value attributes
     const PRODUCT_TYPE_SIMPLE    = 'simple';
