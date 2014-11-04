@@ -82,7 +82,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
     {
         parent::beforeExecute();
 
-        $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency);
+        $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency, $this->channel);
         $this->configurableNormalizer = $this->normalizerGuesser->getConfigurableNormalizer(
             $this->getClientParameters(),
             $this->productNormalizer,
