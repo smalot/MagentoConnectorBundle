@@ -21,6 +21,19 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     /** @var NormalizerInterface */
     protected $normalizer;
 
+    /** @var MagentoAttributesHelper */
+    protected $attributesHelper;
+
+    /**
+     * Constructor
+     *
+     * @param MagentoAttributesHelper $attributesHelper
+     */
+    public function __construct(MagentoAttributesHelper $attributesHelper)
+    {
+        $this->attributesHelper = $attributesHelper;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -111,11 +124,11 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         if (is_array($value)) {
             foreach ($value as $option) {
                 if (is_array($option)) {
-                    $normalized[] = array_merge($option, [MagentoAttributesHelper::HEADER_STORE => $store]);
+                    $normalized[] = array_merge($option, [$this->attributesHelper->getHeaderStore() => $store]);
                 } else {
                     $normalized[] = [
-                        MagentoAttributesHelper::HEADER_STORE => $store,
-                        $attributeCode                        => $option
+                        $this->attributesHelper->getHeaderStore() => $store,
+                        $attributeCode                            => $option
                     ];
                 }
             }

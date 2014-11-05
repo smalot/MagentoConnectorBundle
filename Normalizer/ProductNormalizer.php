@@ -25,6 +25,19 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     /** @var NormalizerInterface */
     protected $normalizer;
 
+    /** @var MagentoAttributesHelper */
+    protected $attributesHelper;
+
+    /**
+     * Constructor
+     *
+     * @param MagentoAttributesHelper $attributesHelper
+     */
+    public function __construct(MagentoAttributesHelper $attributesHelper)
+    {
+        $this->attributesHelper = $attributesHelper;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -36,18 +49,18 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         );
 
         foreach ($productValues as $storeView => &$values) {
-            if (!isset($values[MagentoAttributesHelper::HEADER_STORE])) {
-                $values[MagentoAttributesHelper::HEADER_STORE] = $storeView;
+            if (!isset($values[$this->attributesHelper->getHeaderStore()])) {
+                $values[$this->attributesHelper->getHeaderStore()] = $storeView;
             }
         }
         $processedProduct = array_values($productValues);
 
         $categories = $this->getProductCategories($object, $format, $context);
-        foreach ($categories[MagentoAttributesHelper::HEADER_CATEGORY] as $key => $category) {
+        foreach ($categories[$this->attributesHelper->getHeaderCategory()] as $key => $category) {
             $processedProduct[] = [
-                MagentoAttributesHelper::HEADER_CATEGORY      => $category,
-                MagentoAttributesHelper::HEADER_CATEGORY_ROOT =>
-                    $categories[MagentoAttributesHelper::HEADER_CATEGORY_ROOT][$key]
+                $this->attributesHelper->getHeaderCategory()      => $category,
+                $this->attributesHelper->getHeaderCategoryRoot() =>
+                    $categories[$this->attributesHelper->getHeaderCategoryRoot()][$key]
             ];
         }
 
@@ -88,13 +101,13 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         $defaultStoreView = $context['defaultStoreView'];
 
         $customValues[$defaultStoreView] = [
-            MagentoAttributesHelper::HEADER_PRODUCT_TYPE    => MagentoAttributesHelper::PRODUCT_TYPE_SIMPLE,
-            MagentoAttributesHelper::HEADER_PRODUCT_WEBSITE => $context['website'],
-            MagentoAttributesHelper::HEADER_STATUS          => (int) $product->isEnabled(),
-            MagentoAttributesHelper::HEADER_VISIBILITY      => (int) $context['visibility'],
-            MagentoAttributesHelper::HEADER_ATTRIBUTE_SET   => $product->getFamily()->getCode(),
-            MagentoAttributesHelper::HEADER_CREATED_AT      => $product->getCreated()->format(static::DATE_FORMAT),
-            MagentoAttributesHelper::HEADER_UPDATED_AT      => $product->getUpdated()->format(static::DATE_FORMAT),
+            $this->attributesHelper->getHeaderProductType()    => $this->attributesHelper->getProductTypeSimple(),
+            $this->attributesHelper->getHeaderProductWebsite() => $context['website'],
+            $this->attributesHelper->getHeaderStatus()         => (int) $product->isEnabled(),
+            $this->attributesHelper->getHeaderVisibility()     => (int) $context['visibility'],
+            $this->attributesHelper->getHeaderAttributeSet()   => $product->getFamily()->getCode(),
+            $this->attributesHelper->getHeaderCreatedAt()      => $product->getCreated()->format(static::DATE_FORMAT),
+            $this->attributesHelper->getHeaderUpdatedAt()      => $product->getUpdated()->format(static::DATE_FORMAT),
         ];
 
         return $customValues;
@@ -147,9 +160,9 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
                     sprintf('Category root "%s" not corresponding with user category mapping', $normalized['root'])
                 );
             }
-            $productCategories[MagentoAttributesHelper::HEADER_CATEGORY_ROOT][] =
+            $productCategories[$this->attributesHelper->getHeaderCategoryRoot()][] =
                 $context['userCategoryMapping'][$normalized['root']];
-            $productCategories[MagentoAttributesHelper::HEADER_CATEGORY][] = $normalized['category'];
+            $productCategories[$this->attributesHelper->getHeaderCategory()][] = $normalized['category'];
         }
 
         return $productCategories;

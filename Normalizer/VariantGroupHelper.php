@@ -31,16 +31,24 @@ class VariantGroupHelper
     /** @var ValidProductHelper */
     protected $validProductHelper;
 
+    /** @var MagentoAttributesHelper */
+    protected $attributesHelper;
+
     /**
      * Constructor
      *
-     * @param PriceHelper        $priceHelper
-     * @param ValidProductHelper $validProductHelper
+     * @param PriceHelper             $priceHelper
+     * @param ValidProductHelper      $validProductHelper
+     * @param MagentoAttributesHelper $attributesHelper
      */
-    public function __construct(PriceHelper $priceHelper, ValidProductHelper $validProductHelper)
-    {
+    public function __construct(
+        PriceHelper $priceHelper,
+        ValidProductHelper $validProductHelper,
+        MagentoAttributesHelper $attributesHelper
+    ) {
         $this->priceHelper        = $priceHelper;
         $this->validProductHelper = $validProductHelper;
+        $this->attributesHelper   = $attributesHelper;
     }
 
     /**
@@ -169,8 +177,9 @@ class VariantGroupHelper
         $isTypeUpdated = false;
 
         foreach ($simpleProductRows as &$row) {
-            if (isset($row[MagentoAttributesHelper::HEADER_PRODUCT_TYPE])) {
-                $row[MagentoAttributesHelper::HEADER_PRODUCT_TYPE] = MagentoAttributesHelper::PRODUCT_TYPE_CONFIGURABLE;
+            if (isset($row[$this->attributesHelper->getHeaderProductType()])) {
+                $row[$this->attributesHelper->getHeaderProductType()] =
+                    $this->attributesHelper->getProductTypeConfigurable();
                 $isTypeUpdated = true;
             }
             foreach ($variationAxes as $axis) {
@@ -217,14 +226,14 @@ class VariantGroupHelper
                 if ($attribute->getCode() === $axisCode) {
                     $option = $product->getValue($axisCode)->getOption();
                     $associated[] = [
-                        MagentoAttributesHelper::HEADER_SUPER_PRODUCT_SKU      => (string) $product->getIdentifier(),
-                        MagentoAttributesHelper::HEADER_SUPER_ATTRIBUTE_CODE   => $axisCode,
-                        MagentoAttributesHelper::HEADER_SUPER_ATTRIBUTE_OPTION => $this->normalizer->normalize(
+                        $this->attributesHelper->getHeaderSuperProductSku()      => (string) $product->getIdentifier(),
+                        $this->attributesHelper->getHeaderSuperAttributeCode()   => $axisCode,
+                        $this->attributesHelper->getHeaderSuperAttributeOption() => $this->normalizer->normalize(
                             $option,
                             $format,
                             $context
                         ),
-                        MagentoAttributesHelper::HEADER_SUPER_ATTRIBUTE_PRICE  => 0
+                        $this->attributesHelper->getHeaderSuperAttributePrice()  => 0
                     ];
                 }
             }

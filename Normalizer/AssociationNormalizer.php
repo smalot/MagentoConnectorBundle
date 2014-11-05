@@ -57,7 +57,7 @@ class AssociationNormalizer implements NormalizerInterface
                     $context['defaultLocale'],
                     $channel->getCode()
                 ),
-                [MagentoAttributesHelper::HEADER_STATUS => $context['enabled']]
+                [$this->attributeHelper->getHeaderStatus() => $context['enabled']]
             );
 
             foreach ($validProducts as $associatedProduct) {

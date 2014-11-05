@@ -18,11 +18,15 @@ services:
 
    pim_magento_connector.normalizer.product:
        class: %pim_magento_connector.normalizer.product.class%
+       arguments:
+          - '@pim_magento_connector.helper.magento_attributes'
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 
    pim_magento_connector.normalizer.product_value:
        class: %pim_magento_connector.normalizer.product_value.class%
+       arguments:
+          - '@pim_magento_connector.helper.magento_attributes'
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 
@@ -75,6 +79,7 @@ services:
        arguments:
           - '@pim_magento_connector.helper.price'
           - '@pim_magento_connector.helper.valid_product'
+          - '@pim_magento_connector.helper.magento_attributes'
 
    pim_magento_connector.normalizer.association:
        class: %pim_magento_connector.normalizer.association.class%
