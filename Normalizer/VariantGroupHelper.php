@@ -4,10 +4,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
@@ -21,21 +21,6 @@ use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
  */
 class VariantGroupHelper
 {
-    /** @staticvar string */
-    const PRODUCT_TYPE_CONFIGURABLE     = 'configurable';
-
-    /** @staticvar string */
-    const HEADER_SUPER_PRODUCT_SKU      = '_super_products_sku';
-
-    /** @staticvar string */
-    const HEADER_SUPER_ATTRIBUTE_CODE   = '_super_attribute_code';
-
-    /** @staticvar string */
-    const HEADER_SUPER_ATTRIBUTE_OPTION = '_super_attribute_option';
-
-    /** @staticvar string */
-    const HEADER_SUPER_ATTRIBUTE_PRICE  = '_super_attribute_price_corr';
-
     /** @var NormalizerInterface */
     protected $normalizer;
 
@@ -217,8 +202,8 @@ class VariantGroupHelper
         $isTypeUpdated = false;
 
         foreach ($simpleProductRows as &$row) {
-            if (isset($row[ProductNormalizer::HEADER_PRODUCT_TYPE])) {
-                $row[ProductNormalizer::HEADER_PRODUCT_TYPE] = static::PRODUCT_TYPE_CONFIGURABLE;
+            if (isset($row[MagentoAttributesHelper::HEADER_PRODUCT_TYPE])) {
+                $row[MagentoAttributesHelper::HEADER_PRODUCT_TYPE] = MagentoAttributesHelper::PRODUCT_TYPE_CONFIGURABLE;
                 $isTypeUpdated = true;
             }
             foreach ($variationAxes as $axis) {
@@ -265,14 +250,14 @@ class VariantGroupHelper
                 if ($attribute->getCode() === $axisCode) {
                     $option = $product->getValue($axisCode)->getOption();
                     $associated[] = [
-                        static::HEADER_SUPER_PRODUCT_SKU      => (string) $product->getIdentifier(),
-                        static::HEADER_SUPER_ATTRIBUTE_CODE   => $axisCode,
-                        static::HEADER_SUPER_ATTRIBUTE_OPTION => $this->normalizer->normalize(
+                        MagentoAttributesHelper::HEADER_SUPER_PRODUCT_SKU      => (string) $product->getIdentifier(),
+                        MagentoAttributesHelper::HEADER_SUPER_ATTRIBUTE_CODE   => $axisCode,
+                        MagentoAttributesHelper::HEADER_SUPER_ATTRIBUTE_OPTION => $this->normalizer->normalize(
                             $option,
                             $format,
                             $context
                         ),
-                         static::HEADER_SUPER_ATTRIBUTE_PRICE  => 0
+                        MagentoAttributesHelper::HEADER_SUPER_ATTRIBUTE_PRICE  => 0
                     ];
                 }
             }

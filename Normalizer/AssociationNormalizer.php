@@ -5,6 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -16,26 +17,15 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class AssociationNormalizer implements NormalizerInterface
 {
-    /** @staticvar string */
-    const HEADER_ASSOCIATION_REPLACE_SUBJECT = '_links_#_sku';
-
-    /** @staticvar string */
-    const HEADER_ASSOCIATION_REPLACE_PATTERN = '/#/';
-
-    /** @var array */
-    protected $mandatoryAttributeCodes;
+    /** @var MagentoAttributesHelper */
+    protected $attributeHelper;
 
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(MagentoAttributesHelper $attributeHelper)
     {
-        $this->mandatoryAttributeCodes = [
-            ProductNormalizer::HEADER_SKU,
-            ProductNormalizer::HEADER_DESCRIPTION,
-            ProductNormalizer::HEADER_SHORT_DESCRIPTION,
-            ProductNormalizer::HEADER_NAME
-        ];
+        $this->attributeHelper = $attributeHelper;
     }
 
     /**
@@ -50,16 +40,16 @@ class AssociationNormalizer implements NormalizerInterface
         $typeCode           = $associationMapping[$object->getAssociationType()->getCode()];
 
         if (!empty($validProducts) && !empty($typeCode)) {
-            $header       = $this->getAssociationTypeHeader($typeCode);
+            $header         = $this->attributeHelper->getAssociationTypeHeader($typeCode);
             $associations[] = array_merge(
                 $this->getBaseProduct(
                     $object->getOwner(),
                     $context['attributeMapping'],
-                    $this->mandatoryAttributeCodes,
+                    $this->attributeHelper->getMandatoryAttributeCodesForAssociations(),
                     $context['defaultLocale'],
                     $channel->getCode()
                 ),
-                [ProductNormalizer::HEADER_STATUS => $context['enabled']]
+                [MagentoAttributesHelper::HEADER_STATUS => $context['enabled']]
             );
 
             foreach ($validProducts as $associatedProduct) {
@@ -76,22 +66,6 @@ class AssociationNormalizer implements NormalizerInterface
     public function supportsNormalization($data, $format = null)
     {
         return $data instanceof AbstractAssociation && ProductNormalizer::API_IMPORT_FORMAT === $format;
-    }
-
-    /**
-     * Returns the header in terms of the type code and the pattern
-     *
-     * @param string $typeCode
-     *
-     * @return string
-     */
-    protected function getAssociationTypeHeader($typeCode)
-    {
-        return preg_replace(
-            static::HEADER_ASSOCIATION_REPLACE_PATTERN,
-            $typeCode,
-            static::HEADER_ASSOCIATION_REPLACE_SUBJECT
-        );
     }
 
     /**
