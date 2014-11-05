@@ -34,7 +34,7 @@ class ValidProductHelper
             $productCategories = $product->getCategories()->getIterator();
             if ($isProductComplete &&
                 false !== $productCategories &&
-                $this->isProductBelongToChannel($productCategories, $rootCategoryId)
+                $this->doesProductBelongToChannel($productCategories, $rootCategoryId)
             ) {
                 $validProducts[] = $product;
             }
@@ -67,18 +67,19 @@ class ValidProductHelper
     }
 
     /**
-     * Compute the belonging of a product to a channel with its categories
+     * Compute the belonging of a product to a channel
+     * validating one of its categories has the same root as the channel root category
      *
      * @param \ArrayIterator|array $productCategories
-     * @param int                  $rootCategoryId
+     * @param int                  $channelRootCategoryId
      *
      * @return bool
      */
-    protected function isProductBelongToChannel($productCategories, $rootCategoryId)
+    protected function doesProductBelongToChannel($productCategories, $channelRootCategoryId)
     {
         $isInChannel = false;
         while ((list($key, $category) = each($productCategories)) && !$isInChannel) {
-            if ($category->getRoot() === $rootCategoryId) {
+            if ($category->getRoot() === $channelRootCategoryId) {
                 $isInChannel = true;
             }
         }

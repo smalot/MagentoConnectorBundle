@@ -10,7 +10,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Associated product to array processor
+ * Create an array with association data about products in PIM to update association between products in Magento
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -47,6 +47,7 @@ class AssociatedProductToArrayProcessor extends AbstractConfigurableStepElement 
      */
     public function process($item)
     {
+        // For the need of poc
         $context = [
             'channel' => $this->channelManager->getChannelByCode($this->getChannel()),
             'defaultStoreView'    => 'Default',

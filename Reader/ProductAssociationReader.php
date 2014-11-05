@@ -117,7 +117,7 @@ class ProductAssociationReader extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * Get the next bunch of associations
+     * Get the next batch of associations
      *
      * @return null|\ArrayIterator
      */

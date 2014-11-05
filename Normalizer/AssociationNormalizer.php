@@ -48,7 +48,7 @@ class AssociationNormalizer implements NormalizerInterface
         $typeCode           = $associationMapping[$object->getAssociationType()->getCode()];
 
         if (!empty($validProducts) && !empty($typeCode)) {
-            $header         = $this->attributeHelper->getAssociationTypeHeader($typeCode);
+            $header = $this->attributeHelper->getAssociationTypeHeader($typeCode);
             $associations[] = array_merge(
                 $this->getBaseProduct(
                     $object->getOwner(),
