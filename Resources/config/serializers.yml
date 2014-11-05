@@ -73,11 +73,13 @@ services:
    pim_magento_connector.normalizer.variant_group_helper:
        class: %pim_magento_connector.normalizer.variant_group_helper.class%
        arguments:
-           - '@pim_magento_connector.helper.price'
+          - '@pim_magento_connector.helper.price'
+          - '@pim_magento_connector.helper.valid_product'
 
    pim_magento_connector.normalizer.association:
        class: %pim_magento_connector.normalizer.association.class%
        arguments:
           - '@pim_magento_connector.helper.magento_attributes'
+          - '@pim_magento_connector.helper.valid_product'
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }

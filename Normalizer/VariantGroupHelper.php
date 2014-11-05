@@ -8,6 +8,7 @@ use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
@@ -27,14 +28,19 @@ class VariantGroupHelper
     /** @var PriceHelper */
     protected $priceHelper;
 
+    /** @var ValidProductHelper */
+    protected $validProductHelper;
+
     /**
      * Constructor
      *
-     * @param PriceHelper $priceHelper
+     * @param PriceHelper        $priceHelper
+     * @param ValidProductHelper $validProductHelper
      */
-    public function __construct(PriceHelper $priceHelper)
+    public function __construct(PriceHelper $priceHelper, ValidProductHelper $validProductHelper)
     {
-        $this->priceHelper = $priceHelper;
+        $this->priceHelper        = $priceHelper;
+        $this->validProductHelper = $validProductHelper;
     }
 
     /**
@@ -51,7 +57,7 @@ class VariantGroupHelper
         $normalized    = [];
         $channel       = $context['channel'];
         $variationAxes = $this->getVariantAxesCodes($object);
-        $validProducts = $this->getValidProducts($object, $channel);
+        $validProducts = $this->validProductHelper->getValidProducts($channel, $object->getProducts());
 
         if (!empty($validProducts)) {
             $priceChanges = $this->priceHelper->computePriceChanges(
@@ -95,45 +101,6 @@ class VariantGroupHelper
         }
 
         $this->normalizer = $serializer;
-    }
-
-    /**
-     * Return products from the variant group which are completes and in the good channel
-     *
-     * @param Group   $variantGroup
-     * @param Channel $channel
-     *
-     * @return ProductInterface[]
-     */
-    protected function getValidProducts(Group $variantGroup, Channel $channel)
-    {
-        $validProducts  = [];
-        $rootCategoryId = $channel->getCategory()->getId();
-
-        foreach ($variantGroup->getProducts() as $product) {
-            $isComplete = true;
-            $completenesses = $product->getCompletenesses()->getIterator();
-            while ((list($key, $completeness) = each($completenesses)) && $isComplete) {
-                if ($completeness->getChannel()->getId() === $channel->getId() &&
-                    $completeness->getRatio() < 100
-                ) {
-                    $isComplete = false;
-                }
-            }
-
-            $productCategories = $product->getCategories()->getIterator();
-            if ($isComplete && false !== $productCategories) {
-                $isInChannel = false;
-                while ((list($key, $category) = each($productCategories)) && !$isInChannel) {
-                    if ($category->getRoot() === $rootCategoryId) {
-                        $isInChannel = true;
-                        $validProducts[] = $product;
-                    }
-                }
-            }
-        }
-
-        return $validProducts;
     }
 
     /**

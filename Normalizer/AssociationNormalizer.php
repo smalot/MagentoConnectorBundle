@@ -6,6 +6,7 @@ use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -20,12 +21,19 @@ class AssociationNormalizer implements NormalizerInterface
     /** @var MagentoAttributesHelper */
     protected $attributeHelper;
 
+    /** @var ValidProductHelper */
+    protected $validProductHelper;
+
     /**
      * Constructor
+     *
+     * @param MagentoAttributesHelper $attributeHelper
+     * @param ValidProductHelper      $validProductHelper
      */
-    public function __construct(MagentoAttributesHelper $attributeHelper)
+    public function __construct(MagentoAttributesHelper $attributeHelper, ValidProductHelper $validProductHelper)
     {
-        $this->attributeHelper = $attributeHelper;
+        $this->attributeHelper    = $attributeHelper;
+        $this->validProductHelper = $validProductHelper;
     }
 
     /**
@@ -35,7 +43,7 @@ class AssociationNormalizer implements NormalizerInterface
     {
         $associations       = [];
         $channel            = $context['channel'];
-        $validProducts      = $this->getValidProducts($object, $channel);
+        $validProducts      = $this->validProductHelper->getValidProducts($channel, $object->getProducts());
         $associationMapping = $context['associationMapping'];
         $typeCode           = $associationMapping[$object->getAssociationType()->getCode()];
 
@@ -110,45 +118,5 @@ class AssociationNormalizer implements NormalizerInterface
         }
 
         return $baseProduct;
-    }
-
-    /**
-     * Exactly the same as in VariantGroupHelper, just update $variantGroup to $association
-     * Return products from the association which are completes and in the good channel
-     *
-     * @param AbstractAssociation $association
-     * @param Channel             $channel
-     *
-     * @return ProductInterface[]
-     */
-    protected function getValidProducts(AbstractAssociation $association, Channel $channel)
-    {
-        $validProducts  = [];
-        $rootCategoryId = $channel->getCategory()->getId();
-
-        foreach ($association->getProducts() as $product) {
-            $isComplete = true;
-            $completenesses = $product->getCompletenesses()->getIterator();
-            while ((list($key, $completeness) = each($completenesses)) && $isComplete) {
-                if ($completeness->getChannel()->getId() === $channel->getId() &&
-                    $completeness->getRatio() < 100
-                ) {
-                    $isComplete = false;
-                }
-            }
-
-            $productCategories = $product->getCategories()->getIterator();
-            if ($isComplete && false !== $productCategories) {
-                $isInChannel = false;
-                while ((list($key, $category) = each($productCategories)) && !$isInChannel) {
-                    if ($category->getRoot() === $rootCategoryId) {
-                        $isInChannel = true;
-                        $validProducts[] = $product;
-                    }
-                }
-            }
-        }
-
-        return $validProducts;
     }
 }
