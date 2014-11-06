@@ -2,11 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Helper;
 
-use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Entity\Group;
-use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * Help to compute prices for configurables
