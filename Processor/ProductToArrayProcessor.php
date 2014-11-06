@@ -36,7 +36,7 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
     /**
      * Process item
      *
-     * @param ProductInterface $item
+     * @param \Pim\Bundle\CatalogBundle\Model\ProductInterface $item
      *
      * @return array $product
      */
@@ -58,9 +58,7 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
             ]
         ];
 
-        $product = $this->normalizer->normalize($item, 'api_import', $context);
-
-        return $product;
+        return $this->normalizer->normalize($item, 'api_import', $context);
     }
 
     /**

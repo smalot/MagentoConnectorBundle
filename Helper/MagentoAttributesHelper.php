@@ -57,10 +57,10 @@ class MagentoAttributesHelper
     protected static $headerShortDescription = 'short_description';
 
     /** @staticvar string */
-    protected static $headerAssociationReplaceSubject = '_links_#_sku';
+    protected static $headerAssociationReplaceSubject = '_links_#toReplace#_sku';
 
     /** @staticvar string */
-    protected static $headerAssociationReplacePattern = '/#/';
+    protected static $headerAssociationReplacePattern = '/#toReplace#/';
 
     /** @staticvar string */
     protected static $headerSuperProductSku = '_super_products_sku';
