@@ -20,4 +20,3 @@ services:
         arguments:
           - '@pim_magento_connector.serializer'
           - '@pim_catalog.manager.channel'
-          - '@pim_magento_connector.helper.price'
