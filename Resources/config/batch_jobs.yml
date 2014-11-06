@@ -5,11 +5,17 @@ connector:
             title: pim_magento_connector.jobs.magento_product_export.title
             type:  export
             steps:
-                export:
+                export_product:
                     title: pim_magento_connector.jobs.magento_product_export.export.title
                     services:
                         reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.product_to_array
+                        writer:    pim_base_connector.writer.dummy
+                update_product_associations:
+                    title: pim_magento_connector.jobs.magento_product_associations_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.product_association
+                        processor: pim_magento_connector.processor.associated_product_to_array
                         writer:    pim_base_connector.writer.dummy
 
         magento_configurable_export:

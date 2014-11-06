@@ -2,6 +2,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -15,29 +16,27 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
-    // Constants for default attributes header
-    const HEADER_ATTRIBUTE_SET   = '_attribute_set';
-    const HEADER_CATEGORY        = '_category';
-    const HEADER_CATEGORY_ROOT   = '_root_category';
-    const HEADER_CREATED_AT      = 'created_at';
-    const HEADER_PRODUCT_TYPE    = '_type';
-    const HEADER_PRODUCT_WEBSITE = '_product_websites';
-    const HEADER_SKU             = 'sku';
-    const HEADER_STATUS          = 'status';
-    const HEADER_STORE           = '_store';
-    const HEADER_TAX_CLASS_ID    = 'tax_class_id';
-    const HEADER_UPDATED_AT      = 'updated_at';
-    const HEADER_VISIBILITY      = 'visibility';
+    /** @staticvar string */
+    const DATE_FORMAT = 'Y-m-d H:i:s';
 
-    // Constants for default value attributes
-    const PRODUCT_TYPE_SIMPLE    = 'simple';
-
-    // Constants for formats
-    const DATE_FORMAT            = 'Y-m-d H:i:s';
-    const API_IMPORT_FORMAT      = 'api_import';
+    /** @staticvar string */
+    const API_IMPORT_FORMAT = 'api_import';
 
     /** @var NormalizerInterface */
     protected $normalizer;
+
+    /** @var MagentoAttributesHelper */
+    protected $attributesHelper;
+
+    /**
+     * Constructor
+     *
+     * @param MagentoAttributesHelper $attributesHelper
+     */
+    public function __construct(MagentoAttributesHelper $attributesHelper)
+    {
+        $this->attributesHelper = $attributesHelper;
+    }
 
     /**
      * {@inheritdoc}
@@ -50,17 +49,18 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         );
 
         foreach ($productValues as $storeView => &$values) {
-            if (!isset($values[static::HEADER_STORE])) {
-                $values[static::HEADER_STORE] = $storeView;
+            if (!isset($values[$this->attributesHelper->getHeaderStore()])) {
+                $values[$this->attributesHelper->getHeaderStore()] = $storeView;
             }
         }
         $processedProduct = array_values($productValues);
 
         $categories = $this->getProductCategories($object, $format, $context);
-        foreach ($categories[static::HEADER_CATEGORY] as $key => $category) {
+        foreach ($categories[$this->attributesHelper->getHeaderCategory()] as $key => $category) {
             $processedProduct[] = [
-                static::HEADER_CATEGORY      => $category,
-                static::HEADER_CATEGORY_ROOT => $categories[static::HEADER_CATEGORY_ROOT][$key]
+                $this->attributesHelper->getHeaderCategory()      => $category,
+                $this->attributesHelper->getHeaderCategoryRoot() =>
+                    $categories[$this->attributesHelper->getHeaderCategoryRoot()][$key]
             ];
         }
 
@@ -101,13 +101,13 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         $defaultStoreView = $context['defaultStoreView'];
 
         $customValues[$defaultStoreView] = [
-            static::HEADER_PRODUCT_TYPE    => static::PRODUCT_TYPE_SIMPLE,
-            static::HEADER_PRODUCT_WEBSITE => $context['website'],
-            static::HEADER_STATUS          => (int) $product->isEnabled(),
-            static::HEADER_VISIBILITY      => (int) $context['visibility'],
-            static::HEADER_ATTRIBUTE_SET   => $product->getFamily()->getCode(),
-            static::HEADER_CREATED_AT      => $product->getCreated()->format(static::DATE_FORMAT),
-            static::HEADER_UPDATED_AT      => $product->getUpdated()->format(static::DATE_FORMAT),
+            $this->attributesHelper->getHeaderProductType()    => $this->attributesHelper->getProductTypeSimple(),
+            $this->attributesHelper->getHeaderProductWebsite() => $context['website'],
+            $this->attributesHelper->getHeaderStatus()         => (int) $product->isEnabled(),
+            $this->attributesHelper->getHeaderVisibility()     => (int) $context['visibility'],
+            $this->attributesHelper->getHeaderAttributeSet()   => $product->getFamily()->getCode(),
+            $this->attributesHelper->getHeaderCreatedAt()      => $product->getCreated()->format(static::DATE_FORMAT),
+            $this->attributesHelper->getHeaderUpdatedAt()      => $product->getUpdated()->format(static::DATE_FORMAT),
         ];
 
         return $customValues;
@@ -160,8 +160,9 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
                     sprintf('Category root "%s" not corresponding with user category mapping', $normalized['root'])
                 );
             }
-            $productCategories[static::HEADER_CATEGORY_ROOT][] = $context['userCategoryMapping'][$normalized['root']];
-            $productCategories[static::HEADER_CATEGORY][] = $normalized['category'];
+            $productCategories[$this->attributesHelper->getHeaderCategoryRoot()][] =
+                $context['userCategoryMapping'][$normalized['root']];
+            $productCategories[$this->attributesHelper->getHeaderCategory()][] = $normalized['category'];
         }
 
         return $productCategories;

@@ -4,10 +4,11 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
-use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
@@ -21,35 +22,33 @@ use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
  */
 class VariantGroupHelper
 {
-    /** @staticvar string */
-    const PRODUCT_TYPE_CONFIGURABLE     = 'configurable';
-
-    /** @staticvar string */
-    const HEADER_SUPER_PRODUCT_SKU      = '_super_products_sku';
-
-    /** @staticvar string */
-    const HEADER_SUPER_ATTRIBUTE_CODE   = '_super_attribute_code';
-
-    /** @staticvar string */
-    const HEADER_SUPER_ATTRIBUTE_OPTION = '_super_attribute_option';
-
-    /** @staticvar string */
-    const HEADER_SUPER_ATTRIBUTE_PRICE  = '_super_attribute_price_corr';
-
     /** @var NormalizerInterface */
     protected $normalizer;
 
     /** @var PriceHelper */
     protected $priceHelper;
 
+    /** @var ValidProductHelper */
+    protected $validProductHelper;
+
+    /** @var MagentoAttributesHelper */
+    protected $attributesHelper;
+
     /**
      * Constructor
      *
-     * @param PriceHelper $priceHelper
+     * @param PriceHelper             $priceHelper
+     * @param ValidProductHelper      $validProductHelper
+     * @param MagentoAttributesHelper $attributesHelper
      */
-    public function __construct(PriceHelper $priceHelper)
-    {
-        $this->priceHelper = $priceHelper;
+    public function __construct(
+        PriceHelper $priceHelper,
+        ValidProductHelper $validProductHelper,
+        MagentoAttributesHelper $attributesHelper
+    ) {
+        $this->priceHelper        = $priceHelper;
+        $this->validProductHelper = $validProductHelper;
+        $this->attributesHelper   = $attributesHelper;
     }
 
     /**
@@ -66,7 +65,7 @@ class VariantGroupHelper
         $normalized    = [];
         $channel       = $context['channel'];
         $variationAxes = $this->getVariantAxesCodes($object);
-        $validProducts = $this->getValidProducts($object, $channel);
+        $validProducts = $this->validProductHelper->getValidProducts($channel, $object->getProducts());
 
         if (!empty($validProducts)) {
             $priceChanges = $this->priceHelper->computePriceChanges(
@@ -110,45 +109,6 @@ class VariantGroupHelper
         }
 
         $this->normalizer = $serializer;
-    }
-
-    /**
-     * Return products from the variant group which are completes and in the good channel
-     *
-     * @param Group   $variantGroup
-     * @param Channel $channel
-     *
-     * @return ProductInterface[]
-     */
-    protected function getValidProducts(Group $variantGroup, Channel $channel)
-    {
-        $validProducts  = [];
-        $rootCategoryId = $channel->getCategory()->getId();
-
-        foreach ($variantGroup->getProducts() as $product) {
-            $isComplete = true;
-            $completenesses = $product->getCompletenesses()->getIterator();
-            while ((list($key, $completeness) = each($completenesses)) && $isComplete) {
-                if ($completeness->getChannel()->getId() === $channel->getId() &&
-                    $completeness->getRatio() < 100
-                ) {
-                    $isComplete = false;
-                }
-            }
-
-            $productCategories = $product->getCategories()->getIterator();
-            if ($isComplete && false !== $productCategories) {
-                $isInChannel = false;
-                while ((list($key, $category) = each($productCategories)) && !$isInChannel) {
-                    if ($category->getRoot() === $rootCategoryId) {
-                        $isInChannel = true;
-                        $validProducts[] = $product;
-                    }
-                }
-            }
-        }
-
-        return $validProducts;
     }
 
     /**
@@ -217,8 +177,9 @@ class VariantGroupHelper
         $isTypeUpdated = false;
 
         foreach ($simpleProductRows as &$row) {
-            if (isset($row[ProductNormalizer::HEADER_PRODUCT_TYPE])) {
-                $row[ProductNormalizer::HEADER_PRODUCT_TYPE] = static::PRODUCT_TYPE_CONFIGURABLE;
+            if (isset($row[$this->attributesHelper->getHeaderProductType()])) {
+                $row[$this->attributesHelper->getHeaderProductType()] =
+                    $this->attributesHelper->getProductTypeConfigurable();
                 $isTypeUpdated = true;
             }
             foreach ($variationAxes as $axis) {
@@ -265,14 +226,14 @@ class VariantGroupHelper
                 if ($attribute->getCode() === $axisCode) {
                     $option = $product->getValue($axisCode)->getOption();
                     $associated[] = [
-                        static::HEADER_SUPER_PRODUCT_SKU      => (string) $product->getIdentifier(),
-                        static::HEADER_SUPER_ATTRIBUTE_CODE   => $axisCode,
-                        static::HEADER_SUPER_ATTRIBUTE_OPTION => $this->normalizer->normalize(
+                        $this->attributesHelper->getHeaderSuperProductSku()      => (string) $product->getIdentifier(),
+                        $this->attributesHelper->getHeaderSuperAttributeCode()   => $axisCode,
+                        $this->attributesHelper->getHeaderSuperAttributeOption() => $this->normalizer->normalize(
                             $option,
                             $format,
                             $context
                         ),
-                         static::HEADER_SUPER_ATTRIBUTE_PRICE  => 0
+                        $this->attributesHelper->getHeaderSuperAttributePrice()  => 0
                     ];
                 }
             }
