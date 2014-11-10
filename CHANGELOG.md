@@ -1,9 +1,19 @@
+# 1.x.x (xxx)
+## New feature
+ - url_key is generated now on Akeneo's side, to avoid duplicate url_key errors from the SOAP API
+
+## Bug fixes
+ - configurable images are now properly sent with their types (small, thumbnail, etc...)
+
+## BC Breaks
+ - ConfigurableProcessor constructor has now an AttributeManager parameter
+
 # 1.1.0 (2014-10-23)
 ## New feature
  - Add visibility option for products members of variant group
    for example to avoid displaying simple product only
 
-# BC Breaks
+## BC Breaks
  - ProductNormalizer and ConfigurableNormalizer constructors have now a new visibility parameter
 
 # 1.0.1 (2014-09-30)
