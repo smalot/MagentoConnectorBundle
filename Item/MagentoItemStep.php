@@ -23,6 +23,9 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
  */
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
 {
+    /** @staticvar */
+    const MAX_ERROR_CHARS = 300;
+
     /**
      * @var Webservice
      */
@@ -398,16 +401,39 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     protected function getClientParameters()
     {
-            $this->clientParameters = $this->clientParametersRegistry->getInstance(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->magentoUrl,
-                $this->wsdlUrl,
-                $this->defaultStoreView,
-                $this->httpLogin,
-                $this->httpPassword
-            );
+        $this->clientParameters = $this->clientParametersRegistry->getInstance(
+            $this->soapUsername,
+            $this->soapApiKey,
+            $this->magentoUrl,
+            $this->wsdlUrl,
+            $this->defaultStoreView,
+            $this->httpLogin,
+            $this->httpPassword
+        );
 
         return $this->clientParameters;
+    }
+
+    /**
+     * Add a warning based on the stepExecution.
+     *
+     * @param string $message
+     * @param array  $messageParameters
+     * @param mixed  $item
+     */
+    protected function addWarning($message, $messageParameters = [], $item = null)
+    {
+        if (strlen($message) > self::MAX_ERROR_CHARS) {
+            $message = substr($message, 0, self::MAX_ERROR_CHARS);
+            $message .= '[...]';
+        }
+
+        $this->stepExecution->addWarning(
+            get_class($this),
+            $message,
+            $messageParameters,
+            $item
+        );
+
     }
 }

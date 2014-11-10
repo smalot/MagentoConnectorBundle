@@ -245,7 +245,12 @@ class ProductProcessor extends AbstractProductProcessor
 
             $this->metricConverter->convert($product, $channel);
 
-            $processedItems[] = $this->normalizeProduct($product, $context);
+            try {
+                $processedItems[] = $this->normalizeProduct($product, $context);
+            } catch (\Exception $e) {
+                $this->addWarning($e->getMessage(), [], $product);
+            }
+
         }
 
         return $processedItems;

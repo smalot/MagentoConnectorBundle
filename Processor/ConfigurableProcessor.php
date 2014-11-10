@@ -136,9 +136,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
                     );
                 }
 
-                $processedItems[] = $this->normalizeConfigurable($configurable, $context);
-
-
+                try {
+                    $processedItems[] = $this->normalizeConfigurable($configurable, $context);
+                } catch (\Exception $e) {
+                    $this->addWarning($e->getMessage(), [], $configurable);
+                }
             }
         }
 
