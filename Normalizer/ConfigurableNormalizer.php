@@ -186,6 +186,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         );
 
         $defaultProductValues[ProductNormalizer::VISIBILITY] = $this->visibility;
+        $defaultProductValues[ProductNormalizer::URL_KEY] = $defaultProductValues[ProductNormalizer::URL_KEY].'-conf-'.$group->getId();
 
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,

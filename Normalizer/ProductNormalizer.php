@@ -11,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Gedmo\Sluggable\Util\Urlizer;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -22,6 +23,8 @@ use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerInterface
 {
     const VISIBILITY = 'visibility';
+    const URL_KEY    = 'url_key';
+    const NAME       = 'name';
     const ENABLED    = 'status';
 
     /**
@@ -362,7 +365,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $this->getCustomValue(
                 $product,
                 $attributeCodeMapping,
-                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode]
+                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode, 'localeCode' => $localeCode]
             )
         );
 
@@ -430,6 +433,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         }
 
         return [
+            strtolower($attributeCodeMapping->getTarget(self::URL_KEY))    =>
+                $this->generateUrlKey(
+                    $product,
+                    $attributeCodeMapping,
+                    $parameters['localeCode'],
+                    $parameters['scopeCode']
+                ),
             strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $visibility,
             strtolower($attributeCodeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
             strtolower($attributeCodeMapping->getTarget('created_at'))     => $product->getCreated()
@@ -460,5 +470,34 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         }
 
         return false;
+    }
+
+    /**
+     * Generate url key from product name and identifier.
+     * The identifier is included to make sure the url_key is unique, as required in Magento
+     *
+     * If name is localized, the default locale is used to get the value.
+     *
+     * @param ProductInterface  $product
+     * @param MappingCollection $attributeCodeMapping
+     * @param string            $localeCode
+     * @param string            $scopeCode
+     *
+     * @return string
+     */
+    protected function generateUrlKey(
+        ProductInterface $product,
+        MappingCollection $attributeCodeMapping,
+        $localeCode,
+        $scopeCode
+    ) {
+        $identifier = $product->getIdentifier();
+        $nameAttribute = $attributeCodeMapping->getSource(self::NAME);
+
+        $name = $product->getValue($nameAttribute, $localeCode, $scopeCode);
+
+        $url = Urlizer::urlize($name . '-' . $identifier);
+
+        return $url;
     }
 }
