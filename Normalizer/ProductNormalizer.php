@@ -267,7 +267,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $channel,
             $categoryMapping,
             $attributeMapping,
-            false
+            false,
+            $pimGrouped
         );
 
         $defaultValues['websites'] = [$website];
@@ -324,6 +325,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param MappingCollection $categoryMapping          Root category mapping
      * @param MappingCollection $attributeCodeMapping     Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
+     * @param string            $pimGrouped               Pim grouped association code
      *
      * @return array Computed data
      */
@@ -335,7 +337,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $scopeCode,
         MappingCollection $categoryMapping,
         MappingCollection $attributeCodeMapping,
-        $onlyLocalized
+        $onlyLocalized,
+        $pimGrouped
     ) {
         $normalizedValues = [];
 
@@ -365,7 +368,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $this->getCustomValue(
                 $product,
                 $attributeCodeMapping,
-                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode, 'localeCode' => $localeCode]
+                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode, 'localeCode' => $localeCode, 'pimGrouped' => $pimGrouped]
             )
         );
 
@@ -426,7 +429,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         MappingCollection $attributeCodeMapping,
         array $parameters = []
     ) {
-        if ($this->belongsToVariant($product)) {
+        if ($this->belongsToVariant($product) && !$this->hasGroupedProduct($product, $parameters['pimGrouped'])) {
             $visibility = $this->variantMemberVisibility;
         } else {
             $visibility = $this->visibility;

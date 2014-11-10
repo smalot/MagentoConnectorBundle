@@ -25,6 +25,7 @@ interface ProductNormalizerInterface
      * @param MappingCollection $categoryMapping          Root category mapping
      * @param MappingCollection $attributeMapping         Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
+     * @param string            $pimGrouped               Pim grouped association code
      *
      * @return array Computed data
      */
@@ -36,7 +37,8 @@ interface ProductNormalizerInterface
         $scopeCode,
         MappingCollection $categoryMapping,
         MappingCollection $attributeMapping,
-        $onlyLocalized
+        $onlyLocalized,
+        $pimGrouped
     );
 
     /**
