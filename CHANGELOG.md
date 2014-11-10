@@ -1,6 +1,7 @@
 # 1.x.x (xxx)
 ## New feature
- - url_key is generated now on Akeneo's side, to avoid duplicate url_key errors from the SOAP API
+ - url_key for products and category is generated now on Akeneo's side,
+   to avoid duplicate url_key errors from the SOAP API
 
 ## Bug fixes
  - configurable images are now properly sent with their types (small, thumbnail, etc...)
