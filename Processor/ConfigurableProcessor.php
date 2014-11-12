@@ -117,10 +117,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
             foreach ($configurables as $configurable) {
 
                 if (empty($configurable['products'])) {
-                    throw new InvalidItemException(
-                        'The variant group is not associated to any products',
-                        [$configurable]
-                    );
+                    $this->addWarning('The variant group is not associated to any products', [], $configurable);
                 }
 
                 if ($this->magentoConfigurableExist($configurable, $magentoConfigurables)) {
@@ -162,17 +159,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
      */
     protected function normalizeConfigurable($configurable, $context)
     {
-        try {
-            $processedItem = $this->configurableNormalizer->normalize(
-                $configurable,
-                AbstractNormalizer::MAGENTO_FORMAT,
-                $context
-            );
-        } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), [$configurable['group']]);
-        } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), [$configurable['group']]);
-        }
+        $processedItem = $this->configurableNormalizer->normalize(
+            $configurable,
+            AbstractNormalizer::MAGENTO_FORMAT,
+            $context
+        );
 
         return $processedItem;
     }
@@ -214,10 +205,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
         foreach ($configurable['products'] as $product) {
             if ($groupFamily != $product->getFamily()) {
-                throw new InvalidItemException(
+                $this->addWarning(
                     'Your variant group contains products from different families. Magento cannot handle ' .
                     'configurable products with heterogen attribute sets',
-                    [$configurable]
+                    [],
+                    $configurable
                 );
             }
         }

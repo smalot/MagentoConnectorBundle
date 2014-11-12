@@ -142,10 +142,11 @@ class ProductProcessor extends AbstractProductProcessor
 
             if ($this->magentoProductExists($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
-                    throw new InvalidItemException(
+                    $this->addWarning(
                         'The product family has changed of this product. This modification cannot be applied to ' .
                         'magento. In order to change the family of this product, please manualy delete this product ' .
                         'in magento and re-run this connector.',
+                        [],
                         [
                             'id'                                                 => $product->getId(),
                             $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
@@ -164,7 +165,16 @@ class ProductProcessor extends AbstractProductProcessor
             try {
                 $processedItems[] = $this->normalizeProduct($product, $context);
             } catch (\Exception $e) {
-                $this->addWarning($e->getMessage(), [], $product);
+                $this->addWarning(
+                    $e->getMessage(),
+                    [],
+                    [
+                        'id'                                                 => $product->getId(),
+                        $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
+                        'label'                                              => $product->getLabel(),
+                        'family'                                             => $product->getFamily()->getCode()
+                    ]
+                );
             }
 
         }
@@ -184,23 +194,11 @@ class ProductProcessor extends AbstractProductProcessor
      */
     protected function normalizeProduct(ProductInterface $product, $context)
     {
-        try {
-            $processedItem = $this->productNormalizer->normalize(
-                $product,
-                AbstractNormalizer::MAGENTO_FORMAT,
-                $context
-            );
-        } catch (NormalizeException $e) {
-            throw new InvalidItemException(
-                $e->getMessage(),
-                [
-                    'id'                                                 => $product->getId(),
-                    $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
-                    'label'                                              => $product->getLabel(),
-                    'family'                                             => $product->getFamily()->getCode()
-                ]
-            );
-        }
+        $processedItem = $this->productNormalizer->normalize(
+            $product,
+            AbstractNormalizer::MAGENTO_FORMAT,
+            $context
+        );
 
         return $processedItem;
     }

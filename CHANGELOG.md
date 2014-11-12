@@ -8,6 +8,8 @@
 
 ## BC Breaks
  - ConfigurableProcessor constructor has now an AttributeManager parameter
+ - All Step elements services (writers, processors and readers) that uses the addWarning methods must
+   have pim_magento_connector.item.magento_item_step has parent service
 
 # 1.1.0 (2014-10-23)
 ## New feature

@@ -11,6 +11,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Event\InvalidItemEvent;
+use Akeneo\Bundle\BatchBundle\Event\EventInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Magento item step
@@ -98,6 +101,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $afterConfiguration = false;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * @param WebserviceGuesser $webserviceGuesser
      */
     public function __construct(
@@ -128,6 +136,16 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
 
             $this->afterConfiguration = true;
         }
+    }
+
+    /**
+     * Set the event dispatcher
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -421,19 +439,22 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      * @param array  $messageParameters
      * @param mixed  $item
      */
-    protected function addWarning($message, $messageParameters = [], $item = null)
+    protected function addWarning($message, array $messageParameters = [], $item = null)
     {
         if (strlen($message) > self::MAX_ERROR_CHARS) {
             $message = substr($message, 0, self::MAX_ERROR_CHARS);
             $message .= '[...]';
         }
 
+
         $this->stepExecution->addWarning(
-            get_class($this),
+            $this->getName(),
             $message,
             $messageParameters,
             $item
         );
 
+        $event = new InvalidItemEvent($class, $message, $messageParameters, $item);
+        $this->eventDispatcher->dispatch(EventInterface::INVALID_ITEM, $event);
     }
 }
