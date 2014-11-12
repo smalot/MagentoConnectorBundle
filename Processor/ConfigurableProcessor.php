@@ -8,6 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
@@ -58,7 +59,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
         MagentoMappingMerger $categoryMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
         GroupManager $groupManager,
-        MagentoSoapClientParametersRegistry $clientParametersRegistry
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        AttributeManager $attributeManager
     ) {
         parent::__construct(
             $webserviceGuesser,
@@ -69,7 +71,8 @@ class ConfigurableProcessor extends AbstractProductProcessor
             $channelManager,
             $categoryMappingMerger,
             $attributeMappingMerger,
-            $clientParametersRegistry
+            $clientParametersRegistry,
+            $attributeManager
         );
 
         $this->groupManager = $groupManager;
@@ -82,7 +85,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
     {
         parent::beforeExecute();
 
-        $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency);
+        $priceMappingManager          = new PriceMappingManager($this->defaultLocale, $this->currency, $this->channel);
         $this->configurableNormalizer = $this->normalizerGuesser->getConfigurableNormalizer(
             $this->getClientParameters(),
             $this->productNormalizer,
@@ -114,10 +117,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
             foreach ($configurables as $configurable) {
 
                 if (empty($configurable['products'])) {
-                    throw new InvalidItemException(
-                        'The variant group is not associated to any products',
-                        [$configurable]
-                    );
+                    $this->addWarning('The variant group is not associated to any products', [], $configurable);
                 }
 
                 if ($this->magentoConfigurableExist($configurable, $magentoConfigurables)) {
@@ -136,9 +136,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
                     );
                 }
 
-                $processedItems[] = $this->normalizeConfigurable($configurable, $context);
-
-
+                try {
+                    $processedItems[] = $this->normalizeConfigurable($configurable, $context);
+                } catch (\Exception $e) {
+                    $this->addWarning($e->getMessage(), [], $configurable);
+                }
             }
         }
 
@@ -157,17 +159,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
      */
     protected function normalizeConfigurable($configurable, $context)
     {
-        try {
-            $processedItem = $this->configurableNormalizer->normalize(
-                $configurable,
-                AbstractNormalizer::MAGENTO_FORMAT,
-                $context
-            );
-        } catch (NormalizeException $e) {
-            throw new InvalidItemException($e->getMessage(), [$configurable['group']]);
-        } catch (SoapCallException $e) {
-            throw new InvalidItemException($e->getMessage(), [$configurable['group']]);
-        }
+        $processedItem = $this->configurableNormalizer->normalize(
+            $configurable,
+            AbstractNormalizer::MAGENTO_FORMAT,
+            $context
+        );
 
         return $processedItem;
     }
@@ -209,10 +205,11 @@ class ConfigurableProcessor extends AbstractProductProcessor
 
         foreach ($configurable['products'] as $product) {
             if ($groupFamily != $product->getFamily()) {
-                throw new InvalidItemException(
+                $this->addWarning(
                     'Your variant group contains products from different families. Magento cannot handle ' .
                     'configurable products with heterogen attribute sets',
-                    [$configurable]
+                    [],
+                    $configurable
                 );
             }
         }

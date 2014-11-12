@@ -1,10 +1,17 @@
-# 1.1.1 (2014-11-0x)
-## Bug fixes:
- - required property on attribute conflicts with Configurables
+# 1.1.1 (2014-11-12)
+## New feature
+ - url_key for products and category is generated now on Akeneo's side,
+   to avoid duplicate url_key errors from the SOAP API
 
-## BC Breaks:
+## Bug fixes
+ - configurable images are now properly sent with their types (small, thumbnail, etc...)
+ - required property on attribute conflicts with Configurables and has been removed
+
+## BC Breaks
+ - ConfigurableProcessor constructor has now an AttributeManager parameter
+ - All Step elements services (writers, processors and readers) that uses the addWarning methods must
+   have pim_magento_connector.item.magento_item_step has parent service
  - required property is not sent anymore to Magento, as the data is already checked
-   on Akeneo''s side
 
 # 1.1.0 (2014-10-23)
 ## New feature

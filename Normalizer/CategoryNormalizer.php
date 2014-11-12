@@ -6,6 +6,7 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotMappedException;
+use Gedmo\Sluggable\Util\Urlizer;
 
 /**
  * A normalizer to transform a category entity into an array
@@ -156,6 +157,7 @@ class CategoryNormalizer extends AbstractNormalizer
                     (string) $parentCategoryId,
                     [
                         'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
+                        'url_key'           => $this->generateUrlKey($category, $context['defaultLocale']),
                         'is_active'         => 1,
                         'include_in_menu'   => 1,
                         'available_sort_by' => 1,
@@ -181,6 +183,7 @@ class CategoryNormalizer extends AbstractNormalizer
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
             [
                 'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
+                'url_key'           => $this->generateUrlKey($category, $context['defaultLocale']),
                 'available_sort_by' => 1,
                 'default_sort_by'   => 1,
                 'is_anchor'         => 1
@@ -266,4 +269,24 @@ class CategoryNormalizer extends AbstractNormalizer
             $context['magentoCategories'][$currentCategoryId]['parent_id'] !== $currentParentId :
             true;
     }
+
+    /**
+     * Generate url key for category name and code
+     * The code is included to make sure the url_key is unique, as required in Magento
+     *
+     * @param CategoryInterface $category
+     * @param string            $localeCode
+     *
+     * @return string
+     */
+    protected function generateUrlKey(CategoryInterface $category, $localeCode)
+    {
+        $code = $category->getCode();
+        $label = $this->getCategoryLabel($category, $localeCode);
+
+        $url = Urlizer::urlize($label.'-'.$code);
+
+        return $url;
+    }
+
 }

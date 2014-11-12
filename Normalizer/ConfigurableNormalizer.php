@@ -78,7 +78,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['create']
         );
 
-        $images = $this->productNormalizer->getNormalizedImages($products[0], $sku);
+        $images = $this->productNormalizer->getNormalizedImages(
+            $products[0],
+            $sku,
+            $context['smallImageAttribute'],
+            $context['baseImageAttribute'],
+            $context['thumbnailAttribute']
+        );
 
         if (count($images) > 0) {
             $processedItem[Webservice::IMAGES] = $images;
@@ -186,6 +192,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         );
 
         $defaultProductValues[ProductNormalizer::VISIBILITY] = $this->visibility;
+        $defaultProductValues[ProductNormalizer::URL_KEY] = $defaultProductValues[ProductNormalizer::URL_KEY].'-conf-'.$group->getId();
 
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,
