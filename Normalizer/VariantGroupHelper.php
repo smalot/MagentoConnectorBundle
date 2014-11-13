@@ -174,9 +174,9 @@ class VariantGroupHelper
         $isTypeUpdated = false;
 
         foreach ($simpleProductRows as &$row) {
-            if (isset($row[$this->attributesHelper->getHeaderProductType()])) {
-                $row[$this->attributesHelper->getHeaderProductType()] =
-                    $this->attributesHelper->getProductTypeConfigurable();
+            if (isset($row[$this->attributesHelper->getProductTypeHeader()])) {
+                $row[$this->attributesHelper->getProductTypeHeader()] =
+                    $this->attributesHelper->getConfigurableProductType();
                 $isTypeUpdated = true;
             }
             foreach ($variationAxes as $axis) {
@@ -223,14 +223,14 @@ class VariantGroupHelper
                 if ($attribute->getCode() === $axisCode) {
                     $option = $product->getValue($axisCode)->getOption();
                     $associated[] = [
-                        $this->attributesHelper->getHeaderSuperProductSku()      => (string) $product->getIdentifier(),
-                        $this->attributesHelper->getHeaderSuperAttributeCode()   => $axisCode,
-                        $this->attributesHelper->getHeaderSuperAttributeOption() => $this->normalizer->normalize(
+                        $this->attributesHelper->getSuperProductSkuHeader()      => (string) $product->getIdentifier(),
+                        $this->attributesHelper->getSuperAttributeCodeHeader()   => $axisCode,
+                        $this->attributesHelper->getSuperAttributeOptionHeader() => $this->normalizer->normalize(
                             $option,
                             $format,
                             $context
                         ),
-                        $this->attributesHelper->getHeaderSuperAttributePrice()  => 0
+                        $this->attributesHelper->getSuperAttributePriceHeader()  => 0
                     ];
                 }
             }

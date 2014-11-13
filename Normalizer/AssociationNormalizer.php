@@ -57,7 +57,7 @@ class AssociationNormalizer implements NormalizerInterface
                     $context['defaultLocale'],
                     $channel->getCode()
                 ),
-                [$this->attributeHelper->getHeaderStatus() => $context['enabled']]
+                [$this->attributeHelper->getStatusHeader() => $context['enabled']]
             );
 
             foreach ($validProducts as $associatedProduct) {
