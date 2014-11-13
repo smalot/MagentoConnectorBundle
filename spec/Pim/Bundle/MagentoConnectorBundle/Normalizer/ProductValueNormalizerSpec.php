@@ -1,0 +1,318 @@
+<?php
+
+namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
+
+use Doctrine\Common\Collections\Collection;
+use PhpSpec\ObjectBehavior;
+use Pim\Bundle\CatalogBundle\Entity\Attribute;
+use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Pim\Bundle\CatalogBundle\Model\Metric;
+use Pim\Bundle\CatalogBundle\Model\ProductMedia;
+use Pim\Bundle\CatalogBundle\Model\ProductPrice;
+use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
+
+class ProductValueNormalizerSpec extends ObjectBehavior
+{
+    public function let()
+    {
+        $attributesHelper = new MagentoAttributesHelper();
+        $this->beConstructedWith($attributesHelper);
+    }
+
+    public function it_is_initializable()
+    {
+        $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer');
+    }
+
+    public function it_returns_true_if_the_normalizer_can_support_given_data(ProductValueInterface $productValue)
+    {
+        $this->supportsNormalization($productValue, 'api_import')->shouldReturn(true);
+    }
+
+    public function it_returns_false_if_the_normalizer_can_not_support_given_data($object)
+    {
+        $this->supportsNormalization($object, 'api_import')->shouldReturn(false);
+    }
+
+    public function it_returns_false_if_the_normalizer_can_not_support_given_data_because_of_the_format(
+        ProductValueInterface $productValue
+    ) {
+        $this->supportsNormalization($productValue, 'foo_bar')->shouldReturn(false);
+    }
+
+    public function it_sets_serializer_as_a_normalizer(Serializer $serializer)
+    {
+        $this->setSerializer($serializer)->shouldReturn(null);
+    }
+
+    public function it_does_not_set_an_object_as_a_normalizer(SerializerInterface $object)
+    {
+        $this->shouldThrow('\LogicException')->during('setSerializer', [$object]);
+    }
+
+    public function it_normalizes_a_product_value_not_localized_in_default_store_view(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('fr_FR');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn('foo');
+
+        $attribute->getCode()->willReturn('bar');
+        $attribute->getBackendType()->willReturn('text');
+
+        $normalizer->normalize('foo', 'api_import', $context)->willReturn('foo');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['fr_fr' => ['bar' => 'foo']]);
+    }
+
+    public function it_normalizes_a_product_value_localized_in_default_store_view(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn('foo');
+
+        $attribute->getCode()->willReturn('bar');
+        $attribute->getBackendType()->willReturn('text');
+
+        $normalizer->normalize('foo', 'api_import', $context)->willReturn('foo');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['bar' => 'foo']]);
+    }
+
+    public function it_normalizes_a_price_product_value(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer,
+        ProductPrice $price
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'defaultCurrency'  => 'USD',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->shouldBeCalled();
+        $productValue->getPrice('USD')->willReturn($price);
+
+        $attribute->getCode()->willReturn('price');
+        $attribute->getBackendType()->willReturn('prices');
+
+        $normalizer->normalize($price, 'api_import', $context)->willReturn('42.00');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['price' => '42.00']]);
+    }
+
+    public function it_normalizes_a_decimal_product_value(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn('42.000');
+
+        $attribute->getCode()->willReturn('my_decimal_attribute');
+        $attribute->getBackendType()->willReturn('decimal');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn([
+            'Default' => [
+                'my_decimal_attribute' => (double) 42
+            ]
+        ]);
+    }
+
+    public function it_normalizes_a_boolean_product_value(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn(true);
+
+        $attribute->getCode()->willReturn('my_boolean_attribute');
+        $attribute->getBackendType()->willReturn('boolean');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['my_boolean_attribute' => 1]]);
+    }
+
+    public function it_normalizes_a_metric_product_value(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer,
+        Metric $metric
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn($metric);
+
+        $attribute->getCode()->willReturn('my_metric_attribute');
+        $attribute->getBackendType()->willReturn('metric');
+
+        $normalizer->normalize($metric, 'api_import', $context)->willReturn('420.000');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['my_metric_attribute' => '420.000']]);
+    }
+
+    public function it_normalizes_a_multiselect_product_value_localized_in_default_store_view(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer,
+        Collection $optionColl
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn($optionColl);
+
+        $attribute->getCode()->willReturn('my_multiselect_attribute');
+        $attribute->getBackendType()->willReturn('multiselect');
+
+        $normalizer->normalize($optionColl, 'api_import', $context)->willReturn(['option1', 'option2']);
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn([
+            [
+                '_store' => '',
+                'my_multiselect_attribute' => 'option1'
+            ],
+            [
+                '_store' => '',
+                'my_multiselect_attribute' => 'option2'
+            ]
+        ]);
+    }
+
+    public function it_normalizes_an_attribute_option_product_value(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer,
+        AttributeOption $option
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn($option);
+
+        $attribute->getCode()->willReturn('my_option_attribute');
+        $attribute->getBackendType()->willReturn('simpleselect');
+
+        $normalizer->normalize($option, 'api_import', $context)->willReturn('option1');
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['my_option_attribute' => 'option1']]);
+    }
+
+    public function it_normalizes_a_media_product_value(
+        ProductValue $productValue,
+        Attribute $attribute,
+        Serializer $normalizer,
+        ProductMedia $media
+    ) {
+        $context = [
+            'defaultStoreView' => 'Default',
+            'defaultLocale'    => 'en_US',
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ]
+        ];
+
+        $productValue->getLocale()->willReturn('en_US');
+        $productValue->getAttribute()->willReturn($attribute);
+        $productValue->getData()->willReturn($media);
+
+        $attribute->getCode()->willReturn('my_media_attribute');
+        $attribute->getBackendType()->willReturn('media');
+
+        $normalizer->normalize($media, 'api_import', $context)->willReturn([
+            [
+                'my_media_attribute' => '1-sku_000-my_media_attribute---my_image.jpg',
+                'my_media_attribute_content' => 'bar_base64_code'
+            ]
+        ]);
+
+        $this->setSerializer($normalizer);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn([
+            [
+                'my_media_attribute' => '1-sku_000-my_media_attribute---my_image.jpg',
+                'my_media_attribute_content' => 'bar_base64_code',
+                '_store' => ''
+            ]
+        ]);
+    }
+}

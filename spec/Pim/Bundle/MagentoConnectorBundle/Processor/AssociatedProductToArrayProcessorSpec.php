@@ -45,7 +45,7 @@ class AssociatedProductToArrayProcessorSpec extends ObjectBehavior
             ],
             'associationMapping'  => [
                 'UPSELL'  => 'upsell',
-                'X_SELL'  => 'crosssel',
+                'X_SELL'  => 'crosssell',
                 'RELATED' => 'related',
                 'PACK'    => ''
             ],
@@ -63,7 +63,7 @@ class AssociatedProductToArrayProcessorSpec extends ObjectBehavior
         $this->process($association);
     }
 
-    public function it_set_and_get_channel(Channel $channel)
+    public function it_sets_and_gets_channel(Channel $channel)
     {
         $this->getChannel()->shouldReturn(null);
         $this->setChannel($channel);

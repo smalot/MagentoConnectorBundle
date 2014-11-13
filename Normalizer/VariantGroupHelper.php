@@ -98,17 +98,11 @@ class VariantGroupHelper
     /**
      * Sets the owning Serializer object
      *
-     * @param SerializerInterface $serializer
-     *
-     * @throws \LogicException
+     * @param NormalizerInterface $normalizer
      */
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(NormalizerInterface $normalizer)
     {
-        if (!$serializer instanceof NormalizerInterface) {
-            throw new \LogicException('Serializer must be a normalizer');
-        }
-
-        $this->normalizer = $serializer;
+        $this->normalizer = $normalizer;
     }
 
     /**
@@ -116,14 +110,17 @@ class VariantGroupHelper
      *
      * @param Group $group
      *
-     * @return Collection
+     * @return array
      */
     protected function getVariantAxesCodes(Group $group)
     {
-        return $group->getAttributes()->map(
+        $axes = $group->getAttributes()->toArray();
+
+        return array_map(
             function ($attribute) {
                 return $attribute->getCode();
-            }
+            },
+            $axes
         );
     }
 
@@ -132,7 +129,7 @@ class VariantGroupHelper
      *
      * @param ProductInterface $product
      * @param string           $format
-     * @param Collection       $variationAxes
+     * @param array            $variationAxes
      * @param array            $context
      *
      * @return array
@@ -140,7 +137,7 @@ class VariantGroupHelper
     protected function buildConfigurable(
         ProductInterface $product,
         $format,
-        Collection $variationAxes,
+        array $variationAxes,
         array $context = []
     ) {
         $simpleProduct = $this->normalizer->normalize($product, $format, $context);
@@ -164,14 +161,14 @@ class VariantGroupHelper
     /**
      * Transform a simple product in configurable
      *
-     * @param array      $simpleProduct
-     * @param Collection $variationAxes
+     * @param array $simpleProduct
+     * @param array $variationAxes
      *
      * @throws TypeNotFoundException
      *
      * @return array
      */
-    protected function getConfigurableValues(array $simpleProduct, Collection $variationAxes)
+    protected function getConfigurableValues(array $simpleProduct, array $variationAxes)
     {
         $simpleProductRows = $simpleProduct;
         $isTypeUpdated = false;
@@ -209,7 +206,7 @@ class VariantGroupHelper
      *
      * @param ProductInterface $product
      * @param string           $format
-     * @param Collection       $variationAxes
+     * @param array            $variationAxes
      * @param array            $context
      *
      * @return array
@@ -217,7 +214,7 @@ class VariantGroupHelper
     protected function buildAssociatedProduct(
         ProductInterface $product,
         $format,
-        Collection $variationAxes,
+        array $variationAxes,
         array $context = []
     ) {
         $associated = [];

@@ -2,6 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
+use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -14,6 +15,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class ProductMediaNormalizer implements NormalizerInterface
 {
+    /** @var MediaManager */
+    protected $mediaManager;
+
+    /**
+     * @param MediaManager $mediaManager
+     */
+    public function __construct(MediaManager $mediaManager)
+    {
+        $this->mediaManager = $mediaManager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -24,7 +36,7 @@ class ProductMediaNormalizer implements NormalizerInterface
         return [
             [
                 $attributeCode              => $object->getFileName(),
-                $attributeCode . '_content' => base64_encode(file_get_contents($object->getFilePath()))
+                $attributeCode . '_content' => $this->mediaManager->getBase64($object)
             ]
         ];
     }

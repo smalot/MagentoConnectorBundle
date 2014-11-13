@@ -97,4 +97,4 @@ class VariantGroupToArrayProcessorSpec extends ObjectBehavior
         $this->setChannel($channel);
         $this->getChannel()->shouldReturn($channel);
     }
-} 
+}
