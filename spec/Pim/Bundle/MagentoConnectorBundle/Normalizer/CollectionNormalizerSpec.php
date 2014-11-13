@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
+use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Prophecy\Argument;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -52,6 +53,23 @@ class CollectionNormalizerSpec extends ObjectBehavior
 
         $this->setSerializer($normalizer);
         $this->normalize($collection, 'api_import', [])->shouldReturn(['foo']);
+    }
+
+    public function it_normalizes_a_price_collection_to_the_api_import_format(
+        ProductPrice $price,
+        Serializer $normalizer,
+        ArrayCollection $collection
+    ) {
+        $context = ['defaultCurrency' => 'USD'];
+
+        $collection->first()->willReturn($price);
+        $collection->get('USD')->willReturn($price);
+        $collection->getIterator()->shouldNotBeCalled();
+
+        $normalizer->normalize($price, 'api_import', $context)->shouldBeCalled()->willReturn((double) 42);
+
+        $this->setSerializer($normalizer);
+        $this->normalize($collection, 'api_import', $context)->shouldReturn((double) 42);
     }
 
     public function it_returns_null_if_there_is_nothing_to_normalize_in_the_collection(

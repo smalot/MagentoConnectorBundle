@@ -2,7 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Pim\Bundle\CatalogBundle\AttributeType\AbstractAttributeType;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -45,20 +45,18 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         $data          = $object->getData();
         $value         = null;
 
-        if (AbstractAttributeType::BACKEND_TYPE_PRICE === $attribute->getBackendType()) {
-            $productPrice = $object->getPrice($context['defaultCurrency']);
-
-            if (null !== $productPrice) {
-                $value = $this->normalizer->normalize($productPrice, $format, $context);
-            }
-        } elseif (AbstractAttributeType::BACKEND_TYPE_DECIMAL === $attribute->getBackendType()) {
-            $value = $this->normalizeDecimal($data, $format, $context);
-        } elseif (null !== $data) {
-            if (is_bool($data)) {
-                $value = intval($data);
-            } else {
+        switch (gettype($data)) {
+            case 'object':
                 $value = $this->normalizer->normalize($data, $format, $context);
-            }
+                break;
+
+            case 'string':
+                $value = $this->getStringValue($object, $attribute, $data);
+                break;
+
+            case 'boolean':
+                $value = intval($data);
+                break;
         }
 
         return null !== $value ? $this->localizeValue($locale, $attributeCode, $value, $context) : [];
@@ -140,22 +138,41 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     }
 
     /**
-     * Normalize a decimal attribute value
+     * Return value of a string product value
      *
-     * @param mixed  $data
-     * @param string $format
-     * @param array  $context
+     * @param ProductValueInterface $object
+     * @param AbstractAttribute     $attribute
+     * @param string                $data
      *
-     * @return mixed|null
+     * @return mixed
+     *
+     * @throws BackendTypeNotFoundException
      */
-    protected function normalizeDecimal($data, $format, array $context)
+    protected function getStringValue(ProductValueInterface $object, AbstractAttribute $attribute, $data)
     {
-        if (false === is_numeric($data)) {
-            $normalized = $this->normalizer->normalize($data, $format, $context);
-        } else {
-            $normalized = floatval($data);
+        switch ($attribute->getBackendType()) {
+            case 'decimal':
+                $value = floatval($data);
+                break;
+
+            case 'text':
+            case 'varchar':
+                $value = $data;
+                break;
+
+            default:
+                throw new BackendTypeNotFoundException(
+                    sprintf(
+                        'Backend type "%s" of attribute "%s" from product "%s" is not supported yet in ' .
+                        'ProductValueNormalizer and can not be normalized.',
+                        $attribute->getBackendType(),
+                        $attribute->getCode(),
+                        (string) $object->getEntity()->getIdentifier()
+                    )
+                );
+                break;
         }
 
-        return $normalized;
+        return $value;
     }
 }
