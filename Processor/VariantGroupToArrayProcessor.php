@@ -7,7 +7,6 @@ use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -33,24 +32,18 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
     /** @var ChannelManager */
     protected $channelManager;
 
-    /** @var PriceHelper */
-    protected $priceHelper;
-
     /**
      * Constructor
      *
      * @param NormalizerInterface $normalizer
      * @param ChannelManager      $channelManager
-     * @param PriceHelper         $priceHelper
      */
     public function __construct(
         NormalizerInterface $normalizer,
-        ChannelManager $channelManager,
-        PriceHelper $priceHelper
+        ChannelManager $channelManager
     ) {
         $this->normalizer     = $normalizer;
         $this->channelManager = $channelManager;
-        $this->priceHelper    = $priceHelper;
     }
 
     /**

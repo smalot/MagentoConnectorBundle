@@ -58,7 +58,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         $categories = $this->getProductCategories($object, $format, $context);
         foreach ($categories[$this->attributesHelper->getHeaderCategory()] as $key => $category) {
             $processedProduct[] = [
-                $this->attributesHelper->getHeaderCategory()      => $category,
+                $this->attributesHelper->getHeaderCategory()     => $category,
                 $this->attributesHelper->getHeaderCategoryRoot() =>
                     $categories[$this->attributesHelper->getHeaderCategoryRoot()][$key]
             ];

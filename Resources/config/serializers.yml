@@ -64,6 +64,8 @@ services:
 
    pim_magento_connector.normalizer.product_media:
        class: %pim_magento_connector.normalizer.product_media.class%
+       arguments :
+          - '@pim_catalog.manager.media'
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 

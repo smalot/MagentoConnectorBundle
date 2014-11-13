@@ -64,7 +64,7 @@ class AssociatedProductToArrayProcessor extends AbstractConfigurableStepElement 
             ],
             'associationMapping'  => [
                 'UPSELL'  => 'upsell',
-                'X_SELL'  => 'crosssel',
+                'X_SELL'  => 'crosssell',
                 'RELATED' => 'related',
                 'PACK'    => ''
             ],

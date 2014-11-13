@@ -31,7 +31,7 @@ class ValidProductHelper
         foreach ($products as $product) {
             $isProductComplete = $this->isProductComplete($product, $channel);
 
-            $productCategories = $product->getCategories()->getIterator();
+            $productCategories = $product->getCategories()->toArray();
             if ($isProductComplete &&
                 false !== $productCategories &&
                 $this->doesProductBelongToChannel($productCategories, $rootCategoryId)
@@ -54,7 +54,7 @@ class ValidProductHelper
     protected function isProductComplete(ProductInterface $product, Channel $channel)
     {
         $isComplete = true;
-        $completenesses = $product->getCompletenesses()->getIterator();
+        $completenesses = $product->getCompletenesses()->toArray();
         while ((list($key, $completeness) = each($completenesses)) && $isComplete) {
             if ($completeness->getChannel()->getId() === $channel->getId() &&
                 $completeness->getRatio() < 100
