@@ -124,10 +124,10 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         if (is_array($value)) {
             foreach ($value as $option) {
                 if (is_array($option)) {
-                    $normalized[] = array_merge($option, [$this->attributesHelper->getHeaderStore() => $store]);
+                    $normalized[] = array_merge($option, [$this->attributesHelper->getStoreHeader() => $store]);
                 } else {
                     $normalized[] = [
-                        $this->attributesHelper->getHeaderStore() => $store,
+                        $this->attributesHelper->getStoreHeader() => $store,
                         $attributeCode                            => $option
                     ];
                 }

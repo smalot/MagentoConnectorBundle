@@ -12,73 +12,73 @@ namespace Pim\Bundle\MagentoConnectorBundle\Helper;
 class MagentoAttributesHelper
 {
     /** @staticvar string */
-    protected static $headerAttributeSet = '_attribute_set';
+    protected static $attributeSetHeader = '_attribute_set';
 
     /** @staticvar string */
-    protected static $headerCategory = '_category';
+    protected static $categoryHeader = '_category';
 
     /** @staticvar string */
-    protected static $headerCategoryRoot = '_root_category';
+    protected static $categoryRootHeader = '_root_category';
 
     /** @staticvar string */
-    protected static $headerCreatedAt = 'created_at';
+    protected static $createdAtHeader = 'created_at';
 
     /** @staticvar string */
-    protected static $headerProductType = '_type';
+    protected static $productTypeHeader = '_type';
 
     /** @staticvar string */
-    protected static $headerProductWebsite = '_product_websites';
+    protected static $productWebsiteHeader = '_product_websites';
 
     /** @staticvar string */
-    protected static $headerSku = 'sku';
+    protected static $skuHeader = 'sku';
 
     /** @staticvar string */
-    protected static $headerStatus = 'status';
+    protected static $statusHeader = 'status';
 
     /** @staticvar string */
-    protected static $headerStore = '_store';
+    protected static $storeHeader = '_store';
 
     /** @staticvar string */
-    protected static $headerTaxClassID = 'tax_class_id';
+    protected static $taxClassIDHeader = 'tax_class_id';
 
     /** @staticvar string */
-    protected static $headerUpdatedAt = 'updated_at';
+    protected static $updatedAtHeader = 'updated_at';
 
     /** @staticvar string */
-    protected static $headerVisibility = 'visibility';
+    protected static $visibilityHeader = 'visibility';
 
     /** @staticvar string */
-    protected static $headerName = 'name';
+    protected static $nameHeader = 'name';
 
     /** @staticvar string */
-    protected static $headerDescription = 'description';
+    protected static $descriptionHeader = 'description';
 
     /** @staticvar string */
-    protected static $headerShortDescription = 'short_description';
+    protected static $shortDescriptionHeader = 'short_description';
 
     /** @staticvar string */
-    protected static $headerAssociationReplaceSubject = '_links_#toReplace#_sku';
+    protected static $associationReplaceSubjectHeader = '_links_#toReplace#_sku';
 
     /** @staticvar string */
-    protected static $headerAssociationReplacePattern = '/#toReplace#/';
+    protected static $associationReplacePatternHeader = '/#toReplace#/';
 
     /** @staticvar string */
-    protected static $headerSuperProductSku = '_super_products_sku';
+    protected static $superProductSkuHeader = '_super_products_sku';
 
     /** @staticvar string */
-    protected static $headerSuperAttributeCode = '_super_attribute_code';
+    protected static $superAttributeCodeHeader = '_super_attribute_code';
 
     /** @staticvar string */
-    protected static $headerSuperAttributeOption = '_super_attribute_option';
+    protected static $superAttributeOptionHeader = '_super_attribute_option';
 
     /** @staticvar string */
-    protected static $headerSuperAttributePrice = '_super_attribute_price_corr';
+    protected static $superAttributePriceHeader = '_super_attribute_price_corr';
 
     /** @staticvar string */
-    protected static $productTypeSimple = 'simple';
+    protected static $simpleProductType = 'simple';
 
     /** @staticvar string */
-    protected static $productTypeConfigurable = 'configurable';
+    protected static $configurableProductType = 'configurable';
 
     /**
      * Returns mandatory attributes needed to create the base product to update associations
@@ -88,10 +88,10 @@ class MagentoAttributesHelper
     public function getMandatoryAttributeCodesForAssociations()
     {
         return [
-            $this->getHeaderSku(),
-            $this->getHeaderDescription(),
-            $this->getHeaderShortDescription(),
-            $this->getHeaderName()
+            $this->getSkuHeader(),
+            $this->getDescriptionHeader(),
+            $this->getShortDescriptionHeader(),
+            $this->getNameHeader()
         ];
     }
 
@@ -105,193 +105,193 @@ class MagentoAttributesHelper
     public function getAssociationTypeHeader($typeCode)
     {
         return preg_replace(
-            $this->getHeaderAssociationReplacePattern(),
+            $this->getAssociationReplacePatternHeader(),
             $typeCode,
-            $this->getHeaderAssociationReplaceSubject()
+            $this->getAssociationReplaceSubjectHeader()
         );
     }
 
     /**
      * @return string
      */
-    public static function getProductTypeConfigurable()
+    public static function getConfigurableProductType()
     {
-        return static::$productTypeConfigurable;
+        return static::$configurableProductType;
     }
 
     /**
      * @return string
      */
-    public static function getProductTypeSimple()
+    public static function getSimpleProductType()
     {
-        return static::$productTypeSimple;
+        return static::$simpleProductType;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderAssociationReplacePattern()
+    public static function getAssociationReplacePatternHeader()
     {
-        return static::$headerAssociationReplacePattern;
+        return static::$associationReplacePatternHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderAssociationReplaceSubject()
+    public static function getAssociationReplaceSubjectHeader()
     {
-        return static::$headerAssociationReplaceSubject;
+        return static::$associationReplaceSubjectHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderAttributeSet()
+    public static function getAttributeSetHeader()
     {
-        return static::$headerAttributeSet;
+        return static::$attributeSetHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderCategory()
+    public static function getCategoryHeader()
     {
-        return static::$headerCategory;
+        return static::$categoryHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderCategoryRoot()
+    public static function getCategoryRootHeader()
     {
-        return static::$headerCategoryRoot;
+        return static::$categoryRootHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderCreatedAt()
+    public static function getCreatedAtHeader()
     {
-        return static::$headerCreatedAt;
+        return static::$createdAtHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderDescription()
+    public static function getDescriptionHeader()
     {
-        return static::$headerDescription;
+        return static::$descriptionHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderName()
+    public static function getNameHeader()
     {
-        return static::$headerName;
+        return static::$nameHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderProductType()
+    public static function getProductTypeHeader()
     {
-        return static::$headerProductType;
+        return static::$productTypeHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderProductWebsite()
+    public static function getProductWebsiteHeader()
     {
-        return static::$headerProductWebsite;
+        return static::$productWebsiteHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderShortDescription()
+    public static function getShortDescriptionHeader()
     {
-        return static::$headerShortDescription;
+        return static::$shortDescriptionHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderSku()
+    public static function getSkuHeader()
     {
-        return static::$headerSku;
+        return static::$skuHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderStatus()
+    public static function getStatusHeader()
     {
-        return static::$headerStatus;
+        return static::$statusHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderStore()
+    public static function getStoreHeader()
     {
-        return static::$headerStore;
+        return static::$storeHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderSuperAttributeCode()
+    public static function getSuperAttributeCodeHeader()
     {
-        return static::$headerSuperAttributeCode;
+        return static::$superAttributeCodeHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderSuperAttributeOption()
+    public static function getSuperAttributeOptionHeader()
     {
-        return static::$headerSuperAttributeOption;
+        return static::$superAttributeOptionHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderSuperAttributePrice()
+    public static function getSuperAttributePriceHeader()
     {
-        return static::$headerSuperAttributePrice;
+        return static::$superAttributePriceHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderSuperProductSku()
+    public static function getSuperProductSkuHeader()
     {
-        return static::$headerSuperProductSku;
+        return static::$superProductSkuHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderTaxClassID()
+    public static function getTaxClassIDHeader()
     {
-        return static::$headerTaxClassID;
+        return static::$taxClassIDHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderUpdatedAt()
+    public static function getUpdatedAtHeader()
     {
-        return static::$headerUpdatedAt;
+        return static::$updatedAtHeader;
     }
 
     /**
      * @return string
      */
-    public static function getHeaderVisibility()
+    public static function getVisibilityHeader()
     {
-        return static::$headerVisibility;
+        return static::$visibilityHeader;
     }
 }
