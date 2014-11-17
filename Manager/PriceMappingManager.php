@@ -259,8 +259,11 @@ class PriceMappingManager
         $productsWithOption = [];
         $attributeCode      = $option->getAttribute()->getCode();
 
+        //PHP Warning:  max(): Array must contain at least one element in /home/akeneo_pim/pim-natalys/vendor/akeneo/magento-connector-bundle/Pim/Bundle/MagentoConnectorBundle/Manager/PriceMappingManager.php on line 156
+
         foreach ($products as $product) {
             if ($product->getValue($attributeCode, $this->locale) !== null &&
+                $product->getValue($attributeCode, $this->locale)->getData() !== null &&
                 $product->getValue($attributeCode, $this->locale)->getData()->getCode() === $option->getCode()
             ) {
                 $productsWithOption[] = $product;
