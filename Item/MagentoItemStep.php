@@ -454,6 +454,9 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
             $item
         );
 
+        if (!is_array($item)) {
+            $item = array();
+        }
         $event = new InvalidItemEvent(get_class($this), $message, $messageParameters, $item);
         $this->eventDispatcher->dispatch(EventInterface::INVALID_ITEM, $event);
     }
