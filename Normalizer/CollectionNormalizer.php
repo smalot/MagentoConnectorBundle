@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
+use Pim\Bundle\CatalogBundle\Model\AbstractProductPrice;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -24,9 +25,13 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        $normalized = [];
-        foreach ($object as $item) {
-            $normalized[] = $this->normalizer->normalize($item, $format, $context);
+        if ($object->first() instanceof AbstractProductPrice) {
+            $normalized = $this->normalizer->normalize($object->get($context['defaultCurrency']), $format, $context);
+        } else {
+            $normalized = [];
+            foreach ($object as $item) {
+                $normalized[] = $this->normalizer->normalize($item, $format, $context);
+            }
         }
 
         return (count($normalized) > 0) ? $normalized : null;

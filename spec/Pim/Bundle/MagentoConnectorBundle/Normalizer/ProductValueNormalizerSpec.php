@@ -4,15 +4,14 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Pim\Bundle\CatalogBundle\Model\Metric;
-use Pim\Bundle\CatalogBundle\Model\ProductMedia;
-use Pim\Bundle\CatalogBundle\Model\ProductPrice;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\BackendTypeNotFoundException;
+use Prophecy\Argument;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -29,7 +28,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer');
     }
 
-    public function it_returns_true_if_the_normalizer_can_support_given_data(ProductValueInterface $productValue)
+    public function it_returns_true_if_the_normalizer_can_support_given_data(ProductValue $productValue)
     {
         $this->supportsNormalization($productValue, 'api_import')->shouldReturn(true);
     }
@@ -40,7 +39,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
     }
 
     public function it_returns_false_if_the_normalizer_can_not_support_given_data_because_of_the_format(
-        ProductValueInterface $productValue
+        ProductValue $productValue
     ) {
         $this->supportsNormalization($productValue, 'foo_bar')->shouldReturn(false);
     }
@@ -57,7 +56,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_product_value_not_localized_in_default_store_view(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -73,9 +72,9 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn('foo');
 
         $attribute->getCode()->willReturn('bar');
-        $attribute->getBackendType()->willReturn('text');
+        $attribute->getBackendType()->shouldBeCalled()->willReturn('varchar');
 
-        $normalizer->normalize('foo', 'api_import', $context)->willReturn('foo');
+        $normalizer->normalize(Argument::cetera())->shouldNotBeCalled();
 
         $this->setSerializer($normalizer);
         $this->normalize($productValue, 'api_import', $context)->shouldReturn(['fr_fr' => ['bar' => 'foo']]);
@@ -83,7 +82,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_product_value_localized_in_default_store_view(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -99,24 +98,24 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn('foo');
 
         $attribute->getCode()->willReturn('bar');
-        $attribute->getBackendType()->willReturn('text');
+        $attribute->getBackendType()->shouldBeCalled()->willReturn('varchar');
 
-        $normalizer->normalize('foo', 'api_import', $context)->willReturn('foo');
+        $normalizer->normalize(Argument::cetera())->shouldNotBeCalled();
 
         $this->setSerializer($normalizer);
         $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['bar' => 'foo']]);
     }
 
-    public function it_normalizes_a_price_product_value(
+    public function it_throws_an_exception_if_the_product_value_can_not_be_normalized_because_the_attribute_backend_type_is_not_supported(
         ProductValue $productValue,
-        Attribute $attribute,
+        ProductValue $identifier,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
-        ProductPrice $price
+        ProductInterface $product
     ) {
         $context = [
             'defaultStoreView' => 'Default',
             'defaultLocale'    => 'en_US',
-            'defaultCurrency'  => 'USD',
             'storeViewMapping' => [
                 'fr_FR' => 'fr_fr'
             ]
@@ -124,21 +123,29 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
         $productValue->getLocale()->willReturn('en_US');
         $productValue->getAttribute()->willReturn($attribute);
-        $productValue->getData()->shouldBeCalled();
-        $productValue->getPrice('USD')->willReturn($price);
+        $productValue->getData()->willReturn('foo');
+        $productValue->getEntity()->willReturn($product);
 
-        $attribute->getCode()->willReturn('price');
-        $attribute->getBackendType()->willReturn('prices');
+        $attribute->getCode()->willReturn('bar');
+        $attribute->getBackendType()->shouldBeCalled()->willReturn('not_supported');
 
-        $normalizer->normalize($price, 'api_import', $context)->willReturn('42.00');
+        $normalizer->normalize(Argument::cetera())->shouldNotBeCalled();
+
+        $product->getIdentifier()->willReturn($identifier);
+        $identifier->__toString()->willReturn('sku-001');
 
         $this->setSerializer($normalizer);
-        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['price' => '42.00']]);
+        $this->shouldThrow(new BackendTypeNotFoundException(
+            sprintf(
+                'Backend type "not_supported" of attribute "bar" from product "sku-001" is not supported yet in ' .
+                'ProductValueNormalizer and can not be normalized.'
+            )
+        ))->duringNormalize($productValue, 'api_import', $context);
     }
 
     public function it_normalizes_a_decimal_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -154,7 +161,9 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn('42.000');
 
         $attribute->getCode()->willReturn('my_decimal_attribute');
-        $attribute->getBackendType()->willReturn('decimal');
+        $attribute->getBackendType()->shouldBeCalled()->willReturn('decimal');
+
+        $normalizer->normalize(Argument::cetera())->shouldNotBeCalled();
 
         $this->setSerializer($normalizer);
         $this->normalize($productValue, 'api_import', $context)->shouldReturn([
@@ -166,7 +175,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_boolean_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -182,42 +191,19 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn(true);
 
         $attribute->getCode()->willReturn('my_boolean_attribute');
-        $attribute->getBackendType()->willReturn('boolean');
+        $attribute->getBackendType()->shouldNotBeCalled();
+
+        $normalizer->normalize(Argument::cetera())->shouldNotBeCalled();
 
         $this->setSerializer($normalizer);
-        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['my_boolean_attribute' => 1]]);
-    }
-
-    public function it_normalizes_a_metric_product_value(
-        ProductValue $productValue,
-        Attribute $attribute,
-        Serializer $normalizer,
-        Metric $metric
-    ) {
-        $context = [
-            'defaultStoreView' => 'Default',
-            'defaultLocale'    => 'en_US',
-            'storeViewMapping' => [
-                'fr_FR' => 'fr_fr'
-            ]
-        ];
-
-        $productValue->getLocale()->willReturn('en_US');
-        $productValue->getAttribute()->willReturn($attribute);
-        $productValue->getData()->willReturn($metric);
-
-        $attribute->getCode()->willReturn('my_metric_attribute');
-        $attribute->getBackendType()->willReturn('metric');
-
-        $normalizer->normalize($metric, 'api_import', $context)->willReturn('420.000');
-
-        $this->setSerializer($normalizer);
-        $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['my_metric_attribute' => '420.000']]);
+        $this->normalize($productValue, 'api_import', $context)->shouldReturn([
+            'Default' => ['my_boolean_attribute' => 1]
+        ]);
     }
 
     public function it_normalizes_a_multiselect_product_value_localized_in_default_store_view(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
         Collection $optionColl
     ) {
@@ -234,9 +220,8 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn($optionColl);
 
         $attribute->getCode()->willReturn('my_multiselect_attribute');
-        $attribute->getBackendType()->willReturn('multiselect');
 
-        $normalizer->normalize($optionColl, 'api_import', $context)->willReturn(['option1', 'option2']);
+        $normalizer->normalize($optionColl, 'api_import', $context)->shouldBeCalled()->willReturn(['option1', 'option2']);
 
         $this->setSerializer($normalizer);
         $this->normalize($productValue, 'api_import', $context)->shouldReturn([
@@ -253,7 +238,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_an_attribute_option_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
         AttributeOption $option
     ) {
@@ -270,9 +255,8 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn($option);
 
         $attribute->getCode()->willReturn('my_option_attribute');
-        $attribute->getBackendType()->willReturn('simpleselect');
 
-        $normalizer->normalize($option, 'api_import', $context)->willReturn('option1');
+        $normalizer->normalize($option, 'api_import', $context)->shouldBeCalled()->willReturn('option1');
 
         $this->setSerializer($normalizer);
         $this->normalize($productValue, 'api_import', $context)->shouldReturn(['Default' => ['my_option_attribute' => 'option1']]);
@@ -280,9 +264,9 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_media_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
-        ProductMedia $media
+        AbstractProductMedia $media
     ) {
         $context = [
             'defaultStoreView' => 'Default',
@@ -297,9 +281,8 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $productValue->getData()->willReturn($media);
 
         $attribute->getCode()->willReturn('my_media_attribute');
-        $attribute->getBackendType()->willReturn('media');
 
-        $normalizer->normalize($media, 'api_import', $context)->willReturn([
+        $normalizer->normalize($media, 'api_import', $context)->shouldBeCalled()->willReturn([
             [
                 'my_media_attribute' => '1-sku_000-my_media_attribute---my_image.jpg',
                 'my_media_attribute_content' => 'bar_base64_code'
