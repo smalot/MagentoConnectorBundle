@@ -55,7 +55,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
                 break;
 
             case 'boolean':
-                $value = intval($data);
+                $value = $this->getBooleanValue($data);
                 break;
         }
 
@@ -152,12 +152,12 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     {
         switch ($attribute->getBackendType()) {
             case 'decimal':
-                $value = floatval($data);
+                $value = $this->getDecimalValue($data);
                 break;
 
             case 'text':
             case 'varchar':
-                $value = $data;
+                $value = $this->getTextValue($data);
                 break;
 
             default:
@@ -174,5 +174,41 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         }
 
         return $value;
+    }
+
+    /**
+     * Return value of a boolean product value
+     *
+     * @param bool $boolean
+     *
+     * @return int
+     */
+    protected function getBooleanValue($boolean)
+    {
+        return intval($boolean);
+    }
+
+    /**
+     * Return value of a decimal product value
+     *
+     * @param string $data
+     *
+     * @return float
+     */
+    protected function getDecimalValue($data)
+    {
+        return floatval($data);
+    }
+
+    /**
+     * Return value of a string product value
+     *
+     * @param string $data
+     *
+     * @return string
+     */
+    protected function getTextValue($data)
+    {
+        return $data;
     }
 }
