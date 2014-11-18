@@ -2,7 +2,6 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;

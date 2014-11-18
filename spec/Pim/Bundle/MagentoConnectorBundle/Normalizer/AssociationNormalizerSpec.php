@@ -12,7 +12,6 @@ use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\MandatoryAttributeNotFoundException;
-use Prophecy\Argument;
 
 class AssociationNormalizerSpec extends ObjectBehavior
 {
