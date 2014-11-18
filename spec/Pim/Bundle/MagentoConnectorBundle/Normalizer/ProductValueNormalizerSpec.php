@@ -4,12 +4,11 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
-use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Pim\Bundle\CatalogBundle\Model\Product;
-use Pim\Bundle\CatalogBundle\Model\ProductMedia;
+use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\BackendTypeNotFoundException;
 use Prophecy\Argument;
@@ -29,7 +28,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer');
     }
 
-    public function it_returns_true_if_the_normalizer_can_support_given_data(ProductValueInterface $productValue)
+    public function it_returns_true_if_the_normalizer_can_support_given_data(ProductValue $productValue)
     {
         $this->supportsNormalization($productValue, 'api_import')->shouldReturn(true);
     }
@@ -40,7 +39,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
     }
 
     public function it_returns_false_if_the_normalizer_can_not_support_given_data_because_of_the_format(
-        ProductValueInterface $productValue
+        ProductValue $productValue
     ) {
         $this->supportsNormalization($productValue, 'foo_bar')->shouldReturn(false);
     }
@@ -57,7 +56,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_product_value_not_localized_in_default_store_view(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -83,7 +82,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_product_value_localized_in_default_store_view(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -110,9 +109,9 @@ class ProductValueNormalizerSpec extends ObjectBehavior
     public function it_throws_an_exception_if_the_product_value_can_not_be_normalized_because_the_attribute_backend_type_is_not_supported(
         ProductValue $productValue,
         ProductValue $identifier,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
-        Product $product
+        ProductInterface $product
     ) {
         $context = [
             'defaultStoreView' => 'Default',
@@ -146,7 +145,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_decimal_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -176,7 +175,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_boolean_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer
     ) {
         $context = [
@@ -204,7 +203,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_multiselect_product_value_localized_in_default_store_view(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
         Collection $optionColl
     ) {
@@ -239,7 +238,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_an_attribute_option_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
         AttributeOption $option
     ) {
@@ -265,9 +264,9 @@ class ProductValueNormalizerSpec extends ObjectBehavior
 
     public function it_normalizes_a_media_product_value(
         ProductValue $productValue,
-        Attribute $attribute,
+        AbstractAttribute $attribute,
         Serializer $normalizer,
-        ProductMedia $media
+        AbstractProductMedia $media
     ) {
         $context = [
             'defaultStoreView' => 'Default',
