@@ -58,7 +58,7 @@ class VariantGroupReader extends AbstractConfigurableStepElement implements Prod
 
         if (null !== $this->variantGroupsToSend) {
             $variantGroup = $this->variantGroupsToSend->current();
-            $this->sentVariantGroups[] = $this->variantGroupsToSend->current()->getId();
+            $this->sentVariantGroups[] = $variantGroup->getId();
 
             $this->variantGroupsToSend->next();
         }
