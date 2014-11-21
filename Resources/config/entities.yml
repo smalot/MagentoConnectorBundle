@@ -1,0 +1,3 @@
+parameters:
+    pim_magento_connector.entity.magento_configuration.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration
+
