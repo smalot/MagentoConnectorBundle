@@ -15,7 +15,8 @@
     "require": {
         "akeneo/pim-community-dev": "1.2.*@stable",
         "symfony/symfony": "2.3.18",
-        "symfony/icu": "v1.1.0"
+        "symfony/icu": "v1.1.0",
+        "guzzle/service": ">=3.6.0,<3.8.0"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",

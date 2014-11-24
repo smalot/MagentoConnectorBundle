@@ -1,0 +1,10 @@
+parameters:
+    pim_magento_connector.validator.magento_reachable.class: Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoReachableValidator
+
+services:
+    pim_magento_connector.validator.magento_reachable:
+        class: %pim_magento_connector.validator.magento_reachable.class%
+        arguments:
+            - '@pim_magento_connector.web_client.guzzle'
+        tags:
+            - { name: validator.constraint_validator, alias: magento_reachable }
