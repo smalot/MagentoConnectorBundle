@@ -20,12 +20,9 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
         soapApiKey:
             type: string
             column: soap_api_key
-        magentoUrl:
+        soapUrl:
             type: string
-            column: magento_url
-        wsdlExtension:
-            type: string
-            column: wdsl_extension
+            column: soap_url
         defaultStoreView:
             type: string
             column: default_store_view
@@ -49,7 +46,3 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
             type: string
             nullable: true
             column: http_password
-        isValid:
-            type: boolean
-            nullable: true
-            column: is_valid

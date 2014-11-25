@@ -26,11 +26,8 @@ class MagentoConfiguration
     /** @var string Soap API key */
     protected $soapApiKey;
 
-    /** @var string Wsdl extension */
-    protected $wsdlExtension;
-
-    /** @var string Magento URL*/
-    protected $magentoUrl;
+    /** @var string Soap URL */
+    protected $soapUrl;
 
     /** @var string Default store view */
     protected $defaultStoreView;
@@ -52,9 +49,6 @@ class MagentoConfiguration
 
     /** @var array Attributes mapping */
     protected $attributeMapping;
-
-    /**  @var boolean Are parameters valid or not ? */
-    protected $isValid;
 
     /**
      * Get identifier of the configuration
@@ -107,26 +101,6 @@ class MagentoConfiguration
     }
 
     /**
-     * Are parameters valid or not ?
-     *
-     * @return bool
-     */
-    public function isValid()
-    {
-        return $this->isValid;
-    }
-
-    /**
-     * Allows to change the state of validation
-     *
-     * @param bool
-     */
-    public function setValid($state)
-    {
-        $this->isValid = $state;
-    }
-
-    /**
      * Get soap username
      *
      * @return string Soap magento soapUsername
@@ -173,47 +147,17 @@ class MagentoConfiguration
      */
     public function getSoapUrl()
     {
-        return $this->magentoUrl . $this->wsdlExtension;
+        return $this->soapUrl;
     }
 
     /**
-     * Get the wsdl extension
-     *
-     * @return string Wsdl extension
-     */
-    public function getWsdlExtension()
-    {
-        return $this->wsdlExtension;
-    }
-
-    /**
-     * Set the wsdl extension
+     * Set the soap URL
      *
      * @param string
      */
-    public function setWsdlExtension($wsdlExtension)
+    public function setSoapUrl($soapUrl)
     {
-        $this->wsdlExtension = $wsdlExtension;
-    }
-
-    /**
-     * Get the magento domain URL
-     *
-     * @return string Magento domain URL
-     */
-    public function getMagentoUrl()
-    {
-        return $this->magentoUrl;
-    }
-
-    /**
-     * Set the magento domain URL
-     *
-     * @param string
-     */
-    public function setMagentoUrl($magentoUrl)
-    {
-        $this->magentoUrl = $magentoUrl;
+        $this->soapUrl = $soapUrl;
     }
 
     /**
