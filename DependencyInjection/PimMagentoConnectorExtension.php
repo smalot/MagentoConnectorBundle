@@ -33,5 +33,6 @@ class PimMagentoConnectorExtension extends Extension
         $loader->load('managers.yml');
         $loader->load('validators.yml');
         $loader->load('webservices.yml');
+        $loader->load('factories.yml');
     }
 }

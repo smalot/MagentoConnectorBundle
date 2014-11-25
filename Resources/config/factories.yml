@@ -1,0 +1,6 @@
+parameters:
+    pim_magento_connector.factory.soap_client.class: Pim\Bundle\MagentoConnectorBundle\Factory\SoapClientFactory
+
+services:
+    pim_magento_connector.factory.soap_client:
+        class: %pim_magento_connector.factory.soap_client.class%

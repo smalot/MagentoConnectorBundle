@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Validator\Constraints;
 
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration;
+use Pim\Bundle\MagentoConnectorBundle\Factory\SoapClientFactory;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Guzzle\Http\Exception\BadResponseException;
@@ -29,14 +30,18 @@ class MagentoReachableValidator extends ConstraintValidator
     /** @var ClientInterface Guzzle HTTP client */
     protected $guzzleClient;
 
+    /** @var SoapClientFactory Factory to create Soap clients */
+    protected $soapClientFactory;
+
     /**
      * Constructor
      *
      * @param ClientInterface $client
      */
-    public function __construct(ClientInterface $guzzleClient)
+    public function __construct(ClientInterface $guzzleClient, SoapClientFactory $soapClientFactory)
     {
-        $this->guzzleClient = $guzzleClient;
+        $this->guzzleClient      = $guzzleClient;
+        $this->soapClientFactory = $soapClientFactory;
     }
 
     /**
@@ -155,10 +160,8 @@ class MagentoReachableValidator extends ConstraintValidator
      */
     protected function connectSoapClient(Constraint $constraint, MagentoConfiguration $configuration)
     {
-        $soapOptions = $this->getSoapOptions($configuration);
-
         try {
-            $soapClient = new \SoapClient($configuration->getSoapUrl(), $soapOptions);
+            $soapClient = $this->soapClientFactory->createSoapClient($configuration);
         } catch (\SoapFault $e) {
             if (false !== stripos($e->getMessage(), 'failed to load external entity')) {
                 $this->context->addViolationAt(
@@ -189,10 +192,8 @@ class MagentoReachableValidator extends ConstraintValidator
         Constraint $constraint,
         MagentoConfiguration $configuration
     ) {
-        $soapOptions = $this->getSoapOptions($configuration);
-
         try {
-            $session = $soapClient->login($soapOptions['login'], $soapOptions['password']);
+            $session = $soapClient->login($configuration->getSoapUsername(), $configuration->getSoapApiKey());
         } catch (\SoapFault $e) {
             if (false !== stripos($e->getMessage(), 'access denied')) {
                 $this->context->addViolationAt(
@@ -272,25 +273,5 @@ class MagentoReachableValidator extends ConstraintValidator
                 'httpPassword' => $configuration->getHttpPassword()
             ]
         );
-    }
-
-    /**
-     * Return soap options
-     *
-     * @param MagentoConfiguration $configuration
-     *
-     * @return array
-     */
-    protected function getSoapOptions(MagentoConfiguration $configuration)
-    {
-        return [
-            'encoding'   => 'UTF-8',
-            'trace'      => true,
-            'exceptions' => true,
-            'login'      => $configuration->getSoapUsername(),
-            'password'   => $configuration->getSoapApiKey(),
-            'cache_wsdl' => 3,
-            'keep_alive' => 1
-        ];
     }
 }

@@ -6,5 +6,6 @@ services:
         class: %pim_magento_connector.validator.magento_reachable.class%
         arguments:
             - '@pim_magento_connector.web_client.guzzle'
+            - '@pim_magento_connector.factory.soap_client'
         tags:
             - { name: validator.constraint_validator, alias: magento_reachable }
