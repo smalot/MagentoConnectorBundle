@@ -113,7 +113,7 @@ class MagentoConfiguration
     /**
      * Set soap username
      *
-     * @param string
+     * @param string $soapUsername
      */
     public function setSoapUsername($soapUsername)
     {
@@ -133,7 +133,7 @@ class MagentoConfiguration
     /**
      * Set the soap API key
      *
-     * @param string
+     * @param string $soapApiKey
      */
     public function setSoapApiKey($soapApiKey)
     {
@@ -153,7 +153,7 @@ class MagentoConfiguration
     /**
      * Set the soap URL
      *
-     * @param string
+     * @param string $soapUrl
      */
     public function setSoapUrl($soapUrl)
     {
@@ -193,7 +193,7 @@ class MagentoConfiguration
     /**
      * Set default locale
      *
-     * @param string
+     * @param string $defaultLocale
      */
     public function setDefaultLocale($defaultLocale)
     {
@@ -213,7 +213,7 @@ class MagentoConfiguration
     /**
      * Set the HTTP authentication login
      *
-     * @param string
+     * @param string $httpLogin
      */
     public function setHttpLogin($httpLogin)
     {
@@ -253,7 +253,7 @@ class MagentoConfiguration
     /**
      * Set the attributes mapping
      *
-     * @param array
+     * @param array $attributeMapping
      */
     public function setAttributeMapping($attributeMapping)
     {
@@ -273,7 +273,7 @@ class MagentoConfiguration
     /**
      * Set root categories mapping
      *
-     * @param array
+     * @param array $rootCategoryMapping
      */
     public function setRootCategoryMapping($rootCategoryMapping)
     {
@@ -293,7 +293,7 @@ class MagentoConfiguration
     /**
      * Set store views mapping
      *
-     * @param array
+     * @param array $storeViewMapping
      */
     public function setStoreViewMapping($storeViewMapping)
     {

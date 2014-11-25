@@ -41,7 +41,6 @@ class SoapClientFactory
         return new \SoapClient($configuration->getSoapUrl(), $soapOptions);
     }
 
-
     /**
      * Return soap options
      *

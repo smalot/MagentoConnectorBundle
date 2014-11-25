@@ -7,9 +7,3 @@ services:
         class: '%pim_magento_connector.web_client.guzzle.class%'
         tags:
             - { name: guzzle.client }
-
-#    pim_magento_connector.webservice.magento_soap_client:
-#        class: %pim_magento_connector.entity.magento_configuration.class%
-#        arguments:
-#            - '@pim_magento_connector.entity.magento_configuration'
-#            - '@pim_magento_connector.web_client.guzzle.client'

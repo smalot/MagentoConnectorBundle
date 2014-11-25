@@ -31,6 +31,8 @@ class MagentoReachable extends Constraint
 
     /**
      * @{inheritdoc}
+     *
+     * @return string
      */
     public function getTargets()
     {
