@@ -18,7 +18,6 @@ class MagentoReachable extends Constraint
     public $messageAccessDenied            = 'pim_magento_connector.export.validator.access_denied';
     public $messageXmlNotValid             = 'pim_magento_connector.export.validator.xml_not_valid';
     public $messageUndefinedSoapException  = 'pim_magento_connector.export.validator.undefined_exception';
-    public $messageUserHasNoPermission     = 'pim_magento_connector.export.validator.user_has_no_permission';
 
     /**
      * Returns alias of the MagentoReachable service

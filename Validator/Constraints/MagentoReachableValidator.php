@@ -11,8 +11,6 @@ use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\ClientInterface;
 
 /**
- * TODO: create a translation key for each messages and inject exception message
- *
  * This validator allows to validate if Magento is reachable with parameters of MagentoConfiguration entity
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>

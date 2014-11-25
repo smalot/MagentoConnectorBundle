@@ -8,3 +8,11 @@ pim_magento_connector:
             title: Magento Configurable Export
             export:
                 title: Configurable Export Step
+
+    export:
+        validator:
+            url_not_reachable: The URL you try to access is not reachable. The problem can be your URL is not good.
+            soap_url_not_valid: The soap URL you try to access is not reachable. The problem can be your wsdl extension is not good.
+            access_denied: Access denied to Magento. Verify your soap username and API key.
+            xml_not_valid: Content of the URL is not XML. Your soap URL must be follow by your wsdl extension. Verifiy your soap URL.
+            undefined_exception: The problem you encountered is not listed. Please, refer to the following error.

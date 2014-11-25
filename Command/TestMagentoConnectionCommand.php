@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\Validator;
+use Oro\Bundle\TranslationBundle\Translation\Translator;
 
 /**
  * This command allows to check validity of a MagentoConfiguration
@@ -38,12 +39,14 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
         $code          = $input->getArgument('configuration_code');
         $manager       = $this->getMagentoConfigurationManager();
         $configuration = $manager->getMagentoConfigurationByCode($code);
+        $translator    = $this->getTranslator();
 
+        $translator->setLocale($this->getDefaultLocale());
         $violations = $validator->validate($configuration, ['connection']);
 
         if ($violations->count() !== 0) {
             foreach ($violations as $violation) {
-                $output->writeln($violation->getMessage());
+                $output->writeln($translator->trans($violation->getMessage()));
                 foreach ($violation->getMessageParameters() as $error) {
                     $output->writeln(sprintf('ERROR : "%s"', $error));
                 }
@@ -74,5 +77,25 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
     protected function getValidator()
     {
         return $this->getContainer()->get('validator');
+    }
+
+    /**
+     * Returns the symfony translator
+     *
+     * @return Translator
+     */
+    protected function getTranslator()
+    {
+        return $this->getContainer()->get('translator');
+    }
+
+    /**
+     * Returns the default locale
+     *
+     * @return string
+     */
+    protected function getDefaultLocale()
+    {
+        return $this->getContainer()->getParameter('locale');
     }
 }
