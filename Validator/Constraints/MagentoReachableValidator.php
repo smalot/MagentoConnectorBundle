@@ -142,11 +142,7 @@ class MagentoReachableValidator extends ConstraintValidator
     {
         $soapClient = $this->connectSoapClient($constraint, $configuration);
         if (null !== $soapClient) {
-            $session = $this->loginSoapClient($soapClient, $constraint, $configuration);
-
-            if (null !== $session) {
-                $this->callSoapApiToCheckPermission($soapClient, $constraint, $configuration, $session);
-            }
+            $this->loginSoapClient($soapClient, $constraint, $configuration);
         }
     }
 
@@ -211,42 +207,6 @@ class MagentoReachableValidator extends ConstraintValidator
         }
 
         return $session;
-    }
-
-    /**
-     * Call all Api Import method to check if the user has permission to access to them
-     *
-     * @param \SoapClient          $soapClient
-     * @param Constraint           $constraint
-     * @param MagentoConfiguration $configuration
-     * @param string               $session
-     */
-    protected function callSoapApiToCheckPermission(
-        \SoapClient $soapClient,
-        Constraint $constraint,
-        MagentoConfiguration $configuration,
-        $session
-    ) {
-        try {
-            $soapClient->call($session, 'import.importEntities', [[], 'catalog_product']);
-            $soapClient->call($session, 'import.importAttributes', [[]]);
-            $soapClient->call($session, 'import.importAttributeSets', [[]]);
-            $soapClient->call($session, 'import.importAttributeAssociations', [[]]);
-        } catch (\SoapFault $e) {
-            if (false !== stripos($e->getMessage(), 'access denied')) {
-                $this->context->addViolationAt(
-                    'MagentoConfiguration',
-                    $constraint->messageUserHasNoPermission,
-                    [$e->getMessage()],
-                    [$configuration->getSoapUsername()]
-                );
-            } elseif (false !== stripos($e->getMessage(), 'invalid entity model')) {
-                // We didn't send entity, so invalid entity model message
-                // mean you can access to api import but data are invalid
-            } else {
-                $this->addUndefinedViolation($e, $constraint, $configuration);
-            }
-        }
     }
 
     /**
