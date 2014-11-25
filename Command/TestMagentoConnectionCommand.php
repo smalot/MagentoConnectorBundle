@@ -9,6 +9,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\Validator;
 
+/**
+ * This command allows to check validity of a MagentoConfiguration
+ *
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
 class TestMagentoConnectionCommand extends ContainerAwareCommand
 {
     /**
@@ -30,13 +37,23 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
         $validator     = $this->getValidator();
         $code          = $input->getArgument('configuration_code');
         $manager       = $this->getMagentoConfigurationManager();
-        $configuration = $manager->getRepository()->findOneBy(['code' => $code]);
+        $configuration = $manager->getMagentoConfigurationByCode($code);
 
-        $errors = $validator->validate($configuration, ['connection']); //, ['connection']
+        $violations = $validator->validate($configuration, ['connection']);
 
-        die(var_dump($errors));
-
-        $output->writeln('');
+        if ($violations->count() !== 0) {
+            foreach ($violations as $violation) {
+                $output->writeln($violation->getMessage());
+                foreach ($violation->getMessageParameters() as $error) {
+                    $output->writeln(sprintf('ERROR : "%s"', $error));
+                }
+                foreach ($violation->getInvalidValue() as $key => $value) {
+                    $output->writeln(sprintf('INVALID VALUE %s : "%s"', $key, $value));
+                }
+            }
+        } else {
+            $output->writeln(sprintf('Connection to Magento is OK with %s configuration.', $code));
+        }
     }
 
     /**
@@ -46,9 +63,7 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
      */
     protected function getMagentoConfigurationManager()
     {
-        return $this
-            ->getContainer()
-            ->get('pim_magento_connector.manager.magento_configuration');
+        return $this->getContainer()->get('pim_magento_connector.manager.magento_configuration');
     }
 
     /**
@@ -58,8 +73,6 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
      */
     protected function getValidator()
     {
-        return $this
-            ->getContainer()
-            ->get('validator');
+        return $this->getContainer()->get('validator');
     }
 }

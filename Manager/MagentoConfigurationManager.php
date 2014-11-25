@@ -54,8 +54,20 @@ class MagentoConfigurationManager
         $em = $this->doctrine->getEntityManager();
 
         $em->persist($configuration);
-        $em->flush();
+        $em->flush($configuration);
 
         return $this;
+    }
+
+    /**
+     * Allow to retrieve a Magento configuration entity by its code
+     *
+     * @param string $code
+     *
+     * @return null|MagentoConfiguration
+     */
+    public function getMagentoConfigurationByCode($code)
+    {
+        return $this->getRepository()->findOneBy(['code' => $code]);
     }
 }
