@@ -1,5 +1,5 @@
 parameters:
-    pim_magento_connector.webservice.magento_soap_client.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration
+    pim_magento_connector.webservice.magento_soap_client.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient
     pim_magento_connector.web_client.guzzle.class: Guzzle\Service\Client
 
 services:
