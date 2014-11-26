@@ -19,6 +19,15 @@ use Oro\Bundle\TranslationBundle\Translation\Translator;
  */
 class TestMagentoConnectionCommand extends ContainerAwareCommand
 {
+    /** @staticvar int */
+    const SUCCESS = 0;
+
+    /** @staticvar int */
+    const CONFIGURATION_NOT_FOUND = 1;
+
+    /** @staticvar int */
+    const VALIDATION_ERROR = 2;
+
     /**
      * {@inheritdoc}
      */
@@ -45,27 +54,22 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
 
         if (null === $configuration) {
             $output->writeln(
-                sprintf('<error>ERROR</error> : Given configuration with code "%s" does not exist.', $code)
+                sprintf('<error>ERROR : Given configuration with code "%s" does not exist.</error>', $code)
             );
-            $status = 1;
+            $status = static::CONFIGURATION_NOT_FOUND;
         } else {
             $translator->setLocale($this->getDefaultLocale());
             $violations = $validator->validate($configuration, ['connection']);
 
             if ($violations->count() !== 0) {
                 foreach ($violations as $violation) {
-                    $output->writeln(sprintf('<error>%s</error>', $translator->trans($violation->getMessage())));
-                    foreach ($violation->getMessageParameters() as $error) {
-                        $output->writeln(sprintf('<error>ERROR : "%s"</error>', $error));
-                    }
-                    foreach ($violation->getInvalidValue() as $key => $value) {
-                        $output->writeln(sprintf('<comment>INVALID VALUE %s : "%s"</comment>', $key, $value));
-                    }
+                    $output->writeln($violation->getMessage());
                 }
-                $status = 2;
+
+                $status = static::VALIDATION_ERROR;
             } else {
                 $output->writeln(sprintf('<info>"Connection to Magento is OK with %s configuration."</info>', $code));
-                $status = 0;
+                $status = static::SUCCESS;
             }
         }
 

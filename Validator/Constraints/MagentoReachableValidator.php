@@ -27,6 +27,25 @@ class MagentoReachableValidator extends ConstraintValidator
     /** @staticvar int */
     const CONNECT_TIMEOUT = 10;
 
+    /** @staticvar string */
+    const EXCEPTION_MESSAGE_PARAM = '%EXCEPTION%';
+
+    /** @staticvar string */
+    const SOAP_URL_MESSAGE_PARAM = '%SOAP_URL%';
+
+    /** @staticvar string */
+    const HTTP_LOGIN_MESSAGE_PARAM = '%HTTP_LOGIN%';
+
+    /** @staticvar string */
+    const HTTP_PASSWD_MESSAGE_PARAM = '%HTTP_PASSWD%';
+
+    /** @staticvar string */
+    const SOAP_USERNAME_MESSAGE_PARAM = '%USERNAME%';
+
+    /** @staticvar string */
+    const SOAP_API_KEY_MESSAGE_PARAM = '%API_KEY%';
+
+
     /** @var ClientInterface Guzzle HTTP client */
     protected $guzzleClient;
 
@@ -73,11 +92,11 @@ class MagentoReachableValidator extends ConstraintValidator
             $this->context->addViolationAt(
                 'MagentoConfiguration',
                 $constraint->messageNotReachableUrl,
-                [$e->getMessage()],
                 [
-                    'Soap URL' => $configuration->getSoapUrl(),
-                    'HTTP login' => $configuration->getHttpLogin(),
-                    'HTTP password' => $configuration->getHttpPassword()
+                    static::EXCEPTION_MESSAGE_PARAM   => $e->getMessage(),
+                    static::SOAP_URL_MESSAGE_PARAM    => $configuration->getSoapUrl(),
+                    static::HTTP_LOGIN_MESSAGE_PARAM  => $configuration->getHttpLogin(),
+                    static::HTTP_PASSWD_MESSAGE_PARAM => $configuration->getHttpPassword()
                 ]
             );
             $isConnected = false;
@@ -86,8 +105,10 @@ class MagentoReachableValidator extends ConstraintValidator
             $this->context->addViolationAt(
                 'MagentoConfiguration',
                 $constraint->messageInvalidSoapUrl,
-                [$e->getMessage()],
-                ['Soap URL' => $configuration->getSoapUrl()]
+                [
+                    static::EXCEPTION_MESSAGE_PARAM => $e->getMessage(),
+                    static::SOAP_URL_MESSAGE_PARAM  => $configuration->getSoapUrl()
+                ]
             );
             $isConnected = false;
         }
@@ -97,8 +118,7 @@ class MagentoReachableValidator extends ConstraintValidator
             $this->context->addViolationAt(
                 'MagentoConfiguration',
                 $constraint->messageXmlNotValid,
-                ['Content type is not XML'],
-                ['Soap URL' => $configuration->getSoapUrl()]
+                [static::SOAP_URL_MESSAGE_PARAM => $configuration->getSoapUrl()]
             );
             $isConnected = false;
         }
@@ -166,8 +186,10 @@ class MagentoReachableValidator extends ConstraintValidator
                 $this->context->addViolationAt(
                     'MagentoConfiguration',
                     $constraint->messageInvalidSoapUrl,
-                    [$e->getMessage()],
-                    ['Soap URL' => $configuration->getSoapUrl()]
+                    [
+                        static::EXCEPTION_MESSAGE_PARAM => $e->getMessage(),
+                        static::SOAP_URL_MESSAGE_PARAM  => $configuration->getSoapUrl()
+                    ]
                 );
             } else {
                 $this->addUndefinedViolation($e, $constraint, $configuration);
@@ -199,10 +221,10 @@ class MagentoReachableValidator extends ConstraintValidator
                 $this->context->addViolationAt(
                     'MagentoConfiguration',
                     $constraint->messageAccessDenied,
-                    [$e->getMessage()],
                     [
-                        'SOAP username' => $configuration->getSoapUsername(),
-                        'SOAP API key'  => $configuration->getSoapApiKey()
+                        static::EXCEPTION_MESSAGE_PARAM     => $e->getMessage(),
+                        static::SOAP_USERNAME_MESSAGE_PARAM => $configuration->getSoapUsername(),
+                        static::SOAP_API_KEY_MESSAGE_PARAM  => $configuration->getSoapApiKey()
                     ]
                 );
             } else {
@@ -229,13 +251,13 @@ class MagentoReachableValidator extends ConstraintValidator
         $this->context->addViolationAt(
             'MagentoConfiguration',
             $constraint->messageUndefinedSoapException,
-            [$exception->getMessage()],
             [
-                'SOAP username' => $configuration->getSoapUsername(),
-                'SOAP API key'  => $configuration->getSoapApiKey(),
-                'SOAP URL'      => $configuration->getSoapUrl(),
-                'HTTP login'    => $configuration->getHttpLogin(),
-                'HTTP password' => $configuration->getHttpPassword()
+                static::EXCEPTION_MESSAGE_PARAM     => $exception->getMessage(),
+                static::SOAP_USERNAME_MESSAGE_PARAM => $configuration->getSoapUsername(),
+                static::SOAP_API_KEY_MESSAGE_PARAM  => $configuration->getSoapApiKey(),
+                static::SOAP_URL_MESSAGE_PARAM      => $configuration->getSoapUrl(),
+                static::HTTP_LOGIN_MESSAGE_PARAM    => $configuration->getHttpLogin(),
+                static::HTTP_PASSWD_MESSAGE_PARAM   => $configuration->getHttpPassword()
             ]
         );
     }

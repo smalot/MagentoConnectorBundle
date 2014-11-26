@@ -13,11 +13,50 @@ use Symfony\Component\Validator\Constraint;
  */
 class MagentoReachable extends Constraint
 {
-    public $messageNotReachableUrl         = 'pim_magento_connector.export.validator.url_not_reachable';
-    public $messageInvalidSoapUrl          = 'pim_magento_connector.export.validator.soap_url_not_valid';
-    public $messageAccessDenied            = 'pim_magento_connector.export.validator.access_denied';
-    public $messageXmlNotValid             = 'pim_magento_connector.export.validator.xml_not_valid';
-    public $messageUndefinedSoapException  = 'pim_magento_connector.export.validator.undefined_exception';
+    public $messageNotReachableUrl = '
+        <error>URL unreachable. Check the Magento URL.</error>
+
+        <error>[EXCEPTION]: %EXCEPTION%</error>
+
+        <comment>[INVALID VALUES]:</comment>
+        <comment>SOAP URL: %SOAP_URL%</comment>
+        <comment>HTTP LOGIN: %HTTP_LOGIN%</comment>
+        <comment>HTTP PASSWORD: %HTTP_PASSWD%</comment>';
+
+    public $messageInvalidSoapUrl = '
+        <error>SOAP URL unreachable. Check the Magento SOAP URL and its wsdl extension.</error>
+
+        <error>[EXCEPTION]: %EXCEPTION%</error>
+
+        <comment>[INVALID VALUES]:</comment>
+        <comment>SOAP URL: %SOAP_URL%</comment>';
+
+    public $messageAccessDenied = '
+        <error>Access denied to Magento. Verify your SOAP username and API key.</error>
+
+        <error>[EXCEPTION]: %EXCEPTION%</error>
+
+        <comment>[INVALID VALUES]:</comment>
+        <comment>SOAP USERNAME: %USERNAME%</comment>
+        <comment>SOAP API KEY: %API_KEY%</comment>';
+
+    public $messageXmlNotValid = '
+        <error>Response content type is not XML. Check the Magento SOAP URL and its wsdl extension.</error>
+
+        <comment>[INVALID VALUES]:</comment>
+        <comment>SOAP URL: %SOAP_URL%</comment>';
+
+    public $messageUndefinedSoapException  = '
+        <error>The problem you encountered is not listed. Please, refer to the following error.</error>
+
+        <error>[EXCEPTION]: %EXCEPTION%</error>
+
+        <comment>[VALUES]:</comment>
+        <comment>SOAP URL: %SOAP_URL%</comment>
+        <comment>HTTP LOGIN: %HTTP_LOGIN%</comment>
+        <comment>HTTP PASSWORD: %HTTP_PASSWD%</comment>
+        <comment>SOAP USERNAME: %USERNAME%</comment>
+        <comment>SOAP API KEY: %API_KEY%</comment>';
 
     /**
      * Returns alias of the MagentoReachable service
