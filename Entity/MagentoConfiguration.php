@@ -299,4 +299,21 @@ class MagentoConfiguration
     {
         $this->storeViewMapping = $storeViewMapping;
     }
+
+    /**
+     * Returns configuration as a string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $toString = PHP_EOL;
+        $toString .= 'SOAP URL: ' . $this->getSoapUrl() . PHP_EOL;
+        $toString .= 'SOAP USERNAME: ' . $this->getSoapUsername() . PHP_EOL;
+        $toString .= 'SOAP API KEY: ' . $this->getSoapApiKey() . PHP_EOL;
+        $toString .= 'HTTP LOGIN: ' . $this->getHttpLogin() . PHP_EOL;
+        $toString .= 'HTTP PASSWORD: ' . $this->getHttpPassword() . PHP_EOL;
+
+        return $toString;
+    }
 }

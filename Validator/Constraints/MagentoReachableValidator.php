@@ -27,24 +27,6 @@ class MagentoReachableValidator extends ConstraintValidator
     /** @staticvar int */
     const CONNECT_TIMEOUT = 10;
 
-    /** @staticvar string */
-    const EXCEPTION_MESSAGE_PARAM = '%EXCEPTION%';
-
-    /** @staticvar string */
-    const SOAP_URL_MESSAGE_PARAM = '%SOAP_URL%';
-
-    /** @staticvar string */
-    const HTTP_LOGIN_MESSAGE_PARAM = '%HTTP_LOGIN%';
-
-    /** @staticvar string */
-    const HTTP_PASSWD_MESSAGE_PARAM = '%HTTP_PASSWD%';
-
-    /** @staticvar string */
-    const SOAP_USERNAME_MESSAGE_PARAM = '%USERNAME%';
-
-    /** @staticvar string */
-    const SOAP_API_KEY_MESSAGE_PARAM = '%API_KEY%';
-
     /** @staticvar int */
     const ACCESS_DENIED_CODE = 2;
 
@@ -92,37 +74,17 @@ class MagentoReachableValidator extends ConstraintValidator
             $isConnected = true;
         } catch (CurlException $e) {
             // When you can not access to anything and it returns a 404
-            $this->context->addViolationAt(
-                'MagentoConfiguration',
-                $constraint->messageNotReachableUrl,
-                [
-                    static::EXCEPTION_MESSAGE_PARAM   => $e->getMessage(),
-                    static::SOAP_URL_MESSAGE_PARAM    => $configuration->getSoapUrl(),
-                    static::HTTP_LOGIN_MESSAGE_PARAM  => $configuration->getHttpLogin(),
-                    static::HTTP_PASSWD_MESSAGE_PARAM => $configuration->getHttpPassword()
-                ]
-            );
+            $this->context->addViolationAt('MagentoConfiguration', $constraint->messageNotReachableUrl);
             $isConnected = false;
         } catch (BadResponseException $e) {
             // When you can access to a web site but it returns a 404
-            $this->context->addViolationAt(
-                'MagentoConfiguration',
-                $constraint->messageInvalidSoapUrl,
-                [
-                    static::EXCEPTION_MESSAGE_PARAM => $e->getMessage(),
-                    static::SOAP_URL_MESSAGE_PARAM  => $configuration->getSoapUrl()
-                ]
-            );
+            $this->context->addViolationAt('MagentoConfiguration', $constraint->messageInvalidSoapUrl);
             $isConnected = false;
         }
 
         if ($isConnected && false === $response->isContentType('text/xml')) {
             // When the response is not XML
-            $this->context->addViolationAt(
-                'MagentoConfiguration',
-                $constraint->messageXmlNotValid,
-                [static::SOAP_URL_MESSAGE_PARAM => $configuration->getSoapUrl()]
-            );
+            $this->context->addViolationAt('MagentoConfiguration', $constraint->messageXmlNotValid);
             $isConnected = false;
         }
 
@@ -188,47 +150,13 @@ class MagentoReachableValidator extends ConstraintValidator
             $session = $soapClient->login($configuration->getSoapUsername(), $configuration->getSoapApiKey());
         } catch (\SoapFault $e) {
             if (static::ACCESS_DENIED_CODE === $e->faultcode) {
-                $this->context->addViolationAt(
-                    'MagentoConfiguration',
-                    $constraint->messageAccessDenied,
-                    [
-                        static::EXCEPTION_MESSAGE_PARAM     => $e->getMessage(),
-                        static::SOAP_USERNAME_MESSAGE_PARAM => $configuration->getSoapUsername(),
-                        static::SOAP_API_KEY_MESSAGE_PARAM  => $configuration->getSoapApiKey()
-                    ]
-                );
+                $this->context->addViolationAt('MagentoConfiguration', $constraint->messageAccessDenied);
             } else {
-                $this->addUndefinedViolation($e, $constraint, $configuration);
+                $this->context->addViolationAt('MagentoConfiguration', $constraint->messageUndefinedSoapException);
             }
             $session = null;
         }
 
         return $session;
-    }
-
-    /**
-     * Add a violation on MagentoConfiguration with the UndefinedSoapException message
-     *
-     * @param \Exception           $exception
-     * @param Constraint           $constraint
-     * @param MagentoConfiguration $configuration
-     */
-    protected function addUndefinedViolation(
-        \Exception $exception,
-        Constraint $constraint,
-        MagentoConfiguration $configuration
-    ) {
-        $this->context->addViolationAt(
-            'MagentoConfiguration',
-            $constraint->messageUndefinedSoapException,
-            [
-                static::EXCEPTION_MESSAGE_PARAM     => $exception->getMessage(),
-                static::SOAP_USERNAME_MESSAGE_PARAM => $configuration->getSoapUsername(),
-                static::SOAP_API_KEY_MESSAGE_PARAM  => $configuration->getSoapApiKey(),
-                static::SOAP_URL_MESSAGE_PARAM      => $configuration->getSoapUrl(),
-                static::HTTP_LOGIN_MESSAGE_PARAM    => $configuration->getHttpLogin(),
-                static::HTTP_PASSWD_MESSAGE_PARAM   => $configuration->getHttpPassword()
-            ]
-        );
     }
 }

@@ -63,9 +63,10 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
 
             if ($violations->count() !== 0) {
                 foreach ($violations as $violation) {
-                    $output->writeln($violation->getMessage());
+                    $output->writeln(sprintf('<error>%s</error>', $translator->trans($violation->getMessage())));
                 }
 
+                $output->writeln(sprintf('<comment>%s</comment>', $configuration));
                 $status = static::VALIDATION_ERROR;
             } else {
                 $output->writeln(sprintf('<info>"Connection to Magento is OK with %s configuration."</info>', $code));
