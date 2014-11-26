@@ -32,6 +32,8 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
 
     /**
      * {@inheritdoc}
+     *
+     * @return int 0: success; 1: Configuration not found; 2: Error during validation;
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -41,22 +43,33 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
         $configuration = $manager->getMagentoConfigurationByCode($code);
         $translator    = $this->getTranslator();
 
-        $translator->setLocale($this->getDefaultLocale());
-        $violations = $validator->validate($configuration, ['connection']);
-
-        if ($violations->count() !== 0) {
-            foreach ($violations as $violation) {
-                $output->writeln($translator->trans($violation->getMessage()));
-                foreach ($violation->getMessageParameters() as $error) {
-                    $output->writeln(sprintf('ERROR : "%s"', $error));
-                }
-                foreach ($violation->getInvalidValue() as $key => $value) {
-                    $output->writeln(sprintf('INVALID VALUE %s : "%s"', $key, $value));
-                }
-            }
+        if (null === $configuration) {
+            $output->writeln(
+                sprintf('<error>ERROR</error> : Given configuration with code "%s" does not exist.', $code)
+            );
+            $status = 1;
         } else {
-            $output->writeln(sprintf('Connection to Magento is OK with %s configuration.', $code));
+            $translator->setLocale($this->getDefaultLocale());
+            $violations = $validator->validate($configuration, ['connection']);
+
+            if ($violations->count() !== 0) {
+                foreach ($violations as $violation) {
+                    $output->writeln(sprintf('<error>%s</error>', $translator->trans($violation->getMessage())));
+                    foreach ($violation->getMessageParameters() as $error) {
+                        $output->writeln(sprintf('<error>ERROR</error> : "%s"', $error));
+                    }
+                    foreach ($violation->getInvalidValue() as $key => $value) {
+                        $output->writeln(sprintf('<comment>INVALID VALUE %s</comment> : "%s"', $key, $value));
+                    }
+                }
+                $status = 2;
+            } else {
+                $output->writeln(sprintf('<info>"Connection to Magento is OK with %s configuration."</info>', $code));
+                $status = 0;
+            }
         }
+
+        return $status;
     }
 
     /**
