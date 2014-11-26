@@ -24,20 +24,20 @@ class MagentoSoapClientFactory
     const KEEP_ALIVE = 1;
 
     /** @var string $magentoSoapClientClass */
-    protected $magentoSoapClientClass;
+    protected $soapClientClass;
 
     /**
      * Constructor
      *
-     * @param string $magentoSoapClientClass
+     * @param string $soapClientClass
      *
      * @throws \LogicException
      */
-    public function __construct($magentoSoapClientClass)
+    public function __construct($soapClientClass)
     {
         $implementsInterface = in_array(
             'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientInterface',
-            class_implements($magentoSoapClientClass)
+            class_implements($soapClientClass)
         );
 
         if (false === $implementsInterface) {
@@ -46,7 +46,7 @@ class MagentoSoapClientFactory
                 'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientInterface.'
             );
         }
-        $this->magentoSoapClientClass = $magentoSoapClientClass;
+        $this->$soapClientClass = $soapClientClass;
     }
 
     /**
@@ -65,7 +65,7 @@ class MagentoSoapClientFactory
             $soapOptions = $this->getSoapOptions($configuration);
         }
 
-        return new $this->magentoSoapClientClass($configuration->getSoapUrl(), $soapOptions);
+        return new $this->soapClientClass($configuration->getSoapUrl(), $soapOptions);
     }
 
     /**

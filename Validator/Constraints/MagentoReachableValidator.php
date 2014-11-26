@@ -36,7 +36,7 @@ class MagentoReachableValidator extends ConstraintValidator
     /**
      * Constructor
      *
-     * @param ClientInterface   $guzzleClient
+     * @param ClientInterface          $guzzleClient
      * @param MagentoSoapClientFactory $soapClientFactory
      */
     public function __construct(ClientInterface $guzzleClient, MagentoSoapClientFactory $soapClientFactory)
@@ -215,7 +215,7 @@ class MagentoReachableValidator extends ConstraintValidator
     }
 
     /**
-     * Add a violation at MagentoConfiguration with the UndefinedSoapException message
+     * Add a violation on MagentoConfiguration with the UndefinedSoapException message
      *
      * @param \Exception           $exception
      * @param Constraint           $constraint

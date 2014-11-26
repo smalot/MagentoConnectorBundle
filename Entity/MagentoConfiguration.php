@@ -11,43 +11,43 @@ namespace Pim\Bundle\MagentoConnectorBundle\Entity;
  */
 class MagentoConfiguration
 {
-    /** @var integer Identifier of the configuration */
+    /** @var integer */
     protected $id;
 
-    /** @var string Code of the Magento job configuration */
+    /** @var string */
     protected $code;
 
-    /** @var string Label of the Magento job configuration */
+    /** @var string */
     protected $label;
 
-    /** @var string Soap username */
+    /** @var string */
     protected $soapUsername;
 
-    /** @var string Soap API key */
+    /** @var string */
     protected $soapApiKey;
 
-    /** @var string Soap URL */
+    /** @var string */
     protected $soapUrl;
 
-    /** @var string Default store view */
+    /** @var string */
     protected $defaultStoreView;
 
-    /** @var string Default locale */
+    /** @var string */
     protected $defaultLocale;
 
-    /** @var string Login for http authentication */
+    /** @var string */
     protected $httpLogin;
 
-    /** @var string Password for http authentication */
+    /** @var string */
     protected $httpPassword;
 
-    /** @var array Root categories mapping */
+    /** @var array */
     protected $rootCategoryMapping;
 
-    /** @var array Store views mapping */
+    /** @var array */
     protected $storeViewMapping;
 
-    /** @var array Attributes mapping */
+    /** @var array */
     protected $attributeMapping;
 
     /**
@@ -101,9 +101,9 @@ class MagentoConfiguration
     }
 
     /**
-     * Get soap username
+     * Get SOAP username
      *
-     * @return string Soap magento soapUsername
+     * @return string SOAP magento soapUsername
      */
     public function getSoapUsername()
     {
@@ -111,7 +111,7 @@ class MagentoConfiguration
     }
 
     /**
-     * Set soap username
+     * Set SOAP username
      *
      * @param string $soapUsername
      */
@@ -121,9 +121,9 @@ class MagentoConfiguration
     }
 
     /**
-     * Get the soap API key
+     * Get the SOAP API key
      *
-     * @return string Soap magento soap API key
+     * @return string SOAP magento SOAP API key
      */
     public function getSoapApiKey()
     {
@@ -131,7 +131,7 @@ class MagentoConfiguration
     }
 
     /**
-     * Set the soap API key
+     * Set the SOAP API key
      *
      * @param string $soapApiKey
      */
@@ -141,9 +141,9 @@ class MagentoConfiguration
     }
 
     /**
-     * Get the soap URL
+     * Get the SOAP URL
      *
-     * @return string Soap URL
+     * @return string SOAP URL
      */
     public function getSoapUrl()
     {
@@ -151,7 +151,7 @@ class MagentoConfiguration
     }
 
     /**
-     * Set the soap URL
+     * Set the SOAP URL
      *
      * @param string $soapUrl
      */

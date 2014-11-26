@@ -22,4 +22,4 @@ interface MagentoSoapClientInterface
      * @return string Session token
      */
     public function login($username, $soapApiKey);
-} 
+}

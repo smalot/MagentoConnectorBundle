@@ -56,10 +56,10 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
                 foreach ($violations as $violation) {
                     $output->writeln(sprintf('<error>%s</error>', $translator->trans($violation->getMessage())));
                     foreach ($violation->getMessageParameters() as $error) {
-                        $output->writeln(sprintf('<error>ERROR</error> : "%s"', $error));
+                        $output->writeln(sprintf('<error>ERROR : "%s"</error>', $error));
                     }
                     foreach ($violation->getInvalidValue() as $key => $value) {
-                        $output->writeln(sprintf('<comment>INVALID VALUE %s</comment> : "%s"', $key, $value));
+                        $output->writeln(sprintf('<comment>INVALID VALUE %s : "%s"</comment>', $key, $value));
                     }
                 }
                 $status = 2;

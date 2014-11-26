@@ -30,7 +30,7 @@ class MagentoReachable extends Constraint
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      *
      * @return string
      */
