@@ -23,30 +23,17 @@ class MagentoSoapClientFactory
     /** @staticvar int */
     const KEEP_ALIVE = 1;
 
-    /** @var string $magentoSoapClientClass */
+    /** @var string $soapClientClass */
     protected $soapClientClass;
 
     /**
      * Constructor
      *
      * @param string $soapClientClass
-     *
-     * @throws \LogicException
      */
     public function __construct($soapClientClass)
     {
-        $implementsInterface = in_array(
-            'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientInterface',
-            class_implements($soapClientClass)
-        );
-
-        if (false === $implementsInterface) {
-            throw new \LogicException(
-                'Class you inject in MagentoSoapClientFactory must implement ' .
-                'Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientInterface.'
-            );
-        }
-        $this->$soapClientClass = $soapClientClass;
+        $this->soapClientClass = $soapClientClass;
     }
 
     /**
