@@ -45,6 +45,9 @@ class MagentoReachableValidator extends ConstraintValidator
     /** @staticvar string */
     const SOAP_API_KEY_MESSAGE_PARAM = '%API_KEY%';
 
+    /** @staticvar int */
+    const ACCESS_DENIED_CODE = 2;
+
 
     /** @var ClientInterface Guzzle HTTP client */
     protected $guzzleClient;
@@ -161,47 +164,14 @@ class MagentoReachableValidator extends ConstraintValidator
      */
     protected function checkSoap(MagentoConfiguration $configuration, Constraint $constraint)
     {
-        $magentoSoapClient = $this->connectSoapClient($constraint, $configuration);
+        $magentoSoapClient = $this->soapClientFactory->createMagentoSoapClient($configuration);
         if (null !== $magentoSoapClient) {
             $this->loginSoapClient($magentoSoapClient, $constraint, $configuration);
         }
     }
 
     /**
-     * Connect Magento Soap client and verify if soap url is valid
-     *
-     * @param Constraint           $constraint
-     * @param MagentoConfiguration $configuration
-     *
-     * @return MagentoSoapClient|null
-     */
-    protected function connectSoapClient(Constraint $constraint, MagentoConfiguration $configuration)
-    {
-        try {
-            $soapClient = $this->soapClientFactory->createMagentoSoapClient($configuration);
-        } catch (\SoapFault $e) {
-            if (false !== stripos($e->getMessage(), 'failed to load external entity')) {
-                // In case of Soap URL is wrong.
-                // Should never be called because the previous HTTP validation should detect it before Soap validation
-                $this->context->addViolationAt(
-                    'MagentoConfiguration',
-                    $constraint->messageInvalidSoapUrl,
-                    [
-                        static::EXCEPTION_MESSAGE_PARAM => $e->getMessage(),
-                        static::SOAP_URL_MESSAGE_PARAM  => $configuration->getSoapUrl()
-                    ]
-                );
-            } else {
-                $this->addUndefinedViolation($e, $constraint, $configuration);
-            }
-            $soapClient = null;
-        }
-
-        return $soapClient;
-    }
-
-    /**
-     * Login Magento Soap client to verify if username and api key are corrected and returns session token
+     * Login Magento Soap client to verify if username and api key are rights and returns session token
      *
      * @param MagentoSoapClientInterface $soapClient
      * @param Constraint                 $constraint
@@ -217,7 +187,7 @@ class MagentoReachableValidator extends ConstraintValidator
         try {
             $session = $soapClient->login($configuration->getSoapUsername(), $configuration->getSoapApiKey());
         } catch (\SoapFault $e) {
-            if (false !== stripos($e->getMessage(), 'access denied')) {
+            if (static::ACCESS_DENIED_CODE === $e->faultcode) {
                 $this->context->addViolationAt(
                     'MagentoConfiguration',
                     $constraint->messageAccessDenied,
