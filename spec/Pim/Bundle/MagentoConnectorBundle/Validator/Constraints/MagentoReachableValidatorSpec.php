@@ -13,8 +13,6 @@ use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration;
 use Pim\Bundle\MagentoConnectorBundle\Factory\MagentoSoapClientFactory;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoReachable;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientInterface;
-use Prophecy\Argument;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 class MagentoReachableValidatorSpec extends ObjectBehavior
@@ -58,13 +56,7 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
 
         $context->addViolationAt(
             'MagentoConfiguration',
-            'pim_magento_connector.export.validator.url_not_reachable',
-            ['my custom message'],
-            [
-                'Soap URL' => $soapUrl,
-                'HTTP login' => null,
-                'HTTP password' => null
-            ]
+            'pim_magento_connector.export.validator.url_not_reachable'
         )->shouldBeCalled();
 
         $soapClientFactory->createMagentoSoapClient($configuration)->shouldNotBeCalled();
@@ -102,9 +94,7 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
 
         $context->addViolationAt(
             'MagentoConfiguration',
-            'pim_magento_connector.export.validator.soap_url_not_valid',
-            ['my custom message'],
-            ['Soap URL' => $soapUrl]
+            'pim_magento_connector.export.validator.soap_url_not_valid'
         )->shouldBeCalled();
 
         $soapClientFactory->createMagentoSoapClient($configuration)->shouldNotBeCalled();
@@ -145,116 +135,10 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
 
         $context->addViolationAt(
             'MagentoConfiguration',
-            'pim_magento_connector.export.validator.xml_not_valid',
-            ['Content type is not XML'],
-            ['Soap URL' => $soapUrl]
+            'pim_magento_connector.export.validator.xml_not_valid'
         )->shouldBeCalled();
 
         $soapClientFactory->createMagentoSoapClient($configuration)->shouldNotBeCalled();
-
-        $this->initialize($context);
-        $this->validate($configuration, $constraint);
-    }
-
-    public function it_adds_a_violation_on_magento_configuration_if_soap_can_not_create_a_client_due_to_url(
-        ExecutionContextInterface $context,
-        MagentoConfiguration $configuration,
-        MagentoReachable $constraint,
-        RequestInterface $request,
-        Response $response,
-        Collection $collection,
-        MagentoSoapClientInterface $soapClient,
-        $soapClientFactory,
-        $guzzleClient
-    ) {
-        $soapUrl = 'http://magento.local/index.php/api/soap/?wsdl';
-        $guzzleParam = [
-            'connect_timeout' => 10,
-            'timeout'         => 10,
-            'auth'            => [null, null]
-        ];
-
-        $configuration->getHttpLogin()->willReturn(null);
-        $configuration->getHttpPassword()->willReturn(null);
-        $configuration->getSoapUrl()->willReturn($soapUrl);
-
-        $guzzleClient->get($soapUrl, [], $guzzleParam)->shouldBeCalled()->willReturn($request);
-        $guzzleClient->send($request)->willReturn($response);
-
-        $request->getCurlOptions()->willReturn($collection);
-        $collection->set(78, 10)->shouldBeCalled();
-        $collection->set(13, 10)->shouldBeCalled();
-
-        $response->isContentType('text/xml')->willReturn(true);
-
-        $soapClientFactory->createMagentoSoapClient($configuration)->willThrow(
-            new \SoapFault('fault_code', 'failed to load external entity')
-        );
-
-        $context->addViolationAt(
-            'MagentoConfiguration',
-            'pim_magento_connector.export.validator.soap_url_not_valid',
-            ['failed to load external entity'],
-            ['Soap URL' => $soapUrl]
-        )->shouldBeCalled();
-
-        $soapClient->login(Argument::any(), Argument::any())->shouldNotBeCalled();
-
-        $this->initialize($context);
-        $this->validate($configuration, $constraint);
-    }
-
-    public function it_adds_an_undefined_violation_on_magento_configuration_if_something_wrong_append_during_soap_client_creation(
-        ExecutionContextInterface $context,
-        MagentoConfiguration $configuration,
-        MagentoReachable $constraint,
-        RequestInterface $request,
-        Response $response,
-        Collection $collection,
-        MagentoSoapClientInterface $soapClient,
-        $soapClientFactory,
-        $guzzleClient
-    ) {
-        $soapUrl = 'http://magento.local/index.php/api/soap/?wsdl';
-        $guzzleParam = [
-            'connect_timeout' => 10,
-            'timeout'         => 10,
-            'auth'            => [null, null]
-        ];
-
-        $configuration->getSoapUsername()->willReturn('soapUsername');
-        $configuration->getSoapApiKey()->willReturn('soapApiKey');
-        $configuration->getHttpLogin()->willReturn(null);
-        $configuration->getHttpPassword()->willReturn(null);
-        $configuration->getSoapUrl()->willReturn($soapUrl);
-
-        $guzzleClient->get($soapUrl, [], $guzzleParam)->shouldBeCalled()->willReturn($request);
-        $guzzleClient->send($request)->willReturn($response);
-
-        $request->getCurlOptions()->willReturn($collection);
-        $collection->set(78, 10)->shouldBeCalled();
-        $collection->set(13, 10)->shouldBeCalled();
-
-        $response->isContentType('text/xml')->willReturn(true);
-
-        $soapClientFactory->createMagentoSoapClient($configuration)->willThrow(
-            new \SoapFault('fault_code', 'something wrong append')
-        );
-
-        $context->addViolationAt(
-            'MagentoConfiguration',
-            'pim_magento_connector.export.validator.undefined_exception',
-            ['something wrong append'],
-            [
-                'SOAP username' => 'soapUsername',
-                'SOAP API key'  => 'soapApiKey',
-                'SOAP URL'      => $soapUrl,
-                'HTTP login'    => null,
-                'HTTP password' => null
-            ]
-        )->shouldBeCalled();
-
-        $soapClient->login(Argument::any(), Argument::any())->shouldNotBeCalled();
 
         $this->initialize($context);
         $this->validate($configuration, $constraint);
@@ -297,13 +181,11 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
 
         $soapClientFactory->createMagentoSoapClient($configuration)->willReturn($soapClient);
 
-        $soapClient->login($soapUsername, $soapApiKey)->willThrow(new \SoapFault('fault_code', 'access denied'));
+        $soapClient->login($soapUsername, $soapApiKey)->willThrow(new \SoapFault('2', 'Access denied.'));
 
         $context->addViolationAt(
             'MagentoConfiguration',
-            'pim_magento_connector.export.validator.access_denied',
-            ['access denied'],
-            ['SOAP username' => $soapUsername, 'SOAP API key' => $soapApiKey]
+            'pim_magento_connector.export.validator.access_denied'
         )->shouldBeCalled();
 
         $this->initialize($context);
@@ -348,20 +230,12 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
         $soapClientFactory->createMagentoSoapClient($configuration)->willReturn($soapClient);
 
         $soapClient->login($soapUsername, $soapApiKey)->willThrow(
-            new \SoapFault('fault_code', 'something went wrong')
+            new \SoapFault('0', 'Something went wrong.')
         );
 
         $context->addViolationAt(
             'MagentoConfiguration',
-            'pim_magento_connector.export.validator.undefined_exception',
-            ['something went wrong'],
-            [
-                'SOAP username' => $soapUsername,
-                'SOAP API key'  => $soapApiKey,
-                'SOAP URL'      => $soapUrl,
-                'HTTP login'    => null,
-                'HTTP password' => null
-            ]
+            'pim_magento_connector.export.validator.undefined_exception'
         )->shouldBeCalled();
 
         $this->initialize($context);

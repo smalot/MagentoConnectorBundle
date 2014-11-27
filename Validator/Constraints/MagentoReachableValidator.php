@@ -27,9 +27,8 @@ class MagentoReachableValidator extends ConstraintValidator
     /** @staticvar int */
     const CONNECT_TIMEOUT = 10;
 
-    /** @staticvar int */
-    const ACCESS_DENIED_CODE = 2;
-
+    /** @staticvar string */
+    const ACCESS_DENIED_CODE = '2';
 
     /** @var ClientInterface Guzzle HTTP client */
     protected $guzzleClient;
