@@ -103,7 +103,7 @@ class MagentoConfiguration
     /**
      * Get SOAP username
      *
-     * @return string SOAP magento soapUsername
+     * @return string
      */
     public function getSoapUsername()
     {
@@ -123,7 +123,7 @@ class MagentoConfiguration
     /**
      * Get the SOAP API key
      *
-     * @return string SOAP magento SOAP API key
+     * @return string
      */
     public function getSoapApiKey()
     {
@@ -143,7 +143,7 @@ class MagentoConfiguration
     /**
      * Get the SOAP URL
      *
-     * @return string SOAP URL
+     * @return string
      */
     public function getSoapUrl()
     {
@@ -163,7 +163,7 @@ class MagentoConfiguration
     /**
      * Get the default store view
      *
-     * @return string Default store view
+     * @return string
      */
     public function getDefaultStoreView()
     {
@@ -203,7 +203,7 @@ class MagentoConfiguration
     /**
      * Get the HTTP authentication login
      *
-     * @return string HTTP login
+     * @return string
      */
     public function getHttpLogin()
     {
@@ -223,7 +223,7 @@ class MagentoConfiguration
     /**
      * Get the HTTP authentication password
      *
-     * @return string HTTP password
+     * @return string
      */
     public function getHttpPassword()
     {
