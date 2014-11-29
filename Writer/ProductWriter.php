@@ -87,7 +87,7 @@ class ProductWriter extends AbstractWriter
                 try {
                     $this->computeProduct($product);
                 } catch (SoapCallException $e) {
-                    $this->addWarning($e->getMessage(), [json_encode($product[$storeViewCode])], $product);
+                    $this->addWarning($e->getMessage(), [], $product);
                 }
             }
         }

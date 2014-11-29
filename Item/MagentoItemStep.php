@@ -26,9 +26,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
 {
-    /** @staticvar */
-    const MAX_ERROR_CHARS = 300;
-
     /**
      * @var Webservice
      */
@@ -441,12 +438,6 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     protected function addWarning($message, array $messageParameters = [], $item = null)
     {
-        if (strlen($message) > self::MAX_ERROR_CHARS) {
-            $message = substr($message, 0, self::MAX_ERROR_CHARS);
-            $message .= '[...]';
-        }
-
-
         $this->stepExecution->addWarning(
             $this->getName(),
             $message,
@@ -457,7 +448,32 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
         if (!is_array($item)) {
             $item = array();
         }
+
+        $item = $this->cleanupImageContent($item);
+
         $event = new InvalidItemEvent(get_class($this), $message, $messageParameters, $item);
         $this->eventDispatcher->dispatch(EventInterface::INVALID_ITEM, $event);
+    }
+
+    /**
+     * Cleanup image content from item in order to avoid large
+     * item line in error log
+     *
+     * @param array $item
+     *
+     * @return array
+     */
+    protected function cleanupImageContent(array $item)
+    {
+        array_walk_recursive(
+            $item,
+            function (&$entry, $key) {
+                if ('content' === $key) {
+                    $entry = "<CUT>";
+                }
+            }
+        );
+
+        return $item;
     }
 }
