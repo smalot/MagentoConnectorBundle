@@ -1,3 +1,7 @@
+# 1.1.7 (2014-11-29)
+## Bug fixes
+ - remove base64 image representation from error messages
+
 # 1.1.1 (2014-11-12)
 ## New feature
  - url_key for products and category is generated now on Akeneo's side,
