@@ -39,17 +39,19 @@ class MagentoSoapClientFactory
     /**
      * Create a Magento Soap client with the configuration
      *
-     * @param MagentoConfiguration $configuration
-     * @param array                $soapOptions
+     * @param MagentoConfiguration $configuration    The Magento configuration
+     * @param array                $soapOptionsParam SOAP options you want to override
      *
      * @throws \SoapFault
      *
      * @return MagentoSoapClient
      */
-    public function createMagentoSoapClient(MagentoConfiguration $configuration, array $soapOptions = [])
+    public function createMagentoSoapClient(MagentoConfiguration $configuration, array $soapOptionsParam = [])
     {
-        if (empty($soapOptions)) {
-            $soapOptions = $this->getSoapOptions($configuration);
+        $soapOptions = $this->getSoapOptions($configuration);
+
+        if (!empty($soapOptionsParam)) {
+            $soapOptions = array_merge($soapOptions, $soapOptionsParam);
         }
 
         return new $this->soapClientClass($configuration->getSoapUrl(), $soapOptions);
