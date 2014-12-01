@@ -37,7 +37,7 @@ class MagentoSoapClientFactory
     }
 
     /**
-     * Create a Magento Soap client with the configuration
+     * Creates a Magento Soap client with the configuration
      *
      * @param MagentoConfiguration $configuration    The Magento configuration
      * @param array                $soapOptionsParam SOAP options you want to override
@@ -48,7 +48,7 @@ class MagentoSoapClientFactory
      */
     public function createMagentoSoapClient(MagentoConfiguration $configuration, array $soapOptionsParam = [])
     {
-        $soapOptions = $this->getSoapOptions($configuration);
+        $soapOptions = $this->getDefaultSoapOptions($configuration);
 
         if (!empty($soapOptionsParam)) {
             $soapOptions = array_merge($soapOptions, $soapOptionsParam);
@@ -58,13 +58,13 @@ class MagentoSoapClientFactory
     }
 
     /**
-     * Return soap options
+     * Returns default SOAP options
      *
      * @param MagentoConfiguration $configuration
      *
      * @return array
      */
-    protected function getSoapOptions(MagentoConfiguration $configuration)
+    protected function getDefaultSoapOptions(MagentoConfiguration $configuration)
     {
         return [
             'encoding'   => static::SOAP_ENCODING,
