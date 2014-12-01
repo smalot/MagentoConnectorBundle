@@ -298,6 +298,7 @@ class Webservice
         ) {
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_CREATE;
         } else {
+            $productPart = $this->removeNonUpdatePart($productPart);
             $resource = self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE;
         }
 
@@ -860,5 +861,22 @@ class Webservice
         }
 
         return implode(',', $ids);
+    }
+
+    /**
+     * Cleanup part of the product data that should not be sent as
+     * update part
+     *
+     * @param array $productPart
+     *
+     * @return $productPart
+     */
+    protected function removeNonUpdatePart(array $productPart)
+    {
+        if (isset($productPart[1]['url_key'])) {
+            unset($productPart[1]['url_key']);
+        }
+
+        return $productPart;
     }
 }

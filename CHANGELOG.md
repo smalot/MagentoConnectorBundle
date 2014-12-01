@@ -1,3 +1,10 @@
+# 1.1.8 (2014-12-01)
+## Bug fixes
+ - removes sending of url_key when updating product, as it breaks with Magento 1.3.1.0 (see http://www.magentocommerce.com/knowledge-base/entry/ee113-later-release-notes#ee113-11302-seo-uniqueness-rules)
+
+## BC Breaks
+ - URL key is no longer sent during product update.
+
 # 1.1.7 (2014-11-29)
 ## Bug fixes
  - remove base64 image representation from error messages
