@@ -69,7 +69,7 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('<comment>%s</comment>', $configuration));
                 $status = static::VALIDATION_ERROR;
             } else {
-                $output->writeln(sprintf('<info>"Connection to Magento is OK with %s configuration."</info>', $code));
+                $output->writeln(sprintf('<info>Connection to Magento is OK with "%s" configuration.</info>', $code));
                 $status = static::SUCCESS;
             }
         }
