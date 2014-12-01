@@ -1,0 +1,9 @@
+parameters:
+    pim_magento_connector.manager.magento_configuration.class: Pim\Bundle\MagentoConnectorBundle\Manager\MagentoConfigurationManager
+
+services:
+    pim_magento_connector.manager.magento_configuration:
+        class: %pim_magento_connector.manager.magento_configuration.class%
+        arguments:
+            - '@doctrine'
+            - %pim_magento_connector.entity.magento_configuration.class%

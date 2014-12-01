@@ -1,0 +1,12 @@
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
+    constraints:
+        - Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoReachable: { groups: [connection] }
+    properties:
+        code:
+            - Regex:
+                pattern: '# #'
+                match: false
+                message: Code can not have white space
+        soapUrl:
+            - Url:
+                message: Soap URL field need to be a valid URL

@@ -1,0 +1,48 @@
+Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
+    type: entity
+    table: pim_magento_job_configuration
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        code:
+            type: string
+            unique: true
+            column: code
+        label:
+            type: string
+            unique: true
+            column: label
+        soapUsername:
+            type: string
+            column: soap_username
+        soapApiKey:
+            type: string
+            column: soap_api_key
+        soapUrl:
+            type: string
+            column: soap_url
+        defaultStoreView:
+            type: string
+            column: default_store_view
+        defaultLocale:
+            type: string
+            column: default_locale
+        rootCategoryMapping:
+            type: array
+            column: root_category_mapping
+        storeViewMapping:
+            type: array
+            column: store_view_mapping
+        attributeMapping:
+            type: array
+            column: attribute_mapping
+        httpLogin:
+            type: string
+            nullable: true
+            column: http_login
+        httpPassword:
+            type: string
+            nullable: true
+            column: http_password
