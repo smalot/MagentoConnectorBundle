@@ -307,12 +307,12 @@ class MagentoConfiguration
      */
     public function __toString()
     {
-        $toString = PHP_EOL;
-        $toString .= 'SOAP URL: ' . $this->getSoapUrl() . PHP_EOL;
-        $toString .= 'SOAP USERNAME: ' . $this->getSoapUsername() . PHP_EOL;
-        $toString .= 'SOAP API KEY: ' . $this->getSoapApiKey() . PHP_EOL;
-        $toString .= 'HTTP LOGIN: ' . $this->getHttpLogin() . PHP_EOL;
-        $toString .= 'HTTP PASSWORD: ' . $this->getHttpPassword() . PHP_EOL;
+        $toString = "\n";
+        $toString .= "SOAP URL: " . $this->getSoapUrl() . "\n";
+        $toString .= "SOAP USERNAME: " . $this->getSoapUsername() . "\n";
+        $toString .= "SOAP API KEY: " . $this->getSoapApiKey() . "\n";
+        $toString .= "HTTP LOGIN: " . $this->getHttpLogin() . "\n";
+        $toString .= "HTTP PASSWORD: " . $this->getHttpPassword() . "\n";
 
         return $toString;
     }

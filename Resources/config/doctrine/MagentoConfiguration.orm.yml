@@ -12,7 +12,6 @@ Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
             column: code
         label:
             type: string
-            unique: true
             column: label
         soapUsername:
             type: string

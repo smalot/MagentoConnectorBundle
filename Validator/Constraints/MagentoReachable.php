@@ -13,11 +13,11 @@ use Symfony\Component\Validator\Constraint;
  */
 class MagentoReachable extends Constraint
 {
-    public $messageNotReachableUrl         = 'pim_magento_connector.export.validator.url_not_reachable';
-    public $messageInvalidSoapUrl          = 'pim_magento_connector.export.validator.soap_url_not_valid';
-    public $messageAccessDenied            = 'pim_magento_connector.export.validator.access_denied';
-    public $messageXmlNotValid             = 'pim_magento_connector.export.validator.xml_not_valid';
-    public $messageUndefinedSoapException  = 'pim_magento_connector.export.validator.undefined_exception';
+    public $messageNotReachableUrl        = 'pim_magento_connector.export.validator.url_not_reachable';
+    public $messageInvalidSoapUrl         = 'pim_magento_connector.export.validator.soap_url_not_valid';
+    public $messageAccessDenied           = 'pim_magento_connector.export.validator.access_denied';
+    public $messageXmlNotValid            = 'pim_magento_connector.export.validator.xml_not_valid';
+    public $messageUnmanagedSoapException = 'pim_magento_connector.export.validator.unmanaged_exception';
 
     /**
      * Returns alias of the MagentoReachable service

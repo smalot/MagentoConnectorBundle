@@ -54,15 +54,18 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
 
         if (null === $configuration) {
             $output->writeln(
-                sprintf('<error>ERROR : Given configuration with code "%s" does not exist.</error>', $code)
+                sprintf('<error>Given configuration with code "%s" does not exist.</error>', $code)
             );
             $status = static::CONFIGURATION_NOT_FOUND;
         } else {
-            $translator->setLocale($this->getDefaultLocale());
+            $translator->setLocale('en');
             $violations = $validator->validate($configuration, ['connection']);
 
             if ($violations->count() !== 0) {
                 foreach ($violations as $violation) {
+                    if (null !== $violation->getCode()) {
+                        $output->writeln(sprintf('<error>CODE "%s"</error>', $violation->getCode()));
+                    }
                     $output->writeln(sprintf('<error>%s</error>', $translator->trans($violation->getMessage())));
                 }
 
@@ -105,15 +108,5 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
     protected function getTranslator()
     {
         return $this->getContainer()->get('translator');
-    }
-
-    /**
-     * Returns the default locale
-     *
-     * @return string
-     */
-    protected function getDefaultLocale()
-    {
-        return $this->getContainer()->getParameter('locale');
     }
 }

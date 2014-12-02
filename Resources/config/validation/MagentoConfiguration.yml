@@ -1,12 +1,18 @@
 Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
     constraints:
         - Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoReachable: { groups: [connection] }
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: code
+        - Pim\Bundle\CatalogBundle\Validator\Constraints\Immutable:
+            properties:
+                - code
     properties:
         code:
+            - NotBlank: ~
             - Regex:
-                pattern: '# #'
-                match: false
-                message: Code can not have white space
+                pattern: /^[a-zA-Z0-9_]+$/
+                message: Association type code may contain only letters, numbers and underscores
+            - Length:
+                max: 100
         soapUrl:
             - Url:
                 message: Soap URL field need to be a valid URL
