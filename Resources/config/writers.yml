@@ -1,0 +1,9 @@
+parameters:
+    pim_magento_connector.writer.product.class: Pim\Bundle\MagentoConnectorBundle\Writer\ProductWriter
+
+services:
+    pim_magento_connector.writer.product:
+        class: %pim_magento_connector.writer.product.class%
+        arguments:
+            - '@pim_magento_connector.factory.magento_soap_client'
+            - '@pim_magento_connector.manager.magento_configuration'

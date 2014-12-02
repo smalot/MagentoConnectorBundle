@@ -10,7 +10,7 @@ connector:
                     services:
                         reader:    pim_base_connector.reader.doctrine.product
                         processor: pim_magento_connector.processor.product_to_array
-                        writer:    pim_base_connector.writer.dummy
+                        writer:    pim_magento_connector.writer.product
                 update_product_associations:
                     title: pim_magento_connector.jobs.magento_product_associations_export.export.title
                     services:

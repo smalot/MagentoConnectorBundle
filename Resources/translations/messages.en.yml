@@ -16,3 +16,6 @@ pim_magento_connector:
             access_denied: Access denied to Magento. Verify your SOAP username and API key.
             xml_not_valid: Response content type is not text/xml. Check the Magento SOAP URL and its WSDL extension.
             unmanaged_exception: The problem you encountered is not listed. Please, refer to the following error.
+        configuration:
+            label: Magento configuration
+            help: Choose here the Magento configuration you want to use for your export

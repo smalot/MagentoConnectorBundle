@@ -35,7 +35,7 @@ class MagentoConfigurationManager
     /**
      * Returns the Magento configuration repository
      *
-     * @return \Doctrine\ORM\EntityRepository
+     * @return \Pim\Bundle\MagentoConnectorBundle\Entity\Repository\MagentoConfigurationRepository
      */
     public function getRepository()
     {
@@ -69,5 +69,23 @@ class MagentoConfigurationManager
     public function getMagentoConfigurationByCode($code)
     {
         return $this->getRepository()->findOneBy(['code' => $code]);
+    }
+
+    /**
+     * Get configuration choices
+     * Allow to list configurations in an array like array[<code>] = <label>
+     *
+     * @return string[]
+     */
+    public function getConfigurationChoices()
+    {
+        $configChoices = $this->getRepository()->getChoices();
+
+        $choices = [];
+        foreach ($configChoices as $config) {
+            $choices[$config['code']] = $config['label'];
+        }
+
+        return $choices;
     }
 }
