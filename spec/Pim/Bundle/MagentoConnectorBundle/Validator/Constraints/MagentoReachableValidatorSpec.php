@@ -13,6 +13,7 @@ use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration;
 use Pim\Bundle\MagentoConnectorBundle\Factory\MagentoSoapClientFactory;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\MagentoReachable;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientInterface;
+use Prophecy\Argument;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 class MagentoReachableValidatorSpec extends ObjectBehavior
@@ -235,7 +236,11 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
 
         $context->addViolationAt(
             'MagentoConfiguration',
-            'pim_magento_connector.export.validator.undefined_exception'
+            'pim_magento_connector.export.validator.unmanaged_exception',
+            [],
+            null,
+            null,
+            Argument::type('string')
         )->shouldBeCalled();
 
         $this->initialize($context);

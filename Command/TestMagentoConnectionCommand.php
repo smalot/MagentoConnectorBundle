@@ -63,6 +63,9 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
 
             if ($violations->count() !== 0) {
                 foreach ($violations as $violation) {
+                    if (null !== $violation->getCode()) {
+                        $output->writeln(sprintf('<error>CODE "%s"</error>', $violation->getCode()));
+                    }
                     $output->writeln(sprintf('<error>%s</error>', $translator->trans($violation->getMessage())));
                 }
 

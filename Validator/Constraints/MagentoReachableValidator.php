@@ -146,7 +146,14 @@ class MagentoReachableValidator extends ConstraintValidator
             if (static::ACCESS_DENIED_CODE === $e->faultcode) {
                 $this->context->addViolationAt('MagentoConfiguration', $constraint->messageAccessDenied);
             } else {
-                $this->context->addViolationAt('MagentoConfiguration', $constraint->messageUndefinedSoapException);
+                $this->context->addViolationAt(
+                    'MagentoConfiguration',
+                    $constraint->messageUnmanagedSoapException,
+                    [],
+                    null,
+                    null,
+                    $e->faultcode
+                );
             }
             $session = null;
         }
