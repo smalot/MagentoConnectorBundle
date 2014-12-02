@@ -53,9 +53,7 @@ class MagentoReachableValidator extends ConstraintValidator
      */
     public function validate($configuration, Constraint $constraint)
     {
-        if ($this->checkHttp($configuration, $constraint)) {
-            $this->checkSoap($configuration, $constraint);
-        }
+        $this->checkHttp($configuration, $constraint) && $this->checkSoap($configuration, $constraint);
     }
 
     /**
@@ -72,17 +70,14 @@ class MagentoReachableValidator extends ConstraintValidator
             $response  = $this->connectHttpClient($configuration);
             $isConnected = true;
         } catch (CurlException $e) {
-            // When you can not access to anything and it returns a 404
             $this->context->addViolationAt('MagentoConfiguration', $constraint->messageNotReachableUrl);
             $isConnected = false;
         } catch (BadResponseException $e) {
-            // When you can access to a web site but it returns a 404
             $this->context->addViolationAt('MagentoConfiguration', $constraint->messageInvalidSoapUrl);
             $isConnected = false;
         }
 
         if ($isConnected && false === $response->isContentType('text/xml')) {
-            // When the response is not XML
             $this->context->addViolationAt('MagentoConfiguration', $constraint->messageXmlNotValid);
             $isConnected = false;
         }

@@ -65,7 +65,7 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
         $this->validate($configuration, $constraint);
     }
 
-    public function it_adds_a_violation_on_magento_configuration_if_a_web_site_is_reachable_but_returns_a_404(
+    public function it_adds_a_violation_on_magento_configuration_if_validation_throws_a_bad_response_exception(
         ExecutionContextInterface $context,
         MagentoConfiguration $configuration,
         MagentoReachable $constraint,
@@ -103,7 +103,7 @@ class MagentoReachableValidatorSpec extends ObjectBehavior
         $this->validate($configuration, $constraint);
     }
 
-    public function it_adds_a_violation_on_magento_configuration_if_http_response_content_type_is_not_xml(
+    public function it_adds_a_violation_on_magento_configuration_if_http_response_content_type_is_not_xml_text(
         ExecutionContextInterface $context,
         MagentoConfiguration $configuration,
         MagentoReachable $constraint,

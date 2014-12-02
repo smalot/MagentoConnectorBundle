@@ -54,7 +54,7 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
 
         if (null === $configuration) {
             $output->writeln(
-                sprintf('<error>ERROR : Given configuration with code "%s" does not exist.</error>', $code)
+                sprintf('<error>Given configuration with code "%s" does not exist.</error>', $code)
             );
             $status = static::CONFIGURATION_NOT_FOUND;
         } else {
