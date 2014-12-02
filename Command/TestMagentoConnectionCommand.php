@@ -58,7 +58,7 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
             );
             $status = static::CONFIGURATION_NOT_FOUND;
         } else {
-            $translator->setLocale($this->getDefaultLocale());
+            $translator->setLocale('en');
             $violations = $validator->validate($configuration, ['connection']);
 
             if ($violations->count() !== 0) {
@@ -108,15 +108,5 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
     protected function getTranslator()
     {
         return $this->getContainer()->get('translator');
-    }
-
-    /**
-     * Returns the default locale
-     *
-     * @return string
-     */
-    protected function getDefaultLocale()
-    {
-        return $this->getContainer()->getParameter('locale');
     }
 }
