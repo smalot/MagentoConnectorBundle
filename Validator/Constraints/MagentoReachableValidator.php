@@ -53,11 +53,9 @@ class MagentoReachableValidator extends ConstraintValidator
      */
     public function validate($configuration, Constraint $constraint)
     {
-        $response = $this->checkHttp($configuration, $constraint);
-
-        if (null !== $response) {
-           $this->checkWsdl($constraint, $response) && $this->checkSoap($configuration, $constraint);
-        }
+        $this->checkHttp($configuration, $constraint) &&
+            $this->checkWsdl($configuration, $constraint) &&
+            $this->checkSoap($configuration, $constraint);
     }
 
     /**
@@ -66,21 +64,22 @@ class MagentoReachableValidator extends ConstraintValidator
      * @param MagentoConfiguration $configuration
      * @param Constraint           $constraint
      *
-     * @return string|null $response
+     * @return bool
      */
     protected function checkHttp(MagentoConfiguration $configuration, Constraint $constraint)
     {
         try {
-            $response  = $this->connectHttpClient($configuration);
+            $this->connectHttpClient($configuration);
+            $isConnected = true;
         } catch (CurlException $e) {
             $this->context->addViolationAt('MagentoConfiguration', $constraint->messageNotReachableUrl);
-            $response = null;
+            $isConnected = false;
         } catch (BadResponseException $e) {
             $this->context->addViolationAt('MagentoConfiguration', $constraint->messageInvalidSoapUrl);
-            $response = null;
+            $isConnected = false;
         }
 
-        return $response;
+        return $isConnected;
     }
 
     /**
@@ -114,16 +113,17 @@ class MagentoReachableValidator extends ConstraintValidator
      * Check if response content type from WSDL URL is text/xml
      *
      * @param MagentoConfiguration $configuration
-     * @param string               $response
+     * @param Constraint           $constraint
      *
      * @return bool
      */
-    protected function checkWsdl(Constraint $constraint, $response)
+    protected function checkWsdl(MagentoConfiguration $configuration, Constraint $constraint)
     {
-        $isCorrect = true;
-        if (false === $response->isContentType('text/xml')) {
+        $response  = $this->connectHttpClient($configuration);
+        $isCorrect = $response->isContentType('text/xml');
+
+        if (!$isCorrect) {
             $this->context->addViolationAt('MagentoConfiguration', $constraint->messageXmlNotValid);
-            $isCorrect = false;
         }
 
         return $isCorrect;
