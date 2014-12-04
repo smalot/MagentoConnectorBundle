@@ -54,7 +54,7 @@ class MagentoSoapClientFactory
             $soapOptions = array_merge($soapOptions, $soapOptionsParam);
         }
 
-        return new $this->soapClientClass($configuration->getSoapUrl(), $soapOptions);
+        return new $this->soapClientClass($soapOptions, $configuration->getSoapUrl());
     }
 
     /**
