@@ -1,6 +1,7 @@
 Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration:
     type: entity
     table: pim_magento_job_configuration
+    repositoryClass: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\MagentoConfigurationRepository
     id:
         id:
             type: integer
