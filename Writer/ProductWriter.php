@@ -2,12 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
-use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
-use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
-use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration;
-use Pim\Bundle\MagentoConnectorBundle\Factory\MagentoSoapClientFactory;
-use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoConfigurationManager;
-
 /**
  * Product writer used to send products in Api Import
  *
@@ -15,79 +9,82 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoConfigurationManager;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductWriter extends AbstractConfigurableStepElement implements ItemWriterInterface
+class ProductWriter extends AbstractWriter
 {
-    /** @var MagentoSoapClientFactory $clientFactory */
-    protected $clientFactory;
-
-    /** @var MagentoConfigurationManager $configurationManager */
-    protected $configurationManager;
-
-    /** @var string $magentoConfigurationCode */
-    protected $magentoConfigurationCode;
-
-    /**
-     * Constructor
-     *
-     * @param MagentoSoapClientFactory    $clientFactory
-     * @param MagentoConfigurationManager $configurationManager
-     */
-    public function __construct(
-        MagentoSoapClientFactory $clientFactory,
-        MagentoConfigurationManager $configurationManager
-    ) {
-        $this->clientFactory = $clientFactory;
-        $this->configurationManager = $configurationManager;
-    }
-
     /**
      * {@inheritdoc}
-    */
+     */
     public function write(array $items)
     {
+        $products = [];
+        foreach ($items as $item) {
+            $products = array_merge($products, $item);
+        }
 
+        $mappedSkus = $this->getMappedSkus($products);
+        try {
+            $this->client->exportProducts($products);
+        } catch (\SoapFault $e) {
+            $failedProducts = $this->getFailedProducts(unserialize($e->getMessage()), $mappedSkus);
+            $this->manageFailedProducts($failedProducts);
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * Gives lines mapped to skus
+     *
+     * @param array $products
+     *
+     * @return array
      */
-    public function getConfigurationFields()
+    protected function getMappedSkus(array $products)
     {
-        return [
-            'magentoConfigurationCode' => [
-                'type'    => 'choice',
-                'options' => [
-                    'choices'  => $this->configurationManager->getConfigurationChoices(),
-                    'required' => true,
-                    'select2'  => true,
-                    'label'    => 'pim_magento_connector.export.configuration.label',
-                    'help'     => 'pim_magento_connector.export.configuration.help'
-                ]
-            ]
-        ];
+        $mappedSkus   = [];
+        $previousSku = '';
+        foreach ($products as $key => $product) {
+            if (!empty($product['sku'])) {
+                $mappedSkus[$key] = $product['sku'];
+                $previousSku     = $product['sku'];
+            } else {
+                $mappedSkus[$key] = $previousSku;
+            }
+        }
+
+        return $mappedSkus;
     }
 
     /**
-     * Get the Magento configuration code
+     * Get failed products with their skus associated to errors
+     * Returns [sku => ['errors', '']]
      *
-     * @return string
+     * @param array $errors
+     * @param array $mappedSku
+     *
+     * @return array
      */
-    public function getMagentoConfigurationCode()
+    protected function getFailedProducts(array $errors, array $mappedSku)
     {
-        return $this->magentoConfigurationCode;
+        $failedProducts = [];
+        foreach ($errors as $error => $failedRows) {
+            foreach ($failedRows as $row) {
+                $failedProducts[$mappedSku[$row]][] = $error;
+            }
+        }
+
+        return $failedProducts;
     }
 
     /**
-     * Set the Magento configuration code
+     * Add a warning for each failed product
      *
-     * @param string $configurationCode
-     *
-     * @return ProductWriter
+     * @param array $failedProducts
      */
-    public function setMagentoConfigurationCode($configurationCode)
+    protected function manageFailedProducts(array $failedProducts)
     {
-        $this->magentoConfigurationCode = $configurationCode;
-
-        return $this;
+        foreach ($failedProducts as $sku => $errors) {
+            foreach ($errors as $error) {
+                $this->addWarning($error, [], [$sku]);
+            }
+        }
     }
 }

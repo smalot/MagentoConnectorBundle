@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration;
+use Pim\Bundle\MagentoConnectorBundle\Factory\MagentoSoapClientFactory;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -20,15 +21,23 @@ class MagentoConfigurationManager
     /** @var string */
     protected $magentoConfigClass;
 
+    /** @var MagentoSoapClientFactory */
+    protected $clientFactory;
+
     /**
      * Constructor
      *
-     * @param RegistryInterface $doctrine
-     * @param string            $magentoConfigClass
+     * @param RegistryInterface        $doctrine
+     * @param MagentoSoapClientFactory $clientFactory
+     * @param string                   $magentoConfigClass
      */
-    public function __construct(RegistryInterface $doctrine, $magentoConfigClass)
-    {
+    public function __construct(
+        RegistryInterface $doctrine,
+        MagentoSoapClientFactory $clientFactory,
+        $magentoConfigClass
+    ) {
         $this->doctrine           = $doctrine;
+        $this->clientFactory      = $clientFactory;
         $this->magentoConfigClass = $magentoConfigClass;
     }
 
@@ -87,5 +96,18 @@ class MagentoConfigurationManager
         }
 
         return $choices;
+    }
+
+    /**
+     * Create a Magento SOAP client from configuration and SOAP options
+     *
+     * @param MagentoConfiguration $configuration
+     * @param array                $soapOptions
+     *
+     * @return \Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient
+     */
+    public function createClient(MagentoConfiguration $configuration, array $soapOptions = [])
+    {
+        return $this->clientFactory->createMagentoSoapClient($configuration, $soapOptions);
     }
 }
