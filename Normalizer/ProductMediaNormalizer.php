@@ -4,6 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -18,12 +19,17 @@ class ProductMediaNormalizer implements NormalizerInterface
     /** @var MediaManager */
     protected $mediaManager;
 
+    /** @var MagentoAttributesHelper */
+    protected $attributesHelper;
+
     /**
-     * @param MediaManager $mediaManager
+     * @param MediaManager            $mediaManager
+     * @param MagentoAttributesHelper $attributesHelper
      */
-    public function __construct(MediaManager $mediaManager)
+    public function __construct(MediaManager $mediaManager, MagentoAttributesHelper $attributesHelper)
     {
-        $this->mediaManager = $mediaManager;
+        $this->mediaManager     = $mediaManager;
+        $this->attributesHelper = $attributesHelper;
     }
 
     /**
@@ -35,8 +41,10 @@ class ProductMediaNormalizer implements NormalizerInterface
 
         return [
             [
-                $attributeCode              => $object->getFileName(),
-                $attributeCode . '_content' => $this->mediaManager->getBase64($object)
+                $attributeCode                                    => $object->getFileName(),
+                $attributeCode . '_content'                       => $this->mediaManager->getBase64($object),
+                $this->attributesHelper->getMediaImageHeader()    => $object->getFileName(),
+                $this->attributesHelper->getMediaDisabledHeader() => 0
             ]
         ];
     }
