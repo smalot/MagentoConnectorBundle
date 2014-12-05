@@ -57,6 +57,12 @@ class MagentoAttributesHelper
     protected static $shortDescriptionHeader = 'short_description';
 
     /** @staticvar string */
+    protected static $mediaImageHeader = '_media_image';
+
+    /** @staticvar string */
+    protected static $mediaDisabledHeader = '_media_is_disabled';
+
+    /** @staticvar string */
     protected static $associationReplaceSubjectHeader = '_links_#toReplace#_sku';
 
     /** @staticvar string */
@@ -293,5 +299,21 @@ class MagentoAttributesHelper
     public static function getVisibilityHeader()
     {
         return static::$visibilityHeader;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getMediaImageHeader()
+    {
+        return static::$mediaImageHeader;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getMediaDisabledHeader()
+    {
+        return static::$mediaDisabledHeader;
     }
 }

@@ -7,12 +7,14 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductMedia;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
+use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 
 class ProductMediaNormalizerSpec extends ObjectBehavior
 {
     public function let(MediaManager $mediaManager)
     {
-        $this->beConstructedWith($mediaManager);
+        $attributesHelper = new MagentoAttributesHelper();
+        $this->beConstructedWith($mediaManager, $attributesHelper);
     }
 
     public function it_is_initializable()
@@ -51,7 +53,9 @@ class ProductMediaNormalizerSpec extends ObjectBehavior
         $this->normalize($productMedia, 'api_import', [])->shouldReturn([
             [
                 'media_attribute_code' => 'my_media_name',
-                'media_attribute_code_content' => 'base64_code_of_the_media'
+                'media_attribute_code_content' => 'base64_code_of_the_media',
+                '_media_image' => 'my_media_name',
+                '_media_is_disabled' => 0
             ]
         ]);
     }

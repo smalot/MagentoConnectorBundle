@@ -142,4 +142,14 @@ class MagentoAttributesHelperSpec extends ObjectBehavior
     {
         $this->getStoreHeader()->shouldReturn('_store');
     }
+
+    public function it_returns_media_image_header()
+    {
+        $this->getMediaImageHeader()->shouldReturn('_media_image');
+    }
+
+    public function it_returns_media_disabled_header()
+    {
+        $this->getMediaDisabledHeader()->shouldReturn('_media_is_disabled');
+    }
 }
