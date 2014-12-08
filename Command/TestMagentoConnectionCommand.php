@@ -34,7 +34,7 @@ class TestMagentoConnectionCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('magento-connector:connection:test')
+            ->setName('magento-connector:configuration:test')
             ->setDescription('Tests the connection between connector and Magento with the given configuration.')
             ->addArgument('configuration_code', InputArgument::REQUIRED, 'Magento configuration code');
     }
