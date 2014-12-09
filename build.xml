@@ -3,7 +3,7 @@
 
     <target name="build-phpspec" depends="prepare,composer,vendors-no-scripts,phpspec,phpspec-junit"/>
 
-    <target name="build-code-quality" depends="prepare,lint,pdepend,phpmd-ci,phpcs-ci,phpcpd"/>
+    <target name="build-code-quality" depends="prepare,composer,vendors-no-scripts,lint,pdepend,phpmd-ci,phpcs-ci"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/app/build/api"/>
@@ -64,30 +64,27 @@
         <apply executable="php" failonerror="true">
             <arg value="-l" />
 
-            <fileset dir="${basedir}/src/">
+            <fileset dir="${basedir}/">
                 <include name="**/*.php" />
-                <modified />
-            </fileset>
-
-            <fileset dir="${basedir}/spec">
-                <include name="**/*Spec.php" />
+                <exclude name="**/vendor/**" />
+                <exclude name="**/bin/**" />
                 <modified />
             </fileset>
         </apply>
     </target>
 
     <target name="pdepend" description="Calculate software metrics using PHP_Depend">
-        <exec executable="pdepend">
+        <exec executable="./bin/pdepend">
             <arg value="--jdepend-xml=${basedir}/app/build/logs/jdepend.xml" />
             <arg value="--jdepend-chart=${basedir}/app/build/pdepend/dependencies.svg" />
             <arg value="--overview-pyramid=${basedir}/app/build/pdepend/overview-pyramid.svg" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/" />
         </exec>
     </target>
 
     <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
-        <exec executable="${basedir}/app/Resources/jenkins/phpmd_akeneo">
-            <arg path="${basedir}/src/" />
+        <exec executable="./bin/phpmd">
+            <arg path="${basedir}/" />
             <arg value="xml" />
             <arg value="--reportfile" />
             <arg value="${basedir}/app/build/logs/pmd.xml" />
@@ -100,17 +97,7 @@
             <arg value="--report-file=${basedir}/app/build/logs/checkstyle.xml" />
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
-            <arg path="${basedir}/src" />
-        </exec>
-    </target>
-
-    <target name="phpcpd" description="Find duplicate code using PHPCPD">
-        <exec executable="phpcpd">
-            <arg value="--exclude" />
-            <arg value="Tests" />
-            <arg value="--log-pmd" />
-            <arg value="${basedir}/app/build/logs/pmd-cpd.xml" />
-            <arg path="${basedir}/src" />
+            <arg path="${basedir}/" />
         </exec>
     </target>
 </project>
