@@ -5,7 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeTranslation;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use PhpSpec\ObjectBehavior;

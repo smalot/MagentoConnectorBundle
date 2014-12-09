@@ -8,7 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegi
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Doctrine\ORM\EntityManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;

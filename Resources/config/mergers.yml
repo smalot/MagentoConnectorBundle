@@ -2,6 +2,8 @@ parameters:
     pim_magento_connector.merger.mapping.class: Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger
     pim_magento_connector.merger.addition_not_allowed: false
     pim_magento_connector.merger.addition_allowed: true
+    pim_magento_connector.merger.direction.import: import
+    pim_magento_connector.merger.direction.export: export
 
 services:
     pim_magento_connector.merger.attribute_code_mapping:

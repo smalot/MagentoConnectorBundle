@@ -8,7 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ComputedPriceNotMatchedException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidPriceMappingException;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * A normalizer to transform a group entity into an array

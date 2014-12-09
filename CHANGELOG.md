@@ -1,10 +1,11 @@
 #1.2.0
 ## New feature
  - Delta Export is directly integrated in MagentoConnector (DeltaExportBundle is now deprecated)
+ - Connector Mapping is directly integrated in MagentoConnector (ConnectorMappingBundle is now deprecated)
 
 ## BC Breaks
  - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
- - ProductExport table name is changed from `pim_delta_product_export` to `pim_magento_product_export`
+ - All ConnectorMappingBundle dependencies should be replaced by MagentoConnectorBundle ones
 
 # 1.1.8 (2014-12-01)
 ## Bug fixes

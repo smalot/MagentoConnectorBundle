@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Category mapping manager

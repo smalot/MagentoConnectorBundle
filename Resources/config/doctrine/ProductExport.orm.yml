@@ -1,6 +1,6 @@
 Pim\Bundle\MagentoConnectorBundle\Entity\ProductExport:
     type: entity
-    table: pim_magento_product_export
+    table: pim_delta_product_export
     indexes:
         searchcode_idx:
             columns:
