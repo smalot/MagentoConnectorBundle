@@ -10,6 +10,7 @@ parameters:
     pim_magento_connector.manager.product_value.class: Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager
     pim_magento_connector.manager.attribute.class: Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
+    pim_magento_connector.manager.product_export.class: Pim\Bundle\MagentoConnectorBundle\Manager\ProductExportManager
 
 services:
     # manager
@@ -53,10 +54,12 @@ services:
         arguments:
             - '@pim_catalog.manager.group'
             - '@pim_magento_connector.repository.group'
+
     pim_magento_connector.manager.locale:
         class: %pim_magento_connector.manager.locale.class%
         arguments:
             - '@pim_catalog.manager.locale'
+
     pim_magento_connector.manager.currency:
         class: %pim_magento_connector.manager.currency.class%
         arguments:
@@ -68,3 +71,15 @@ services:
             - '@pim_catalog.manager.attribute'
             - '@doctrine.orm.entity_manager'
             - %pim_catalog.entity.attribute.class%
+
+    pim_magento_connector.manager.product_export:
+        class: %pim_magento_connector.manager.product_export.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+            - %pim_magento_connector.entity.product_export.class%
+            - %pim_catalog.entity.product.class%
+
+    pim_magento_connector.manager.product_value_export:
+        parent: pim_magento_connector.manager.product_export
+        arguments:
+            - true
