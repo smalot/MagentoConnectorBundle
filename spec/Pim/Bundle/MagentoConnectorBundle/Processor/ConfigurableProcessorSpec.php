@@ -14,7 +14,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\GroupRepository;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Entity\Group;

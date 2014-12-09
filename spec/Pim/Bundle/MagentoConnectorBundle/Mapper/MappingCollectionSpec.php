@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Pim\Bundle\ConnectorMappingBundle\Mapper;
+namespace spec\Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

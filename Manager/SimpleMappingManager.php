@@ -1,9 +1,9 @@
 <?php
 
-namespace Pim\Bundle\ConnectorMappingBundle\Manager;
+namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping;
+use Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping;
 
 /**
  * Mapping manager

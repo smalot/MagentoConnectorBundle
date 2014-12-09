@@ -6,7 +6,7 @@ parameters:
     pim_magento_connector.processor.attribute.class: Pim\Bundle\MagentoConnectorBundle\Processor\AttributeProcessor
     pim_magento_connector.processor.option.class: Pim\Bundle\MagentoConnectorBundle\Processor\OptionProcessor
     pim_magento_connector.processor.family.class: Pim\Bundle\MagentoConnectorBundle\Processor\FamilyProcessor
-    pim_connector_mapping.processor.mapping.class: Pim\Bundle\ConnectorMappingBundle\Processor\MappingProcessor
+    pim_magento_connector.processor.mapping.class: Pim\Bundle\MagentoConnectorBundle\Processor\MappingProcessor
 
 services:
     # processors
@@ -94,5 +94,5 @@ services:
             - '@pim_magento_connector.merger.storeview_mapping'
             - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
-    pim_connector_mapping.processor.mapping:
-        class: %pim_connector_mapping.processor.mapping.class%
+    pim_magento_connector.processor.mapping:
+        class: %pim_magento_connector.processor.mapping.class%

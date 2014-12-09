@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Pim\Bundle\ConnectorMappingBundle\Merger;
+namespace spec\Pim\Bundle\MagentoConnectorBundle\Merger;
 
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\Mapper;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

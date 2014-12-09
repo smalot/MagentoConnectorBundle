@@ -1,4 +1,4 @@
-Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping:
+Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping:
     type: entity
     table: pim_simple_connector_mapping
     id:

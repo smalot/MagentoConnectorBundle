@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\ConnectorMappingBundle\Mapper;
+namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
 use Doctrine\Common\Collections\ArrayCollection;
 

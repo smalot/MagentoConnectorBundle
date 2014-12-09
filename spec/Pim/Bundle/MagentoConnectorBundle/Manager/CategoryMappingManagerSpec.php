@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoCategoryMapping;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

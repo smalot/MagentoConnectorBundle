@@ -5,7 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Entity\CategoryTranslation;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

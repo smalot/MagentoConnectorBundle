@@ -7,7 +7,7 @@ use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Price mapping manager

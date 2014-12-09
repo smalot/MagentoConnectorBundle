@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Pim\Bundle\ConnectorMappingBundle\Manager;
+namespace spec\Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
-use Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping;
+use Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

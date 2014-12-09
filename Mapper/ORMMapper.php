@@ -1,8 +1,8 @@
 <?php
 
-namespace Pim\Bundle\ConnectorMappingBundle\Mapper;
+namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
 
 /**
  * ORM mapper

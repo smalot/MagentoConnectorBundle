@@ -1,9 +1,9 @@
 <?php
 
-namespace Pim\Bundle\ConnectorMappingBundle\Processor;
+namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-use Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping;
+use Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;

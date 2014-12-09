@@ -7,7 +7,7 @@ use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 

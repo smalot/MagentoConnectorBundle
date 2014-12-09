@@ -15,7 +15,7 @@ use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Model\ProductMedia;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;

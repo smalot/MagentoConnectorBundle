@@ -5,4 +5,4 @@ parameters:
     pim_magento_connector.entity.attribute_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\MagentoAttributeMapping
     pim_magento_connector.entity.simple_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping
     pim_magento_connector.entity.product_export.class: Pim\Bundle\MagentoConnectorBundle\Entity\ProductExport
-    pim_connector_mapping.entity.simple_mapping.class: Pim\Bundle\ConnectorMappingBundle\Entity\SimpleMapping
+    pim_magento_connector.entity.simple_mapping.class: Pim\Bundle\MagentoConnectorBundle\Entity\SimpleMapping

@@ -2,8 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\ConnectorMappingBundle\Mapper\Mapper;
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\Mapper;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;

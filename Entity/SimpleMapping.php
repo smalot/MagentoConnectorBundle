@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\ConnectorMappingBundle\Entity;
+namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
 /**
  * Simple mapping

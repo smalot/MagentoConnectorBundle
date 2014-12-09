@@ -7,7 +7,7 @@ parameters:
     pim_magento_connector.mapper.orm_storeview.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMStoreViewMapper
     pim_magento_connector.mapper.orm_category.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMCategoryMapper
     pim_magento_connector.mapper.orm_exported_attribute.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMExportedAttributeMapper
-    pim_connector_mapping.mapper.orm.class: Pim\Bundle\ConnectorMappingBundle\Mapper\ORMMapper
+    pim_magento_connector.mapper.orm.class: Pim\Bundle\MagentoConnectorBundle\Mapper\ORMMapper
 
 services:
     pim_magento_connector.mapper.magento_attribute_code:
@@ -35,21 +35,21 @@ services:
         class: %pim_magento_connector.mapper.orm_attribute_code.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
-            - '@pim_connector_mapping.manager.simple_mapping'
+            - '@pim_magento_connector.manager.simple_mapping'
             - 'attribute'
             - '@pim_magento_connector.manager.attribute'
     pim_magento_connector.mapper.orm_storeview:
         class: %pim_magento_connector.mapper.orm_storeview.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
-            - '@pim_connector_mapping.manager.simple_mapping'
+            - '@pim_magento_connector.manager.simple_mapping'
             - 'storeview'
             - '@pim_magento_connector.manager.locale'
     pim_magento_connector.mapper.orm_category:
         class: %pim_magento_connector.mapper.orm_category.class%
         arguments:
             - '@pim_magento_connector.validator.has_valid_credentials'
-            - '@pim_connector_mapping.manager.simple_mapping'
+            - '@pim_magento_connector.manager.simple_mapping'
             - 'category'
             - '@pim_catalog.manager.category'
     pim_magento_connector.mapper.orm_exported_attribute:
@@ -60,8 +60,8 @@ services:
             - '@pim_magento_connector.merger.attribute_code_mapping'
             - 'attribute_id'
 
-    pim_connector_mapping.mapper.orm_product:
-        class: %pim_connector_mapping.mapper.orm.class%
+    pim_magento_connector.mapper.orm_product:
+        class: %pim_magento_connector.mapper.orm.class%
         arguments:
-            - '@pim_connector_mapping.manager.simple_mapping'
+            - '@pim_magento_connector.manager.simple_mapping'
             - 'product'

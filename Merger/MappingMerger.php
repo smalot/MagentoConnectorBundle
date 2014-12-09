@@ -1,8 +1,8 @@
 <?php
 
-namespace Pim\Bundle\ConnectorMappingBundle\Merger;
+namespace Pim\Bundle\MagentoConnectorBundle\Merger;
 
-use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 
 /**
  * Mapping merger
