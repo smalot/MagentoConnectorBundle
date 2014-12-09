@@ -1,3 +1,11 @@
+#1.2.0
+## New feature
+ - Delta Export is directly integrated in MagentoConnector (DeltaExportBundle is now deprecated)
+
+## BC Breaks
+ - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
+ - ProductExport table name is changed from `pim_delta_product_export` to `pim_magento_product_export`
+
 # 1.1.8 (2014-12-01)
 ## Bug fixes
  - removes sending of url_key when updating product, as it breaks with Magento 1.3.1.0 (see http://www.magentocommerce.com/knowledge-base/entry/ee113-later-release-notes#ee113-11302-seo-uniqueness-rules)
