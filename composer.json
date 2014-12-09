@@ -19,8 +19,7 @@
         "guzzle/service": ">=3.6.0,<3.8.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "2.0.*@dev",
-        "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev"
+        "phpspec/phpspec": "2.0.*@dev"
     },
     "repositories": [
         {
