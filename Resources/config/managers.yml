@@ -11,6 +11,7 @@ parameters:
     pim_magento_connector.manager.attribute.class: Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager
     pim_magento_connector.manager.group.class: Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager
     pim_magento_connector.manager.product_export.class: Pim\Bundle\MagentoConnectorBundle\Manager\ProductExportManager
+    pim_connector_mapping.manager.simple_mapping.class: Pim\Bundle\ConnectorMappingBundle\Manager\SimpleMappingManager
 
 services:
     # manager
@@ -83,3 +84,9 @@ services:
         parent: pim_magento_connector.manager.product_export
         arguments:
             - true
+
+    pim_connector_mapping.manager.simple_mapping:
+        class: %pim_connector_mapping.manager.simple_mapping.class%
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - %pim_connector_mapping.entity.simple_mapping.class%

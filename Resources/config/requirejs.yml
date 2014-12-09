@@ -1,0 +1,4 @@
+config:
+    paths:
+        mapping-field: pimconnectormapping/js/mapping-field
+        mapping-view: pimconnectormapping/js/mapping-view
