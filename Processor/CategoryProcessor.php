@@ -21,9 +21,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotMappedExce
  */
 class CategoryProcessor extends AbstractProcessor
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $categoryMapping;
 
     /**

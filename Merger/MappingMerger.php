@@ -18,14 +18,10 @@ class MappingMerger
      */
     protected $mappers = array();
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $direction;
 
     /**

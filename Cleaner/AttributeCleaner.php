@@ -23,24 +23,16 @@ class AttributeCleaner extends Cleaner
 {
     const ATTRIBUTE_DELETED = 'Attribute deleted';
 
-    /**
-     * @var MagentoMappingMerger
-     */
+    /** @var MagentoMappingMerger */
     protected $attributeCodeMappingMerger;
 
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     protected $em;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeClassName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeCodeMapping;
 
     /**

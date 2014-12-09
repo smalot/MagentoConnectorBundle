@@ -61,19 +61,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     protected $enabled;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $variantMemberVisibility = self::MAGENTO_VISIBILITY_NONE;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $categoryMapping;
 
     /**
@@ -86,9 +80,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     protected $attributeManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeCodeMapping;
 
     /**
@@ -96,19 +88,13 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      */
     protected $attributeMappingMerger;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $smallImageAttribute;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $baseImageAttribute;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $thumbnailAttribute;
 
     /**

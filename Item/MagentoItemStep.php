@@ -26,19 +26,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 abstract class MagentoItemStep extends AbstractConfigurableStepElement implements StepExecutionAwareInterface
 {
-    /**
-     * @var Webservice
-     */
+    /** @var Webservice */
     protected $webservice;
 
-    /**
-     * @var StepExecution
-     */
+    /** @var StepExecution */
     protected $stepExecution;
 
-    /**
-     * @var WebserviceGuesser
-     */
+    /** @var WebserviceGuesser */
     protected $webserviceGuesser;
 
     /**
@@ -103,7 +97,8 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $eventDispatcher;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
@@ -114,7 +109,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     }
 
     /**
-     * @param StepExecution $stepExecution
+     * {@inheritdoc}
      */
     public function setStepExecution(StepExecution $stepExecution)
     {

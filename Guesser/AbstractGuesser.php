@@ -27,9 +27,7 @@ abstract class AbstractGuesser
 
     const MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE = 'Your Magento version is not supported yet.';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $version = null;
 
     /**

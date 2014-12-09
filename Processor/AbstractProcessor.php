@@ -47,9 +47,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      */
     protected $storeViewMappingMerger;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $storeviewMapping = '';
 
     /**

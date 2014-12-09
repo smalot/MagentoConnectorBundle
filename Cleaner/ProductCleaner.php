@@ -56,9 +56,7 @@ class ProductCleaner extends Cleaner
         return $this;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $notCompleteAnymoreAction;
 
     /**

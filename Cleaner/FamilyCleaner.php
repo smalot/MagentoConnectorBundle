@@ -20,11 +20,10 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class FamilyCleaner extends Cleaner
 {
+    /** @const string */
     const FAMILY_DELETED  = 'Family deleted';
 
-    /**
-     * @var FamilyMappingManager
-     */
+    /** @var FamilyMappingManager */
     protected $familyMappingManager;
 
     /**
@@ -75,6 +74,9 @@ class FamilyCleaner extends Cleaner
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getConfigurationFields()
     {
         return array_merge(

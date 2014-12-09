@@ -21,14 +21,10 @@ class ProductExportManager
      */
     protected $productValueDelta;
 
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     protected $entityManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $productExportClass;
 
     /**

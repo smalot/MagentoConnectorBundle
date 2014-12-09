@@ -35,9 +35,7 @@ class ProductProcessor extends AbstractProductProcessor
      */
     protected $associationTypeManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pimGrouped;
 
     /**

@@ -37,9 +37,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected $visibility;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $currencyCode;
 
     /**

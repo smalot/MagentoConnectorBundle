@@ -18,19 +18,13 @@ use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
  */
 class PriceMappingManager
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $locale;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $currency;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $channel;
 
     /**

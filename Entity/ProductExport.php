@@ -2,34 +2,27 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
+use Akeneo\Bundle\BatchBundle\Entity\JobInstance;
+use Pim\Bundle\CatalogBundle\Model\ProductInterface;
+
 /**
  * ProductExport
  */
 class ProductExport
 {
-    /**
-     * @var integer
-     */
-    private $id;
+    /** @var integer */
+    protected $id;
+
+    /** @var \DateTime */
+    protected $date;
+
+    /** @var ProductInterface */
+    protected $product;
+
+    /** @var JobInstance */
+    protected $jobInstance;
 
     /**
-     * @var \DateTime
-     */
-    private $date;
-
-    /**
-     * @var \Pim\Bundle\CatalogBundle\Model\Product
-     */
-    private $product;
-
-    /**
-     * @var \Akeneo\Bundle\BatchBundle\Entity\JobInstance
-     */
-    private $jobInstance;
-
-    /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -38,8 +31,6 @@ class ProductExport
     }
 
     /**
-     * Set date
-     *
      * @param \DateTime $date
      *
      * @return ProductExport
@@ -52,8 +43,6 @@ class ProductExport
     }
 
     /**
-     * Get date
-     *
      * @return \DateTime
      */
     public function getDate()
@@ -62,13 +51,11 @@ class ProductExport
     }
 
     /**
-     * Set product
-     *
-     * @param \Pim\Bundle\CatalogBundle\Model\Product $product
+     * @param ProductInterface $product
      *
      * @return ProductExport
      */
-    public function setProduct(\Pim\Bundle\CatalogBundle\Model\Product $product = null)
+    public function setProduct(ProductInterface $product = null)
     {
         $this->product = $product;
 
@@ -76,9 +63,7 @@ class ProductExport
     }
 
     /**
-     * Get product
-     *
-     * @return \Pim\Bundle\CatalogBundle\Model\Product
+     * @return ProductInterface
      */
     public function getProduct()
     {
@@ -86,13 +71,11 @@ class ProductExport
     }
 
     /**
-     * Set jobInstance
-     *
-     * @param \Akeneo\Bundle\BatchBundle\Entity\JobInstance $jobInstance
+     * @param JobInstance $jobInstance
      *
      * @return ProductExport
      */
-    public function setJobInstance(\Akeneo\Bundle\BatchBundle\Entity\JobInstance $jobInstance = null)
+    public function setJobInstance(JobInstance $jobInstance = null)
     {
         $this->jobInstance = $jobInstance;
 
@@ -100,9 +83,7 @@ class ProductExport
     }
 
     /**
-     * Get jobInstance
-     *
-     * @return \Akeneo\Bundle\BatchBundle\Entity\JobInstance
+     * @return JobInstance
      */
     public function getJobInstance()
     {

@@ -30,34 +30,22 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
  */
 class NormalizerGuesser extends AbstractGuesser
 {
-    /**
-     * @var MagentoSoapClientFactory
-     */
+    /** @var MagentoSoapClientFactory */
     protected $magentoSoapClientFactory;
 
-    /**
-     * @var ChannelManager
-     */
+    /** @var ChannelManager */
     protected $channelManager;
 
-    /**
-     * @var MediaManager
-     */
+    /** @var MediaManager */
     protected $mediaManager;
 
-    /**
-     * @var ProductValueNormalizer
-     */
+    /** @var ProductValueNormalizer */
     protected $productValueNormalizer;
 
-    /**
-     * @var AssociationTypeManager
-     */
+    /** @var AssociationTypeManager */
     protected $associationTypeManager;
 
-    /**
-     * @var ProductValueManager
-     */
+    /** @var ProductValueManager */
     protected $productValueManager;
 
     /**
@@ -152,7 +140,8 @@ class NormalizerGuesser extends AbstractGuesser
      * @param PriceMappingManager         $priceMappingManager
      * @param boolean                     $visibility
      *
-     * @return AbstractNormalizer
+     * @return ConfigurableNormalizer
+     * @throws NotSupportedVersionException
      */
     public function getConfigurableNormalizer(
         MagentoSoapClientParameters $clientParameters,

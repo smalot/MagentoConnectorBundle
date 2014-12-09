@@ -24,9 +24,7 @@ class AttributeReader extends EntityReader
      */
     protected $attributeCodeMappingMerger;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeCodeMapping = '';
 
     /**

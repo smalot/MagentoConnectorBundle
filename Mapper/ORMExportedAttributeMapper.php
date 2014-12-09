@@ -31,14 +31,10 @@ class ORMExportedAttributeMapper extends Mapper
      */
     protected $attributeMappingManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $rootIdentifier;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $defaultStoreView;
 
     /**

@@ -18,9 +18,7 @@ class ORMMapper extends Mapper
      */
     protected $simpleMappingManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $rootIdentifier;
 
     /**

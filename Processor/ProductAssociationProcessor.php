@@ -30,24 +30,16 @@ class ProductAssociationProcessor extends AbstractProcessor
      */
     protected $associationTypeManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pimUpSell;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pimCrossSell;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pimRelated;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pimGrouped;
 
     /**

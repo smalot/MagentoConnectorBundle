@@ -32,9 +32,7 @@ class OptionProcessor extends AbstractProcessor
      */
     protected $attributeMappingMerger;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeCodeMapping;
 
     /**
