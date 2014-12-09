@@ -13,7 +13,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
 {
     protected $clientParameters;
 
-    function let(
+    public function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         WebserviceGuesser $webserviceGuesser,
         Webservice $webservice,
@@ -28,7 +28,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
+    public function it_returns_an_empty_mapping_from_magento($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
@@ -39,19 +39,19 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
         $mapping->toArray()->shouldReturn([]);
     }
 
-    function it_returns_an_empty_collection_if_parameters_are_not_setted()
+    public function it_returns_an_empty_collection_if_parameters_are_not_setted()
     {
         $mapping = $this->getMapping();
         $mapping->shouldBeAnInstanceOf('Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection');
         $mapping->toArray()->shouldReturn([]);
     }
 
-    function it_returns__nothing_to_save_mapping()
+    public function it_returns__nothing_to_save_mapping()
     {
         $this->setMapping([])->shouldReturn(null);
     }
 
-    function it_returns_all_magento_categories_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
+    public function it_returns_all_magento_categories_as_targets($hasValidCredentialsValidator, $webservice, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
 
@@ -60,7 +60,7 @@ class MagentoCategoryMapperSpec extends ObjectBehavior
         $this->getAllTargets()->shouldReturn([['id' => 'foo', 'text' => 'Foo'], ['id' => 'bar', 'text' => 'Bar']]);
     }
 
-    function it_returns_a_proper_identifier($hasValidCredentialsValidator, $clientParameters)
+    public function it_returns_a_proper_identifier($hasValidCredentialsValidator, $clientParameters)
     {
         $hasValidCredentialsValidator->areValidSoapCredentials($clientParameters)->willReturn(true);
         $clientParameters->getSoapUrl()->willReturn('soap_urlwsdl_url');

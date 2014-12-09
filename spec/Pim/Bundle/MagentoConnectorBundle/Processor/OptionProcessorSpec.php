@@ -19,7 +19,7 @@ use Prophecy\Argument;
 
 class OptionProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
@@ -51,7 +51,7 @@ class OptionProcessorSpec extends ObjectBehavior
         $normalizerGuesser->getOptionNormalizer($clientParameters)->willReturn($optionNormalizer);
     }
 
-    function it_normalizes_given_grouped_options(
+    public function it_normalizes_given_grouped_options(
         AttributeOption $optionRed,
         AttributeOption $optionBlue,
         Attribute $attribute,
@@ -72,11 +72,11 @@ class OptionProcessorSpec extends ObjectBehavior
 
         $this->process([
             $optionRed,
-            $optionBlue
+            $optionBlue,
         ])->shouldReturn([['foo'], ['bar']]);
     }
 
-    function it_raises_an_exception_if_it_can_not_get_option_list_from_webservice(
+    public function it_raises_an_exception_if_it_can_not_get_option_list_from_webservice(
         AttributeOption $optionRed,
         Attribute $attribute,
         $optionNormalizer,
@@ -97,7 +97,7 @@ class OptionProcessorSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', [[$optionRed]]);
     }
 
-    function it_raises_an_exception_if_a_error_occure_during_normalization_process(
+    public function it_raises_an_exception_if_a_error_occure_during_normalization_process(
         AttributeOption $optionRed,
         Attribute $attribute,
         $optionNormalizer,
@@ -116,7 +116,7 @@ class OptionProcessorSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('process', [[$optionRed]]);
     }
 
-    function it_gives_a_proper_configuration_for_fields($storeViewMappingMerger, $attributeMappingMerger)
+    public function it_gives_a_proper_configuration_for_fields($storeViewMappingMerger, $attributeMappingMerger)
     {
         $storeViewMappingMerger->getConfigurationField()->willReturn(['fooo' => 'baar']);
         $attributeMappingMerger->getConfigurationField()->willReturn(['foo' => 'bar']);
@@ -126,8 +126,8 @@ class OptionProcessorSpec extends ObjectBehavior
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUsername.help',
-                    'label'    => 'pim_magento_connector.export.soapUsername.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.soapUsername.label',
+                ],
             ],
             'soapApiKey'   => [
                 //Should be remplaced by a password formType but who doesn't
@@ -136,37 +136,37 @@ class OptionProcessorSpec extends ObjectBehavior
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapApiKey.help',
-                    'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.soapApiKey.label',
+                ],
             ],
             'magentoUrl' => [
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.magentoUrl.help',
-                    'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.magentoUrl.label',
+                ],
             ],
             'wsdlUrl' => [
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                ]
+                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL,
+                ],
             ],
             'httpLogin' => [
                 'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpLogin.help',
-                    'label'    => 'pim_magento_connector.export.httpLogin.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.httpLogin.label',
+                ],
             ],
             'httpPassword' => [
                 'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpPassword.help',
-                    'label'    => 'pim_magento_connector.export.httpPassword.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.httpPassword.label',
+                ],
             ],
             'defaultStoreView' => [
                 'options' => [
@@ -174,7 +174,7 @@ class OptionProcessorSpec extends ObjectBehavior
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                     'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                     'data'     => $this->getDefaultStoreView(),
-                ]
+                ],
             ],
             'defaultLocale' => [
                 'type' => 'choice',
@@ -183,16 +183,16 @@ class OptionProcessorSpec extends ObjectBehavior
                     'required' => true,
                     'attr' => ['class' => 'select2'],
                     'help'     => 'pim_magento_connector.export.defaultLocale.help',
-                    'label'    => 'pim_magento_connector.export.defaultLocale.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.defaultLocale.label',
+                ],
             ],
             'website' => [
                 'type' => 'text',
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.website.help',
-                    'label'    => 'pim_magento_connector.export.website.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.website.label',
+                ],
             ],
             'fooo' => 'baar',
             'foo' => 'bar',

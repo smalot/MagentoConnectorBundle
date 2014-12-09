@@ -39,7 +39,7 @@ class MagentoSoapClient
                 'exceptions' => true,
                 'login'      => $this->clientParameters->getHttpLogin(),
                 'password'   => $this->clientParameters->getHttpPassword(),
-                'cache_wsdl' => WSDL_CACHE_BOTH
+                'cache_wsdl' => WSDL_CACHE_BOTH,
             ];
 
             try {
@@ -109,9 +109,9 @@ class MagentoSoapClient
                 } elseif ($e->getMessage() === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
                     throw new SoapCallException(
                         sprintf(
-                            '%s Called resource : "%s" with parameters : %s.' .
-                            ' Soap user needs access on this resource. Please ' .
-                            'check in your Magento webservice soap roles and ' .
+                            '%s Called resource : "%s" with parameters : %s.'.
+                            ' Soap user needs access on this resource. Please '.
+                            'check in your Magento webservice soap roles and '.
                             'users configuration.',
                             $e->getMessage(),
                             $resource,
@@ -133,7 +133,7 @@ class MagentoSoapClient
             if (is_array($response) && isset($response['isFault']) && $response['isFault']) {
                 throw new SoapCallException(
                     sprintf(
-                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s.' .
+                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s.'.
                         'Response from API : %s',
                         $e->getMessage(),
                         $resource,

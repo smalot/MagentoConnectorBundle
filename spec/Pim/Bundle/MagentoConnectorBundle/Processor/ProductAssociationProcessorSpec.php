@@ -14,13 +14,11 @@ use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Entity\AssociationType;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ProductAssociationProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         WebserviceGuesser $webserviceGuesser,
@@ -47,7 +45,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->setPimUpSell('UPSELL');
     }
 
-    function it_generates_association_calls_for_given_products(
+    public function it_generates_association_calls_for_given_products(
         $webservice,
         ProductInterface $product,
         ProductInterface $associatedProduct,
@@ -73,22 +71,22 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
                         'type'          => 'cross_sell',
                         'product'       => 'sku-012',
                         'linkedProduct' => 'sku-011',
-                        'identifierType' => 'sku'
-                    ]
+                        'identifierType' => 'sku',
+                    ],
                 ],
                 'create' => [
                     [
                         'type'          => 'up_sell',
                         'product'       => 'sku-012',
                         'linkedProduct' => 'sku-011',
-                        'identifierType' => 'sku'
-                    ]
-                ]
+                        'identifierType' => 'sku',
+                    ],
+                ],
             ]
         );
     }
 
-    function it_throws_an_exception_if_something_went_wrong_with_soap_call(
+    public function it_throws_an_exception_if_something_went_wrong_with_soap_call(
         $webservice,
         ProductInterface $product
     ) {
@@ -97,7 +95,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
     }
 
-    function it_is_configurable()
+    public function it_is_configurable()
     {
         $this->setPimUpSell('foo');
         $this->setPimCrossSell('bar');

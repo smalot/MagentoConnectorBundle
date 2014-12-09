@@ -54,7 +54,7 @@ class ORMCategoryMapper extends ORMPimMapper
             foreach ($categories as $category) {
                 $sources[] = [
                     'id'   => $category->getCode(),
-                    'text' => sprintf('%s (%s)', $category->getLabel(), $category->getCode())
+                    'text' => sprintf('%s (%s)', $category->getLabel(), $category->getCode()),
                 ];
 
                 $sources = array_merge($sources, $this->getAllSources($category));

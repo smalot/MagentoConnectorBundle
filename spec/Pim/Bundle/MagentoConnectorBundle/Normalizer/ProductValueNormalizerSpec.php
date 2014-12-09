@@ -9,13 +9,12 @@ use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\CatalogBundle\Model\Metric;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ProductValueNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext;
 
-    function let(
+    public function let(
         ProductValue $value,
         MappingCollection $attributeMapping,
         AbstractAttribute $attribute
@@ -28,7 +27,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
             'magentoAttributes'        => ['attribute_code' => ['code' => 'attribute_ode', 'scope' => 'global']],
             'magentoAttributesOptions' => [],
             'currencyCode'             => 'currency_code',
-            'attributeCodeMapping'     => $attributeMapping
+            'attributeCodeMapping'     => $attributeMapping,
         ];
 
         $attributeMapping->getTarget('attribute_code')->willReturn('attribute_code');
@@ -38,7 +37,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $attribute->getCode()->willReturn('attribute_code');
     }
 
-    function it_normalizes_a_scopable_value($value, $attribute)
+    public function it_normalizes_a_scopable_value($value, $attribute)
     {
         $attribute->isScopable()->willReturn(true);
 
@@ -47,7 +46,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 'hello']);
     }
 
-    function it_normalizes_a_non_scopable_value($value, $attribute)
+    public function it_normalizes_a_non_scopable_value($value, $attribute)
     {
         $attribute->isScopable()->willReturn(false);
         $attribute->isLocalizable()->willReturn(false);
@@ -55,7 +54,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 'hello']);
     }
 
-    function it_normalizes_a_localizable_value($value, $attribute)
+    public function it_normalizes_a_localizable_value($value, $attribute)
     {
         $this->globalContext['magentoAttributes'] = ['attribute_code' => ['code' => 'attribute_ode', 'scope' => 'store']];
 
@@ -66,7 +65,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 'hello']);
     }
 
-    function it_does_not_normalize_a_localizable_value_with_a_different_locale_than_current($value, $attribute)
+    public function it_does_not_normalize_a_localizable_value_with_a_different_locale_than_current($value, $attribute)
     {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(true);
@@ -75,7 +74,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(null);
     }
 
-    function it_raises_an_exception_if_scope_are_not_corresponding($value, $attribute)
+    public function it_raises_an_exception_if_scope_are_not_corresponding($value, $attribute)
     {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(true);
@@ -84,7 +83,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidScopeMatchException')->during('normalize', [$value, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_a_localizable_value_when_only_localizable_values_are_requested($value, $attribute)
+    public function it_normalizes_a_localizable_value_when_only_localizable_values_are_requested($value, $attribute)
     {
         $this->globalContext['onlyLocalized'] = true;
         $this->globalContext['magentoAttributes'] = ['attribute_code' => ['code' => 'attribute_ode', 'scope' => 'store']];
@@ -97,7 +96,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 'hello']);
     }
 
-    function it_does_not_normalizes_a_non_localizable_value_when_only_localizable_values_are_requested($value, $attribute)
+    public function it_does_not_normalizes_a_non_localizable_value_when_only_localizable_values_are_requested($value, $attribute)
     {
         $this->globalContext['onlyLocalized'] = true;
         $this->globalContext['magentoAttributes'] = ['attribute_code' => ['code' => 'attribute_ode', 'scope' => 'store']];
@@ -110,7 +109,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(null);
     }
 
-    function it_raises_an_exception_if_attribute_does_not_exists($value, $attribute)
+    public function it_raises_an_exception_if_attribute_does_not_exists($value, $attribute)
     {
         $this->globalContext['magentoAttributes'] = [];
         $attribute->isScopable()->willReturn(true);
@@ -119,7 +118,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeNotFoundException')->during('normalize', [$value, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_a_true_boolean_value($value, $attribute)
+    public function it_normalizes_a_true_boolean_value($value, $attribute)
     {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
@@ -129,7 +128,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 1]);
     }
 
-    function it_normalizes_a_false_boolean_value($value, $attribute)
+    public function it_normalizes_a_false_boolean_value($value, $attribute)
     {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
@@ -139,7 +138,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 0]);
     }
 
-    function it_normalizes_a_date_value($value, $attribute)
+    public function it_normalizes_a_date_value($value, $attribute)
     {
         $date = new \DateTime('2000-01-01');
 
@@ -151,7 +150,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => '2000-01-01 00:00:00']);
     }
 
-    function it_normalizes_an_option_value(
+    public function it_normalizes_an_option_value(
         $value,
         $attribute,
         AttributeOption $option
@@ -166,7 +165,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => 'option_id']);
     }
 
-    function it_raises_an_exception_if_an_option_value_does_not_exists_in_magento(
+    public function it_raises_an_exception_if_an_option_value_does_not_exists_in_magento(
         $value,
         $attribute,
         AttributeOption $option
@@ -181,7 +180,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidOptionException')->during('normalize', [$value, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_a_collection_of_option_values(
+    public function it_normalizes_a_collection_of_option_values(
         $value,
         $attribute,
         AttributeOption $option1,
@@ -198,7 +197,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => ['option_id_1', 'option_id_2']]);
     }
 
-    function it_normalizes_a_collection_of_product_prices(
+    public function it_normalizes_a_collection_of_product_prices(
         $value,
         $attribute,
         ProductPrice $price1,
@@ -216,7 +215,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => '12.0']);
     }
 
-    function it_normalizes_a_collection_of_simple_values($value, $attribute)
+    public function it_normalizes_a_collection_of_simple_values($value, $attribute)
     {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);
@@ -226,7 +225,7 @@ class ProductValueNormalizerSpec extends ObjectBehavior
         $this->normalize($value, 'MagentoArray', $this->globalContext)->shouldReturn(['attribute_code' => ['foo', 'bar']]);
     }
 
-    function it_normalizes_a_metric($value, $attribute, Metric $metric)
+    public function it_normalizes_a_metric($value, $attribute, Metric $metric)
     {
         $attribute->isScopable()->willReturn(true);
         $attribute->isLocalizable()->willReturn(false);

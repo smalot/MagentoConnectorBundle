@@ -17,14 +17,10 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
  */
 class WebserviceGuesser extends AbstractGuesser
 {
-    /**
-     * @var Webservice
-     */
+    /** @var Webservice */
     protected $webservice;
 
-    /**
-     * @var MagentoSoapClientFactory
-     */
+    /** @var MagentoSoapClientFactory */
     protected $magentoSoapClientFactory;
 
     /**

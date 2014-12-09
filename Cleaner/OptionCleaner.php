@@ -21,21 +21,16 @@ use Doctrine\ORM\EntityManager;
  */
 class OptionCleaner extends Cleaner
 {
+    /** @const string */
     const OPTION_DELETED = 'Option deleted';
 
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     protected $em;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeClassName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $optionClassName;
 
     /**
@@ -77,6 +72,7 @@ class OptionCleaner extends Cleaner
 
     /**
      * Clean options
+     *
      * @param array             $options
      * @param AbstractAttribute $attribute
      *
@@ -100,6 +96,7 @@ class OptionCleaner extends Cleaner
 
     /**
      * Handle deletion or disabling of options which are not in PIM anymore
+     *
      * @param string $optionId
      * @param string $attributeCode
      */
@@ -117,9 +114,10 @@ class OptionCleaner extends Cleaner
 
     /**
      * Get attribute for attribute code
+     *
      * @param string $attributeCode
      *
-     * @return mixed
+     * @return AbstractAttribute
      */
     protected function getAttribute($attributeCode)
     {
@@ -128,10 +126,11 @@ class OptionCleaner extends Cleaner
 
     /**
      * Get option for option label and attribute
+     *
      * @param string            $optionLabel
      * @param AbstractAttribute $attribute
      *
-     * @return mixed
+     * @return AttributeOption
      */
     protected function getOption($optionLabel, AbstractAttribute $attribute)
     {
@@ -149,7 +148,7 @@ class OptionCleaner extends Cleaner
 
         $configurationFields['notInPimAnymoreAction']['options']['choices'] = [
             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
-            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
+            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label',
         ];
 
         $configurationFields['notInPimAnymoreAction']['options']['help'] =

@@ -21,9 +21,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotMappedExce
  */
 class CategoryProcessor extends AbstractProcessor
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $categoryMapping;
 
     /**
@@ -126,7 +124,7 @@ class CategoryProcessor extends AbstractProcessor
             'create'    => [],
             'update'    => [],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ];
 
         $categories = is_array($categories) ? $categories : [$categories];

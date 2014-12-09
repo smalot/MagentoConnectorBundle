@@ -13,7 +13,7 @@ class CategoryReaderSpec extends ObjectBehavior
 {
     const CATEGORY_CLASS = 'Pim\Bundle\CatalogBundle\Entity\Category';
 
-    function let(
+    public function let(
         EntityManager $em,
         CategoryRepository $repository,
         StepExecution $stepExecution
@@ -22,7 +22,7 @@ class CategoryReaderSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    function it_reads_categories_with_custom_order_query(
+    public function it_reads_categories_with_custom_order_query(
         $repository,
         QueryBuilder $qb,
         AbstractQuery $query

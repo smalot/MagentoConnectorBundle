@@ -85,5 +85,4 @@ class AttributeGroupMappingManagerSpec extends ObjectBehavior
         $entityRepository->findAll()->willReturn([]);
         $this->getAllMappings()->shouldReturn(null);
     }
-
 }

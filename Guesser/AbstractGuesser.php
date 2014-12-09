@@ -27,9 +27,7 @@ abstract class AbstractGuesser
 
     const MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE = 'Your Magento version is not supported yet.';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $version = null;
 
     /**
@@ -41,7 +39,7 @@ abstract class AbstractGuesser
     protected function getMagentoVersion(MagentoSoapClient $client = null)
     {
         if (null === $client) {
-            return null;
+            return;
         }
 
         if (!$this->version) {
@@ -54,7 +52,6 @@ abstract class AbstractGuesser
             }
 
             $pattern = '/^(?P<version>[0-9]+\.[0-9]+)(\.[0-9])*/';
-
 
             if (preg_match($pattern, $magentoVersion, $matches)) {
                 $this->version = $matches['version'];

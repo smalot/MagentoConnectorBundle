@@ -20,11 +20,10 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class FamilyCleaner extends Cleaner
 {
+    /** @const string */
     const FAMILY_DELETED  = 'Family deleted';
 
-    /**
-     * @var FamilyMappingManager
-     */
+    /** @var FamilyMappingManager */
     protected $familyMappingManager;
 
     /**
@@ -75,6 +74,9 @@ class FamilyCleaner extends Cleaner
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getConfigurationFields()
     {
         return array_merge(
@@ -85,13 +87,13 @@ class FamilyCleaner extends Cleaner
                     'options' => [
                         'choices'  => [
                             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
-                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
+                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label',
                         ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label',
-                        'attr'     => ['class' => 'select2']
-                    ]
+                        'attr'     => ['class' => 'select2'],
+                    ],
                 ]
             ]
         );

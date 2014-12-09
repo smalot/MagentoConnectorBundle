@@ -192,7 +192,7 @@ class Webservice
             return $this->magentoAttributeSets[$code];
         } else {
             throw new AttributeSetNotFoundException(
-                'The attribute set for code "' . $code . '" was not found on Magento. Please create it before proceed.'
+                'The attribute set for code "'.$code.'" was not found on Magento. Please create it before proceed.'
             );
         }
     }
@@ -250,7 +250,7 @@ class Webservice
             $this->client->addCall(
                 [
                     self::SOAP_ACTION_PRODUCT_MEDIA_CREATE,
-                    $image
+                    $image,
                 ]
             );
         }
@@ -809,9 +809,9 @@ class Webservice
                         'complex_filter' => [
                             [
                                 'key' => 'sku',
-                                'value' => ['key' => 'in', 'value' => $skus]
-                            ]
-                        ]
+                                'value' => ['key' => 'in', 'value' => $skus],
+                            ],
+                        ],
                     ]
                 ),
                 false

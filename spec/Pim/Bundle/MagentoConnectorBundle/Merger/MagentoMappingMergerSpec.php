@@ -9,13 +9,13 @@ use PhpSpec\ObjectBehavior;
 
 class MagentoMappingMergerSpec extends ObjectBehavior
 {
-    function let(MagentoMapper $mapper1, MagentoMapper $mapper2)
+    public function let(MagentoMapper $mapper1, MagentoMapper $mapper2)
     {
         $mapper1->getPriority()->willReturn(0);
         $mapper2->getPriority()->willReturn(10);
     }
 
-    function it_sets_parameters_to_all_mappers(
+    public function it_sets_parameters_to_all_mappers(
         $mapper1,
         $mapper2,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
@@ -31,7 +31,7 @@ class MagentoMappingMergerSpec extends ObjectBehavior
         $this->setParameters($clientParameters, 'default');
     }
 
-    function it_gives_a_configuration_field(
+    public function it_gives_a_configuration_field(
         $mapper1,
         $mapper2,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
@@ -60,12 +60,12 @@ class MagentoMappingMergerSpec extends ObjectBehavior
                         'class' => 'mapping-field',
                         'data-sources' => '{"sources":{"id":"test","text":"Text4"}}',
                         'data-targets' => '{"targets":{"id":"test","text":"Text2"},"allowAddition":true}',
-                        'data-name'    => 'generic'
+                        'data-name'    => 'generic',
                     ],
                     'label' => 'pim_magento_connector.export.genericMapping.label',
-                    'help'  => 'pim_magento_connector.export.genericMapping.help'
-                ]
-            ]
+                    'help'  => 'pim_magento_connector.export.genericMapping.help',
+                ],
+            ],
         ]);
     }
 }

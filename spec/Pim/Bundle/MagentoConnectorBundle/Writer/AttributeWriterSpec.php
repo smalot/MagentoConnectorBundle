@@ -9,21 +9,18 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\FamilyMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeGroupMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MagentoAttributeCodeMapper;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class AttributeWriterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         FamilyMappingManager $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
@@ -49,7 +46,7 @@ class AttributeWriterSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    function it_sends_attribute_to_create_on_magento_webservice(
+    public function it_sends_attribute_to_create_on_magento_webservice(
         $webservice,
         AbstractAttribute $attribute,
         AttributeMappingManager $attributeMappingManager,
@@ -61,10 +58,10 @@ class AttributeWriterSpec extends ObjectBehavior
                 $attribute,
                 [
                     'create' => [
-                        'attributeName' => 'attribute_code'
+                        'attributeName' => 'attribute_code',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
         $this->setMagentoUrl(null);
         $this->setWsdlUrl('/api/soap/?wsdl');
@@ -75,18 +72,16 @@ class AttributeWriterSpec extends ObjectBehavior
 
         $webservice->createAttribute(Argument::any())->willReturn(12);
 
-
         $magentoMappingMerger->getMapping()->willReturn($mapping);
         $mapping->getTarget(Argument::any())->willReturn(12);
         $mapping->getSource(12)->willReturn(12);
 
         $attributeMappingManager->registerAttributeMapping($attribute, 12, '/api/soap/?wsdl')->shouldBeCalled();
 
-
         $this->write($attributes);
     }
 
-    function it_sends_attribute_with_group_and_family_to_create_on_magento_webservice(
+    public function it_sends_attribute_with_group_and_family_to_create_on_magento_webservice(
         $webservice,
         AbstractAttribute $attribute,
         AttributeMappingManager $attributeMappingManager,
@@ -102,10 +97,10 @@ class AttributeWriterSpec extends ObjectBehavior
                 $attribute,
                 [
                     'create' => [
-                        'attributeName' => 'attribute_code'
+                        'attributeName' => 'attribute_code',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $this->setMagentoUrl(null);

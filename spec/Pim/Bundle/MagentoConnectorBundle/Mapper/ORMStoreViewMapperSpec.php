@@ -14,7 +14,7 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
 {
     protected $clientParameters;
 
-    function let(
+    public function let(
         HasValidCredentialsValidator $hasValidCredentialsValidator,
         SimpleMappingManager $simpleMappingManager,
         LocaleManager $localeManager,
@@ -28,7 +28,7 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         $this->setParameters($clientParameters, '');
     }
 
-    function it_returns_all_locales_from_database_as_sources(
+    public function it_returns_all_locales_from_database_as_sources(
             Locale $locale,
             $localeManager,
             $hasValidCredentialsValidator,
@@ -43,7 +43,7 @@ class ORMStoreViewMapperSpec extends ObjectBehavior
         $this->getAllSources()->shouldReturn([['id' => 'foo', 'text' => 'foo']]);
     }
 
-    function it_returns_nothing_as_sources_if_it_is_not_well_configured($localeManager)
+    public function it_returns_nothing_as_sources_if_it_is_not_well_configured($localeManager)
     {
         $localeManager->getActiveCodes()->willReturn([]);
         $this->getAllSources()->shouldReturn([]);

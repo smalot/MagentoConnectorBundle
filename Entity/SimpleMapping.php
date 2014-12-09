@@ -11,29 +11,19 @@ namespace Pim\Bundle\MagentoConnectorBundle\Entity;
  */
 class SimpleMapping
 {
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $id;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $identifier;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $source;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $target;
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -42,8 +32,6 @@ class SimpleMapping
     }
 
     /**
-     * Set identifier
-     *
      * @param string $identifier
      *
      * @return SimpleMapping
@@ -56,8 +44,6 @@ class SimpleMapping
     }
 
     /**
-     * Get identifier
-     *
      * @return string
      */
     public function getIdentifier()
@@ -66,8 +52,6 @@ class SimpleMapping
     }
 
     /**
-     * Set source
-     *
      * @param string $source
      *
      * @return SimpleMapping
@@ -80,8 +64,6 @@ class SimpleMapping
     }
 
     /**
-     * Get source
-     *
      * @return string
      */
     public function getSource()
@@ -90,8 +72,6 @@ class SimpleMapping
     }
 
     /**
-     * Set target
-     *
      * @param string $target
      *
      * @return SimpleMapping
@@ -104,8 +84,6 @@ class SimpleMapping
     }
 
     /**
-     * Get target
-     *
      * @return string
      */
     public function getTarget()

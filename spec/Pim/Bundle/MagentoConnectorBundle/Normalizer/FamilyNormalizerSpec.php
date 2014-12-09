@@ -4,23 +4,22 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class FamilyNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext;
 
-    function let()
+    public function let()
     {
         $this->globalContext = [
             'magentoFamilies' => [],
             'magentoUrl'        => 'soap_url',
             'defaultLocale'     => 'default_locale',
-            'magentoStoreViews' => []
+            'magentoStoreViews' => [],
         ];
     }
 
-    function it_normalizes_a_family(Family $family)
+    public function it_normalizes_a_family(Family $family)
     {
         $family->getCode()->willReturn('family_code');
         $this->normalize($family)->shouldReturn(['attributeSetName' => 'family_code']);

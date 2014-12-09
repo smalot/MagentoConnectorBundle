@@ -37,9 +37,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected $visibility;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $currencyCode;
 
     /**
@@ -155,7 +153,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     (string) $object->getIdentifier(),
                     $values,
                     $storeView['code'],
-                    'sku'
+                    'sku',
                 ];
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
@@ -211,7 +209,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         'file' => [
                             'name'    => $data->getFilename(),
                             'content' => $imageData,
-                            'mime'    => $data->getMimeType()
+                            'mime'    => $data->getMimeType(),
                         ],
                         'label'    => $data->getFilename(),
                         'position' => 0,
@@ -219,7 +217,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                         'exclude'  => 0
                     ],
                     0,
-                    'sku'
+                    'sku',
                 ];
             }
         }
@@ -287,14 +285,14 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $attributeSetId,
                 $sku,
                 $defaultValues,
-                $defaultStoreValue
+                $defaultStoreValue,
             ];
         } else {
             $defaultProduct = [
                 $sku,
                 $defaultValues,
                 $defaultStoreValue,
-                'sku'
+                'sku',
             ];
         }
 
@@ -351,7 +349,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             'magentoAttributes'        => $magentoAttributes,
             'magentoAttributesOptions' => $magentoAttributesOptions,
             'attributeCodeMapping'     => $attributeCodeMapping,
-            'currencyCode'             => $this->currencyCode
+            'currencyCode'             => $this->currencyCode,
         ];
 
         foreach ($product->getValues() as $value) {
@@ -403,7 +401,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 if (!$magentoCategoryId) {
                     throw new CategoryNotFoundException(
                         sprintf(
-                            'The category %s was not found. Please export categories first or add it to the root ' .
+                            'The category %s was not found. Please export categories first or add it to the root '.
                             'category mapping',
                             $category->getLabel()
                         )
@@ -439,8 +437,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         }
 
         return [
-            strtolower($attributeCodeMapping->getTarget(self::URL_KEY))    =>
-                $this->generateUrlKey(
+            strtolower($attributeCodeMapping->getTarget(self::URL_KEY))    => $this->generateUrlKey(
                     $product,
                     $attributeCodeMapping,
                     $parameters['localeCode'],
@@ -502,7 +499,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
 
         $name = $product->getValue($nameAttribute, $localeCode, $scopeCode);
 
-        $url = Urlizer::urlize($name . '-' . $identifier);
+        $url = Urlizer::urlize($name.'-'.$identifier);
 
         return $url;
     }

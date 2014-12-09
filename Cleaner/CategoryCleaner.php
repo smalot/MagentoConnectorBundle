@@ -20,12 +20,13 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class CategoryCleaner extends Cleaner
 {
+    /** @const string */
     const CATEGORY_DELETED  = 'Category deleted';
+
+    /** @const string */
     const CATEGORY_DISABLED = 'Category disabled';
 
-    /**
-     * @var CategoryMappingManager
-     */
+    /** @var CategoryMappingManager */
     protected $categoryMappingManager;
 
     /**
@@ -70,6 +71,7 @@ class CategoryCleaner extends Cleaner
 
     /**
      * Handle deletion or disableing of categories that are not in PIM anymore
+     *
      * @param array $category
      */
     protected function handleCategoryNotInPimAnymore(array $category)

@@ -23,24 +23,16 @@ class AttributeCleaner extends Cleaner
 {
     const ATTRIBUTE_DELETED = 'Attribute deleted';
 
-    /**
-     * @var MagentoMappingMerger
-     */
+    /** @var MagentoMappingMerger */
     protected $attributeCodeMappingMerger;
 
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     protected $em;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeClassName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $attributeCodeMapping;
 
     /**
@@ -166,7 +158,7 @@ class AttributeCleaner extends Cleaner
 
         $configurationFields['notInPimAnymoreAction']['options']['choices'] = [
             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
-            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
+            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label',
         ];
 
         $configurationFields['notInPimAnymoreAction']['options']['help'] =

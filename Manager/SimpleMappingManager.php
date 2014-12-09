@@ -19,9 +19,7 @@ class SimpleMappingManager
      */
     protected $objectManager;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $className;
 
     /**
@@ -60,7 +58,7 @@ class SimpleMappingManager
                 $simpleMappingItem = $this->getEntityRepository()->findOneBy(
                     array(
                         'identifier' => $identifier,
-                        'source'     => $mappingItem['source']
+                        'source'     => $mappingItem['source'],
                     )
                 );
 

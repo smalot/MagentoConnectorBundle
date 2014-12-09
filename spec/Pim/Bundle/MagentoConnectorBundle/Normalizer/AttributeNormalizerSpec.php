@@ -27,7 +27,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         'used_in_product_listing'       => '1',
         'additional_fields'             => [],
         'frontend_label'                => [['store_id' => 0, 'label' => 'attribute_code_mapped']],
-        'default_value'                 => ''
+        'default_value'                 => '',
     ];
 
     protected $baseContext = [
@@ -36,10 +36,10 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'magentoAttributesOptions' => [],
             'magentoStoreViews'        => [],
             'create'                   => true,
-            'axisAttributes'           => ['configurableAttributeCode']
+            'axisAttributes'           => ['configurableAttributeCode'],
         ];
 
-    function let(
+    public function let(
         ProductValueNormalizer $productValueNormalizer,
         Attribute $attribute,
         MappingCollection $attributeMapping,
@@ -59,12 +59,12 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->baseContext['storeViewMapping'] = $storeViewMapping;
     }
 
-    function it_supports_validation_of_product_interface_objects(Attribute $attribute)
+    public function it_supports_validation_of_product_interface_objects(Attribute $attribute)
     {
         $this->supportsNormalization($attribute, 'MagentoArray')->shouldReturn(true);
     }
 
-    function it_normalizes_a_new_attribute($attribute)
+    public function it_normalizes_a_new_attribute($attribute)
     {
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn(null);
@@ -79,7 +79,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ));
     }
 
-    function it_normalizes_an_updated_attribute($attribute)
+    public function it_normalizes_an_updated_attribute($attribute)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -95,11 +95,11 @@ class AttributeNormalizerSpec extends ObjectBehavior
 
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn([
             'attribute_code_mapped',
-            $this->baseNormalizedAttribute
+            $this->baseNormalizedAttribute,
         ]);
     }
 
-    function it_throws_an_exception_if_attribute_type_changed($attribute)
+    public function it_throws_an_exception_if_attribute_type_changed($attribute)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -116,7 +116,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException')->during('normalize', [$attribute, 'MagentoArray', $this->baseContext]);
     }
 
-    function it_doesnt_throw_an_exception_if_attribute_type_change_is_ignored($attribute, $attributeMapping)
+    public function it_doesnt_throw_an_exception_if_attribute_type_change_is_ignored($attribute, $attributeMapping)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -140,11 +140,11 @@ class AttributeNormalizerSpec extends ObjectBehavior
                     'is_configurable' => '0',
                     'frontend_label'  => [['store_id' => 0, 'label' => 'tax_class_id']],
                 ]
-            )
+            ),
         ]);
     }
 
-    function it_lowercases_an_attribute_code_if_it_isnt($attribute)
+    public function it_lowercases_an_attribute_code_if_it_isnt($attribute)
     {
         $attribute->getAttributeType()->willReturn('pim_catalog_text');
         $attribute->getDefaultValue()->willReturn(null);
@@ -159,7 +159,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         ));
     }
 
-    function it_throws_an_exception_if_attribute_code_is_note_valid_type_changed($attribute)
+    public function it_throws_an_exception_if_attribute_code_is_note_valid_type_changed($attribute)
     {
         $this->baseContext = array_merge(
             $this->baseContext,
@@ -175,7 +175,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException')->during('normalize', [$attribute, 'MagentoArray', $this->baseContext]);
     }
 
-    function it_normalizes_all_attribute_labels(
+    public function it_normalizes_all_attribute_labels(
         $attribute,
         $storeViewMapping,
         AttributeTranslation $translation
@@ -211,11 +211,11 @@ class AttributeNormalizerSpec extends ObjectBehavior
                         ['store_id' => 2, 'label' => 'Attribut kod !'],
                     ]
                 ]
-            )
+            ),
         ]);
     }
 
-    function it_normalizes_a_new_attribute_with_default_value(
+    public function it_normalizes_a_new_attribute_with_default_value(
         $attribute,
         $productValueNormalizer,
         ProductValueInterface $productValue
@@ -229,7 +229,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $this->normalize($attribute, 'MagentoArray', $this->baseContext)->shouldReturn(array_merge(
             [
                 'attribute_code' => 'attribute_code_mapped',
-                'frontend_input' => 'text'
+                'frontend_input' => 'text',
             ],
             $this->baseNormalizedAttribute,
             [

@@ -5,7 +5,6 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Processor;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Pim\Bundle\CatalogBundle\Entity\Category;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
@@ -20,7 +19,7 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 class CategoryProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $categoryMappingMerger,
@@ -48,7 +47,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $normalizerGuesser->getCategoryNormalizer($clientParameters)->willReturn($categoryNormalizer);
     }
 
-    function it_normalizes_categories(
+    public function it_normalizes_categories(
         Category $category,
         Category $parentCategory,
         $webservice,
@@ -56,15 +55,15 @@ class CategoryProcessorSpec extends ObjectBehavior
     ) {
         $webservice->getCategoriesStatus()->willReturn([
             1 => [
-                'category_id' => 1
-            ]
+                'category_id' => 1,
+            ],
         ]);
 
         $webservice->getStoreViewsList()->willReturn([
             [
                 'store_id' => 10,
-                'code'     => 'fr_fr'
-            ]
+                'code'     => 'fr_fr',
+            ],
         ]);
 
         $category->getParent()->willReturn($parentCategory);
@@ -77,18 +76,18 @@ class CategoryProcessorSpec extends ObjectBehavior
             'create'    => [],
             'update'    => [],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ]);
 
         $this->process($category)->shouldReturn([
             'create'    => [],
             'update'    => [],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ]);
     }
 
-    function it_gives_category_mapping_in_json($categoryMappingMerger, MappingCollection $mappingCollection)
+    public function it_gives_category_mapping_in_json($categoryMappingMerger, MappingCollection $mappingCollection)
     {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $mappingCollection->toArray()->willReturn(['foo']);
@@ -96,7 +95,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->getCategoryMapping()->shouldReturn('["foo"]');
     }
 
-    function it_gives_a_proper_configuration_for_fields($categoryMappingMerger, $storeViewMappingMerger)
+    public function it_gives_a_proper_configuration_for_fields($categoryMappingMerger, $storeViewMappingMerger)
     {
         $categoryMappingMerger->getConfigurationField()->willReturn(['foo' => 'bar']);
         $storeViewMappingMerger->getConfigurationField()->willReturn(['fooo' => 'baar']);
@@ -105,8 +104,8 @@ class CategoryProcessorSpec extends ObjectBehavior
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapUsername.help',
-                    'label'    => 'pim_magento_connector.export.soapUsername.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.soapUsername.label',
+                ],
             ],
             'soapApiKey'   => [
                 //Should be remplaced by a password formType but who doesn't
@@ -115,37 +114,37 @@ class CategoryProcessorSpec extends ObjectBehavior
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.soapApiKey.help',
-                    'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.soapApiKey.label',
+                ],
             ],
             'magentoUrl' => [
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.magentoUrl.help',
-                    'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.magentoUrl.label',
+                ],
             ],
             'wsdlUrl' => [
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                     'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                ]
+                    'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL,
+                ],
             ],
             'httpLogin' => [
                 'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpLogin.help',
-                    'label'    => 'pim_magento_connector.export.httpLogin.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.httpLogin.label',
+                ],
             ],
             'httpPassword' => [
                 'options' => [
                     'required' => false,
                     'help'     => 'pim_magento_connector.export.httpPassword.help',
-                    'label'    => 'pim_magento_connector.export.httpPassword.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.httpPassword.label',
+                ],
             ],
             'defaultStoreView' => [
                 'options' => [
@@ -153,7 +152,7 @@ class CategoryProcessorSpec extends ObjectBehavior
                     'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                     'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                     'data'     => $this->getDefaultStoreView(),
-                ]
+                ],
             ],
             'defaultLocale' => [
                 'type' => 'choice',
@@ -162,23 +161,23 @@ class CategoryProcessorSpec extends ObjectBehavior
                     'required' => true,
                     'attr' => ['class' => 'select2'],
                     'help'     => 'pim_magento_connector.export.defaultLocale.help',
-                    'label'    => 'pim_magento_connector.export.defaultLocale.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.defaultLocale.label',
+                ],
             ],
             'website' => [
                 'type' => 'text',
                 'options' => [
                     'required' => true,
                     'help'     => 'pim_magento_connector.export.website.help',
-                    'label'    => 'pim_magento_connector.export.website.label'
-                ]
+                    'label'    => 'pim_magento_connector.export.website.label',
+                ],
             ],
             'fooo' => 'baar',
             'foo' => 'bar',
         ]);
     }
 
-    function it_sets_storeview_mapping($storeViewMappingMerger, MappingCollection $mappingCollection)
+    public function it_sets_storeview_mapping($storeViewMappingMerger, MappingCollection $mappingCollection)
     {
         $storeViewMappingMerger->setParameters(Argument::cetera())->shouldBeCalled();
         $storeViewMappingMerger->setMapping(json_decode('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}', true))->willReturn(['fr_FR' => ['source' => 'fr_FR', 'target' => 'fr_fr']]);
@@ -188,7 +187,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->setStoreviewMapping('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}')->shouldReturn($this);
     }
 
-    function it_is_configurable()
+    public function it_is_configurable()
     {
         $this->setDefaultLocale('en_US');
         $this->setWebsite('http://mywebsite.com');

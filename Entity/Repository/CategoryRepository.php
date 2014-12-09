@@ -15,6 +15,7 @@ class CategoryRepository extends BaseCategoryRepository
 {
     /**
      * Get all categories in order
+     *
      * @return array
      */
     public function findOrderedCategories()

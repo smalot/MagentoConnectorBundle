@@ -10,13 +10,12 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\CatalogBundle\Entity\Family;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class AttributeSetWriterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         FamilyMappingManager $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
@@ -32,7 +31,7 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    function it_sends_families_to_create_on_magento_webservice(
+    public function it_sends_families_to_create_on_magento_webservice(
         Family $family,
         $webservice,
         FamilyMappingManager $familyMappingManager
@@ -40,10 +39,10 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $batches = [
             [
                 'families_to_create' => [
-                    'attributeSetName' => 'family_code'
+                    'attributeSetName' => 'family_code',
                 ],
                 'family_object' => $family,
-            ]
+            ],
         ];
 
         $webservice->createAttributeSet('family_code')->willReturn(12);
@@ -55,7 +54,7 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_increments_summary_info_with_family_exists_if_it_exists(
+    public function it_increments_summary_info_with_family_exists_if_it_exists(
         $webservice,
         $stepExecution,
         Family $family,
@@ -64,10 +63,10 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $batches = [
             [
                 'families_to_create' => [
-                    'attributeSetName' => 'family_code'
+                    'attributeSetName' => 'family_code',
                 ],
                 'family_object' => $family,
-            ]
+            ],
         ];
 
         $webservice->createAttributeSet('family_code')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');

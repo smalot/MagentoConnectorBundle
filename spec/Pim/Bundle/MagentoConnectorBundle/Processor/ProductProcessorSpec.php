@@ -31,7 +31,7 @@ use Prophecy\Argument;
  */
 class ProductProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
@@ -81,8 +81,8 @@ class ProductProcessorSpec extends ObjectBehavior
                     'group_id' => '1',
                     'name' => 'Default Store View',
                     'sort_order' => '0',
-                    'is_active' => '1'
-                ]
+                    'is_active' => '1',
+                ],
             ]
         );
 
@@ -93,8 +93,8 @@ class ProductProcessorSpec extends ObjectBehavior
                     'code' => 'name',
                     'type' => 'text',
                     'required' => '1',
-                    'scope' => 'store'
-                ]
+                    'scope' => 'store',
+                ],
             ]
         );
 
@@ -117,15 +117,15 @@ class ProductProcessorSpec extends ObjectBehavior
                     'set' => '4',
                     'type' => 'simple',
                     'category_ids' => ['207'],
-                    'website_ids' => ['1']
-                ]
+                    'website_ids' => ['1'],
+                ],
             ]
         );
 
         $channelManager->getChannelByCode(null)->willReturn($channel);
     }
 
-    function it_is_configurable(
+    public function it_is_configurable(
         $categoryMappingMerger,
         $attributeMappingMerger,
         $mappingCollection
@@ -153,7 +153,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->getPimGrouped()->shouldReturn('group');
     }
 
-    function it_processes_new_products(
+    public function it_processes_new_products(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,
@@ -183,7 +183,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->process($product);
     }
 
-    function it_processes_already_created_products(
+    public function it_processes_already_created_products(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,
@@ -213,7 +213,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->process($product);
     }
 
-    function it_throws_an_exception_if_family_has_changed_of_the_product(
+    public function it_throws_an_exception_if_family_has_changed_of_the_product(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,
@@ -247,7 +247,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess($product);
     }
 
-    function it_throws_an_exception_if_something_went_wrong_during_normalization(
+    public function it_throws_an_exception_if_something_went_wrong_during_normalization(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,

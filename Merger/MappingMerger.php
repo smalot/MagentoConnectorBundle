@@ -18,14 +18,10 @@ class MappingMerger
      */
     protected $mappers = array();
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $direction;
 
     /**
@@ -100,7 +96,7 @@ class MappingMerger
     public function getConfigurationField()
     {
         return array(
-            $this->name . 'Mapping' => array(
+            $this->name.'Mapping' => array(
                 'type'    => 'textarea',
                 'options' => array(
                     'required' => false,
@@ -108,12 +104,12 @@ class MappingMerger
                         'class' => 'mapping-field',
                         'data-sources' => json_encode($this->getAllSources()),
                         'data-targets' => json_encode($this->getAllTargets()),
-                        'data-name'    => $this->name
+                        'data-name'    => $this->name,
                     ),
-                    'label' => 'pim_connector_mapping.' . $this->direction . '.' . $this->name . 'Mapping.label',
-                    'help'  => 'pim_connector_mapping.' . $this->direction . '.' . $this->name . 'Mapping.help'
-                )
-            )
+                    'label' => 'pim_connector_mapping.'.$this->direction.'.'.$this->name.'Mapping.label',
+                    'help'  => 'pim_connector_mapping.'.$this->direction.'.'.$this->name.'Mapping.help',
+                ),
+            ),
         );
     }
 

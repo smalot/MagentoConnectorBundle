@@ -9,13 +9,12 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegi
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class CategoryWriterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
         Webservice $webservice,
@@ -30,7 +29,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    function it_sends_categories_to_create_on_magento_webservice(
+    public function it_sends_categories_to_create_on_magento_webservice(
         Category $category,
         $webservice,
         $categoryMappingManager
@@ -40,10 +39,10 @@ class CategoryWriterSpec extends ObjectBehavior
                 'create' => [
                     [
                         'pimCategory'     => $category,
-                        'magentoCategory' => ['foo']
-                    ]
-                ]
-            ]
+                        'magentoCategory' => ['foo'],
+                    ],
+                ],
+            ],
         ];
         $webservice->sendNewCategory(['foo'])->willReturn(12);
         $categoryMappingManager
@@ -54,14 +53,14 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_sends_categories_to_update_on_magento_webservice($webservice)
+    public function it_sends_categories_to_update_on_magento_webservice($webservice)
     {
         $batches = [
             [
                 'update' => [
-                    ['foo']
-                ]
-            ]
+                    ['foo'],
+                ],
+            ],
         ];
 
         $webservice->sendUpdateCategory(['foo'])->shouldBeCalled();
@@ -69,14 +68,14 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_sends_categories_to_move_on_magento_webservice($webservice)
+    public function it_sends_categories_to_move_on_magento_webservice($webservice)
     {
         $batches = [
             [
                 'move' => [
-                    ['foo']
-                ]
-            ]
+                    ['foo'],
+                ],
+            ],
         ];
 
         $webservice->sendMoveCategory(['foo'])->shouldBeCalled();
@@ -84,7 +83,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_sends_categories_to_update_variation_on_magento_webservice(
+    public function it_sends_categories_to_update_variation_on_magento_webservice(
         Category $category,
         $webservice,
         $categoryMappingManager
@@ -94,10 +93,10 @@ class CategoryWriterSpec extends ObjectBehavior
                 'variation' => [
                     [
                         'pimCategory'     => $category,
-                        'magentoCategory' => ['foo']
-                    ]
-                ]
-            ]
+                        'magentoCategory' => ['foo'],
+                    ],
+                ],
+            ],
         ];
 
         $categoryMappingManager
@@ -110,7 +109,7 @@ class CategoryWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    function it_throws_an_exception_if_something_went_wrong_with_magento_calls(
+    public function it_throws_an_exception_if_something_went_wrong_with_magento_calls(
         Category $category,
         $webservice,
         $categoryMappingManager
@@ -120,10 +119,10 @@ class CategoryWriterSpec extends ObjectBehavior
                 'create' => [
                     [
                         'pimCategory'     => $category,
-                        'magentoCategory' => ['foo']
-                    ]
-                ]
-            ]
+                        'magentoCategory' => ['foo'],
+                    ],
+                ],
+            ],
         ];
         $webservice->sendNewCategory(['foo'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $categoryMappingManager

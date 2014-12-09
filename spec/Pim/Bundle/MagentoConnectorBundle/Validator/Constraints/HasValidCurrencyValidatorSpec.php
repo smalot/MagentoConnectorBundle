@@ -19,13 +19,13 @@ use Pim\Bundle\CatalogBundle\Entity\Currency;
  */
 class HasValidCurrencyValidatorSpec extends ObjectBehavior
 {
-    function let(ExecutionContextInterface $context, ChannelManager $channelManager)
+    public function let(ExecutionContextInterface $context, ChannelManager $channelManager)
     {
         $this->beConstructedWith($channelManager);
         $this->initialize($context);
     }
 
-    function it_does_nothing_with_something_else_than_abstract_product_element(
+    public function it_does_nothing_with_something_else_than_abstract_product_element(
         $context,
         HasValidCurrency $constraint,
         ChannelManager $value
@@ -35,7 +35,7 @@ class HasValidCurrencyValidatorSpec extends ObjectBehavior
         $this->validate($value, $constraint);
     }
 
-    function it_success_if_the_currency_is_valid(
+    public function it_success_if_the_currency_is_valid(
         $context,
         $channelManager,
         AbstractProductProcessor $value,
@@ -54,7 +54,7 @@ class HasValidCurrencyValidatorSpec extends ObjectBehavior
         $this->validate($value, $constraint);
     }
 
-    function it_fails_if_the_currency_is_not_valid(
+    public function it_fails_if_the_currency_is_not_valid(
         $context,
         $channelManager,
         AbstractProductProcessor $value,
@@ -75,7 +75,7 @@ class HasValidCurrencyValidatorSpec extends ObjectBehavior
         $this->validate($value, $constraint);
     }
 
-    function it_fails_if_no_channel_has_been_found(
+    public function it_fails_if_no_channel_has_been_found(
         $context,
         $channelManager,
         AbstractProductProcessor $value,

@@ -8,11 +8,10 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ProductNormalizer16Spec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
@@ -33,7 +32,7 @@ class ProductNormalizer16Spec extends ObjectBehavior
         );
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16');
     }

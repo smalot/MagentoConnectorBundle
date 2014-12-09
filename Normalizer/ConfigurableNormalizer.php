@@ -114,7 +114,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
                 $processedItem[$storeView['code']] = [
                     $sku,
                     $values,
-                    $storeView['code']
+                    $storeView['code'],
                 ];
             } else {
                 if ($locale->getCode() !== $context['defaultLocale']) {
@@ -169,7 +169,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         } catch (ComputedPriceNotMatchedException $e) {
             throw new InvalidPriceMappingException(
                 sprintf(
-                    'Price mapping cannot be automatically computed. This might be because an associated product has ' .
+                    'Price mapping cannot be automatically computed. This might be because an associated product has '.
                     'an inconsistant price regarding the other products of the variant group. %s',
                     $e->getMessage()
                 )

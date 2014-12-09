@@ -25,7 +25,7 @@ class ProductNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext = [];
 
-    function let(
+    public function let(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
@@ -103,7 +103,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $productValueNormalizer->normalize($imageValue, Argument::cetera())->willReturn(null);
     }
 
-    function it_normalizes_the_given_new_product($product)
+    public function it_normalizes_the_given_new_product($product)
     {
         $product->getGroups()->willReturn([]);
         $this->normalize($product, 'MagentoArray', $this->globalContext)->shouldReturn([
@@ -120,7 +120,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'visibility' => 4,
                     'websites'   => ['website'],
                 ],
-                'default'
+                'default',
             ],
             'fr_fr'  => [
                 'sku-000',
@@ -133,12 +133,12 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'visibility' => 4,
                 ],
                 'fr_fr',
-                'sku'
-            ]
+                'sku',
+            ],
         ]);
     }
 
-    function it_raises_an_exception_if_product_category_is_not_found(
+    public function it_raises_an_exception_if_product_category_is_not_found(
         $product,
         $categoryMappingManager,
         $category,
@@ -150,7 +150,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_the_given_grouped_product(
+    public function it_normalizes_the_given_grouped_product(
         $product,
         $associationTypeManager,
         AssociationType $associationType
@@ -173,7 +173,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'visibility' => 4,
                     'websites'   => ['website'],
                 ],
-                'default'
+                'default',
             ],
             'fr_fr'  => [
                 'sku-000',
@@ -186,12 +186,12 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'visibility' => 4,
                 ],
                 'fr_fr',
-                'sku'
-            ]
+                'sku',
+            ],
         ]);
     }
 
-    function it_raises_an_exception_if_a_storeview_is_missing($product)
+    public function it_raises_an_exception_if_a_storeview_is_missing($product)
     {
         $product->getGroups()->willReturn([]);
         $this->globalContext['magentoStoreViews'] = [];
@@ -199,7 +199,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $this->shouldThrow('Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\LocaleNotMatchedException')->during('normalize', [$product, 'MagentoArray', $this->globalContext]);
     }
 
-    function it_normalizes_images_for_given_product(
+    public function it_normalizes_images_for_given_product(
         $product,
         $imageValue,
         ProductMedia $image,
@@ -233,12 +233,12 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'exclude'  => 0
                 ],
                 0,
-                'sku'
-            ]
+                'sku',
+            ],
         ]);
     }
 
-    function it_normalizes_the_given_updated_product($product)
+    public function it_normalizes_the_given_updated_product($product)
     {
         $this->globalContext['create'] = false;
         $this->globalContext['defaultStoreView'] = 'default';
@@ -257,7 +257,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'websites'   => ['website'],
                 ],
                 'default',
-                'sku'
+                'sku',
             ],
             'fr_fr'  => [
                 'sku-000',
@@ -270,8 +270,8 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'visibility' => 4,
                 ],
                 'fr_fr',
-                'sku'
-            ]
+                'sku',
+            ],
         ]);
     }
 }

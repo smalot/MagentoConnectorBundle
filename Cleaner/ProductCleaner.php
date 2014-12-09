@@ -56,9 +56,7 @@ class ProductCleaner extends Cleaner
         return $this;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $notCompleteAnymoreAction;
 
     /**
@@ -134,7 +132,6 @@ class ProductCleaner extends Cleaner
      */
     protected function getExportedProductsSkus()
     {
-
         return $this->productManager->getProductRepository()
             ->buildByChannelAndCompleteness($this->channelManager->getChannelByCode($this->channel))
             ->select('Value.varchar as sku')
@@ -226,20 +223,20 @@ class ProductCleaner extends Cleaner
                         'choices'  => [
                             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
                             Cleaner::DISABLE    => 'pim_magento_connector.export.disable.label',
-                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
+                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label',
                         ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label',
-                        'attr'     => ['class' => 'select2']
-                    ]
+                        'attr'     => ['class' => 'select2'],
+                    ],
                 ],
                 'channel'      => [
                     'type'    => 'choice',
                     'options' => [
                         'choices'  => $this->channelManager->getChannelChoices(),
-                        'required' => true
-                    ]
+                        'required' => true,
+                    ],
                 ]
             ]
         );

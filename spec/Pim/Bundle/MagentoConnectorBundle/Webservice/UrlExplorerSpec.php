@@ -19,7 +19,7 @@ use Prophecy\Argument;
  */
 class UrlExplorerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ClientInterface                     $client,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
         MagentoSoapClientParameters         $clientParameters
@@ -29,7 +29,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $clientParametersRegistry->getInstance(null, null, null, null, null, null, null)->willReturn($clientParameters);
     }
 
-    function it_success_with_valid_soap_url(
+    public function it_success_with_valid_soap_url(
         $client,
         $clientParameters,
         Request $request,
@@ -39,7 +39,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => [null, null]
+            'auth'            => [null, null],
         ];
 
         $clientParameters->getHash()->willReturn('some_hash');
@@ -60,7 +60,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $this->getUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
-    function it_success_with_valid_http_authentication_credentials(
+    public function it_success_with_valid_http_authentication_credentials(
         $client,
         $clientParameters,
         Request $request,
@@ -70,7 +70,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => ['http_login', 'password']
+            'auth'            => ['http_login', 'password'],
         ];
 
         $clientParameters->getHash()->willReturn('some_hash');
@@ -91,7 +91,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $this->getUrlContent($clientParameters)->shouldReturn('<xml>Some xml as a string</xml>');
     }
 
-    function it_fails_with_invalid_url(
+    public function it_fails_with_invalid_url(
         $client,
         $clientParameters,
         Request $request,
@@ -101,7 +101,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => [null, null]
+            'auth'            => [null, null],
         ];
 
         $clientParameters->getHash()->willReturn('some_hash');
@@ -121,7 +121,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $this->shouldThrow('\Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException')->duringGetUrlContent($clientParameters);
     }
 
-    function it_fails_with_invalid_http_authentication_credentials(
+    public function it_fails_with_invalid_http_authentication_credentials(
         $client,
         $clientParameters,
         Request $request,
@@ -131,7 +131,7 @@ class UrlExplorerSpec extends ObjectBehavior
         $guzzleParams = [
             'connect_timeout' => UrlExplorer::CONNECT_TIMEOUT,
             'timeout'         => UrlExplorer::TIMEOUT,
-            'auth'            => ['bad_login', 'passwd']
+            'auth'            => ['bad_login', 'passwd'],
         ];
 
         $clientParameters->getHash()->willReturn('some_hash');

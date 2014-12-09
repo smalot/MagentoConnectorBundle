@@ -8,7 +8,6 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
-
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -19,7 +18,7 @@ use Prophecy\Argument;
  */
 class ProductWriterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         ChannelManager $channelManager,
         StepExecution $stepExecution,
@@ -34,18 +33,18 @@ class ProductWriterSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    function it_updates_a_product($webservice, $stepExecution)
+    public function it_updates_a_product($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
                 'product_1' => [
                     'default' => [
-                        'sku'
+                        'sku',
                     ],
                     'en_US' => [],
-                    'images' => []
-                ]
-            ]
+                    'images' => [],
+                ],
+            ],
         ];
 
         $webservice->getImages('sku', 'default')->willReturn([]);
@@ -59,7 +58,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_creates_a_product($webservice, $stepExecution)
+    public function it_creates_a_product($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
@@ -69,12 +68,12 @@ class ProductWriterSpec extends ObjectBehavior
                         'another',
                         'sku',
                         'again',
-                        'lastone'
+                        'lastone',
                     ],
                     'en_US' => [],
-                    'images' => []
-                ]
-            ]
+                    'images' => [],
+                ],
+            ],
         ];
 
         $webservice->getImages('sku', 'default')->willReturn([]);
@@ -88,23 +87,23 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_updates_a_product_and_prunes_old_images($webservice, $stepExecution)
+    public function it_updates_a_product_and_prunes_old_images($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
                 'product_1' => [
                     'default' => [
-                        'sku'
+                        'sku',
                     ],
                     'en_US' => [],
-                    'images' => []
-                ]
-            ]
+                    'images' => [],
+                ],
+            ],
         ];
 
         $webservice->getImages('sku', 'default')->willReturn([['file' => 'foo'], ['file' => 'bar']]);
-        $webservice->deleteImage('sku','foo')->shouldBeCalled();
-        $webservice->deleteImage('sku','bar')->shouldBeCalled();
+        $webservice->deleteImage('sku', 'foo')->shouldBeCalled();
+        $webservice->deleteImage('sku', 'bar')->shouldBeCalled();
         $webservice->sendProduct(['sku'])->shouldBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldBeCalled();
         $webservice->sendImages(Argument::any())->shouldBeCalled();
@@ -115,18 +114,18 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    function it_fails_if_something_went_wrong_when_it_updates_a_product($webservice, $stepExecution)
+    public function it_fails_if_something_went_wrong_when_it_updates_a_product($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
                 'product_1' => [
                     'default' => [
-                        'sku'
+                        'sku',
                     ],
                     'en_US' => [],
-                    'images' => []
-                ]
-            ]
+                    'images' => [],
+                ],
+            ],
         ];
 
         $webservice->getImages('sku', 'default')->willReturn([]);
@@ -140,22 +139,22 @@ class ProductWriterSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($products);
     }
 
-    function it_fails_if_something_went_wrong_when_it_prunes_images($webservice, $stepExecution)
+    public function it_fails_if_something_went_wrong_when_it_prunes_images($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
                 'product_1' => [
                     'default' => [
-                        'sku'
+                        'sku',
                     ],
                     'en_US' => [],
-                    'images' => []
-                ]
-            ]
+                    'images' => [],
+                ],
+            ],
         ];
 
         $webservice->getImages('sku', 'default')->willReturn([['file' => 'foo'], ['file' => 'bar']]);
-        $webservice->deleteImage('sku','foo')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
+        $webservice->deleteImage('sku', 'foo')->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $webservice->sendProduct(Argument::any())->shouldNotBeCalled();
         $webservice->sendImages(Argument::any())->shouldNotBeCalled();
         $webservice->updateProductPart(Argument::any())->shouldNotBeCalled();
@@ -166,7 +165,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringWrite($products);
     }
 
-    function it_gives_a_configuration_field()
+    public function it_gives_a_configuration_field()
     {
         $this->getConfigurationFields()->shouldReturn(
             [
@@ -174,53 +173,53 @@ class ProductWriterSpec extends ObjectBehavior
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapUsername.help',
-                        'label'    => 'pim_magento_connector.export.soapUsername.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.soapUsername.label',
+                    ],
                 ],
                 'soapApiKey'   => [
                     'type'    => 'text',
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapApiKey.help',
-                        'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.soapApiKey.label',
+                    ],
                 ],
                 'magentoUrl' => [
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.magentoUrl.help',
-                        'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.magentoUrl.label',
+                    ],
                 ],
                 'wsdlUrl' => [
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                         'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                        'data'     => '/api/soap/?wsdl'
-                    ]
+                        'data'     => '/api/soap/?wsdl',
+                    ],
                 ],
                 'httpLogin' => [
                     'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpLogin.help',
-                        'label'    => 'pim_magento_connector.export.httpLogin.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.httpLogin.label',
+                    ],
                 ],
                 'httpPassword' => [
                     'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpPassword.help',
-                        'label'    => 'pim_magento_connector.export.httpPassword.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.httpPassword.label',
+                    ],
                 ],
                 'defaultStoreView' => [
                     'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                         'label'    => 'pim_magento_connector.export.defaultStoreView.label',
-                        'data'     => 'default'
-                    ]
+                        'data'     => 'default',
+                    ],
                 ],
                 'channel' => [
                     'type'    => 'choice',
@@ -228,9 +227,9 @@ class ProductWriterSpec extends ObjectBehavior
                         'choices'  => null,
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.channel.help',
-                        'label'    => 'pim_magento_connector.export.channel.label'
-                    ]
-                ]
+                        'label'    => 'pim_magento_connector.export.channel.label',
+                    ],
+                ],
             ]
         );
     }

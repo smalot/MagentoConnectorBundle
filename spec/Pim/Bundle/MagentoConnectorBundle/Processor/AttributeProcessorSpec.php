@@ -18,7 +18,7 @@ class AttributeProcessorSpec extends ObjectBehavior
 {
     protected $globalContext = [];
 
-    function let(
+    public function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,

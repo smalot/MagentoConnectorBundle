@@ -7,7 +7,6 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Doctrine\ORM\EntityRepository;
 use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoAttributeMapping;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class AttributeMappingManagerSpec extends ObjectBehavior
 {
@@ -28,7 +27,7 @@ class AttributeMappingManagerSpec extends ObjectBehavior
         MagentoAttributeMapping $magentoAttributeMapping,
         $attribute
     ) {
-        $entityRepository->findOneBy(['magentoAttributeId' => 12,'magentoUrl' => 'url'])
+        $entityRepository->findOneBy(['magentoAttributeId' => 12, 'magentoUrl' => 'url'])
             ->willReturn($magentoAttributeMapping);
 
         $magentoAttributeMapping->getAttribute()->willReturn($attribute);
@@ -38,7 +37,7 @@ class AttributeMappingManagerSpec extends ObjectBehavior
 
     public function it_returns_null_if_no_attribute_are_found_from_id($entityRepository)
     {
-        $entityRepository->findOneBy(['magentoAttributeId' => 12,'magentoUrl' => 'url'])
+        $entityRepository->findOneBy(['magentoAttributeId' => 12, 'magentoUrl' => 'url'])
             ->willReturn(null);
 
         $this->getAttributeFromId(12, 'url')->shouldReturn(null);
@@ -49,7 +48,7 @@ class AttributeMappingManagerSpec extends ObjectBehavior
         MagentoAttributeMapping $magentoAttributeMapping,
         $attribute
     ) {
-        $entityRepository->findOneBy(['attribute' => $attribute,'magentoUrl' => 'url'])
+        $entityRepository->findOneBy(['attribute' => $attribute, 'magentoUrl' => 'url'])
             ->willReturn($magentoAttributeMapping);
 
         $magentoAttributeMapping->getMagentoAttributeId()->willReturn(3);
@@ -61,7 +60,7 @@ class AttributeMappingManagerSpec extends ObjectBehavior
         $entityRepository,
         $attribute
     ) {
-        $entityRepository->findOneBy(['attribute' => $attribute,'magentoUrl' => 'url'])
+        $entityRepository->findOneBy(['attribute' => $attribute, 'magentoUrl' => 'url'])
             ->willReturn(null);
 
         $this->getIdFromAttribute($attribute, 'url')->shouldReturn(null);
@@ -78,7 +77,7 @@ class AttributeMappingManagerSpec extends ObjectBehavior
         $this->getAllMagentoAttribute('url')->shouldReturn([$magentoAttributeMapping]);
     }
 
-    function it_registers_mapping(
+    public function it_registers_mapping(
         $entityRepository,
         MagentoAttributeMapping $magentoAttributeMapping,
         $attribute,
@@ -100,7 +99,7 @@ class AttributeMappingManagerSpec extends ObjectBehavior
         MagentoAttributeMapping $magentoAttributeMapping,
         $attribute
     ) {
-        $entityRepository->findOneBy(['magentoAttributeId' => 12,'magentoUrl' => 'url'])
+        $entityRepository->findOneBy(['magentoAttributeId' => 12, 'magentoUrl' => 'url'])
             ->willReturn($magentoAttributeMapping);
 
         $magentoAttributeMapping->getAttribute()->willReturn($attribute);
@@ -108,9 +107,9 @@ class AttributeMappingManagerSpec extends ObjectBehavior
         $this->magentoAttributeExists(12, 'url')->shouldReturn(true);
     }
 
-    function it_returns_false_when_magento_attribute_does_not_exist($entityRepository)
+    public function it_returns_false_when_magento_attribute_does_not_exist($entityRepository)
     {
-        $entityRepository->findOneBy(['magentoAttributeId' => 12,'magentoUrl' => 'url'])
+        $entityRepository->findOneBy(['magentoAttributeId' => 12, 'magentoUrl' => 'url'])
             ->willReturn(null);
 
         $this->magentoAttributeExists(12, 'url')->shouldReturn(false);

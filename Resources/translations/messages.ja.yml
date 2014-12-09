@@ -128,4 +128,3 @@ pim_magento_connector:
         thumbnailAttribute:
             label: サムネイル画像属性
             help: Magentoのサムネイル画像に対応するAkeneo上の画像を選択してください
-

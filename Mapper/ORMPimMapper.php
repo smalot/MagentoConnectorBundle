@@ -2,7 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Mapper;
 
-use Pim\Bundle\MagentoConnectorBundle\Mapper\ORMMapper;
 use Pim\Bundle\MagentoConnectorBundle\Manager\SimpleMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentialsValidator;
