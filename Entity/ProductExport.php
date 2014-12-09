@@ -2,8 +2,6 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * ProductExport
  */
@@ -28,7 +26,6 @@ class ProductExport
      * @var \Akeneo\Bundle\BatchBundle\Entity\JobInstance
      */
     private $jobInstance;
-
 
     /**
      * Get id

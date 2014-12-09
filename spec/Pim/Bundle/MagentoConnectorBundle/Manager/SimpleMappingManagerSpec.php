@@ -10,20 +10,20 @@ use Prophecy\Argument;
 
 class SimpleMappingManagerSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager, EntityRepository $er)
+    public function let(ObjectManager $objectManager, EntityRepository $er)
     {
         $this->beConstructedWith($objectManager, 'className');
         $objectManager->getRepository('className')->willReturn($er);
     }
 
-    function it_gets_mapping_from_database($er)
+    public function it_gets_mapping_from_database($er)
     {
         $er->findBy(array('identifier' => 'foo'))->willReturn(array('bar'));
 
         $this->getMapping('foo')->shouldReturn(array('bar'));
     }
 
-    function it_store_new_mapping_in_database($er, $objectManager)
+    public function it_store_new_mapping_in_database($er, $objectManager)
     {
         $er->findBy(array('identifier' => 'identifier'))->willReturn(array());
         $er->findOneBy(array('identifier' => 'identifier', 'source' => 'foo'))->willReturn(null);
@@ -33,7 +33,7 @@ class SimpleMappingManagerSpec extends ObjectBehavior
         $this->setMapping(array(array('source' => 'foo', 'target' => 'bar')), 'identifier');
     }
 
-    function it_store_updated_mapping_in_database($er, $objectManager, SimpleMapping $simpleMapping)
+    public function it_store_updated_mapping_in_database($er, $objectManager, SimpleMapping $simpleMapping)
     {
         $objectManager->flush()->shouldBeCalled();
         $er->findBy(array('identifier' => 'identifier'))->willReturn(array());
@@ -46,7 +46,7 @@ class SimpleMappingManagerSpec extends ObjectBehavior
         $this->setMapping(array(array('source' => 'foo', 'target' => 'bar')), 'identifier');
     }
 
-    function it_cleans_old_mapping_values($er, $objectManager)
+    public function it_cleans_old_mapping_values($er, $objectManager)
     {
         $er->findBy(array('identifier' => 'identifier'))->willReturn(array('old_mapping'));
 

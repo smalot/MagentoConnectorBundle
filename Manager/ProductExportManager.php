@@ -3,11 +3,9 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use PDO;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Pim\Bundle\CatalogBundle\Model\AbstractProduct;
 use Akeneo\Bundle\BatchBundle\Entity\JobInstance;
-use Pim\Bundle\CatalogBundle\Repository\ReferableEntityRepositoryInterface;
 
 /**
  * Product export manager to update and create product export entities
@@ -37,7 +35,6 @@ class ProductExportManager
      * @var EntityRepository
      */
     protected $productExportRepository;
-
 
     /**
      * @var EntityRepository
@@ -89,7 +86,7 @@ class ProductExportManager
         if (null != $product) {
             $productExport = $this->productExportRepository->findOneBy(array(
                 'product'     => $product,
-                'jobInstance' => $jobInstance
+                'jobInstance' => $jobInstance,
             ));
 
             $conn = $this->entityManager->getConnection();

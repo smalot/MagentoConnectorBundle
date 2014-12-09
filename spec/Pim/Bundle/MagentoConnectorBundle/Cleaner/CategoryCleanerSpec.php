@@ -13,7 +13,7 @@ use Prophecy\Argument;
 
 class CategoryCleanerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         CategoryMappingManager $categoryMappingManager,
         Webservice $webservice,
@@ -28,7 +28,7 @@ class CategoryCleanerSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    function it_asks_soap_client_to_delete_categories_that_are_not_in_pim_anymore($webservice, $categoryMappingManager)
+    public function it_asks_soap_client_to_delete_categories_that_are_not_in_pim_anymore($webservice, $categoryMappingManager)
     {
         $this->setNotInPimAnymoreAction('delete');
 
@@ -36,7 +36,7 @@ class CategoryCleanerSpec extends ObjectBehavior
             [
                 ['category_id' => '1'],
                 ['category_id' => '12', 'level' => '0'],
-                ['category_id' => '13', 'level' => '2']
+                ['category_id' => '13', 'level' => '2'],
             ]
         );
 
@@ -49,13 +49,13 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_asks_soap_client_to_disable_categories_that_are_not_in_pim_anymore($webservice, $categoryMappingManager)
+    public function it_asks_soap_client_to_disable_categories_that_are_not_in_pim_anymore($webservice, $categoryMappingManager)
     {
         $this->setNotInPimAnymoreAction('disable');
 
         $webservice->getCategoriesStatus()->willReturn(
             [
-                ['category_id' => '13', 'level' => '2']
+                ['category_id' => '13', 'level' => '2'],
             ]
         );
 
@@ -66,13 +66,13 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_raises_invalid_item_exception_if_something_goes_wrong_with_the_soap_api($webservice, $categoryMappingManager)
+    public function it_raises_invalid_item_exception_if_something_goes_wrong_with_the_soap_api($webservice, $categoryMappingManager)
     {
         $this->setNotInPimAnymoreAction('disable');
 
         $webservice->getCategoriesStatus()->willReturn(
             [
-                ['category_id' => '13', 'level' => '2']
+                ['category_id' => '13', 'level' => '2'],
             ]
         );
 
@@ -83,7 +83,7 @@ class CategoryCleanerSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
-    function it_is_configurable_via_magento_item_step()
+    public function it_is_configurable_via_magento_item_step()
     {
         $this->setSoapUsername('soap');
         $this->getSoapUsername()->shouldReturn('soap');

@@ -41,7 +41,7 @@ abstract class AbstractGuesser
     protected function getMagentoVersion(MagentoSoapClient $client = null)
     {
         if (null === $client) {
-            return null;
+            return;
         }
 
         if (!$this->version) {
@@ -54,7 +54,6 @@ abstract class AbstractGuesser
             }
 
             $pattern = '/^(?P<version>[0-9]+\.[0-9]+)(\.[0-9])*/';
-
 
             if (preg_match($pattern, $magentoVersion, $matches)) {
                 $this->version = $matches['version'];

@@ -13,7 +13,7 @@ use Prophecy\Argument;
 
 class FamilyCleanerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         FamilyMappingManager $familyMappingManager,
         Webservice $webservice,
@@ -28,7 +28,7 @@ class FamilyCleanerSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    function it_asks_soap_client_to_delete_families_that_are_not_in_pim_anymore($webservice, $familyMappingManager)
+    public function it_asks_soap_client_to_delete_families_that_are_not_in_pim_anymore($webservice, $familyMappingManager)
     {
         $this->setNotInPimAnymoreAction('delete');
 
@@ -36,7 +36,7 @@ class FamilyCleanerSpec extends ObjectBehavior
             [
                 'family set name 1' => 1,
                 'family set name 5' => 5,
-                'family set name 151' => 151
+                'family set name 151' => 151,
             ]
         );
 

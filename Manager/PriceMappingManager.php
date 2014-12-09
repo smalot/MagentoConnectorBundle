@@ -300,10 +300,10 @@ class PriceMappingManager
             if ($productPrice != $productPriceFromMapping) {
                 throw new ComputedPriceNotMatchedException(
                     sprintf(
-                        "Computed price mapping : %s. \n" .
-                        "Base price : %s %s. \n" .
-                        "Item causing the problem : %s. \n" .
-                        "Actual product price : %s %s. \n" .
+                        "Computed price mapping : %s. \n".
+                        "Base price : %s %s. \n".
+                        "Item causing the problem : %s. \n".
+                        "Actual product price : %s %s. \n".
                         "Computed product price from mapping : %s %s.",
                         json_encode($priceChanges),
                         $basePrice,

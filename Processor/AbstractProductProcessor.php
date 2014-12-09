@@ -334,7 +334,6 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         return $this;
     }
 
-
     /**
      * get categoryMapping
      *
@@ -472,32 +471,32 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'choices'  => $this->channelManager->getChannelChoices(),
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.channel.help',
-                        'label'    => 'pim_magento_connector.export.channel.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.channel.label',
+                    ],
                 ],
                 'enabled' => [
                     'type'    => 'switch',
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.enabled.help',
-                        'label'    => 'pim_magento_connector.export.enabled.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.enabled.label',
+                    ],
                 ],
                 'visibility' => [
                     'type'    => 'text',
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.visibility.help',
-                        'label'    => 'pim_magento_connector.export.visibility.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.visibility.label',
+                    ],
                 ],
                 'variantMemberVisibility' => [
                     'type'    => 'text',
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.variant_member_visibility.help',
-                        'label'    => 'pim_magento_connector.export.variant_member_visibility.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.variant_member_visibility.label',
+                    ],
                 ],
                 'currency' => [
                     'type'    => 'choice',
@@ -507,9 +506,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'help'     => 'pim_magento_connector.export.currency.help',
                         'label'    => 'pim_magento_connector.export.currency.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
                 'smallImageAttribute' => [
                     'type' => 'choice',
@@ -518,9 +517,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'help'    => 'pim_magento_connector.export.smallImageAttribute.help',
                         'label'   => 'pim_magento_connector.export.smallImageAttribute.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
                 'baseImageAttribute' => [
                     'type' => 'choice',
@@ -529,9 +528,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'help'    => 'pim_magento_connector.export.baseImageAttribute.help',
                         'label'   => 'pim_magento_connector.export.baseImageAttribute.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
                 'thumbnailAttribute' => [
                     'type' => 'choice',
@@ -540,9 +539,9 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'help'    => 'pim_magento_connector.export.thumbnailAttribute.help',
                         'label'   => 'pim_magento_connector.export.thumbnailAttribute.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
             ],
             $this->categoryMappingMerger->getConfigurationField(),

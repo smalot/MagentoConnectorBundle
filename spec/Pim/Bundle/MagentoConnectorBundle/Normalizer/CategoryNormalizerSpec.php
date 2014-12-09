@@ -8,13 +8,12 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class CategoryNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext;
 
-    function let(
+    public function let(
         ChannelManager $channelManager,
         CategoryMappingManager $categoryMappingManager,
         MappingCollection $categoryMapping,
@@ -29,11 +28,11 @@ class CategoryNormalizerSpec extends ObjectBehavior
             'magentoStoreViews' => [],
             'categoryMapping'   => $categoryMapping,
             'storeViewMapping'  => $storeViewMapping,
-            'defaultStoreView'  => 'default'
+            'defaultStoreView'  => 'default',
         ];
     }
 
-    function it_normalizes_a_new_category(
+    public function it_normalizes_a_new_category(
         Category $category,
         Category $parentCategory,
         $categoryMapping,
@@ -62,18 +61,18 @@ class CategoryNormalizerSpec extends ObjectBehavior
                             'available_sort_by' => 1,
                             'default_sort_by'   => 1,
                         ],
-                        'default'
+                        'default',
                     ],
-                    'pimCategory' => $category
-                ]
+                    'pimCategory' => $category,
+                ],
             ],
             'update'    => [],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ]);
     }
 
-    function it_normalizes_a_updated_category(
+    public function it_normalizes_a_updated_category(
         Category $category,
         Category $parentCategory,
         $categoryMapping,
@@ -83,7 +82,7 @@ class CategoryNormalizerSpec extends ObjectBehavior
             $this->globalContext,
             [
                 'magentoCategories' => [
-                    4 => ['parent_id' => 3]
+                    4 => ['parent_id' => 3],
                 ],
                 'magentoStoreView' => 'default'
             ]
@@ -112,15 +111,15 @@ class CategoryNormalizerSpec extends ObjectBehavior
                         'default_sort_by'   => 1,
                         'is_anchor'         => 1
                     ],
-                    'default'
-                ]
+                    'default',
+                ],
             ],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ]);
     }
 
-    function it_normalizes_a_updated_category_who_have_moved(
+    public function it_normalizes_a_updated_category_who_have_moved(
         Category $category,
         Category $parentCategory,
         $categoryMapping,
@@ -130,7 +129,7 @@ class CategoryNormalizerSpec extends ObjectBehavior
             $this->globalContext,
             [
                 'magentoCategories' => [
-                    4 => ['parent_id' => 5]
+                    4 => ['parent_id' => 5],
                 ],
                 'magentoStoreView' => 'default'
             ]
@@ -159,20 +158,20 @@ class CategoryNormalizerSpec extends ObjectBehavior
                         'default_sort_by'   => 1,
                         'is_anchor'         => 1
                     ],
-                    'default'
-                ]
+                    'default',
+                ],
             ],
             'move'      => [
                 [
                     4,
-                    3
-                ]
+                    3,
+                ],
             ],
-            'variation' => []
+            'variation' => [],
         ]);
     }
 
-    function it_normalizes_category_variations(
+    public function it_normalizes_category_variations(
         Category $category,
         Category $parentCategory,
         CategoryTranslation $translation,
@@ -183,7 +182,7 @@ class CategoryNormalizerSpec extends ObjectBehavior
             $this->globalContext,
             [
                 'magentoStoreViews' => [
-                    ['code' => 'fr_fr']
+                    ['code' => 'fr_fr'],
                 ],
                 'magentoStoreView' => 'default'
             ]
@@ -218,10 +217,10 @@ class CategoryNormalizerSpec extends ObjectBehavior
                             'available_sort_by' => 1,
                             'default_sort_by'   => 1,
                         ],
-                        'default'
+                        'default',
                     ],
-                    'pimCategory' => $category
-                ]
+                    'pimCategory' => $category,
+                ],
             ],
             'update'    => [],
             'move'      => [],
@@ -234,11 +233,11 @@ class CategoryNormalizerSpec extends ObjectBehavior
                             'available_sort_by' => 1,
                             'default_sort_by'   => 1,
                         ],
-                        'fr_fr'
+                        'fr_fr',
                     ],
-                    'pimCategory' => $category
-                ]
-            ]
+                    'pimCategory' => $category,
+                ],
+            ],
         ]);
     }
 }

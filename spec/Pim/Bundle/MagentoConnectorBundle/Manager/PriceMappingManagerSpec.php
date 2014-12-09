@@ -10,11 +10,10 @@ use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class PriceMappingManagerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         Group $group,
         Product $product1,
         Product $product2,
@@ -86,7 +85,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $attributeMapping->getTarget('attribute_2')->willReturn('attribute_2');
     }
 
-    function it_gives_simple_price_mapping(
+    public function it_gives_simple_price_mapping(
         $group,
         $product1,
         $productValueOption11,
@@ -100,18 +99,18 @@ class PriceMappingManagerSpec extends ObjectBehavior
             [
                 'price_changes' => [
                     'attribute_1' => [
-                        'attribute_1_option_1' => 0.0
+                        'attribute_1_option_1' => 0.0,
                     ],
                     'attribute_2' => [
-                        'attribute_2_option_1' => 0.0
-                    ]
+                        'attribute_2_option_1' => 0.0,
+                    ],
                 ],
-                'price' => 5.0
+                'price' => 5.0,
             ]
         );
     }
 
-    function it_gives_complexe_price_mapping_from_upper_price(
+    public function it_gives_complexe_price_mapping_from_upper_price(
         $group,
         $product1,
         $product2,
@@ -144,16 +143,16 @@ class PriceMappingManagerSpec extends ObjectBehavior
                     'attribute_2' => [
                         'attribute_2_option_1' => -10.0,
                         'attribute_2_option_2' => 0.0,
-                    ]
+                    ],
                 ],
-                'price' => 15.0
+                'price' => 15.0,
             ]
         );
 
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);
     }
 
-    function it_gives_complexe_price_mapping_from_lower_price(
+    public function it_gives_complexe_price_mapping_from_lower_price(
         $group,
         $product1,
         $product2,
@@ -186,16 +185,16 @@ class PriceMappingManagerSpec extends ObjectBehavior
                     'attribute_2' => [
                         'attribute_2_option_1' => 0.0,
                         'attribute_2_option_2' => 5.0,
-                    ]
+                    ],
                 ],
-                'price' => 5.0
+                'price' => 5.0,
             ]
         );
 
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);
     }
 
-    function it_gives_an_other_complexe_price_mapping_from_lower_price(
+    public function it_gives_an_other_complexe_price_mapping_from_lower_price(
         $group,
         $product1,
         $product2,
@@ -228,9 +227,9 @@ class PriceMappingManagerSpec extends ObjectBehavior
                     'attribute_2' => [
                         'attribute_2_option_1' => 0.0,
                         'attribute_2_option_2' => 10.0,
-                    ]
+                    ],
                 ],
-                'price' => 5.0
+                'price' => 5.0,
             ]
         );
 

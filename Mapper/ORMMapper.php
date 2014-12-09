@@ -24,8 +24,8 @@ class ORMMapper extends Mapper
     protected $rootIdentifier;
 
     /**
-     * @param SimpleMappingManager         $simpleMappingManager
-     * @param string                       $rootIdentifier
+     * @param SimpleMappingManager $simpleMappingManager
+     * @param string               $rootIdentifier
      */
     public function __construct(
         SimpleMappingManager $simpleMappingManager,
@@ -53,7 +53,7 @@ class ORMMapper extends Mapper
                 array(
                     'source'    => $simpleMappingItem->getSource(),
                     'target'    => $simpleMappingItem->getTarget(),
-                    'deletable' => true
+                    'deletable' => true,
                 )
             );
         }

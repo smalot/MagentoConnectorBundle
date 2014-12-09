@@ -12,7 +12,7 @@ use Prophecy\Argument;
 
 class OptionWriterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         Webservice $webservice,
         StepExecution $stepExecution,
@@ -26,7 +26,7 @@ class OptionWriterSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    function it_calls_soap_client_to_create_options($webservice)
+    public function it_calls_soap_client_to_create_options($webservice)
     {
         $webservice->createOption(['foo'])->shouldBeCalled();
         $webservice->createOption(['bar'])->shouldBeCalled();
@@ -34,7 +34,7 @@ class OptionWriterSpec extends ObjectBehavior
         $this->write([[['foo'], ['bar']]]);
     }
 
-    function it_fails_if_something_went_wrong_during_create_option_call($webservice, $stepExecution)
+    public function it_fails_if_something_went_wrong_during_create_option_call($webservice, $stepExecution)
     {
         $webservice->createOption(['foo'])->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
         $stepExecution->incrementSummaryInfo(Argument::any())->shouldNotBeCalled();

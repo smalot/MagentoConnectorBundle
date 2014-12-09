@@ -13,7 +13,6 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraint;
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
-
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -26,7 +25,7 @@ use Prophecy\Argument;
  */
 class HasValidCredentialsValidatorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         UrlExplorer $urlExplorer,
         XmlChecker $xmlChecker,
@@ -41,7 +40,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->initialize($context);
     }
 
-    function it_does_nothing_with_something_else_than_magento_item_step(
+    public function it_does_nothing_with_something_else_than_magento_item_step(
         $context,
         AbstractConfigurableStepElement $step,
         Constraint $constraint
@@ -51,7 +50,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_success_with_good_credentials_and_valid_soap_url(
+    public function it_success_with_good_credentials_and_valid_soap_url(
         $context,
         $clientParameters,
         MagentoItemStep $step,
@@ -64,7 +63,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_fails_if_soap_url_is_not_reachable(
+    public function it_fails_if_soap_url_is_not_reachable(
         $clientParameters,
         $context,
         $urlExplorer,
@@ -79,7 +78,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_fails_with_invalid_soap_url_or_wrong_http_authentication_credentials(
+    public function it_fails_with_invalid_soap_url_or_wrong_http_authentication_credentials(
         $context,
         $clientParameters,
         $urlExplorer,
@@ -94,7 +93,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_fails_with_invalid_soap_xml_return(
+    public function it_fails_with_invalid_soap_xml_return(
         $context,
         $clientParameters,
         $xmlChecker,
@@ -109,7 +108,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_fails_with_invalid_soap_credentials_or_user_has_no_right_on_magento(
+    public function it_fails_with_invalid_soap_credentials_or_user_has_no_right_on_magento(
         $context,
         $clientParameters,
         $webserviceGuesser,
@@ -124,7 +123,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_fails_if_an_unknown_error_occured(
+    public function it_fails_if_an_unknown_error_occured(
         $context,
         $clientParameters,
         $webserviceGuesser,
@@ -138,7 +137,7 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $this->validate($step, $constraint);
     }
 
-    function it_returns_true_with_good_credentials_and_valid_soap_url(
+    public function it_returns_true_with_good_credentials_and_valid_soap_url(
         $clientParameters,
         $urlExplorer,
         $webserviceGuesser,
@@ -148,13 +147,13 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $urlExplorer->getUrlContent($clientParameters)->willReturn('<content>Some xml as string</content>');
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
         $webservice->getStoreViewsList()->willReturn(array());
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $clientParameters->setValidation(Argument::type('bool'))->will(function (array $args) {
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(true);
     }
 
-    function it_returns_false_with_invalid_soap_url_or_wrong_http_authentication_credentials(
+    public function it_returns_false_with_invalid_soap_url_or_wrong_http_authentication_credentials(
         $urlExplorer,
         $clientParameters,
         $webserviceGuesser
@@ -162,13 +161,13 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $clientParameters->isValid()->willReturn(null);
         $urlExplorer->getUrlContent($clientParameters)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Validator\Exception\InvalidSoapUrlException');
         $webserviceGuesser->getWebservice($clientParameters)->shouldNotBeCalled();
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $clientParameters->setValidation(Argument::type('bool'))->will(function (array $args) {
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);
     }
 
-    function it_returns_false_if_soap_url_is_not_reachable(
+    public function it_returns_false_if_soap_url_is_not_reachable(
         $urlExplorer,
         $clientParameters,
         $webserviceGuesser
@@ -176,25 +175,25 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $clientParameters->isValid()->willReturn(null);
         $urlExplorer->getUrlContent($clientParameters)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Validator\Exception\NotReachableUrlException');
         $webserviceGuesser->getWebservice($clientParameters)->shouldNotBeCalled();
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $clientParameters->setValidation(Argument::type('bool'))->will(function (array $args) {
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);
     }
 
-    function it_returns_false_with_invalid_soap_credentials(
+    public function it_returns_false_with_invalid_soap_credentials(
         $webserviceGuesser,
         $clientParameters
     ) {
         $clientParameters->isValid()->willReturn(null);
         $webserviceGuesser->getWebservice($clientParameters)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\InvalidCredentialException');
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $clientParameters->setValidation(Argument::type('bool'))->will(function (array $args) {
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);
     }
 
-    function it_returns_false_if_user_has_no_right_on_magento(
+    public function it_returns_false_if_user_has_no_right_on_magento(
         $webserviceGuesser,
         $clientParameters,
         Webservice $webservice
@@ -202,19 +201,19 @@ class HasValidCredentialsValidatorSpec extends ObjectBehavior
         $clientParameters->isValid()->willReturn(null);
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
         $webservice->getStoreViewsList()->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $clientParameters->setValidation(Argument::type('bool'))->will(function (array $args) {
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);
     }
 
-    function it_returns_false_if_an_unknown_error_occured(
+    public function it_returns_false_if_an_unknown_error_occured(
         $webserviceGuesser,
         $clientParameters
     ) {
         $clientParameters->isValid()->willReturn(null);
         $webserviceGuesser->getWebservice($clientParameters)->willThrow('\Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException');
-        $clientParameters->setValidation(Argument::type('bool'))->will(function(array $args){
+        $clientParameters->setValidation(Argument::type('bool'))->will(function (array $args) {
             $this->isValid()->willReturn($args[0]);
         });
         $this->areValidSoapCredentials($clientParameters)->shouldReturn(false);

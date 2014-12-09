@@ -17,7 +17,7 @@ use Prophecy\Argument;
 
 class AttributeCleanerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         MagentoMappingMerger $attributeMappingMerger,
         EntityManager $em,
@@ -38,7 +38,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $attributeMappingMerger->getMapping()->willReturn($mappingCollection);
     }
 
-    function it_deletes_attribute_not_in_pim_anymore($webservice, $entityRepository, $mappingCollection)
+    public function it_deletes_attribute_not_in_pim_anymore($webservice, $entityRepository, $mappingCollection)
     {
         $this->setNotInPimAnymoreAction('delete');
 
@@ -51,7 +51,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_not_deletes_attribute_not_in_pim_anymore_if_parameters_doesnt_say_to_do_so(
+    public function it_not_deletes_attribute_not_in_pim_anymore_if_parameters_doesnt_say_to_do_so(
         $webservice,
         $entityRepository,
         $mappingCollection
@@ -67,7 +67,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_deletes_attribute_not_in_family_anymore(
+    public function it_deletes_attribute_not_in_family_anymore(
         $webservice,
         $entityRepository,
         $mappingCollection,
@@ -85,7 +85,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_deletes_attribute_which_got_renamed(
+    public function it_deletes_attribute_which_got_renamed(
         $webservice,
         $entityRepository,
         $mappingCollection,
@@ -103,7 +103,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->execute();
     }
 
-    function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api(
+    public function it_raises_an_invalid_item_exception_when_something_goes_wrong_with_the_sopa_api(
         $webservice,
         $entityRepository,
         $mappingCollection,
@@ -121,7 +121,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->shouldThrow('Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->during('execute');
     }
 
-    function it_get_attribute_mapping_from_attribute_mapping_merger(
+    public function it_get_attribute_mapping_from_attribute_mapping_merger(
         $attributeMappingMerger,
         MappingCollection $mappingCollection
     ) {
@@ -131,7 +131,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->getAttributeCodeMapping()->shouldReturn('[]');
     }
 
-    function it_sets_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
+    public function it_sets_attribute_mapping_to_the_attribute_mapping_merger($attributeMappingMerger)
     {
         $attributeMappingMerger->setParameters(Argument::cetera())->shouldBeCalled();
         $attributeMappingMerger->setMapping([])->shouldBeCalled();
@@ -139,7 +139,7 @@ class AttributeCleanerSpec extends ObjectBehavior
         $this->setAttributeCodeMapping('[]');
     }
 
-    function it_gives_configuration_fields($attributeMappingMerger)
+    public function it_gives_configuration_fields($attributeMappingMerger)
     {
         $attributeMappingMerger->getConfigurationField()->willReturn(['attributeMapping' => []]);
 
@@ -149,45 +149,45 @@ class AttributeCleanerSpec extends ObjectBehavior
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapUsername.help',
-                        'label'    => 'pim_magento_connector.export.soapUsername.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.soapUsername.label',
+                    ],
                 ],
                 'soapApiKey'   => [
                     'type'    => 'text',
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.soapApiKey.help',
-                        'label'    => 'pim_magento_connector.export.soapApiKey.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.soapApiKey.label',
+                    ],
                 ],
                 'magentoUrl' => [
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.magentoUrl.help',
-                        'label'    => 'pim_magento_connector.export.magentoUrl.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.magentoUrl.label',
+                    ],
                 ],
                 'wsdlUrl' => [
                     'options' => [
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.wsdlUrl.help',
                         'label'    => 'pim_magento_connector.export.wsdlUrl.label',
-                        'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL
-                    ]
+                        'data'     => MagentoSoapClientParameters::SOAP_WSDL_URL,
+                    ],
                 ],
                 'httpLogin' => [
                     'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpLogin.help',
-                        'label'    => 'pim_magento_connector.export.httpLogin.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.httpLogin.label',
+                    ],
                 ],
                 'httpPassword' => [
                     'options' => [
                         'required' => false,
                         'help'     => 'pim_magento_connector.export.httpPassword.help',
-                        'label'    => 'pim_magento_connector.export.httpPassword.label'
-                    ]
+                        'label'    => 'pim_magento_connector.export.httpPassword.label',
+                    ],
                 ],
                 'defaultStoreView' => [
                     'options' => [
@@ -195,24 +195,24 @@ class AttributeCleanerSpec extends ObjectBehavior
                         'help'     => 'pim_magento_connector.export.defaultStoreView.help',
                         'label'    => 'pim_magento_connector.export.defaultStoreView.label',
                         'data'     => $this->getDefaultStoreView(),
-                    ]
+                    ],
                 ],
                 'notInPimAnymoreAction' => [
                     'type'    => 'choice',
                     'options' => [
                         'choices'  => [
                             'do_nothing' => 'pim_magento_connector.export.do_nothing.label',
-                            'delete'     => 'pim_magento_connector.export.delete.label'
+                            'delete'     => 'pim_magento_connector.export.delete.label',
                         ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
-                'attributeMapping' => []
+                'attributeMapping' => [],
             ]
         );
     }

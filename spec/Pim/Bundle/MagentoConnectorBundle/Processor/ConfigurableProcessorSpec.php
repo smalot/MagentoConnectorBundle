@@ -19,7 +19,6 @@ use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Entity\Family;
-
 use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 
@@ -30,7 +29,7 @@ use PhpSpec\ObjectBehavior;
  */
 class ConfigurableProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
@@ -84,21 +83,20 @@ class ConfigurableProcessorSpec extends ObjectBehavior
                     'group_id' => '1',
                     'name' => 'Default Store View',
                     'sort_order' => '0',
-                    'is_active' => '1'
-                ]
+                    'is_active' => '1',
+                ],
             ]
         );
 
         $webservice->getAllAttributes()->willReturn(
             [
-                'name' =>
-                    [
+                'name' => [
                         'attribute_id' => '71',
                         'code' => 'name',
                         'type' => 'text',
                         'required' => '1',
-                        'scope' => 'store'
-                    ]
+                        'scope' => 'store',
+                    ],
             ]
         );
 
@@ -119,7 +117,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group->getId()->willReturn(1);
     }
 
-    function it_processes_products(
+    public function it_processes_products(
         $groupRepository,
         $webservice,
         $group,
@@ -141,7 +139,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->process([$product]);
     }
 
-    function it_processes_products_even_if_magento_configurable_doesnt_exist(
+    public function it_processes_products_even_if_magento_configurable_doesnt_exist(
         $groupRepository,
         $webservice,
         $group,
@@ -168,7 +166,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->process([$product]);
     }
 
-    function it_throws_an_exception_if_there_are_products_products_with_different_families(
+    public function it_throws_an_exception_if_there_are_products_products_with_different_families(
         $groupRepository,
         $webservice,
         $group,
@@ -199,7 +197,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product, $product_2]);
     }
 
-    function it_throws_an_exception_if_a_normalization_error_occured(
+    public function it_throws_an_exception_if_a_normalization_error_occured(
         $groupRepository,
         $webservice,
         $group,
@@ -226,7 +224,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->shouldThrow('\Akeneo\Bundle\BatchBundle\Item\InvalidItemException')->duringProcess([$product]);
     }
 
-    function it_throws_an_exception_if_a_soap_call_error_occured_during_normalization(
+    public function it_throws_an_exception_if_a_soap_call_error_occured_during_normalization(
         $groupRepository,
         $webservice,
         $group,

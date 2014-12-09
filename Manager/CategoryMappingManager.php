@@ -48,7 +48,7 @@ class CategoryMappingManager
         $magentoCategoryMapping = $this->getEntityRepository()->findOneBy(
             [
                 'magentoCategoryId' => $id,
-                'magentoUrl'        => $magentoUrl
+                'magentoUrl'        => $magentoUrl,
             ]
         );
 
@@ -76,7 +76,7 @@ class CategoryMappingManager
             $categoryMapping = $this->getEntityRepository()->findOneBy(
                 [
                     'category'   => $category,
-                    'magentoUrl' => $magentoUrl
+                    'magentoUrl' => $magentoUrl,
                 ]
             );
 

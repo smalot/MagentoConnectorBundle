@@ -126,7 +126,7 @@ class CategoryProcessor extends AbstractProcessor
             'create'    => [],
             'update'    => [],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ];
 
         $categories = is_array($categories) ? $categories : [$categories];

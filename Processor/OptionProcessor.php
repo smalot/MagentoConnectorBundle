@@ -126,9 +126,9 @@ class OptionProcessor extends AbstractProcessor
         } catch (SoapCallException $e) {
             throw new InvalidItemException(
                 sprintf(
-                    'An error occurred during the retrieval of option list of the attribute "%s". This may be ' .
-                    'due to the fact that "%s" attribute doesn\'t exist on Magento side. Please be sure that ' .
-                    'this attribute is created (mannualy or by export) on Magento before options\' export. ' .
+                    'An error occurred during the retrieval of option list of the attribute "%s". This may be '.
+                    'due to the fact that "%s" attribute doesn\'t exist on Magento side. Please be sure that '.
+                    'this attribute is created (mannualy or by export) on Magento before options\' export. '.
                     '(Original error : "%s")',
                     $attributeCode,
                     $attributeCode,

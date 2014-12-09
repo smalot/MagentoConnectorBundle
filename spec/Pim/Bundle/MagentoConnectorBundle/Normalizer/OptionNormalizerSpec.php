@@ -13,14 +13,14 @@ use Prophecy\Argument;
 
 class OptionNormalizerSpec extends ObjectBehavior
 {
-    function let(ChannelManager $channelManager, Channel $channel)
+    public function let(ChannelManager $channelManager, Channel $channel)
     {
         $this->beConstructedWith($channelManager);
 
         $channelManager->getChannelByCode('magento')->willReturn($channel);
     }
 
-    function it_normalizes_given_option(
+    public function it_normalizes_given_option(
         AttributeOption $option,
         AttributeOption $optionUS,
         AttributeOption $optionFR,
@@ -77,7 +77,7 @@ class OptionNormalizerSpec extends ObjectBehavior
                 'label' => [
                     [
                         'store_id' => '0',
-                        'value'    => 'red'
+                        'value'    => 'red',
                     ],
                     [
                         'store_id' => '1',
@@ -93,7 +93,7 @@ class OptionNormalizerSpec extends ObjectBehavior
                     ],
                 ],
                 'order'      => 1
-            ]
+            ],
         ]);
     }
 }

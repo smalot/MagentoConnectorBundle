@@ -4,16 +4,15 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Manager;
 
 use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ProductValueManagerSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
         $this->beConstructedWith('Pim\Bundle\CatalogBundle\Model\ProductValue');
     }
 
-    function it_creates_default_product_for_default_option(Attribute $attribute)
+    public function it_creates_default_product_for_default_option(Attribute $attribute)
     {
         $attribute->getDefaultValue()->shouldBeCalled()->willReturn(null);
         $this->createProductValueForDefaultOption($attribute)->shouldReturnAnInstanceOf('Pim\Bundle\CatalogBundle\Model\ProductValue');

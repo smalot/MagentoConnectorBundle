@@ -76,7 +76,7 @@ class CategoryNormalizer extends AbstractNormalizer
             'create'    => [],
             'update'    => [],
             'move'      => [],
-            'variation' => []
+            'variation' => [],
         ];
 
         if ($this->magentoCategoryExists($category, $context['magentoCategories'], $context['magentoUrl'])) {
@@ -163,7 +163,7 @@ class CategoryNormalizer extends AbstractNormalizer
                         'available_sort_by' => 1,
                         'default_sort_by'   => 1
                     ],
-                    $context['defaultStoreView']
+                    $context['defaultStoreView'],
                 ],
                 'pimCategory' => $category
             ];
@@ -210,7 +210,7 @@ class CategoryNormalizer extends AbstractNormalizer
                     'available_sort_by' => 1,
                     'default_sort_by'   => 1
                 ],
-                $storeViewCode
+                $storeViewCode,
             ],
             'pimCategory' => $category,
         ];
@@ -288,5 +288,4 @@ class CategoryNormalizer extends AbstractNormalizer
 
         return $url;
     }
-
 }

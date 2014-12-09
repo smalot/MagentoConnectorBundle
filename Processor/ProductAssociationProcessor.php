@@ -3,12 +3,10 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
@@ -237,7 +235,7 @@ class ProductAssociationProcessor extends AbstractProcessor
                     'type'           => $this->getAssociationCodeMapping()[$associationType],
                     'product'        => (string) $product->getIdentifier(),
                     'linkedProduct'  => (string) $associatedProduct->getIdentifier(),
-                    'identifierType' => 'sku'
+                    'identifierType' => 'sku',
                 ];
             }
         }
@@ -262,7 +260,7 @@ class ProductAssociationProcessor extends AbstractProcessor
                     'type'           => $associationType,
                     'product'        => (string) $product->getIdentifier(),
                     'linkedProduct'  => (string) $associatedProduct['sku'],
-                    'identifierType' => 'sku'
+                    'identifierType' => 'sku',
                 ];
             }
         }
@@ -312,9 +310,9 @@ class ProductAssociationProcessor extends AbstractProcessor
                         'help'     => 'pim_magento_connector.export.pimUpSell.help',
                         'label'    => 'pim_magento_connector.export.pimUpSell.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
                 'pimCrossSell' => [
                     'type'    => 'choice',
@@ -323,9 +321,9 @@ class ProductAssociationProcessor extends AbstractProcessor
                         'help'     => 'pim_magento_connector.export.pimCrossSell.help',
                         'label'    => 'pim_magento_connector.export.pimCrossSell.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
                 'pimRelated' => [
                     'type'    => 'choice',
@@ -334,9 +332,9 @@ class ProductAssociationProcessor extends AbstractProcessor
                         'help'     => 'pim_magento_connector.export.pimRelated.help',
                         'label'    => 'pim_magento_connector.export.pimRelated.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ],
                 'pimGrouped' => [
                     'type'    => 'choice',
@@ -345,9 +343,9 @@ class ProductAssociationProcessor extends AbstractProcessor
                         'help'     => 'pim_magento_connector.export.pimGrouped.help',
                         'label'    => 'pim_magento_connector.export.pimGrouped.label',
                         'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
+                            'class' => 'select2',
+                        ],
+                    ],
                 ]
             ]
         );

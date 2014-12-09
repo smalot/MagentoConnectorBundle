@@ -12,7 +12,6 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidDefaultLocal
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Locale;
 
-
 /**
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -20,13 +19,13 @@ use Pim\Bundle\CatalogBundle\Entity\Locale;
  */
 class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
 {
-    function let(ExecutionContextInterface $context, ChannelManager $channelManager)
+    public function let(ExecutionContextInterface $context, ChannelManager $channelManager)
     {
         $this->beConstructedWith($channelManager);
         $this->initialize($context);
     }
 
-    function it_does_nothing_with_something_else_than_abstract_product_element(
+    public function it_does_nothing_with_something_else_than_abstract_product_element(
         $context,
         HasValidDefaultLocale $constraint,
         ChannelManager $value
@@ -36,7 +35,7 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
         $this->validate($value, $constraint);
     }
 
-    function it_success_if_the_locale_is_valid(
+    public function it_success_if_the_locale_is_valid(
         $context,
         $channelManager,
         AbstractProductProcessor $value,
@@ -55,7 +54,7 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
         $this->validate($value, $constraint);
     }
 
-    function it_fails_if_the_locale_is_not_valid(
+    public function it_fails_if_the_locale_is_not_valid(
         $context,
         $channelManager,
         AbstractProductProcessor $value,
@@ -76,7 +75,7 @@ class HasValidDefaultLocaleValidatorSpec extends ObjectBehavior
         $this->validate($value, $constraint);
     }
 
-    function it_fails_if_no_channel_has_been_found(
+    public function it_fails_if_no_channel_has_been_found(
         $context,
         $channelManager,
         AbstractProductProcessor $value,

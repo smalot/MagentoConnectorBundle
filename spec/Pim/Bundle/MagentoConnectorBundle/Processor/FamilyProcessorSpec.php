@@ -18,7 +18,7 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 class FamilyProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         WebserviceGuesser $webserviceGuesser,
@@ -44,25 +44,24 @@ class FamilyProcessorSpec extends ObjectBehavior
         $normalizerGuesser->getFamilyNormalizer($clientParameters)->willReturn($familyNormalizer);
     }
 
-    function it_normalizes_families(
+    public function it_normalizes_families(
         Family $family,
         Webservice $webservice,
         $familyNormalizer
     ) {
-
         $familyNormalizer->normalize(
             $family,
             AbstractNormalizer::MAGENTO_FORMAT,
             Argument::any()
         )->willReturn([
-            'attributeSetName' => 'family_code'
+            'attributeSetName' => 'family_code',
         ]);
         $webservice->getAttributeSetList()->willReturn([]);
         $webservice->getStoreViewsList()->willReturn([]);
         $this->process($family)->shouldReturn([
             'family_object'        => $family,
             'attributes_in_family' => null,
-            'families_to_create'   => ['attributeSetName' => 'family_code']
+            'families_to_create'   => ['attributeSetName' => 'family_code'],
         ]);
     }
 }

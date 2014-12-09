@@ -166,7 +166,7 @@ class AttributeCleaner extends Cleaner
 
         $configurationFields['notInPimAnymoreAction']['options']['choices'] = [
             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
-            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
+            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label',
         ];
 
         $configurationFields['notInPimAnymoreAction']['options']['help'] =

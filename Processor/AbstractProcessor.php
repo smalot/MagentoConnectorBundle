@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-
 use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
@@ -235,19 +234,19 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                         'choices'  => $this->localeManager->getLocaleChoices(),
                         'required' => true,
                         'attr' => [
-                            'class' => 'select2'
+                            'class' => 'select2',
                         ],
                         'help'  => 'pim_magento_connector.export.defaultLocale.help',
-                        'label' => 'pim_magento_connector.export.defaultLocale.label'
-                    ]
+                        'label' => 'pim_magento_connector.export.defaultLocale.label',
+                    ],
                 ],
                 'website' => [
                     'type'    => 'text',
                     'options' => [
                         'required' => true,
                         'help'  => 'pim_magento_connector.export.website.help',
-                        'label' => 'pim_magento_connector.export.website.label'
-                    ]
+                        'label' => 'pim_magento_connector.export.website.label',
+                    ],
                 ]
             ],
             $this->storeViewMappingMerger->getConfigurationField()

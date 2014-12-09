@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Reader;
 
 use Pim\Bundle\BaseConnectorBundle\Reader\Doctrine\ObsoleteProductReader as PimProductReader;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductExportManager;
-use Pim\Bundle\BaseConnectorBundle\Reader\Doctrine\Reader;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Pim\Bundle\TransformBundle\Converter\MetricConverter;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
@@ -72,7 +71,7 @@ class ProductReader extends PimProductReader
             }
         }
 
-        return null;
+        return;
     }
 
     /**
