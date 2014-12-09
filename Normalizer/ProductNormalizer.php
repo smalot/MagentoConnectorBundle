@@ -11,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotFoundException;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
+use Gedmo\Sluggable\Util\Urlizer;
 
 /**
  * A normalizer to transform a product entity into an array
@@ -22,6 +23,8 @@ use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerInterface
 {
     const VISIBILITY = 'visibility';
+    const URL_KEY    = 'url_key';
+    const NAME       = 'name';
     const ENABLED    = 'status';
 
     /**
@@ -63,6 +66,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param AssociationTypeManager $associationTypeManager
      * @param bool                   $enabled
      * @param bool                   $visibility
+     * @param bool                   $variantMemberVisibility
      * @param string                 $currencyCode
      * @param string                 $magentoUrl
      */
@@ -74,19 +78,21 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         AssociationTypeManager $associationTypeManager,
         $enabled,
         $visibility,
+        $variantMemberVisibility,
         $currencyCode,
         $magentoUrl
     ) {
         parent::__construct($channelManager);
 
-        $this->mediaManager           = $mediaManager;
-        $this->productValueNormalizer = $productValueNormalizer;
-        $this->categoryMappingManager = $categoryMappingManager;
-        $this->associationTypeManager = $associationTypeManager;
-        $this->enabled                = $enabled;
-        $this->visibility             = $visibility;
-        $this->currencyCode           = $currencyCode;
-        $this->magentoUrl             = $magentoUrl;
+        $this->mediaManager            = $mediaManager;
+        $this->productValueNormalizer  = $productValueNormalizer;
+        $this->categoryMappingManager  = $categoryMappingManager;
+        $this->associationTypeManager  = $associationTypeManager;
+        $this->enabled                 = $enabled;
+        $this->visibility              = $visibility;
+        $this->variantMemberVisibility = $variantMemberVisibility;
+        $this->currencyCode            = $currencyCode;
+        $this->magentoUrl              = $magentoUrl;
     }
 
     /**
@@ -141,7 +147,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                     $context['channel'],
                     $context['categoryMapping'],
                     $context['attributeCodeMapping'],
-                    true
+                    true,
+                    $context['pimGrouped']
                 );
 
                 $processedItem[$storeView['code']] = [
@@ -261,7 +268,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $channel,
             $categoryMapping,
             $attributeMapping,
-            false
+            false,
+            $pimGrouped
         );
 
         $defaultValues['websites'] = [$website];
@@ -302,15 +310,9 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected function hasGroupedProduct(ProductInterface $product, $pimGrouped)
     {
-        if ($associationType = $this->associationTypeManager->getAssociationTypeByCode($pimGrouped)) {
-            $association = $product->getAssociationForType($associationType);
+        $association = $product->getAssociationForTypeCode($pimGrouped);
 
-            return null != $association &&
-                null != $association->getProducts() &&
-                null != $association->getGroups();
-        } else {
-            return false;
-        }
+        return (null !== $association && count($association->getProducts()) > 0);
     }
 
     /**
@@ -324,6 +326,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param MappingCollection $categoryMapping          Root category mapping
      * @param MappingCollection $attributeCodeMapping     Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
+     * @param string            $pimGrouped               Pim grouped association code
      *
      * @return array Computed data
      */
@@ -335,7 +338,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $scopeCode,
         MappingCollection $categoryMapping,
         MappingCollection $attributeCodeMapping,
-        $onlyLocalized
+        $onlyLocalized,
+        $pimGrouped = null
     ) {
         $normalizedValues = [];
 
@@ -365,7 +369,7 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
             $this->getCustomValue(
                 $product,
                 $attributeCodeMapping,
-                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode]
+                ['categoryMapping' => $categoryMapping, 'scopeCode' => $scopeCode, 'localeCode' => $localeCode, 'pimGrouped' => $pimGrouped]
             )
         );
 
@@ -426,8 +430,23 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         MappingCollection $attributeCodeMapping,
         array $parameters = []
     ) {
+        if ($this->belongsToVariant($product) &&
+            null !== $parameters['pimGrouped'] &&
+            !$this->hasGroupedProduct($product, $parameters['pimGrouped'])) {
+            $visibility = $this->variantMemberVisibility;
+        } else {
+            $visibility = $this->visibility;
+        }
+
         return [
-            strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $this->visibility,
+            strtolower($attributeCodeMapping->getTarget(self::URL_KEY))    =>
+                $this->generateUrlKey(
+                    $product,
+                    $attributeCodeMapping,
+                    $parameters['localeCode'],
+                    $parameters['scopeCode']
+                ),
+            strtolower($attributeCodeMapping->getTarget(self::VISIBILITY)) => $visibility,
             strtolower($attributeCodeMapping->getTarget(self::ENABLED))    => (string) ($this->enabled) ? 1 : 2,
             strtolower($attributeCodeMapping->getTarget('created_at'))     => $product->getCreated()
                 ->format(AbstractNormalizer::DATE_FORMAT),
@@ -439,5 +458,52 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
                 $parameters['scopeCode']
             )
         ];
+    }
+
+    /**
+     * Check if the product belongs to a variant group
+     *
+     * @param ProductInterface $product
+     *
+     * @return boolean
+     */
+    protected function belongsToVariant(ProductInterface $product)
+    {
+        foreach ($product->getGroups() as $group) {
+            if ($group->getType()->isVariant()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Generate url key from product name and identifier.
+     * The identifier is included to make sure the url_key is unique, as required in Magento
+     *
+     * If name is localized, the default locale is used to get the value.
+     *
+     * @param ProductInterface  $product
+     * @param MappingCollection $attributeCodeMapping
+     * @param string            $localeCode
+     * @param string            $scopeCode
+     *
+     * @return string
+     */
+    protected function generateUrlKey(
+        ProductInterface $product,
+        MappingCollection $attributeCodeMapping,
+        $localeCode,
+        $scopeCode
+    ) {
+        $identifier = $product->getIdentifier();
+        $nameAttribute = $attributeCodeMapping->getSource(self::NAME);
+
+        $name = $product->getValue($nameAttribute, $localeCode, $scopeCode);
+
+        $url = Urlizer::urlize($name . '-' . $identifier);
+
+        return $url;
     }
 }

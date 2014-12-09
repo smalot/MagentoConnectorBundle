@@ -42,21 +42,6 @@ class ProductProcessor extends AbstractProductProcessor
     protected $pimGrouped;
 
     /**
-     * @var string
-     */
-    protected $smallImageAttribute;
-
-    /**
-     * @var string
-     */
-    protected $baseImageAttribute;
-
-    /**
-     * @var string
-     */
-    protected $thumbnailAttribute;
-
-    /**
      * @param WebserviceGuesser                   $webserviceGuesser
      * @param NormalizerGuesser                   $normalizerGuesser
      * @param LocaleManager                       $localeManager
@@ -93,12 +78,12 @@ class ProductProcessor extends AbstractProductProcessor
             $channelManager,
             $categoryMappingMerger,
             $attributeMappingMerger,
-            $clientParametersRegistry
+            $clientParametersRegistry,
+            $attributeManager
         );
 
         $this->metricConverter        = $metricConverter;
         $this->associationTypeManager = $associationTypeManager;
-        $this->attributeManager       = $attributeManager;
     }
 
     /**
@@ -124,72 +109,6 @@ class ProductProcessor extends AbstractProductProcessor
     }
 
     /**
-     * Get small image
-     * @return string
-     */
-    public function getSmallImageAttribute()
-    {
-        return $this->smallImageAttribute;
-    }
-
-    /**
-     * Set small image
-     * @param string $smallImageAttribute
-     *
-     * @return ProductProcessor
-     */
-    public function setSmallImageAttribute($smallImageAttribute)
-    {
-        $this->smallImageAttribute = $smallImageAttribute;
-
-        return $this;
-    }
-
-    /**
-     * Get base image attribute
-     * @return string
-     */
-    public function getBaseImageAttribute()
-    {
-        return $this->baseImageAttribute;
-    }
-
-    /**
-     * Set base image attribute
-     * @param string $baseImageAttribute
-     *
-     * @return ProductProcessor
-     */
-    public function setBaseImageAttribute($baseImageAttribute)
-    {
-        $this->baseImageAttribute = $baseImageAttribute;
-
-        return $this;
-    }
-
-    /**
-     * Get thumbnail attribute
-     * @return string
-     */
-    public function getThumbnailAttribute()
-    {
-        return $this->thumbnailAttribute;
-    }
-
-    /**
-     * Set thumbnail attribute
-     * @param string $thumbnailAttribute
-     *
-     * @return ProductProcessor
-     */
-    public function setThumbnailAttribute($thumbnailAttribute)
-    {
-        $this->thumbnailAttribute = $thumbnailAttribute;
-
-        return $this;
-    }
-
-    /**
      * Function called before all process
      */
     protected function beforeExecute()
@@ -197,9 +116,6 @@ class ProductProcessor extends AbstractProductProcessor
         parent::beforeExecute();
 
         $this->globalContext['pimGrouped']          = $this->pimGrouped;
-        $this->globalContext['smallImageAttribute'] = $this->smallImageAttribute;
-        $this->globalContext['baseImageAttribute']  = $this->baseImageAttribute;
-        $this->globalContext['thumbnailAttribute']  = $this->thumbnailAttribute;
         $this->globalContext['defaultStoreView']    = $this->getDefaultStoreView();
     }
 
@@ -226,10 +142,11 @@ class ProductProcessor extends AbstractProductProcessor
 
             if ($this->magentoProductExists($product, $magentoProducts)) {
                 if ($this->attributeSetChanged($product, $magentoProducts)) {
-                    throw new InvalidItemException(
+                    $this->addWarning(
                         'The product family has changed of this product. This modification cannot be applied to ' .
                         'magento. In order to change the family of this product, please manualy delete this product ' .
                         'in magento and re-run this connector.',
+                        [],
                         [
                             'id'                                                 => $product->getId(),
                             $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
@@ -245,7 +162,21 @@ class ProductProcessor extends AbstractProductProcessor
 
             $this->metricConverter->convert($product, $channel);
 
-            $processedItems[] = $this->normalizeProduct($product, $context);
+            try {
+                $processedItems[] = $this->normalizeProduct($product, $context);
+            } catch (\Exception $e) {
+                $this->addWarning(
+                    $e->getMessage(),
+                    [],
+                    [
+                        'id'                                                 => $product->getId(),
+                        $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
+                        'label'                                              => $product->getLabel(),
+                        'family'                                             => $product->getFamily()->getCode()
+                    ]
+                );
+            }
+
         }
 
         return $processedItems;
@@ -263,23 +194,11 @@ class ProductProcessor extends AbstractProductProcessor
      */
     protected function normalizeProduct(ProductInterface $product, $context)
     {
-        try {
-            $processedItem = $this->productNormalizer->normalize(
-                $product,
-                AbstractNormalizer::MAGENTO_FORMAT,
-                $context
-            );
-        } catch (NormalizeException $e) {
-            throw new InvalidItemException(
-                $e->getMessage(),
-                [
-                    'id'                                                 => $product->getId(),
-                    $product->getIdentifier()->getAttribute()->getCode() => $product->getIdentifier()->getData(),
-                    'label'                                              => $product->getLabel(),
-                    'family'                                             => $product->getFamily()->getCode()
-                ]
-            );
-        }
+        $processedItem = $this->productNormalizer->normalize(
+            $product,
+            AbstractNormalizer::MAGENTO_FORMAT,
+            $context
+        );
 
         return $processedItem;
     }
@@ -332,39 +251,6 @@ class ProductProcessor extends AbstractProductProcessor
         return array_merge(
             parent::getConfigurationFields(),
             [
-                'smallImageAttribute' => [
-                    'type' => 'choice',
-                    'options' => [
-                        'choices' => $this->attributeManager->getImageAttributeChoice(),
-                        'help'    => 'pim_magento_connector.export.smallImageAttribute.help',
-                        'label'   => 'pim_magento_connector.export.smallImageAttribute.label',
-                        'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
-                ],
-                'baseImageAttribute' => [
-                    'type' => 'choice',
-                    'options' => [
-                        'choices' => $this->attributeManager->getImageAttributeChoice(),
-                        'help'    => 'pim_magento_connector.export.baseImageAttribute.help',
-                        'label'   => 'pim_magento_connector.export.baseImageAttribute.label',
-                        'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
-                ],
-                'thumbnailAttribute' => [
-                    'type' => 'choice',
-                    'options' => [
-                        'choices' => $this->attributeManager->getImageAttributeChoice(),
-                        'help'    => 'pim_magento_connector.export.thumbnailAttribute.help',
-                        'label'   => 'pim_magento_connector.export.thumbnailAttribute.label',
-                        'attr' => [
-                            'class' => 'select2'
-                        ]
-                    ]
-                ],
                 'pimGrouped' => [
                     'type'    => 'choice',
                     'options' => [
@@ -375,7 +261,7 @@ class ProductProcessor extends AbstractProductProcessor
                             'class' => 'select2'
                         ]
                     ]
-                ],
+                ]
             ]
         );
     }

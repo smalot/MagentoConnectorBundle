@@ -11,6 +11,7 @@ use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCurrency;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Manager\CurrencyManager;
+use Pim\Bundle\MagentoConnectorBundle\Manager\AttributeManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
@@ -26,6 +27,8 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegi
 abstract class AbstractProductProcessor extends AbstractProcessor
 {
     const MAGENTO_VISIBILITY_CATALOG_SEARCH = 4;
+
+    const MAGENTO_VISIBILITY_NONE = 1;
 
     /**
      * @var ProductNormalizer
@@ -64,6 +67,11 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $visibility = self::MAGENTO_VISIBILITY_CATALOG_SEARCH;
 
     /**
+     * @var integer
+     */
+    protected $variantMemberVisibility = self::MAGENTO_VISIBILITY_NONE;
+
+    /**
      * @var string
      */
     protected $categoryMapping;
@@ -74,6 +82,11 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
+     * @var AttributeManager
+     */
+    protected $attributeManager;
+
+    /**
      * @var string
      */
     protected $attributeCodeMapping;
@@ -82,6 +95,21 @@ abstract class AbstractProductProcessor extends AbstractProcessor
      * @var MagentoMappingMerger
      */
     protected $attributeMappingMerger;
+
+    /**
+     * @var string
+     */
+    protected $smallImageAttribute;
+
+    /**
+     * @var string
+     */
+    protected $baseImageAttribute;
+
+    /**
+     * @var string
+     */
+    protected $thumbnailAttribute;
 
     /**
      * @param WebserviceGuesser        $webserviceGuesser
@@ -102,7 +130,8 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         ChannelManager $channelManager,
         MagentoMappingMerger $categoryMappingMerger,
         MagentoMappingMerger $attributeMappingMerger,
-        MagentoSoapClientParametersRegistry $clientParametersRegistry
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        AttributeManager $attributeManager
     ) {
         parent::__construct(
             $webserviceGuesser,
@@ -115,6 +144,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
         $this->currencyManager        = $currencyManager;
         $this->channelManager         = $channelManager;
         $this->categoryMappingMerger  = $categoryMappingMerger;
+        $this->attributeManager       = $attributeManager;
         $this->attributeMappingMerger = $attributeMappingMerger;
     }
 
@@ -201,6 +231,30 @@ abstract class AbstractProductProcessor extends AbstractProcessor
     }
 
     /**
+     * Set variant member visibility
+     *
+     * @param string $visibility visibility
+     *
+     * @return AbstractProcessor
+     */
+    public function setVariantMemberVisibility($visibility)
+    {
+        $this->variantMemberVisibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * get visibility for variant member
+     *
+     * @return string visibility
+     */
+    public function getVariantMemberVisibility()
+    {
+        return $this->variantMemberVisibility;
+    }
+
+    /**
      * Set visibility
      *
      * @param string $visibility visibility
@@ -213,6 +267,73 @@ abstract class AbstractProductProcessor extends AbstractProcessor
 
         return $this;
     }
+
+    /**
+     * Get small image
+     * @return string
+     */
+    public function getSmallImageAttribute()
+    {
+        return $this->smallImageAttribute;
+    }
+
+    /**
+     * Set small image
+     * @param string $smallImageAttribute
+     *
+     * @return ProductProcessor
+     */
+    public function setSmallImageAttribute($smallImageAttribute)
+    {
+        $this->smallImageAttribute = $smallImageAttribute;
+
+        return $this;
+    }
+
+    /**
+     * Get base image attribute
+     * @return string
+     */
+    public function getBaseImageAttribute()
+    {
+        return $this->baseImageAttribute;
+    }
+
+    /**
+     * Set base image attribute
+     * @param string $baseImageAttribute
+     *
+     * @return ProductProcessor
+     */
+    public function setBaseImageAttribute($baseImageAttribute)
+    {
+        $this->baseImageAttribute = $baseImageAttribute;
+
+        return $this;
+    }
+
+    /**
+     * Get thumbnail attribute
+     * @return string
+     */
+    public function getThumbnailAttribute()
+    {
+        return $this->thumbnailAttribute;
+    }
+
+    /**
+     * Set thumbnail attribute
+     * @param string $thumbnailAttribute
+     *
+     * @return ProductProcessor
+     */
+    public function setThumbnailAttribute($thumbnailAttribute)
+    {
+        $this->thumbnailAttribute = $thumbnailAttribute;
+
+        return $this;
+    }
+
 
     /**
      * get categoryMapping
@@ -301,6 +422,7 @@ abstract class AbstractProductProcessor extends AbstractProcessor
             $this->getClientParameters(),
             $this->enabled,
             $this->visibility,
+            $this->variantMemberVisibility,
             $this->currency
         );
 
@@ -317,7 +439,10 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                 'magentoAttributesOptions' => $magentoAttributesOptions,
                 'magentoStoreViews'        => $magentoStoreViews,
                 'categoryMapping'          => $this->categoryMappingMerger->getMapping(),
-                'attributeCodeMapping'     => $this->attributeMappingMerger->getMapping()
+                'attributeCodeMapping'     => $this->attributeMappingMerger->getMapping(),
+                'smallImageAttribute'      => $this->smallImageAttribute,
+                'baseImageAttribute'       => $this->baseImageAttribute,
+                'thumbnailAttribute'       => $this->thumbnailAttribute
             ]
         );
     }
@@ -366,6 +491,14 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                         'label'    => 'pim_magento_connector.export.visibility.label'
                     ]
                 ],
+                'variantMemberVisibility' => [
+                    'type'    => 'text',
+                    'options' => [
+                        'required' => true,
+                        'help'     => 'pim_magento_connector.export.variant_member_visibility.help',
+                        'label'    => 'pim_magento_connector.export.variant_member_visibility.label'
+                    ]
+                ],
                 'currency' => [
                     'type'    => 'choice',
                     'options' => [
@@ -377,7 +510,40 @@ abstract class AbstractProductProcessor extends AbstractProcessor
                             'class' => 'select2'
                         ]
                     ]
-                ]
+                ],
+                'smallImageAttribute' => [
+                    'type' => 'choice',
+                    'options' => [
+                        'choices' => $this->attributeManager->getImageAttributeChoice(),
+                        'help'    => 'pim_magento_connector.export.smallImageAttribute.help',
+                        'label'   => 'pim_magento_connector.export.smallImageAttribute.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
+                    ]
+                ],
+                'baseImageAttribute' => [
+                    'type' => 'choice',
+                    'options' => [
+                        'choices' => $this->attributeManager->getImageAttributeChoice(),
+                        'help'    => 'pim_magento_connector.export.baseImageAttribute.help',
+                        'label'   => 'pim_magento_connector.export.baseImageAttribute.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
+                    ]
+                ],
+                'thumbnailAttribute' => [
+                    'type' => 'choice',
+                    'options' => [
+                        'choices' => $this->attributeManager->getImageAttributeChoice(),
+                        'help'    => 'pim_magento_connector.export.thumbnailAttribute.help',
+                        'label'   => 'pim_magento_connector.export.thumbnailAttribute.label',
+                        'attr' => [
+                            'class' => 'select2'
+                        ]
+                    ]
+                ],
             ],
             $this->categoryMappingMerger->getConfigurationField(),
             $this->attributeMappingMerger->getConfigurationField()

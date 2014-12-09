@@ -1,6 +1,7 @@
 pim_magento_connector:
     jobs:
         product_export.title: Export produits vers Magento
+        product_delta_export.title: Export delta des produits vers Magento
         category_export.title: Export catégories vers Magento
         option_export.title: "Export d'options vers Magento"
         attribute_export.title: "Export d'attributs vers Magento"
@@ -38,6 +39,7 @@ pim_magento_connector:
         attributeset_export.export.title: Export de familles
         family_clean.clean.title: Nettoyeur de famille
         group_clean.clean.title: Nettoyeur de groupe
+        family_cleaner.title: Nettoyeur de famille
     export:
         soapUsername:
             label: "Nom d'utilisateur soap"
@@ -72,6 +74,9 @@ pim_magento_connector:
         visibility:
             label: Visibilité sur les produits Magento
             help:
+        variant_member_visibility:
+            label: Visibilité des configurables
+            help:
         website:
             label: Website
             help: Le website Magento vers lesquels les produits seront envoyés
@@ -96,7 +101,7 @@ pim_magento_connector:
         pimRelated:
             label: "Type d'association pour les produits liés"
             help:  "Type d'association correspondant aux produits liés"
-        attributeMapping:
+        attributeCodeMapping:
             label: Correspondance d'attributs
             help:  Correspondance des attributs entre Akeneo PIM et Magento
         notInPimAnymoreAction:
@@ -126,4 +131,3 @@ pim_magento_connector:
         thumbnailAttribute:
             label: Attribut image de vignette
             help: Choisissez l'attribut Akeneo correspondant à l'image vignette (thumbnail) du produit dans Magento
-

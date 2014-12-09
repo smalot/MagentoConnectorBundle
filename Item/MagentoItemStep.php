@@ -11,6 +11,9 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Validator\Constraints\HasValidCredentials;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Event\InvalidItemEvent;
+use Akeneo\Bundle\BatchBundle\Event\EventInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Magento item step
@@ -95,6 +98,11 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $afterConfiguration = false;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * @param WebserviceGuesser $webserviceGuesser
      */
     public function __construct(
@@ -125,6 +133,16 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
 
             $this->afterConfiguration = true;
         }
+    }
+
+    /**
+     * Set the event dispatcher
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -398,16 +416,64 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
      */
     protected function getClientParameters()
     {
-            $this->clientParameters = $this->clientParametersRegistry->getInstance(
-                $this->soapUsername,
-                $this->soapApiKey,
-                $this->magentoUrl,
-                $this->wsdlUrl,
-                $this->defaultStoreView,
-                $this->httpLogin,
-                $this->httpPassword
-            );
+        $this->clientParameters = $this->clientParametersRegistry->getInstance(
+            $this->soapUsername,
+            $this->soapApiKey,
+            $this->magentoUrl,
+            $this->wsdlUrl,
+            $this->defaultStoreView,
+            $this->httpLogin,
+            $this->httpPassword
+        );
 
         return $this->clientParameters;
+    }
+
+    /**
+     * Add a warning based on the stepExecution.
+     *
+     * @param string $message
+     * @param array  $messageParameters
+     * @param mixed  $item
+     */
+    protected function addWarning($message, array $messageParameters = [], $item = null)
+    {
+        $this->stepExecution->addWarning(
+            $this->getName(),
+            $message,
+            $messageParameters,
+            $item
+        );
+
+        if (!is_array($item)) {
+            $item = array();
+        }
+
+        $item = $this->cleanupImageContent($item);
+
+        $event = new InvalidItemEvent(get_class($this), $message, $messageParameters, $item);
+        $this->eventDispatcher->dispatch(EventInterface::INVALID_ITEM, $event);
+    }
+
+    /**
+     * Cleanup image content from item in order to avoid large
+     * item line in error log
+     *
+     * @param array $item
+     *
+     * @return array
+     */
+    protected function cleanupImageContent(array $item)
+    {
+        array_walk_recursive(
+            $item,
+            function (&$entry, $key) {
+                if ('content' === $key) {
+                    $entry = "<CUT>";
+                }
+            }
+        );
+
+        return $item;
     }
 }

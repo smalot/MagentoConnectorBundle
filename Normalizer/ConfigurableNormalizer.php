@@ -29,20 +29,28 @@ class ConfigurableNormalizer extends AbstractNormalizer
     protected $productNormalizer;
 
     /**
+     * @var boolean
+     */
+    protected $visibility;
+
+    /**
      * Constructor
      * @param ChannelManager      $channelManager
      * @param ProductNormalizer   $productNormalizer
      * @param PriceMappingManager $priceMappingManager
+     * @param boolean             $visibility
      */
     public function __construct(
         ChannelManager $channelManager,
         ProductNormalizer $productNormalizer,
-        PriceMappingManager $priceMappingManager
+        PriceMappingManager $priceMappingManager,
+        $visibility
     ) {
         parent::__construct($channelManager);
 
         $this->productNormalizer   = $productNormalizer;
         $this->priceMappingManager = $priceMappingManager;
+        $this->visibility          = $visibility;
     }
 
     /**
@@ -70,7 +78,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $context['create']
         );
 
-        $images = $this->productNormalizer->getNormalizedImages($products[0], $sku);
+        $images = $this->productNormalizer->getNormalizedImages(
+            $products[0],
+            $sku,
+            $context['smallImageAttribute'],
+            $context['baseImageAttribute'],
+            $context['thumbnailAttribute']
+        );
 
         if (count($images) > 0) {
             $processedItem[Webservice::IMAGES] = $images;
@@ -176,6 +190,9 @@ class ConfigurableNormalizer extends AbstractNormalizer
             $attributeMapping,
             false
         );
+
+        $defaultProductValues[ProductNormalizer::VISIBILITY] = $this->visibility;
+        $defaultProductValues[ProductNormalizer::URL_KEY] = $defaultProductValues[ProductNormalizer::URL_KEY].'-conf-'.$group->getId();
 
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,

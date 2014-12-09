@@ -29,14 +29,21 @@ class PriceMappingManager
     protected $currency;
 
     /**
+     * @var string
+     */
+    protected $channel;
+
+    /**
      * Constructor
      * @param string $locale
      * @param string $currency
+     * @param string $channel
      */
-    public function __construct($locale, $currency)
+    public function __construct($locale, $currency, $channel)
     {
         $this->locale   = $locale;
         $this->currency = $currency;
+        $this->channel  = $channel;
     }
 
     /**
@@ -192,7 +199,9 @@ class PriceMappingManager
 
         $toSubstract = ($lowest * -1) * $toSubstract;
 
-        $price = $product->getValue('price', $this->locale);
+        $priceAttr = $attributeMapping->getSource('price');
+
+        $price = $product->getValue($priceAttr, $this->locale, $this->channel);
 
         $data = (null != $price) ? $price->getPrice($this->currency)->getData() : 0;
 
@@ -250,8 +259,11 @@ class PriceMappingManager
         $productsWithOption = [];
         $attributeCode      = $option->getAttribute()->getCode();
 
+        //PHP Warning:  max(): Array must contain at least one element in /home/akeneo_pim/pim-natalys/vendor/akeneo/magento-connector-bundle/Pim/Bundle/MagentoConnectorBundle/Manager/PriceMappingManager.php on line 156
+
         foreach ($products as $product) {
             if ($product->getValue($attributeCode, $this->locale) !== null &&
+                $product->getValue($attributeCode, $this->locale)->getData() !== null &&
                 $product->getValue($attributeCode, $this->locale)->getData()->getCode() === $option->getCode()
             ) {
                 $productsWithOption[] = $product;

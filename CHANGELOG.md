@@ -1,6 +1,40 @@
-# 1.0.0 (2014-09-29)
+# 1.1.8 (2014-12-01)
 ## Bug fixes
-- Fixes associations fixtures
+ - removes sending of url_key when updating product, as it breaks with Magento 1.3.1.0 (see http://www.magentocommerce.com/knowledge-base/entry/ee113-later-release-notes#ee113-11302-seo-uniqueness-rules)
+
+## BC Breaks
+ - URL key is no longer sent during product update.
+
+# 1.1.7 (2014-11-29)
+## Bug fixes
+ - remove base64 image representation from error messages
+
+# 1.1.1 (2014-11-12)
+## New feature
+ - url_key for products and category is generated now on Akeneo's side,
+   to avoid duplicate url_key errors from the SOAP API
+
+## Bug fixes
+ - configurable images are now properly sent with their types (small, thumbnail, etc...)
+ - required property on attribute conflicts with Configurables and has been removed
+
+## BC Breaks
+ - ConfigurableProcessor constructor has now an AttributeManager parameter
+ - All Step elements services (writers, processors and readers) that uses the addWarning methods must
+   have pim_magento_connector.item.magento_item_step has parent service
+ - required property is not sent anymore to Magento, as the data is already checked
+
+# 1.1.0 (2014-10-23)
+## New feature
+ - Add visibility option for products members of variant group
+   for example to avoid displaying simple product only
+
+## BC Breaks
+ - ProductNormalizer and ConfigurableNormalizer constructors have now a new visibility parameter
+
+# 1.0.1 (2014-09-30)
+## Bug fixes
+ - Fix association fixtures #252
 
 # 1.0.0 (2014-09-19)
 

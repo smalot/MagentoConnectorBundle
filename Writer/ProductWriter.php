@@ -84,7 +84,11 @@ class ProductWriter extends AbstractWriter
         //creation for each product in the admin storeView (with default locale)
         foreach ($products as $batch) {
             foreach ($batch as $product) {
-                $this->computeProduct($product);
+                try {
+                    $this->computeProduct($product);
+                } catch (SoapCallException $e) {
+                    $this->addWarning($e->getMessage(), [], $product);
+                }
             }
         }
     }
@@ -114,8 +118,6 @@ class ProductWriter extends AbstractWriter
      * Compute an individual product and all his parts (translations)
      *
      * @param array $product The product and his parts
-     *
-     * @throws InvalidItemException
      */
     protected function computeProduct($product)
     {
@@ -125,11 +127,7 @@ class ProductWriter extends AbstractWriter
         $this->pruneImages($sku, $images);
 
         foreach (array_keys($product) as $storeViewCode) {
-            try {
-                $this->createCall($product[$storeViewCode], $storeViewCode);
-            } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), [json_encode($product[$storeViewCode])]);
-            }
+            $this->createCall($product[$storeViewCode], $storeViewCode);
         }
     }
 
@@ -179,17 +177,11 @@ class ProductWriter extends AbstractWriter
      *
      * @param string $sku
      * @param array  $images
-     *
-     * @throws InvalidItemException
      */
     protected function pruneImages($sku, array $images = [])
     {
         foreach ($images as $image) {
-            try {
-                $this->webservice->deleteImage($sku, $image['file']);
-            } catch (SoapCallException $e) {
-                throw new InvalidItemException($e->getMessage(), $image);
-            }
+            $this->webservice->deleteImage($sku, $image['file']);
         }
     }
 }
