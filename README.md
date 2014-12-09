@@ -4,7 +4,7 @@ Welcome on the Akeneo PIM Magento connector bundle.
 
 This repository is issued to develop the Magento Connector for Akeneo PIM.
 
-Warning : this connector is not production ready and is intended for evaluation and development purposes only!
+Warning: this connector is not production ready and is intended for evaluation and development purposes only!
 
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/akeneo/MagentoConnectorBundle/badges/quality-score.png?s=f2f90f8746e80dc5a1e422156672bd3b0bb6658f)](https://scrutinizer-ci.com/g/akeneo/MagentoConnectorBundle/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/2f3066f2-316f-4ed1-8df0-f48d7a1d7f12/mini.png)](https://insight.sensiolabs.com/projects/2f3066f2-316f-4ed1-8df0-f48d7a1d7f12)
@@ -43,9 +43,9 @@ Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` functio
     $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
     $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
 
-You can now update your database :
+You can now update your database:
 
-    app/console doctrine:schema:update --force
+    php app/console doctrine:schema:update --force
 
 Don't forget to add guzzle in the composer.json of the pim
 
@@ -53,6 +53,9 @@ Don't forget to add guzzle in the composer.json of the pim
         "guzzle/service": ">=3.6.0,<3.8.0"
     },
 
+and to reinstall pim assets
+
+    php app/console pim:installer:assets
 
 If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
 
@@ -62,7 +65,7 @@ The following installation instructions are meant for development on the Magento
 
 To install the Magento connector for development purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
 
-After that, add bundles to your `AppKernel.php` :
+After that, add bundles to your `AppKernel.php`:
 
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
     $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
@@ -74,15 +77,39 @@ Don't forget to add guzzle in the composer.json of the pim
         "guzzle/service": ">=3.6.0,<3.8.0"
     },
 
+and to reinstall pim assets
+
+    php app/console pim:installer:assets
+
 # Configuration
 
 In order to export products to Magento, a SOAP user with full rights has to be created on Magento.
 
-After that you can go to `spread > export profiles` on Akeneo PIM and create your first Magento export job.
+For that, in the Magento Admin Panel, access `Web Services > SOAP/XML-RPC - Roles`, then click on `Add New Role` button. Create a role, choose a name, for instance “Soap”, and select `All` in Roles Resources.
 
-*Configuration example* :
+*Role name setup example*:
 
-![Magento connector configuration example](http://i.imgur.com/bmWa8DT.png?1)
+![Magento role name setup](Resources/doc/images/role-name-setup.png)
+
+*Role resources setup example*:
+
+![Magento role resources setup](Resources/doc/images/role-resources-setup.png)
+
+Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and click on “Add New User” button. Complete user info at your liking, then select “Soap” (or whatever name you gave to it) role in the User Role section.
+
+*User setup example*:
+
+![Magento soap user setup](Resources/doc/images/user-setup.png)
+
+*User role setup example*:
+
+![Magento soap user role setup](Resources/doc/images/user-role-setup.png)
+
+After that you can go to `Spread > Export profiles` on Akeneo PIM and create your first Magento export job.
+
+*Configuration example*:
+
+![Magento connector configuration example](Resources/doc/images/configuration-example.png)
 
 # Demo fixtures
 
@@ -94,13 +121,27 @@ To test the connector with the minimum data requirements, you can load the demo 
 
 ## Mandatory attributes
 
-The following Magento's attributes are mandatory for Magento and need to be created or mapped in Akeneo :
+The following Magento's attributes are mandatory for Magento and need to be created or mapped in Akeneo:
 
 - name
 - price
 - description
 - short_description
 - tax_class_id
+
+# Troubleshooting
+
+If you encounter a problem with the “Storeview mapping” form, like in the screenshot below:
+
+*Storeview mapping form problem*:
+
+![Storeview mapping form problem](Resources/doc/images/storeview-trouble.png)
+
+then you probably have forget to reinstall assets after installing the Magento connector. A simple
+
+    php app/console pim:installer:assets
+    
+should settle the problem.
 
 # Bug and issues
 
