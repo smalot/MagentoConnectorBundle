@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="pim" default="build">
+
+    <target name="build-phpspec" depends="prepare,composer,vendors-no-scripts,phpspec,phpspec-junit"/>
+
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="${basedir}/app/build/api"/>
+        <delete dir="${basedir}/app/build/code-browser"/>
+        <delete dir="${basedir}/app/build/coverage"/>
+        <delete dir="${basedir}/app/build/coverage-parts"/>
+        <delete dir="${basedir}/app/build/logs"/>
+        <delete dir="${basedir}/app/build/pdepend"/>
+
+        <delete file="${basedir}/composer.phar" />
+        <delete file="${basedir}/app/config/parameters.yml" />
+        <delete file="${basedir}/app/config/parameters_test.yml" />
+        <delete dir="${basedir}/app/cache" />
+    </target>
+
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="${basedir}/app/build/api"/>
+        <mkdir dir="${basedir}/app/build/code-browser"/>
+        <mkdir dir="${basedir}/app/build/coverage"/>
+        <mkdir dir="${basedir}/app/build/coverage-parts"/>
+        <mkdir dir="${basedir}/app/build/logs"/>
+        <mkdir dir="${basedir}/app/build/logs/phpspec"/>
+        <mkdir dir="${basedir}/app/build/logs/phpdoc"/>
+        <mkdir dir="${basedir}/app/build/pdepend"/>
+        <mkdir dir="${basedir}/app/build/phpdox"/>
+
+        <copy file="${basedir}/phpdoc.xml.dist" tofile="${basedir}/phpdoc.xml" />
+    </target>
+
+    <target name="composer" description="Install composer.phar">
+        <exec executable="bash">
+            <arg value="-c"/>
+            <arg value="curl -s http://getcomposer.org/installer | php"/>
+        </exec>
+    </target>
+
+    <target name="vendors-no-scripts" description="Install vendors">
+        <exec executable="${basedir}/composer.phar" failonerror="true">
+            <arg value="install" />
+            <arg value="--no-progress" />
+            <arg value="--no-interaction" />
+            <arg value="--prefer-dist" />
+            <arg value="--optimize-autoloader" />
+            <arg value="--no-scripts" />
+        </exec>
+    </target>
+
+    <target name="phpspec" description="Run specs with PhpSpec Dot formatter">
+        <exec executable="./phpspec-fix">
+            <arg value="-fdot" />
+            <arg value="--no-interaction" />
+            <arg value="--ansi" />
+        </exec>
+    </target>
+
+    <target name="phpspec-junit" description="Run specs with PhpSpec JUnit formatter">
+        <exec executable="./phpspec-fix" output="app/build/logs/phpspec/junit.xml">
+            <arg value="-fjunit" />
+            <arg value="--no-interaction" />
+        </exec>
+    </target>
+</project>
