@@ -74,10 +74,9 @@
     </target>
 
     <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
-        <exec executable="./bin/phpmd">
+        <exec executable="${basedir}/Resources/jenkins/phpmd_akeneo">
             <arg path="${basedir}/" />
             <arg value="xml" />
-            <arg value="codesize,unusedcode,naming" />
             <arg value="--reportfile" />
             <arg value="${basedir}/app/build/logs/pmd.xml" />
             <arg value="--exclude" />
