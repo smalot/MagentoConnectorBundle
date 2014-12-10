@@ -33,23 +33,21 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
+    $ php composer.phar require akeneo/connector-mapping-bundle": "v1.0.0-BETA3@dev"
+    $ php composer.phar require akeneo/delta-export-bundle:v1.0.0-BETA3@dev
     $ php composer.phar require akeneo/magento-connector-bundle:1.1.*@stable
 
 Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
+    $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
+    $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 
 You can now update your database:
 
     php app/console doctrine:schema:update --force
 
-Don't forget to add guzzle in the composer.json of the pim
-
-    "require": {
-        "guzzle/service": ">=3.6.0,<3.8.0"
-    },
-
-and to reinstall pim assets
+Don't forget to reinstall pim assets:
 
     php app/console pim:installer:assets
 
@@ -57,21 +55,11 @@ If you want to manage configurable products, you'll need to add [magento-improve
 
 ## Installing the Magento Connector in an Akeneo PIM development environment
 
-The following installation instructions are meant for development on the Magento Connector itself.
+The following installation instructions are meant for development on the Magento Connector itself. Start by setting up a working installation as previously explained.
 
-To install the Magento connector for development purposes, the best way is to clone it anywhere on your file system and create a symbolic link to your Akeneo installation's src folder.
+Then clone the Magento Connector bundle anywhere on your file system and create a symbolic link to your Akeneo installation's vendor folder (after renaiming/deleting the previous one).
 
-After that, add bundles to your `AppKernel.php`:
-
-    $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
-
-Don't forget to add guzzle in the composer.json of the pim
-
-    "require": {
-        "guzzle/service": ">=3.6.0,<3.8.0"
-    },
-
-and to reinstall pim assets
+Don't forget to reinstall pim assets (again):
 
     php app/console pim:installer:assets
 
@@ -136,20 +124,6 @@ The following Magento's attributes are mandatory for Magento and need to be crea
 - description
 - short_description
 - tax_class_id
-
-# Troubleshooting
-
-If you encounter a problem with the “Storeview mapping” form, like in the screenshot below:
-
-*Storeview mapping form problem*:
-
-![Storeview mapping form problem](Resources/doc/images/storeview-trouble.png)
-
-then you probably have forget to reinstall assets after installing the Magento connector. A simple
-
-    php app/console pim:installer:assets
-    
-should settle the problem.
 
 # Bug and issues
 
