@@ -55,7 +55,7 @@ and to reinstall pim assets
 
 If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
 
-## Installation the Magento Connector in an Akeneo PIM development environment
+## Installing the Magento Connector in an Akeneo PIM development environment
 
 The following installation instructions are meant for development on the Magento Connector itself.
 
@@ -83,27 +83,27 @@ For that, in the Magento Admin Panel, access `Web Services > SOAP/XML-RPC - Role
 
 *Role name setup example*:
 
-![Magento role name setup](Resources/doc/images/role-name-setup.png)
+![Magento role name setup](./Resources/doc/images/main/role-name-setup.png)
 
 *Role resources setup example*:
 
-![Magento role resources setup](Resources/doc/images/role-resources-setup.png)
+![Magento role resources setup](./Resources/doc/images/main/role-resources-setup.png)
 
 Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and click on “Add New User” button. Complete user info at your liking, then select “Soap” (or whatever name you gave to it) role in the User Role section.
 
 *User setup example*:
 
-![Magento soap user setup](Resources/doc/images/user-setup.png)
+![Magento soap user setup](./Resources/doc/images/main/user-setup.png)
 
 *User role setup example*:
 
-![Magento soap user role setup](Resources/doc/images/user-role-setup.png)
+![Magento soap user role setup](./Resources/doc/images/main/user-role-setup.png)
 
 After that you can go to `Spread > Export profiles` on Akeneo PIM and create your first Magento export job.
 
 *Configuration example*:
 
-![Magento connector configuration example](Resources/doc/images/configuration-example.png)
+![Magento connector configuration example](./Resources/doc/images/configuration-example.png)
 
 # Demo fixtures
 
@@ -123,30 +123,10 @@ The following Magento's attributes are mandatory for Magento and need to be crea
 - short_description
 - tax_class_id
 
-# Troubleshooting
-
-If you encounter a problem with the “Storeview mapping” form, like in the screenshot below:
-
-*Storeview mapping form problem*:
-
-![Storeview mapping form problem](Resources/doc/images/storeview-trouble.png)
-
-then you probably have forget to reinstall assets after installing the Magento connector. A simple
-
-    php app/console pim:installer:assets
-    
-should settle the problem.
-
 # Bug and issues
 
 This bundle is still under active development. Expect bugs and instabilities. Feel free to report them on this repository's [issue section](https://github.com/akeneo/MagentoConnectorBundle/issues).
 
 # Troubleshooting
 
-## Cannot create image
-This error is in fact pretty rarely linked to images themselves. When the Magento Connector Bundle sends the image after the product has been created or updated, Magento goes through the Product save event flow. On this event, the url_key is generated. If a product has already been created with the same name, the url_key cannot be generated and error is issued, triggering an "Cannot create image" error, and losing at the same time the real reason why the image was not created.
-
-To debug, you can add a log in the Mage_Catalog_Model_Product_Attribute_Media_Api class, in the catch(Exception $e) (around line 186, to log what is the real Exception.
-
-## Unable to find category
-If you already sent the categories with the category export or the full export, but the Magento Connector Bundle still tells you that the category must be exported when you export products, there's a high chance that you spell the Magento URL and the WSDL URL differently between the export that sent categories and the product export. Sometimes, you've added a "/" at the end of the Magento URL parameter on one of the export and none on the other. It's enough so for the Magento Connector to believe it's a different Magento so the previously exported categories are not part of the same Magento.
+You can find solutions for some common problems in the [troubleshooting section](./Resources/doc/troubleshooting.md).
