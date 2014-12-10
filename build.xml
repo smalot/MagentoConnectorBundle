@@ -91,6 +91,7 @@
             <arg value="--report-file=${basedir}/app/build/logs/checkstyle.xml" />
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
+            <arg value="--ignore=${basedir}/vendor/,${basedir}/bin/,${basedir}/spec/" />
             <arg path="${basedir}/" />
         </exec>
     </target>
