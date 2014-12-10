@@ -99,6 +99,20 @@ Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and 
 
 ![Magento soap user role setup](./Resources/doc/images/main/user-role-setup.png)
 
+*Role resources setup example*:
+
+![Magento role resources setup](Resources/doc/images/role-resources-setup.png)
+
+Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and click on “Add New User” button. Complete user info at your liking, then select “Soap” (or whatever name you gave to it) role in the User Role section.
+
+*User setup example*:
+
+![Magento soap user setup](Resources/doc/images/user-setup.png)
+
+*User role setup example*:
+
+![Magento soap user role setup](Resources/doc/images/user-role-setup.png)
+
 After that you can go to `Spread > Export profiles` on Akeneo PIM and create your first Magento export job.
 
 *Configuration example*:
@@ -122,6 +136,20 @@ The following Magento's attributes are mandatory for Magento and need to be crea
 - description
 - short_description
 - tax_class_id
+
+# Troubleshooting
+
+If you encounter a problem with the “Storeview mapping” form, like in the screenshot below:
+
+*Storeview mapping form problem*:
+
+![Storeview mapping form problem](Resources/doc/images/storeview-trouble.png)
+
+then you probably have forget to reinstall assets after installing the Magento connector. A simple
+
+    php app/console pim:installer:assets
+    
+should settle the problem.
 
 # Bug and issues
 
