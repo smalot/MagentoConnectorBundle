@@ -11,7 +11,6 @@ parameters:
     pim_magento_connector.step.prune.class: Pim\Bundle\MagentoConnectorBundle\Step\PruneStep
     pim_magento_connector.factory.magento_soap_client.class: Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory
     pim_magento_connector.repository.currency.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CurrencyRepository
-    pim_magento_connector.repository.category.class: Pim\Bundle\MagentoConnectorBundle\Entity\Repository\CategoryRepository
     pim_magento_connector.twig.configuration_extension.class: Pim\Bundle\MagentoConnectorBundle\Twig\ConfigurationExtension
     pim_magento_connector.service.guzzle.client.class: Guzzle\Service\Client
     pim_magento_connector.item.magento_item_step.class: Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep
@@ -68,11 +67,6 @@ services:
     pim_magento_connector.webservice.magento_soap_client_parameters_registry:
         class: %pim_magento_connector.webservice.magento_soap_client_parameters_registry.class%
 
-    pim_magento_connector.repository.category:
-        class: %pim_magento_connector.repository.category.class%
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@pim_magento_connector.metadata.category'
     pim_magento_connector.repository.currency:
         class: %pim_magento_connector.repository.currency.class%
         arguments:
@@ -84,11 +78,6 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@pim_magento_connector.metadata.group'
 
-    pim_magento_connector.metadata.category:
-        public: false
-        class: Doctrine\ORM\Mapping\ClassMetaData
-        arguments:
-            name: %pim_catalog.entity.category.class%
     pim_magento_connector.metadata.currency:
         public: false
         class: Doctrine\ORM\Mapping\ClassMetaData
