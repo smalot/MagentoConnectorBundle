@@ -5,8 +5,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\CatalogBundle\Model\AbstractMetric;
 use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
-use Pim\Bundle\CatalogBundle\Model\Metric;
 use Pim\Bundle\CatalogBundle\Model\ProductPrice;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
@@ -338,7 +338,7 @@ class ProductValueNormalizer implements NormalizerInterface
             ],
             [
                 'filter'     => function ($data) {
-                    return $data instanceof Metric;
+                    return $data instanceof AbstractMetric;
                 },
                 'normalizer' => function ($data, $parameters) {
                     return (string) $data->getData();
