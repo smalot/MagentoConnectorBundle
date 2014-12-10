@@ -77,7 +77,7 @@ For that, in the Magento Admin Panel, access `Web Services > SOAP/XML-RPC - Role
 
 ![Magento role resources setup](./Resources/doc/images/main/role-resources-setup.png)
 
-Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and click on “Add New User” button. Complete user info at your liking, then select “Soap” (or whatever name you gave to it) role in the User Role section.
+Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and click on “Add New User” button. Complete user info at your liking, then select “Soap” role (or whatever name you gave to it) in the User Role section.
 
 *User setup example*:
 
@@ -86,20 +86,6 @@ Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and 
 *User role setup example*:
 
 ![Magento soap user role setup](./Resources/doc/images/main/user-role-setup.png)
-
-*Role resources setup example*:
-
-![Magento role resources setup](Resources/doc/images/role-resources-setup.png)
-
-Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and click on “Add New User” button. Complete user info at your liking, then select “Soap” (or whatever name you gave to it) role in the User Role section.
-
-*User setup example*:
-
-![Magento soap user setup](Resources/doc/images/user-setup.png)
-
-*User role setup example*:
-
-![Magento soap user role setup](Resources/doc/images/user-role-setup.png)
 
 After that you can go to `Spread > Export profiles` on Akeneo PIM and create your first Magento export job.
 
