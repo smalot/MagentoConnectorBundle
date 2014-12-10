@@ -77,8 +77,11 @@
         <exec executable="./bin/phpmd">
             <arg path="${basedir}/" />
             <arg value="xml" />
+            <arg value="codesize,unusedcode,naming" />
             <arg value="--reportfile" />
             <arg value="${basedir}/app/build/logs/pmd.xml" />
+            <arg value="--exclude" />
+            <arg value="${basedir}/bin/,${basedir}/spec/,${basedir}/vendor/" />
         </exec>
     </target>
 
