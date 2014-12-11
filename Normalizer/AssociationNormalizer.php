@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -18,21 +17,16 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class AssociationNormalizer implements NormalizerInterface
 {
-    /** @var MagentoAttributesHelper */
-    protected $attributeHelper;
-
     /** @var ValidProductHelper */
     protected $validProductHelper;
 
     /**
      * Constructor
      *
-     * @param MagentoAttributesHelper $attributeHelper
-     * @param ValidProductHelper      $validProductHelper
+     * @param ValidProductHelper $validProductHelper
      */
-    public function __construct(MagentoAttributesHelper $attributeHelper, ValidProductHelper $validProductHelper)
+    public function __construct(ValidProductHelper $validProductHelper)
     {
-        $this->attributeHelper    = $attributeHelper;
         $this->validProductHelper = $validProductHelper;
     }
 
@@ -48,16 +42,16 @@ class AssociationNormalizer implements NormalizerInterface
         $typeCode           = $associationMapping[$object->getAssociationType()->getCode()];
 
         if (!empty($validProducts) && !empty($typeCode)) {
-            $header = $this->attributeHelper->getAssociationTypeHeader($typeCode);
+            $header = LabelDictionary::getAssociationTypeHeader($typeCode);
             $associations[] = array_merge(
                 $this->getBaseProduct(
                     $object->getOwner(),
                     $context['attributeMapping'],
-                    $this->attributeHelper->getMandatoryAttributeCodesForAssociations(),
+                    LabelDictionary::getMandatoryAssociationAttributes(),
                     $context['defaultLocale'],
                     $channel->getCode()
                 ),
-                [$this->attributeHelper->getStatusHeader() => $context['enabled']]
+                [LabelDictionary::STATUS_HEADER => $context['enabled']]
             );
 
             foreach ($validProducts as $associatedProduct) {
@@ -73,7 +67,7 @@ class AssociationNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractAssociation && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof AbstractAssociation && 'api_import' === $format;
     }
 
     /**

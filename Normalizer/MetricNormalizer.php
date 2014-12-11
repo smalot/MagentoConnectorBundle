@@ -27,6 +27,6 @@ class MetricNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractMetric && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof AbstractMetric && 'api_import' === $format;
     }
 }

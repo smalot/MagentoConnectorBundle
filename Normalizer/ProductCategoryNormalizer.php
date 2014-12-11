@@ -55,7 +55,7 @@ class ProductCategoryNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof CategoryInterface && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof CategoryInterface && 'api_import' === $format;
     }
 
     /**

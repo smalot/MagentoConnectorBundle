@@ -8,19 +8,12 @@ use Pim\Bundle\CatalogBundle\Entity\Family;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\MappingException;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductNormalizerSpec extends ObjectBehavior
 {
-    public function let()
-    {
-        $attributesHelper = new MagentoAttributesHelper();
-        $this->beConstructedWith($attributesHelper);
-    }
-
     public function it_is_initializable()
     {
         $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer');

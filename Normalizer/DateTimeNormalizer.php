@@ -13,12 +13,15 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class DateTimeNormalizer implements NormalizerInterface
 {
+    /** @staticvar string */
+    const DATE_FORMAT = 'Y-m-d H:i:s';
+
     /**
      * {@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        return $object->format(ProductNormalizer::DATE_FORMAT);
+        return $object->format(static::DATE_FORMAT);
     }
 
     /**
@@ -26,6 +29,6 @@ class DateTimeNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof \DateTime && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof \DateTime && 'api_import' === $format;
     }
 }

@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -20,19 +19,6 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
 {
     /** @var NormalizerInterface */
     protected $normalizer;
-
-    /** @var MagentoAttributesHelper */
-    protected $attributesHelper;
-
-    /**
-     * Constructor
-     *
-     * @param MagentoAttributesHelper $attributesHelper
-     */
-    public function __construct(MagentoAttributesHelper $attributesHelper)
-    {
-        $this->attributesHelper = $attributesHelper;
-    }
 
     /**
      * {@inheritdoc}
@@ -79,7 +65,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof ProductValueInterface && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof ProductValueInterface && 'api_import' === $format;
     }
 
     /**
@@ -122,11 +108,11 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         if (is_array($value)) {
             foreach ($value as $option) {
                 if (is_array($option)) {
-                    $normalized[] = array_merge($option, [$this->attributesHelper->getStoreHeader() => $store]);
+                    $normalized[] = array_merge($option, [LabelDictionary::STORE_HEADER => $store]);
                 } else {
                     $normalized[] = [
-                        $this->attributesHelper->getStoreHeader() => $store,
-                        $attributeCode                            => $option
+                        LabelDictionary::STORE_HEADER => $store,
+                        $attributeCode                => $option
                     ];
                 }
             }

@@ -27,6 +27,6 @@ class AttributeOptionNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AttributeOption && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof AttributeOption && 'api_import' === $format;
     }
 }

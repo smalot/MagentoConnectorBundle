@@ -7,14 +7,12 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\ProductMedia;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 
 class ProductMediaNormalizerSpec extends ObjectBehavior
 {
     public function let(MediaManager $mediaManager)
     {
-        $attributesHelper = new MagentoAttributesHelper();
-        $this->beConstructedWith($mediaManager, $attributesHelper);
+        $this->beConstructedWith($mediaManager);
     }
 
     public function it_is_initializable()
