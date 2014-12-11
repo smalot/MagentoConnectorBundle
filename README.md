@@ -63,7 +63,7 @@ Don't forget to reinstall pim assets (again):
 
     php app/console pim:installer:assets
 
-# Configuration
+# Magento side configuration
 
 In order to export products to Magento, a SOAP user with full rights has to be created on Magento.
 
@@ -87,29 +87,13 @@ Now you can create a soap user. Go to `Web Services > SOAP/XML-RPC - Users` and 
 
 ![Magento soap user role setup](./Resources/doc/images/main/user-role-setup.png)
 
-After that you can go to `Spread > Export profiles` on Akeneo PIM and create your first Magento export job.
-
-*Configuration example*:
-
-![Magento connector configuration example](./Resources/doc/images/configuration-example.png)
+After that you can go to `Spread > Export profiles` on Akeneo PIM and create your first Magento export job. For more informations, go take a look to the [User Guide](./Resources/doc/userguide.md).
 
 # Demo fixtures
 
 To test the connector with the minimum data requirements, you can load the demo fixtures. Change the `installer_data` line from the `app/config/parameters.yml` file to:
 
-    installer_data: 'PimMagentoConnectorBundle:demo_magento'
-
-# Notes
-
-## Mandatory attributes
-
-The following Magento's attributes are mandatory for Magento and need to be created or mapped in Akeneo:
-
-- name
-- price
-- description
-- short_description
-- tax_class_id
+    installer_data: PimMagentoConnectorBundle:demo_magento
 
 # Bug and issues
 
