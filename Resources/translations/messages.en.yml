@@ -8,6 +8,10 @@ pim_magento_connector:
             title: Magento Configurable Export
             export:
                 title: Configurable Export Step
+        magento_attribute_export:
+            title: Magento Attribute Export
+            export:
+                title: Attribute Export Step
 
     export:
         validator:
