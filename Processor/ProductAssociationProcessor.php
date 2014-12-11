@@ -2,13 +2,11 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 
+use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
-use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
@@ -220,12 +218,12 @@ class ProductAssociationProcessor extends AbstractProcessor
 
     /**
      * Get create calls
-     * @param ProductInterface $product
-     * @param Association      $association
+     * @param ProductInterface    $product
+     * @param AbstractAssociation $association
      *
      * @return array
      */
-    protected function getCreateCallsForAssociation(ProductInterface $product, Association $association)
+    protected function getCreateCallsForAssociation(ProductInterface $product, AbstractAssociation $association)
     {
         $createAssociationCalls = [];
 
