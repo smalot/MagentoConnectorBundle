@@ -1,14 +1,10 @@
 parameters:
     pim_magento_connector.helper.price.class: Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper
-    pim_magento_connector.helper.magento_attributes.class: Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper
     pim_magento_connector.helper.valid_product.class: Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper
 
 services:
     pim_magento_connector.helper.price:
         class: %pim_magento_connector.helper.price.class%
-
-    pim_magento_connector.helper.magento_attributes:
-        class: %pim_magento_connector.helper.magento_attributes.class%
 
     pim_magento_connector.helper.valid_product:
         class: %pim_magento_connector.helper.valid_product.class%

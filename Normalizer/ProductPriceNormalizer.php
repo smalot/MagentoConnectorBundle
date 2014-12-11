@@ -27,6 +27,6 @@ class ProductPriceNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractProductPrice && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof AbstractProductPrice && 'api_import' === $format;
     }
 }

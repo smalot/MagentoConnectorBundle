@@ -4,7 +4,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -19,17 +18,12 @@ class ProductMediaNormalizer implements NormalizerInterface
     /** @var MediaManager */
     protected $mediaManager;
 
-    /** @var MagentoAttributesHelper */
-    protected $attributesHelper;
-
     /**
-     * @param MediaManager            $mediaManager
-     * @param MagentoAttributesHelper $attributesHelper
+     * @param MediaManager $mediaManager
      */
-    public function __construct(MediaManager $mediaManager, MagentoAttributesHelper $attributesHelper)
+    public function __construct(MediaManager $mediaManager)
     {
-        $this->mediaManager     = $mediaManager;
-        $this->attributesHelper = $attributesHelper;
+        $this->mediaManager = $mediaManager;
     }
 
     /**
@@ -41,10 +35,10 @@ class ProductMediaNormalizer implements NormalizerInterface
 
         return [
             [
-                $attributeCode                                    => $object->getFileName(),
-                $attributeCode . '_content'                       => $this->mediaManager->getBase64($object),
-                $this->attributesHelper->getMediaImageHeader()    => $object->getFileName(),
-                $this->attributesHelper->getMediaDisabledHeader() => 0
+                $attributeCode                         => $object->getFileName(),
+                $attributeCode . '_content'            => $this->mediaManager->getBase64($object),
+                LabelDictionary::MEDIA_IMAGE_HEADER    => $object->getFileName(),
+                LabelDictionary::MEDIA_DISABLED_HEADER => 0
             ]
         ];
     }
@@ -54,6 +48,6 @@ class ProductMediaNormalizer implements NormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof AbstractProductMedia && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof AbstractProductMedia && 'api_import' === $format;
     }
 }

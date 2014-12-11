@@ -51,7 +51,7 @@ class GroupNormalizer implements NormalizerInterface, SerializerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Group && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof Group && 'api_import' === $format;
     }
 
     /**

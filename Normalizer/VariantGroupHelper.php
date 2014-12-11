@@ -6,7 +6,6 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
@@ -29,24 +28,16 @@ class VariantGroupHelper
     /** @var ValidProductHelper */
     protected $validProductHelper;
 
-    /** @var MagentoAttributesHelper */
-    protected $attributesHelper;
-
     /**
      * Constructor
      *
-     * @param PriceHelper             $priceHelper
-     * @param ValidProductHelper      $validProductHelper
-     * @param MagentoAttributesHelper $attributesHelper
+     * @param PriceHelper        $priceHelper
+     * @param ValidProductHelper $validProductHelper
      */
-    public function __construct(
-        PriceHelper $priceHelper,
-        ValidProductHelper $validProductHelper,
-        MagentoAttributesHelper $attributesHelper
-    ) {
+    public function __construct(PriceHelper $priceHelper, ValidProductHelper $validProductHelper)
+    {
         $this->priceHelper        = $priceHelper;
         $this->validProductHelper = $validProductHelper;
-        $this->attributesHelper   = $attributesHelper;
     }
 
     /**
@@ -172,9 +163,8 @@ class VariantGroupHelper
         $isTypeUpdated = false;
 
         foreach ($simpleProductRows as &$row) {
-            if (isset($row[$this->attributesHelper->getProductTypeHeader()])) {
-                $row[$this->attributesHelper->getProductTypeHeader()] =
-                    $this->attributesHelper->getConfigurableProductType();
+            if (isset($row[LabelDictionary::PRODUCT_TYPE_HEADER])) {
+                $row[LabelDictionary::PRODUCT_TYPE_HEADER] = LabelDictionary::CONFIGURABLE_PRODUCT_TYPE;
                 $isTypeUpdated = true;
             }
             foreach ($variationAxes as $axis) {
@@ -221,14 +211,14 @@ class VariantGroupHelper
                 if ($attribute->getCode() === $axisCode) {
                     $option = $product->getValue($axisCode)->getOption();
                     $associated[] = [
-                        $this->attributesHelper->getSuperProductSkuHeader()      => (string) $product->getIdentifier(),
-                        $this->attributesHelper->getSuperAttributeCodeHeader()   => $axisCode,
-                        $this->attributesHelper->getSuperAttributeOptionHeader() => $this->normalizer->normalize(
+                        LabelDictionary::SUPER_PRODUCT_SKU_HEADER      => (string) $product->getIdentifier(),
+                        LabelDictionary::SUPER_ATTRIBUTE_CODE_HEADER   => $axisCode,
+                        LabelDictionary::SUPER_ATTRIBUTE_OPTION_HEADER => $this->normalizer->normalize(
                             $option,
                             $format,
                             $context
                         ),
-                        $this->attributesHelper->getSuperAttributePriceHeader()  => 0
+                        LabelDictionary::SUPER_ATTRIBUTE_PRICE_HEADER  => 0
                     ];
                 }
             }

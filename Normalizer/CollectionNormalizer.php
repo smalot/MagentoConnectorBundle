@@ -42,7 +42,7 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Collection && ProductNormalizer::API_IMPORT_FORMAT === $format;
+        return $data instanceof Collection && 'api_import' === $format;
     }
 
     /**

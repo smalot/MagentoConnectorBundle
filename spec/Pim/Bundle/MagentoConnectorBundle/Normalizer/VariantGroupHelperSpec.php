@@ -11,7 +11,6 @@ use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\MagentoConnectorBundle\Helper\MagentoAttributesHelper;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\TypeNotFoundException;
@@ -23,8 +22,7 @@ class VariantGroupHelperSpec extends ObjectBehavior
 {
     public function let(PriceHelper $priceHelper, ValidProductHelper $validProductHelper)
     {
-        $attributesHelper = new MagentoAttributesHelper();
-        $this->beConstructedWith($priceHelper, $validProductHelper, $attributesHelper);
+        $this->beConstructedWith($priceHelper, $validProductHelper);
     }
 
     public function it_is_initializable()
