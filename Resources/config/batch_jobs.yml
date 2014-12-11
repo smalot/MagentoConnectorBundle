@@ -18,6 +18,17 @@ connector:
                         processor: pim_magento_connector.processor.associated_product_to_array
                         writer:    pim_base_connector.writer.dummy
 
+        magento_attribute_export:
+            title: pim_magento_connector.jobs.magento_attribute_export.title
+            type:  export
+            steps:
+                export_product:
+                    title: pim_magento_connector.jobs.magento_attribute_export.export.title
+                    services:
+                        reader:    pim_base_connector.reader.orm.attribute
+                        processor: pim_base_connector.processor.dummy
+                        writer:    pim_base_connector.writer.dummy
+
         magento_configurable_export:
             title: pim_magento_connector.jobs.magento_configurable_export.title
             type:  export
