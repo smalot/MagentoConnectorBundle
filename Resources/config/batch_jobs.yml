@@ -25,7 +25,7 @@ connector:
                 export_product:
                     title: pim_magento_connector.jobs.magento_attribute_export.export.title
                     services:
-                        reader:    pim_base_connector.reader.orm.attribute
+                        reader:    pim_magento_connector.reader.attribute
                         processor: pim_magento_connector.processor.attribute
                         writer:    pim_base_connector.writer.dummy
 
