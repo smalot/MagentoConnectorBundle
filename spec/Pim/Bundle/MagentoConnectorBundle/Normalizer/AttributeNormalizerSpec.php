@@ -75,4 +75,4 @@ class AttributeNormalizerSpec extends ObjectBehavior
 
         $this->normalize($attribute, 'api_import', [])->shouldReturn(null);
     }
-} 
+}

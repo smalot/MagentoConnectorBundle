@@ -16,20 +16,13 @@ class AttributeMappingHelper
      *
      * @param string $pimAttributeType
      *
-     * @return string|null
+     * @return string
      */
     public function getMagentoAttributeTypeFor($pimAttributeType)
     {
-        $type = null;
         $mapping = static::getMapping();
 
-        if (array_key_exists($pimAttributeType, $mapping)) {
-            $type = $mapping[$pimAttributeType];
-        } else {
-            $type = 'text';
-        }
-
-        return $type;
+        return array_key_exists($pimAttributeType, $mapping) ? $mapping[$pimAttributeType] : 'text';
     }
 
     /**
@@ -42,7 +35,6 @@ class AttributeMappingHelper
         return [
             'pim_catalog_simpleselect'     => 'select',
             'pim_catalog_multiselect'      => 'multiselect',
-            'pim_catalog_identifier'       => null,
             'pim_catalog_metric'           => 'text',
             'pim_catalog_text'             => 'text',
             'pim_catalog_textarea'         => 'textarea',
@@ -51,7 +43,7 @@ class AttributeMappingHelper
             'pim_catalog_number'           => 'text',
             'pim_catalog_image'            => 'media_image',
             'pim_catalog_boolean'          => 'boolean',
-            'pim_catalog_file'             => null
+            'pim_catalog_file'             => 'text'
         ];
     }
 }
