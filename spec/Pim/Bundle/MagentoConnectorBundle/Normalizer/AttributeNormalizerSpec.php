@@ -67,12 +67,4 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'unique'           => 0
         ]);
     }
-
-    function it_does_not_normalize_an_identifier_or_a_file_attribute(AbstractAttribute $attribute, $mappingHelper)
-    {
-        $attribute->getAttributeType()->willReturn('pim_catalog_identifier');
-        $mappingHelper->getMagentoAttributeTypeFor('pim_catalog_identifier')->shouldBeCalled()->willReturn(null);
-
-        $this->normalize($attribute, 'api_import', [])->shouldReturn(null);
-    }
 }
