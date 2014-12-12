@@ -1,5 +1,6 @@
 parameters:
     pim_magento_connector.normalizer.product.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
+    pim_magento_connector.normalizer.attribute.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer
     pim_magento_connector.normalizer.product_value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer
     pim_magento_connector.normalizer.product_price.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductPriceNormalizer
     pim_magento_connector.normalizer.attribute_option.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeOptionNormalizer
@@ -18,6 +19,11 @@ services:
 
    pim_magento_connector.normalizer.product:
        class: %pim_magento_connector.normalizer.product.class%
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
+
+   pim_magento_connector.normalizer.attribute:
+       class: %pim_magento_connector.normalizer.attribute.class%
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 

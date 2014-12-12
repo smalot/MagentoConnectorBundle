@@ -11,6 +11,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
  */
 final class LabelDictionary
 {
+    /** PRODUCT LABELS */
+
     /** @staticvar string */
     const ATTRIBUTE_SET_HEADER = '_attribute_set';
 
@@ -81,10 +83,34 @@ final class LabelDictionary
     const SUPER_ATTRIBUTE_PRICE_HEADER = '_super_attribute_price_corr';
 
     /** @staticvar string */
-    const SIMPLE_PRODUCT_TYPE = 'simple';
+    const CONFIGURABLE_PRODUCT_TYPE = 'configurable';
+
+    /** ATTRIBUTE LABELS */
 
     /** @staticvar string */
-    const CONFIGURABLE_PRODUCT_TYPE = 'configurable';
+    const ATTRIBUTE_ID_HEADER = 'attribute_id';
+
+    /** @staticvar string */
+    const ATTR_DEFAULT_VAL_HEADER = 'default';
+
+    /** @staticvar string */
+    const ATTRIBUTE_TYPE_HEADER = 'type';
+
+    /** @staticvar string */
+    const ATTRIBUTE_LABEL_HEADER = 'label';
+
+    /** @staticvar string */
+    const ATTRIBUTE_REQUIRED_HEADER = 'required';
+
+    /** @staticvar string */
+    const ATTRIBUTE_GLOBAL_HEADER = 'global';
+
+    /** @staticvar string */
+    const ATTRIBUTE_VISIBLE_HEADER = 'visible_on_front';
+
+    /** @staticvar string */
+    const ATTRIBUTE_IS_UNIQUE_HEADER = 'unique';
+
 
     /**
      * Returns mandatory attributes needed to create the base product to update associations
@@ -115,5 +141,37 @@ final class LabelDictionary
             $typeCode,
             static::ASSOCIATION_REPLACE_SUBJECT_HEADER
         );
+    }
+
+    /**
+     * Converts PIM attribute type to Magento attribute type
+     *
+     * @param string $pimAttributeType
+     *
+     * @return string|null
+     */
+    public static function getMagentoAttributeTypeFor($pimAttributeType)
+    {
+        $type    = null;
+        $mapping = [
+            'pim_catalog_simpleselect'     => 'select',
+            'pim_catalog_multiselect'      => 'multiselect',
+            'pim_catalog_identifier'       => null,
+            'pim_catalog_metric'           => 'text',
+            'pim_catalog_text'             => 'text',
+            'pim_catalog_textarea'         => 'textarea',
+            'pim_catalog_price_collection' => 'price',
+            'pim_catalog_date'             => 'date',
+            'pim_catalog_number'           => 'text',
+            'pim_catalog_image'            => 'media_image',
+            'pim_catalog_boolean'          => 'boolean',
+            'pim_catalog_file'             => null
+        ];
+
+        if (array_key_exists($pimAttributeType, $mapping)) {
+            $type = $mapping[$pimAttributeType];
+        }
+
+        return $type;
     }
 }
