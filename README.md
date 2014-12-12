@@ -59,7 +59,7 @@ The following installation instructions are meant for development on the Magento
 
 Composer:
 
-    $ php composer.phar require akeneo/magento-connector-bundle:1.1.*@stable
+    $ php composer.phar require akeneo/magento-connector-bundle:dev-master
 
 In `app/AppKernel.php`:
 
