@@ -7,7 +7,7 @@ use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\AbstractMetric;
 use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
-use Pim\Bundle\CatalogBundle\Model\ProductPrice;
+use Pim\Bundle\CatalogBundle\Model\AbstractProductPrice;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
 use Pim\Bundle\ConnectorMappingBundle\Mapper\MappingCollection;
 use Pim\Bundle\CustomEntityBundle\Entity\AbstractCustomEntity;
@@ -451,7 +451,7 @@ class ProductValueNormalizer implements NormalizerInterface
                 $optionCode = $item->getCode();
 
                 $result[] = $this->getOptionId($attributeCode, $optionCode, $magentoAttributesOptions);
-            } elseif ($item instanceof ProductPrice) {
+            } elseif ($item instanceof AbstractProductPrice) {
                 if ($item->getData() !== null &&
                     $item->getCurrency() === $currencyCode
                 ) {
