@@ -33,10 +33,14 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
+    $ php composer.phar require akeneo/connector-mapping-bundle": "v1.0.0-BETA3@dev"
+    $ php composer.phar require akeneo/delta-export-bundle:v1.0.0-BETA3@dev
     $ php composer.phar require akeneo/magento-connector-bundle:1.1.*@stable
 
 Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
+    $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
+    $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
     $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 
 You can now update your database:
@@ -49,9 +53,17 @@ Don't forget to reinstall pim assets:
 
 If you want to manage configurable products, you'll need to add [magento-improve-api](https://github.com/jreinke/magento-improve-api) in your Magento installation.
 
-## Installing the Magento Connector in an Akeneo PIM development environment
+## Installing the Magento Connector in an Akeneo PIM development environment (master)
 
-The following installation instructions are meant for development on the Magento Connector itself. Start by setting up a working installation as previously explained.
+The following installation instructions are meant for development on the Magento connector itself. Start by setting up a working installation as previously explained, but install only the MagentoConnectorBundle, not the ConnectorMappingBundle and DeltaExportBundle (those two are deprecated and not used anymore in the dev version):
+
+Composer:
+
+    $ php composer.phar require akeneo/magento-connector-bundle:1.1.*@stable
+
+In `app/AppKernel.php`:
+
+    $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
 
 Then clone the Magento Connector bundle anywhere on your file system and create a symbolic link to your Akeneo installation's vendor folder (after renaiming/deleting the previous one).
 
