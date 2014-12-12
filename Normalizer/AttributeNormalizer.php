@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
+use Pim\Bundle\MagentoConnectorBundle\Helper\AttributeMappingHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -14,24 +15,37 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class AttributeNormalizer implements NormalizerInterface
 {
+    /** @var AttributeMappingHelper */
+    protected $mappingHelper;
+
+    /**
+     * @param AttributeMappingHelper $mappingHelper
+     */
+    public function __construct(AttributeMappingHelper $mappingHelper)
+    {
+        $this->mappingHelper = $mappingHelper;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function normalize($object, $format = null, array $context = [])
     {
         $normalized    = null;
-        $attributeType = LabelDictionary::getMagentoAttributeTypeFor($object->getAttributeType());
+        $attributeType = $this->mappingHelper->getMagentoAttributeTypeFor($object->getAttributeType());
 
         if (null !== $attributeType) {
-            $normalized[LabelDictionary::ATTRIBUTE_ID_HEADER]        = $object->getCode();
-            $normalized[LabelDictionary::ATTR_DEFAULT_VAL_HEADER]    = $object->getDefaultValue();
-            $normalized[LabelDictionary::ATTRIBUTE_TYPE_HEADER]      = $attributeType;
-            $normalized[LabelDictionary::ATTRIBUTE_LABEL_HEADER]     =
-                $object->getTranslation($context['defaultLocale'])->getLabel();
-            $normalized[LabelDictionary::ATTRIBUTE_GLOBAL_HEADER]    = 0;
-            $normalized[LabelDictionary::ATTRIBUTE_REQUIRED_HEADER]  = (int) $object->isRequired();
-            $normalized[LabelDictionary::ATTRIBUTE_VISIBLE_HEADER]   = (int) $context['visibility'];
-            $normalized[LabelDictionary::ATTRIBUTE_IS_UNIQUE_HEADER] = (int) $object->isUnique();
+            $normalized = [
+                LabelDictionary::ATTRIBUTE_ID_HEADER        => $object->getCode(),
+                LabelDictionary::ATTR_DEFAULT_VAL_HEADER    => $object->getDefaultValue(),
+                LabelDictionary::ATTRIBUTE_TYPE_HEADER      => $attributeType,
+                LabelDictionary::ATTRIBUTE_LABEL_HEADER     =>
+                    $object->getTranslation($context['defaultLocale'])->getLabel(),
+                LabelDictionary::ATTRIBUTE_GLOBAL_HEADER    => 0,
+                LabelDictionary::ATTRIBUTE_REQUIRED_HEADER  => (int) $object->isRequired(),
+                LabelDictionary::ATTRIBUTE_VISIBLE_HEADER   => (int) $context['visibility'],
+                LabelDictionary::ATTRIBUTE_IS_UNIQUE_HEADER => (int) $object->isUnique()
+            ];
         }
 
         return $normalized;

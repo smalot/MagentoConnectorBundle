@@ -142,36 +142,4 @@ final class LabelDictionary
             static::ASSOCIATION_REPLACE_SUBJECT_HEADER
         );
     }
-
-    /**
-     * Converts PIM attribute type to Magento attribute type
-     *
-     * @param string $pimAttributeType
-     *
-     * @return string|null
-     */
-    public static function getMagentoAttributeTypeFor($pimAttributeType)
-    {
-        $type    = null;
-        $mapping = [
-            'pim_catalog_simpleselect'     => 'select',
-            'pim_catalog_multiselect'      => 'multiselect',
-            'pim_catalog_identifier'       => null,
-            'pim_catalog_metric'           => 'text',
-            'pim_catalog_text'             => 'text',
-            'pim_catalog_textarea'         => 'textarea',
-            'pim_catalog_price_collection' => 'price',
-            'pim_catalog_date'             => 'date',
-            'pim_catalog_number'           => 'text',
-            'pim_catalog_image'            => 'media_image',
-            'pim_catalog_boolean'          => 'boolean',
-            'pim_catalog_file'             => null
-        ];
-
-        if (array_key_exists($pimAttributeType, $mapping)) {
-            $type = $mapping[$pimAttributeType];
-        }
-
-        return $type;
-    }
 }

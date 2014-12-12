@@ -24,6 +24,8 @@ services:
 
    pim_magento_connector.normalizer.attribute:
        class: %pim_magento_connector.normalizer.attribute.class%
+       arguments:
+          - '@pim_magento_connector.helper.attribute_mapping'
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 
