@@ -5,7 +5,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Reader;
 use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
 
 /**
- * This attribute reader is used to retrieve attributes without identifier
+ * This attribute reader is used to retrieve non-identifier attributes
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -18,12 +18,15 @@ class AttributeReader extends EntityReader
      */
     public function getQuery()
     {
+        $attributeType = 'pim_catalog_identifier';
+
         if (!$this->query) {
             $this->query = $this->em
                 ->getRepository($this->className)
                 ->createQueryBuilder('c')
                 ->select('c')
-                ->where('c.attributeType != \'pim_catalog_identifier\'')
+                ->where('c.attributeType != :attributeType')
+                ->setParameter('attributeType', $attributeType)
                 ->getQuery();
         }
 
