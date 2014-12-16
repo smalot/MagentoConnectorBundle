@@ -42,16 +42,16 @@ class AssociationNormalizer implements NormalizerInterface
         $typeCode           = $associationMapping[$object->getAssociationType()->getCode()];
 
         if (!empty($validProducts) && !empty($typeCode)) {
-            $header = LabelDictionary::getAssociationTypeHeader($typeCode);
+            $header = ProductLabelDictionary::getAssociationTypeHeader($typeCode);
             $associations[] = array_merge(
                 $this->getBaseProduct(
                     $object->getOwner(),
                     $context['attributeMapping'],
-                    LabelDictionary::getMandatoryAssociationAttributes(),
+                    ProductLabelDictionary::getMandatoryAssociationAttributes(),
                     $context['defaultLocale'],
                     $channel->getCode()
                 ),
-                [LabelDictionary::STATUS_HEADER => $context['enabled']]
+                [ProductLabelDictionary::STATUS_HEADER => $context['enabled']]
             );
 
             foreach ($validProducts as $associatedProduct) {

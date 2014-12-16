@@ -108,10 +108,10 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
         if (is_array($value)) {
             foreach ($value as $option) {
                 if (is_array($option)) {
-                    $normalized[] = array_merge($option, [LabelDictionary::STORE_HEADER => $store]);
+                    $normalized[] = array_merge($option, [ProductLabelDictionary::STORE_HEADER => $store]);
                 } else {
                     $normalized[] = [
-                        LabelDictionary::STORE_HEADER => $store,
+                        ProductLabelDictionary::STORE_HEADER => $store,
                         $attributeCode                => $option
                     ];
                 }

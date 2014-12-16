@@ -36,17 +36,17 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         );
 
         foreach ($productValues as $storeView => &$values) {
-            if (!isset($values[LabelDictionary::STORE_HEADER])) {
-                $values[LabelDictionary::STORE_HEADER] = $storeView;
+            if (!isset($values[ProductLabelDictionary::STORE_HEADER])) {
+                $values[ProductLabelDictionary::STORE_HEADER] = $storeView;
             }
         }
         $processedProduct = array_values($productValues);
 
         $categories = $this->getProductCategories($object, $format, $context);
-        foreach ($categories[LabelDictionary::CATEGORY_HEADER] as $key => $category) {
+        foreach ($categories[ProductLabelDictionary::CATEGORY_HEADER] as $key => $category) {
             $processedProduct[] = [
-                LabelDictionary::CATEGORY_HEADER      => $category,
-                LabelDictionary::CATEGORY_ROOT_HEADER => $categories[LabelDictionary::CATEGORY_ROOT_HEADER][$key]
+                ProductLabelDictionary::CATEGORY_HEADER      => $category,
+                ProductLabelDictionary::CATEGORY_ROOT_HEADER => $categories[ProductLabelDictionary::CATEGORY_ROOT_HEADER][$key]
             ];
         }
 
@@ -87,13 +87,13 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         $defaultStoreView = $context['defaultStoreView'];
 
         $customValues[$defaultStoreView] = [
-            LabelDictionary::PRODUCT_TYPE_HEADER    => static::SIMPLE_PRODUCT_TYPE,
-            LabelDictionary::PRODUCT_WEBSITE_HEADER => $context['website'],
-            LabelDictionary::STATUS_HEADER          => (int) $product->isEnabled(),
-            LabelDictionary::VISIBILITY_HEADER      => (int) $context['visibility'],
-            LabelDictionary::ATTRIBUTE_SET_HEADER   => $product->getFamily()->getCode(),
-            LabelDictionary::CREATED_AT_HEADER      => $product->getCreated()->format(static::DATE_FORMAT),
-            LabelDictionary::UPDATED_AT_HEADER      => $product->getUpdated()->format(static::DATE_FORMAT)
+            ProductLabelDictionary::PRODUCT_TYPE_HEADER    => static::SIMPLE_PRODUCT_TYPE,
+            ProductLabelDictionary::PRODUCT_WEBSITE_HEADER => $context['website'],
+            ProductLabelDictionary::STATUS_HEADER          => (int) $product->isEnabled(),
+            ProductLabelDictionary::VISIBILITY_HEADER      => (int) $context['visibility'],
+            ProductLabelDictionary::ATTRIBUTE_SET_HEADER   => $product->getFamily()->getCode(),
+            ProductLabelDictionary::CREATED_AT_HEADER      => $product->getCreated()->format(static::DATE_FORMAT),
+            ProductLabelDictionary::UPDATED_AT_HEADER      => $product->getUpdated()->format(static::DATE_FORMAT)
         ];
 
         return $customValues;
@@ -146,9 +146,9 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
                     sprintf('Category root "%s" not corresponding with user category mapping', $normalized['root'])
                 );
             }
-            $productCategories[LabelDictionary::CATEGORY_ROOT_HEADER][] =
+            $productCategories[ProductLabelDictionary::CATEGORY_ROOT_HEADER][] =
                 $context['userCategoryMapping'][$normalized['root']];
-            $productCategories[LabelDictionary::CATEGORY_HEADER][] = $normalized['category'];
+            $productCategories[ProductLabelDictionary::CATEGORY_HEADER][] = $normalized['category'];
         }
 
         return $productCategories;

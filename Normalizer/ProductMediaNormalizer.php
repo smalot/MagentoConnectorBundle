@@ -37,8 +37,8 @@ class ProductMediaNormalizer implements NormalizerInterface
             [
                 $attributeCode                         => $object->getFileName(),
                 $attributeCode . '_content'            => $this->mediaManager->getBase64($object),
-                LabelDictionary::MEDIA_IMAGE_HEADER    => $object->getFileName(),
-                LabelDictionary::MEDIA_DISABLED_HEADER => 0
+                ProductLabelDictionary::MEDIA_IMAGE_HEADER    => $object->getFileName(),
+                ProductLabelDictionary::MEDIA_DISABLED_HEADER => 0
             ]
         ];
     }
