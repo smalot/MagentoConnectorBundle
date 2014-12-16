@@ -94,7 +94,10 @@ final class LabelDictionary
     const ATTR_DEFAULT_VAL_HEADER = 'default';
 
     /** @staticvar string */
-    const ATTRIBUTE_TYPE_HEADER = 'type';
+    const ATTRIBUTE_BACKEND_TYPE_HEADER = 'type';
+
+    /** @staticvar string */
+    const ATTRIBUTE_INPUT_HEADER = 'input';
 
     /** @staticvar string */
     const ATTRIBUTE_LABEL_HEADER = 'label';
@@ -111,6 +114,8 @@ final class LabelDictionary
     /** @staticvar string */
     const ATTRIBUTE_IS_UNIQUE_HEADER = 'unique';
 
+    /** @staticvar string */
+    const ATTRIBUTE_OPTION_HEADER = 'option';
 
     /**
      * Returns mandatory attributes needed to create the base product to update associations

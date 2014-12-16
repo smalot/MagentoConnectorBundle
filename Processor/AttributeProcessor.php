@@ -47,8 +47,12 @@ class AttributeProcessor extends AbstractConfigurableStepElement implements
     public function process($item)
     {
         $context = [
-            'defaultLocale' => 'en_US',
-            'visibility'    => true
+            'defaultLocale'    => 'en_US',
+            'defaultStoreView' => 'Default',
+            'visibility'       => true,
+            'storeViewMapping' => [
+                'fr_FR' => 'fr_fr'
+            ],
         ];
 
         return $this->normalizer->normalize($item, 'api_import', $context);
