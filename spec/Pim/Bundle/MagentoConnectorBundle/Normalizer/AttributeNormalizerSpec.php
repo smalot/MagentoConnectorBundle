@@ -54,7 +54,7 @@ class AttributeNormalizerSpec extends ObjectBehavior
         $attribute->isRequired()->willReturn(true);
         $attribute->isUnique()->willReturn(false);
 
-        $mappingHelper->getMagentoAttributeTypeFor('pim_catalog_text')->shouldBeCalled()->willReturn('text');
+        $mappingHelper->getMagentoAttributeType('pim_catalog_text')->shouldBeCalled()->willReturn('text');
 
         $this->normalize($attribute, 'api_import', $context)->shouldReturn([
             'attribute_id'     => 'attribute_code',

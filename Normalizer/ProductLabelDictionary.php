@@ -3,16 +3,14 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 /**
- * This dictionary allows to manage constants about API Import
+ * This dictionary allows to manage constants about API Import products
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-final class LabelDictionary
+final class ProductLabelDictionary
 {
-    /** PRODUCT LABELS */
-
     /** @staticvar string */
     const ATTRIBUTE_SET_HEADER = '_attribute_set';
 
@@ -34,7 +32,11 @@ final class LabelDictionary
     /** @staticvar string */
     const SKU_HEADER = 'sku';
 
-    /** @staticvar string */
+    /**
+     * Used to know if the product is enabled or not
+     *
+     * @staticvar string
+     */
     const STATUS_HEADER = 'status';
 
     /** @staticvar string */
@@ -46,7 +48,11 @@ final class LabelDictionary
     /** @staticvar string */
     const UPDATED_AT_HEADER = 'updated_at';
 
-    /** @staticvar string */
+    /**
+     * Ued to know how the product is visible in Magento (catalog, search, both or nothing)
+     *
+     * @staticvar string
+     */
     const VISIBILITY_HEADER = 'visibility';
 
     /** @staticvar string */
@@ -73,44 +79,32 @@ final class LabelDictionary
     /** @staticvar string */
     const SUPER_PRODUCT_SKU_HEADER = '_super_products_sku';
 
-    /** @staticvar string */
+    /**
+     * For configurable
+     * Product code (sku) of the associated product
+     *
+     * @staticvar string
+     */
     const SUPER_ATTRIBUTE_CODE_HEADER = '_super_attribute_code';
 
-    /** @staticvar string */
+    /**
+     * For configurable
+     * Code of the chosen option
+     *
+     * @staticvar string
+     */
     const SUPER_ATTRIBUTE_OPTION_HEADER = '_super_attribute_option';
 
-    /** @staticvar string */
+    /**
+     * For configurable
+     * Price changes of the chosen option
+     *
+     * @staticvar string
+     */
     const SUPER_ATTRIBUTE_PRICE_HEADER = '_super_attribute_price_corr';
 
     /** @staticvar string */
     const CONFIGURABLE_PRODUCT_TYPE = 'configurable';
-
-    /** ATTRIBUTE LABELS */
-
-    /** @staticvar string */
-    const ATTRIBUTE_ID_HEADER = 'attribute_id';
-
-    /** @staticvar string */
-    const ATTR_DEFAULT_VAL_HEADER = 'default';
-
-    /** @staticvar string */
-    const ATTRIBUTE_TYPE_HEADER = 'type';
-
-    /** @staticvar string */
-    const ATTRIBUTE_LABEL_HEADER = 'label';
-
-    /** @staticvar string */
-    const ATTRIBUTE_REQUIRED_HEADER = 'required';
-
-    /** @staticvar string */
-    const ATTRIBUTE_GLOBAL_HEADER = 'global';
-
-    /** @staticvar string */
-    const ATTRIBUTE_VISIBLE_HEADER = 'visible_on_front';
-
-    /** @staticvar string */
-    const ATTRIBUTE_IS_UNIQUE_HEADER = 'unique';
-
 
     /**
      * Returns mandatory attributes needed to create the base product to update associations
