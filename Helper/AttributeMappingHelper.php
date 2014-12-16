@@ -18,19 +18,20 @@ class AttributeMappingHelper
      *
      * @return string
      */
-    public function getMagentoAttributeTypeFor($pimAttributeType)
+    public function getMagentoAttributeType($pimAttributeType)
     {
-        $mapping = static::getMapping();
+        $mapping = $this->getMapping();
 
-        return array_key_exists($pimAttributeType, $mapping) ? $mapping[$pimAttributeType] : 'text';
+        return isset($mapping[$pimAttributeType]) ? $mapping[$pimAttributeType] : 'text';
     }
 
     /**
      * Returns mapping between PIM and Magento attribute types
+     * There isn't identifier because it's mapped automatically with the Magento SKU
      *
      * @return array
      */
-    protected static function getMapping()
+    protected function getMapping()
     {
         return [
             'pim_catalog_simpleselect'     => 'select',

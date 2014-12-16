@@ -31,18 +31,18 @@ class AttributeNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        $attributeType = $this->mappingHelper->getMagentoAttributeTypeFor($object->getAttributeType());
+        $attributeType = $this->mappingHelper->getMagentoAttributeType($object->getAttributeType());
 
         return [
-            LabelDictionary::ATTRIBUTE_ID_HEADER        => $object->getCode(),
-            LabelDictionary::ATTR_DEFAULT_VAL_HEADER    => $object->getDefaultValue(),
-            LabelDictionary::ATTRIBUTE_TYPE_HEADER      => $attributeType,
-            LabelDictionary::ATTRIBUTE_LABEL_HEADER     =>
+            AttributeLabelDictionary::ID_HEADER        => $object->getCode(),
+            AttributeLabelDictionary::DEFAULT_VALUE_HEADER    => $object->getDefaultValue(),
+            AttributeLabelDictionary::TYPE_HEADER      => $attributeType,
+            AttributeLabelDictionary::LABEL_HEADER     =>
                 $object->getTranslation($context['defaultLocale'])->getLabel(),
-            LabelDictionary::ATTRIBUTE_GLOBAL_HEADER    => 0,
-            LabelDictionary::ATTRIBUTE_REQUIRED_HEADER  => (int) $object->isRequired(),
-            LabelDictionary::ATTRIBUTE_VISIBLE_HEADER   => (int) $context['visibility'],
-            LabelDictionary::ATTRIBUTE_IS_UNIQUE_HEADER => (int) $object->isUnique()
+            AttributeLabelDictionary::GLOBAL_HEADER    => 0,
+            AttributeLabelDictionary::REQUIRED_HEADER  => (int) $object->isRequired(),
+            AttributeLabelDictionary::VISIBLE_HEADER   => (int) $context['visibility'],
+            AttributeLabelDictionary::IS_UNIQUE_HEADER => (int) $object->isUnique()
         ];
     }
 

@@ -18,15 +18,13 @@ class AttributeReader extends EntityReader
      */
     public function getQuery()
     {
-        $attributeType = 'pim_catalog_identifier';
-
         if (!$this->query) {
             $this->query = $this->em
                 ->getRepository($this->className)
                 ->createQueryBuilder('c')
                 ->select('c')
                 ->where('c.attributeType != :attributeType')
-                ->setParameter('attributeType', $attributeType)
+                ->setParameter('attributeType', 'pim_catalog_identifier')
                 ->getQuery();
         }
 
