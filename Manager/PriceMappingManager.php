@@ -147,7 +147,9 @@ class PriceMappingManager
                 $lowest
             );
 
-            $attributeDelta[$attributeMapping->getTarget($attribute->getCode())] = max($absoluteAttributeMapping);
+            if (!empty($absoluteAttributeMapping)) {
+                $attributeDelta[$attributeMapping->getTarget($attribute->getCode())] = max($absoluteAttributeMapping);
+            }
             $attributeMap[$attributeMapping->getTarget($attribute->getCode())]   = $attribute;
         }
 
