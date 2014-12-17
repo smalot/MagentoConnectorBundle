@@ -2,7 +2,6 @@
 
 namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue;

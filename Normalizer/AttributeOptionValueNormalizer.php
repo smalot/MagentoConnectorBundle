@@ -22,7 +22,7 @@ class AttributeOptionValueNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        $storeId = $this->getStoreID($object, $context);
+        $storeId = $this->getStoreId($object, $context);
         $value   = $this->getValue($object);
 
         return null !== $storeId ? [$storeId => $value] : [];
@@ -44,7 +44,7 @@ class AttributeOptionValueNormalizer implements NormalizerInterface
      *
      * @return null|string
      */
-    protected function getStoreID(AttributeOptionValue $optionValue, array $context)
+    protected function getStoreId(AttributeOptionValue $optionValue, array $context)
     {
         return $optionValue->getLocale() === $context['defaultLocale'] ? static::DEFAULT_STORE_VIEW_ID : null;
     }

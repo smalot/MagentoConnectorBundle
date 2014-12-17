@@ -3,7 +3,6 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
-use Pim\Bundle\CatalogBundle\Entity\AttributeOptionValue;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\MagentoConnectorBundle\Helper\AttributeMappingHelper;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -50,6 +49,7 @@ class AttributeNormalizer implements NormalizerInterface, SerializerAwareInterfa
             AttributeLabelDictionary::BACKEND_TYPE_HEADER  => $backendType,
             AttributeLabelDictionary::LABEL_HEADER         =>
                 $object->getTranslation($context['defaultLocale'])->getLabel(),
+            // Attributes can't be Global as AKeneo doesn't have global scope (see doc)
             AttributeLabelDictionary::GLOBAL_HEADER        => 0,
             AttributeLabelDictionary::REQUIRED_HEADER      => (int) $object->isRequired(),
             AttributeLabelDictionary::VISIBLE_HEADER       => (int) $context['visibility'],

@@ -22,7 +22,7 @@ class AttributeMappingHelper
      */
     public function getMagentoAttributeType($pimAttributeType)
     {
-        $mapping = $this->getAttributeMapping();
+        $mapping = $this->getAttributeTypeMapping();
 
         return isset($mapping[$pimAttributeType]) ? $mapping[$pimAttributeType] : 'text';
     }
@@ -47,7 +47,7 @@ class AttributeMappingHelper
      *
      * @return array
      */
-    protected function getAttributeMapping()
+    protected function getAttributeTypeMapping()
     {
         return [
             'pim_catalog_simpleselect'     => 'select',
