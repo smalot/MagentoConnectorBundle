@@ -7,7 +7,6 @@ use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\InvalidAttributeNameException;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\AttributeTypeChangedException;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
 
@@ -107,7 +106,10 @@ class AttributeNormalizer implements NormalizerInterface
                 $context['attributeCodeMapping']
             );
 
-            $magentoAttributeCode = strtolower($context['attributeCodeMapping']->getTarget($object->getCode()));
+            $magentoAttributeCode = $this->getMagentoAttributeCode(
+                $object->getCode(),
+                $context['attributeCodeMapping']
+            );
             $magentoAttributeType = $context['magentoAttributes'][$magentoAttributeCode]['type'];
             if ($mappedAttributeType !== $magentoAttributeType &&
                 !in_array($magentoAttributeCode, $this->getIgnoredAttributesForTypeChangeDetection())) {
@@ -170,27 +172,32 @@ class AttributeNormalizer implements NormalizerInterface
     /**
      * Get normalized code for attribute
      * @param AbstractAttribute $attribute
-     * @param MappingCollection $attributeMapping
+     * @param array             $attributeCodeMapping
      *
      * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
      */
-    protected function getNormalizedCode(AbstractAttribute $attribute, MappingCollection $attributeMapping)
-    {
-        $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
+    protected function getNormalizedCode(
+        AbstractAttribute $attribute,
+        array             $attributeCodeMapping
+    ) {
+        $magentoAttributeCode = $this->getMagentoAttributeCode(
+            $attribute->getCode(),
+            $attributeCodeMapping
+        );
 
-        if (preg_match('/^[a-z][a-z_0-9]{0,30}$/', $attributeCode) === 0) {
+        if (preg_match('/^[a-z][a-z_0-9]{0,30}$/', $magentoAttributeCode) === 0) {
             throw new InvalidAttributeNameException(
                 sprintf(
                     'The attribute "%s" have a code that is not compatible with Magento. Please use only'.
                     ' lowercase letters (a-z), numbers (0-9) or underscore(_). First caracter should also'.
                     ' be a letter and your attribute codelength must be under 30 characters',
-                    $attribute->getCode()
+                    $magentoAttribute->getCode()
                 )
             );
         }
 
-        return $attributeCode;
+        return $magentoAttributeCode;
     }
 
     /**
@@ -210,7 +217,7 @@ class AttributeNormalizer implements NormalizerInterface
      * @param string            $defaultLocale
      * @param array             $magentoAttributes
      * @param array             $magentoAttributesOptions
-     * @param MappingCollection $attributeMapping
+     * @param array             $attributeCodeMapping
      *
      * @return string
      */
@@ -219,20 +226,23 @@ class AttributeNormalizer implements NormalizerInterface
         $defaultLocale,
         array $magentoAttributes,
         array $magentoAttributesOptions,
-        MappingCollection $attributeMapping
+        array $attributeCodeMapping
     ) {
-        $attributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
+        $magentoAttributeCode = $this->getMagentoAttributeCode(
+            $attribute->getCode(),
+            $attributeCodeMapping
+        );
 
         $context = [
             'identifier'               => null,
             'scopeCode'                => null,
             'localeCode'               => $defaultLocale,
             'onlyLocalized'            => false,
-            'magentoAttributes'        => [$attributeCode => [
+            'magentoAttributes'        => [$magentoAttributeCode => [
                 'scope' => !$attribute->isLocalizable() ? ProductValueNormalizer::GLOBAL_SCOPE : '',
             ]],
             'magentoAttributesOptions' => $magentoAttributesOptions,
-            'attributeCodeMapping'         => $attributeMapping,
+            'attributeCodeMapping'         => $attributeCodeMapping,
             'currencyCode'             => '',
         ];
 
@@ -293,8 +303,8 @@ class AttributeNormalizer implements NormalizerInterface
      * @param AbstractAttribute $attribute
      * @param array             $magentoStoreViews
      * @param string            $defaultLocale
-     * @param MappingCollection $storeViewMapping
-     * @param MappingCollection $attributeMapping
+     * @param array             $storeViewMapping
+     * @param array             $attributeCodeMapping
      *
      * @return string
      */
@@ -302,25 +312,30 @@ class AttributeNormalizer implements NormalizerInterface
         AbstractAttribute $attribute,
         array $magentoStoreViews,
         $defaultLocale,
-        MappingCollection $storeViewMapping,
-        MappingCollection $attributeMapping
+        array $storeViewMapping,
+        array $attributeCodeMapping
     ) {
         $localizedLabels = [];
 
-        foreach ($magentoStoreViews as $magentoStoreView) {
-            $localeCode = $storeViewMapping->getSource($magentoStoreView['code']);
-
-            $localizedLabels[] = [
-                'store_id' => $magentoStoreView['store_id'],
-                'label'    => $this->getAttributeTranslation($attribute, $localeCode, $defaultLocale),
-            ];
+        foreach ($storeViewMapping as $localeCode => $storeViewCode) {
+            if (isset($magentoStoreViews[$storeViewCode])) {
+                $localizedLabels[] = [
+                    'store_id' => $magentoStoreViews[$storeViewCode]['store_id'],
+                    'label'    => $this->getAttributeTranslation($attribute, $localeCode, $defaultLocale),
+                ];
+            }
         }
+
+        $magentoAttributeCode = $this->getMagentoAttributeCode(
+            $attribute->getCode(),
+            $attributeCodeMapping
+        );
 
         return array_merge(
             [
                 [
                     'store_id' => 0,
-                    'label'    => strtolower($attributeMapping->getTarget($attribute->getCode())),
+                    'label'    => $magentoAttributeCode,
                 ],
             ],
             $localizedLabels
@@ -361,5 +376,26 @@ class AttributeNormalizer implements NormalizerInterface
             'tax_class_id',
             'weight'
         ];
+    }
+
+    /**
+     * Get Magento attribute code from mapping
+     *
+     * @param string $pimAttributeCode
+     * @parma array  $attributeCodeMapping
+     *
+     * @return string
+     */
+    protected function getMagentoAttributeCode($pimAttributeCode, array $attributeCodeMapping)
+    {
+        $magentoAttributeCode = array_search($pimAttributeCode, $attributeCodeMapping);
+
+        if (false === $magentoAttributeCode) {
+            $magentoAttributeCode = $pimAttributeCode;
+        }
+
+        $magentoAttributeCode = strtolower($magentoAttributeCode);
+
+        return $magentoAttributeCode;
     }
 }

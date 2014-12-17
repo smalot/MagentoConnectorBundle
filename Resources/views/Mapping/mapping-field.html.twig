@@ -1,4 +1,11 @@
 <script type="text/javascript">
+    window.magentoConnectorRoutes = {
+        'pim-attributes': '{{ path('pim_magentoconnector_mappingdata_pimattributes')}}',
+        'magento-attributes': '{{ path('pim_magentoconnector_mappingdata_magentoattributes')}}',
+        'pim-locales': '{{ path('pim_magentoconnector_mappingdata_pimlocales')}}',
+        'magento-storeviews': '{{ path('pim_magentoconnector_mappingdata_magentostoreviews')}}'
+    };
+
     require(
         ['jquery', 'mapping-field'],
         function ($, mappingField) {

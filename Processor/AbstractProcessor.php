@@ -10,7 +10,6 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\AttributeSetNotFoundException;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
@@ -42,13 +41,8 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      */
     protected $website = 'base';
 
-    /**
-     * @var MagentoMappingMerger
-     */
-    protected $storeViewMappingMerger;
-
     /** @var string */
-    protected $storeviewMapping = '';
+    protected $storeViewMapping;
 
     /**
      * @var array
@@ -59,21 +53,18 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
      * @param WebserviceGuesser                   $webserviceGuesser
      * @param ProductNormalizerGuesser            $normalizerGuesser
      * @param LocaleManager                       $localeManager
-     * @param MagentoMappingMerger                $storeViewMappingMerger
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MagentoMappingMerger $storeViewMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $clientParametersRegistry);
 
         $this->normalizerGuesser      = $normalizerGuesser;
         $this->localeManager          = $localeManager;
-        $this->storeViewMappingMerger = $storeViewMappingMerger;
     }
 
     /**
@@ -125,33 +116,54 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     }
 
     /**
-     * Set attribute mapping
+     * Set raw (json encoded) attribute code mapping
+     *
      * @param string $storeViewMapping
      *
      * @return AbstractProcessor
      */
     public function setStoreViewMapping($storeViewMapping)
     {
-        $decodedStoreViewMapping = json_decode($storeViewMapping, true);
-
-        if (!is_array($decodedStoreViewMapping)) {
-            $decodedStoreViewMapping = [$decodedStoreViewMapping];
-        }
-
-        $this->storeViewMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
-        $this->storeViewMappingMerger->setMapping($decodedStoreViewMapping);
-        $this->storeviewMapping = $this->getStoreViewMapping();
+        $this->storeViewMapping = $storeViewMapping;
 
         return $this;
     }
 
     /**
-     * Get attribute mapping
+     * Get raw (json encoded) attribute code mapping
+     *
      * @return string
      */
     public function getStoreViewMapping()
     {
-        return json_encode($this->storeViewMappingMerger->getMapping()->toArray());
+        if (empty($this->storeViewMapping)) {
+            return json_encode([]);
+        } else {
+            return $this->storeViewMapping;
+        }
+    }
+
+    /**
+     * Get decoded attribute mapping
+     *
+     * @return array
+     */
+    public function getDecodedStoreViewMapping()
+    {
+        $storeViewMapping = json_decode($this->storeViewMapping, true);
+        $storeViewMapping = array_filter(
+            $storeViewMapping,
+            function($storeView) {
+                return (
+                    isset($storeView['source']) &&
+                    isset($storeView['target']) &&
+                    !empty($storeView['target']) &&
+                    !empty($storeView['target'])
+                );
+            }
+        );
+
+        return $storeViewMapping;
     }
 
     /**
@@ -183,7 +195,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
         parent::beforeExecute();
 
         $this->globalContext['defaultLocale']    = $this->defaultLocale;
-        $this->globalContext['storeViewMapping'] = $this->storeViewMappingMerger->getMapping();
+        $this->globalContext['storeViewMapping'] = $this->getDecodedStoreViewMapping();
         $this->globalContext['defaultStoreView'] = $this->getDefaultStoreView();
     }
 
@@ -209,20 +221,15 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
     }
 
     /**
-     * Called after the configuration is set
-     */
-    protected function afterConfigurationSet()
-    {
-        parent::afterConfigurationSet();
-
-        $this->storeViewMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigurationFields()
     {
+        $dataTargets = array_merge(
+            ['route' => 'magento-storeviews'],
+            $this->getMagentoParamsForMapping()
+        );
+
         return array_merge(
             parent::getConfigurationFields(),
             [
@@ -247,7 +254,25 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                     ],
                 ]
             ],
-            $this->storeViewMappingMerger->getConfigurationField()
+            [
+                'storeViewMapping' => [
+                    'type'    => 'textarea',
+                    'options' => [
+                        'label' => 'pim_magento_connector.export.storeviewMapping.label',
+                        'help'  => 'pim_magento_connector.export.storeviewMapping.help',
+                        'required' => false,
+                        'attr'     => [
+                            'class' => 'mapping-field',
+                            'data-sources' => json_encode([
+                                'route' => 'pim-locales'
+                            ]),
+                            'data-targets' => json_encode($dataTargets),
+                            'data-name'   => 'storeview'
+                        ]
+                    ]
+                ]
+            ]
+
         );
     }
 }

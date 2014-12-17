@@ -471,4 +471,23 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
 
         return $item;
     }
+
+    /**
+     * Generate an array with Magento parameters needed to
+     * get Magento mapping information
+     *
+     * @return array
+     */
+    protected function getMagentoParamsForMapping()
+    {
+        return [
+            'soapUsername'     => $this->getSoapUsername(),
+            'soapApiKey'       => $this->getSoapApiKey(),
+            'wsdlUrl'          => $this->getWsdlUrl(),
+            'magentoUrl'       => $this->getMagentoUrl(),
+            'defaultStoreVies' => $this->getDefaultStoreView(),
+            'httpLogin'        => $this->getHttpLogin(),
+            'httpPassword'     => $this->getHttpPassword()
+        ];
+    }
 }

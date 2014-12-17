@@ -33,15 +33,18 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
-    $ php composer.phar require akeneo/connector-mapping-bundle:v1.0.0-BETA3@dev
-    $ php composer.phar require akeneo/delta-export-bundle:v1.0.0-BETA3@dev
     $ php composer.phar require akeneo/magento-connector-bundle:1.1.*@stable
-    
+
 Enable bundles in the `app/AppKernel.php` file, in the `registerBundles` function just before the `return $bundles` line:
 
     $bundles[] = new Pim\Bundle\DeltaExportBundle\PimDeltaExportBundle();
-    $bundles[] = new Pim\Bundle\ConnectorMappingBundle\PimConnectorMappingBundle();
-    $bundles[] = new Pim\Bundle\MagentoConnectorBundle\PimMagentoConnectorBundle();
+
+Add the routing data at the end of `app/config/routing.yml`:
+
+    pim_magentoconnector:
+        prefix: magento-connector
+        resource: "@PimMagentoConnectorBundle/Controller"
+        type: annotation
 
 You can now update your database :
 

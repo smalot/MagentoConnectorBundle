@@ -8,7 +8,6 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\NormalizerGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\GroupManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
@@ -23,24 +22,17 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegi
 class AttributeProcessor extends AbstractProcessor
 {
     /**
-     * @var MagentoMappingMerger
-     */
-    protected $attributeMappingMerger;
-
-    /**
      * @var GroupManager
      */
     protected $groupManager;
 
     /** @var string */
-    protected $attributeCodeMapping = '';
+    protected $attributeCodeMapping;
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
      * @param ProductNormalizerGuesser            $normalizerGuesser
      * @param LocaleManager                       $localeManager
-     * @param MagentoMappingMerger                $storeViewMappingMerger
-     * @param MagentoMappingMerger                $attributeMappingMerger
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      * @param GroupManager                        $groupManager
      */
@@ -48,8 +40,6 @@ class AttributeProcessor extends AbstractProcessor
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
-        MagentoMappingMerger $storeViewMappingMerger,
-        MagentoMappingMerger $attributeMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
         GroupManager $groupManager
     ) {
@@ -57,43 +47,48 @@ class AttributeProcessor extends AbstractProcessor
             $webserviceGuesser,
             $normalizerGuesser,
             $localeManager,
-            $storeViewMappingMerger,
             $clientParametersRegistry
         );
 
-        $this->attributeMappingMerger = $attributeMappingMerger;
-        $this->groupManager           = $groupManager;
+        $this->groupManager = $groupManager;
     }
 
     /**
-     * Set attribute code mapping
+     * Get raw (json encoded) attribute code mapping
+     *
+     * @return string
+     */
+    public function getAttributeCodeMapping()
+    {
+        if (empty($this->attributeCodeMapping)) {
+            return json_encode([]);
+        } else {
+            return $this->attributeCodeMapping;
+        }
+    }
+
+    /**
+     * Set raw (json encoded) attribute code mapping
      *
      * @param string $attributeCodeMapping
      *
-     * @return AttributeProcessor
+     * @return AttributeReader
      */
     public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $decodedAttributeCodeMapping = json_decode($attributeCodeMapping, true);
-
-        if (!is_array($decodedAttributeCodeMapping)) {
-            $decodedAttributeCodeMapping = [$decodedAttributeCodeMapping];
-        }
-
-        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
-        $this->attributeMappingMerger->setMapping($decodedAttributeCodeMapping);
-        $this->attributeCodeMapping = $this->getAttributeCodeMapping();
+        $this->attributeCodeMapping = $attributeCodeMapping;
 
         return $this;
     }
 
     /**
-     * Get attribute code mapping
-     * @return string
+     * Get decoded attribute mapping
+     *
+     * @return array
      */
-    public function getAttributeCodeMapping()
+    public function getDecodedAttributeCodeMapping()
     {
-        return json_encode($this->attributeMappingMerger->getMapping()->toArray());
+        return json_decode($this->attributeCodeMapping, true);
     }
 
     /**
@@ -108,7 +103,7 @@ class AttributeProcessor extends AbstractProcessor
         $this->attributeNormalizer = $this->normalizerGuesser->getAttributeNormalizer($this->getClientParameters());
         $this->globalContext['magentoAttributes']        = $this->webservice->getAllAttributes();
         $this->globalContext['magentoAttributesOptions'] = $this->webservice->getAllAttributesOptions();
-        $this->globalContext['attributeCodeMapping']     = $this->attributeMappingMerger->getMapping();
+        $this->globalContext['attributeCodeMapping']     = $this->getDecodedAttributeCodeMapping();
         $this->globalContext['magentoStoreViews']        = $magentoStoreViews;
         $this->globalContext['axisAttributes']           = $this->getAxisAttributes();
     }
@@ -119,7 +114,7 @@ class AttributeProcessor extends AbstractProcessor
     public function process($attribute)
     {
         $this->beforeExecute();
-        $magentoAttributes = $this->webservice->getAllAttributes();
+        $magentoAttributes = $this->globalContext['magentoAttributes'];
 
         $this->globalContext['create'] = !$this->magentoAttributeExists($attribute, $magentoAttributes);
         $result = [$attribute, $this->normalizeAttribute($attribute, $this->globalContext)];
@@ -136,8 +131,18 @@ class AttributeProcessor extends AbstractProcessor
      */
     protected function magentoAttributeExists(AbstractAttribute $attribute, array $magentoAttributes)
     {
+        $attributeCodeMapping = $this->getDecodedAttributeCodeMapping();
+
+        if (isset($attributeCodeMapping[$attribute->getCode()])) {
+            $magentoAttributeCode = $attributeCodeMapping[$attribute->getCode()];
+        } else {
+            $magentoAttributeCode = $attribute->getCode();
+        }
+
+        $magentoAttributeCode = strtolower($magentoAttributeCode);
+
         return array_key_exists(
-            strtolower($this->attributeMappingMerger->getMapping()->getTarget($attribute->getCode())),
+            $magentoAttributeCode,
             $magentoAttributes
         );
     }
@@ -166,16 +171,6 @@ class AttributeProcessor extends AbstractProcessor
     }
 
     /**
-     * Called after the configuration is set
-     */
-    protected function afterConfigurationSet()
-    {
-        parent::afterConfigurationSet();
-
-        $this->attributeMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
-    }
-
-    /**
      * Get attribute axis
      *
      * @return array
@@ -198,9 +193,31 @@ class AttributeProcessor extends AbstractProcessor
      */
     public function getConfigurationFields()
     {
+        $dataTargets = array_merge(
+            ['route' => 'magento-attributes'],
+            $this->getMagentoParamsForMapping()
+        );
+
         return array_merge(
             parent::getConfigurationFields(),
-            $this->attributeMappingMerger->getConfigurationField()
+            [
+                'attributeCodeMapping' => [
+                    'type'    => 'textarea',
+                    'options' => [
+                        'label' => 'pim_magento_connector.export.attributeCodeMapping.label',
+                        'help'  => 'pim_magento_connector.export.attributeCodeMapping.help',
+                        'required' => false,
+                        'attr'     => [
+                            'class' => 'mapping-field',
+                            'data-sources' => json_encode([
+                                'route' => 'pim-attributes'
+                            ]),
+                            'data-targets' => json_encode($dataTargets),
+                            'data-name'   => 'attributeCode'
+                        ]
+                    ]
+                ]
+            ]
         );
     }
 }

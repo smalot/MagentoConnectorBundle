@@ -2,33 +2,56 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Reader\ORM;
 
-use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
+use Akeneo\Bundle\BatchBundle\Item\ItemReaderInterface;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
-use Doctrine\ORM\EntityManager;
-use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
-use Pim\Bundle\MagentoConnectorBundle\Mapper\MappingCollection;
+use Pim\Bundle\CatalogBundle\Entity\Repository\AttributeRepository;
+use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
+use Pim\Bundle\MagentoConnectorBundle\Item\MagentoItemStep;
+use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
- * ORM reader for product
+ * Attribute reader
  *
- * @author    Julien SAnchez <julien@akeneo.com>
+ * @author    Benoit Jacquemont <benoit@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class AttributeReader extends EntityReader
+class AttributeReader extends MagentoItemStep implements ItemReaderInterface
 {
     const IMAGE_ATTRIBUTE_TYPE = 'pim_catalog_image';
 
-    /**
-     * @var MagentoMappingMerger
-     */
-    protected $attributeCodeMappingMerger;
+    /** @var AbstractQuery */
+    protected $query;
 
     /** @var string */
-    protected $attributeCodeMapping = '';
+    protected $attributeCodeMapping;
+
+    /** @var AttributeRepository */
+    protected $attributeRepository;
+
+    /** @var boolean */
+    protected $queryExecuted = false;
 
     /**
-     * Set attribute code mapping
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
+     * @param AttributeRepository                 $attributeRepository
+     */
+    public function __construct(
+        WebserviceGuesser $webserviceGuesser,
+        MagentoSoapClientParametersRegistry $clientParametersRegistry,
+        AttributeRepository $attributeRepository
+    ) {
+        parent::__construct(
+            $webserviceGuesser,
+            $clientParametersRegistry
+        );
+
+        $this->attributeRepository = $attributeRepository;
+    }
+
+    /**
+     * Set raw (json encoded) attribute code mapping
      *
      * @param string $attributeCodeMapping
      *
@@ -36,37 +59,33 @@ class AttributeReader extends EntityReader
      */
     public function setAttributeCodeMapping($attributeCodeMapping)
     {
-        $decodedAttributeCodeMapping = json_decode($attributeCodeMapping, true);
-
-        if (!is_array($decodedAttributeCodeMapping)) {
-            $decodedAttributeCodeMapping = [$decodedAttributeCodeMapping];
-        }
-
-        $this->attributeCodeMappingMerger->setMapping($decodedAttributeCodeMapping);
+        $this->attributeCodeMapping = $attributeCodeMapping;
 
         return $this;
     }
 
     /**
-     * Get attribute id mapping
+     * Get raw (json encoded) attribute code mapping
      *
      * @return string
      */
     public function getAttributeCodeMapping()
     {
-        return json_encode($this->attributeCodeMappingMerger->getMapping()->toArray());
+        if (empty($this->attributeCodeMapping)) {
+            return json_encode([]);
+        } else {
+            return $this->attributeCodeMapping;
+        }
     }
 
     /**
-     * @param EntityManager        $em                     The entity manager
-     * @param string               $className              The entity class name used
-     * @param MagentoMappingMerger $attributeMappingMerger Attribute mapping merger
+     * Get decoded attribute mapping
+     *
+     * @return array
      */
-    public function __construct(EntityManager $em, $className, MagentoMappingMerger $attributeCodeMappingMerger)
+    public function geDecodedtAttributeCodeMapping()
     {
-        parent::__construct($em, $className);
-
-        $this->attributeCodeMappingMerger = $attributeCodeMappingMerger;
+        return json_decode($this->attributeCodeMapping, true);
     }
 
     /**
@@ -74,13 +93,24 @@ class AttributeReader extends EntityReader
      */
     public function read()
     {
-        $attribute = parent::read();
+        $this->beforeExecute();
 
-        $attributeMapping = $this->attributeCodeMappingMerger->getMapping();
-
-        while ($attribute !== null && $this->isAttributeIgnored($attribute, $attributeMapping)) {
-            $attribute = parent::read();
+        if (!$this->queryExecuted) {
+            $this->attributes = new \ArrayIterator($this->getQuery()->execute());
+            $this->queryExecuted = true;
         }
+
+        if ($attribute = $this->attributes->current()) {
+            $this->attributes->next();
+        }
+
+        while ($attribute !== null && $this->isAttributeIgnored($attribute)) {
+            if ($attribute = $this->attributes->current()) {
+                $this->attributes->next();
+            }
+        }
+
+        $this->stepExecution->incrementSummaryInfo('read');
 
         return $attribute;
     }
@@ -89,13 +119,22 @@ class AttributeReader extends EntityReader
      * Is the given attribute ignored ?
      *
      * @param AbstractAttribute $attribute
-     * @param MappingCollection $attributeMapping
      *
      * @return boolean
      */
-    protected function isAttributeIgnored(AbstractAttribute $attribute, MappingCollection $attributeMapping)
+    protected function isAttributeIgnored(AbstractAttribute $attribute)
     {
-        return in_array(strtolower($attributeMapping->getTarget($attribute->getCode())), $this->getIgnoredAttributes())
+        $attributeCodeMapping = $this->getAttributeCodeMapping();
+
+        if (isset($attributeCodeMapping[$attribute->getCode()])) {
+            $magentoAttributeCode = $attributeCodeMapping[$attribute->getCode()];
+        } else {
+            $magentoAttributeCode = $attribute->getCode();
+        }
+
+        $magentoAttributeCode = strtolower($magentoAttributeCode);
+
+        return in_array($magentoAttributeCode, $this->getIgnoredAttributes())
             || $attribute->getAttributeType() === self::IMAGE_ATTRIBUTE_TYPE;
     }
 
@@ -105,10 +144,9 @@ class AttributeReader extends EntityReader
     public function getQuery()
     {
         if (!$this->query) {
-            $this->query = $this->em
-                ->getRepository($this->className)
-                ->createQueryBuilder('c')
-                ->join('c.families', 'PimCatalogBundle:Family')
+            $this->query = $this->attributeRepository
+                ->createQueryBuilder('a')
+                ->join('a.families', 'PimCatalogBundle:Family')
                 ->getQuery();
         }
 
@@ -130,23 +168,78 @@ class AttributeReader extends EntityReader
     }
 
     /**
-     * Called after the configuration is set
+     * Return all Magento attribute codes
+     *
+     * @return array
      */
-    protected function afterConfigurationSet()
+    public function getMagentoAttributeCodes()
     {
-        parent::afterConfigurationSet();
+        return [
+            'allowAddition' => true,
+            'targets' => $this->getIgnoredAttributes()
+        ];
+        $attributeCodes = [];
 
-        $this->attributeCodeMappingMerger->setParameters($this->getClientParameters(), $this->getSoapUrl());
+        if (null != $this->webservice) {
+            $attributes = $this->webservice->getAllAttributes();
+            error_log("DEBUG magento attributes:".print_r($attributes, true));
+        }
+
+        return [
+            'allowAddition' => true,
+            'targets' => $attributeCodes
+        ];
+    }
+
+    /**
+     * Return all Akeneo attribute codes
+     *
+     * @return array
+     */
+    public function getAkeneoAttributeCodes()
+    {
+        $attributes = $this->attributeRepo->findAll();
+        $attributeCodes = [];
+
+        foreach ($attributes as $attribute) {
+            $attributeCodes[] = $attribute->getCode();
+        }
+
+        return ['sources' => $attributeCodes];
     }
 
     /**
      * {@inheritdoc}
+     *
+     * TODO: make URL work in dev and production mode
      */
     public function getConfigurationFields()
     {
+        $dataTargets = array_merge(
+            ['route' => 'magento-attributes'],
+            $this->getMagentoParamsForMapping()
+        );
+
         return array_merge(
             parent::getConfigurationFields(),
-            $this->attributeCodeMappingMerger->getConfigurationField()
+            [
+                'attributeCodeMapping' => [
+                    'type'    => 'textarea',
+                    'options' => [
+                        'label' => 'pim_magento_connector.export.attributeCodeMapping.label',
+                        'help'  => 'pim_magento_connector.export.attributeCodeMapping.help',
+                        'required' => false,
+                        'attr'     => [
+                            'class' => 'mapping-field',
+                            'data-sources' => json_encode([
+                                'route' => 'pim-attributes'
+                            ]),
+                            'data-targets' => json_encode($dataTargets),
+                            'data-name'   => 'attributeCode'
+                        ]
+                    ]
+                ]
+            ]
         );
     }
 }

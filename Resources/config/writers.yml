@@ -50,7 +50,6 @@ services:
             - '@pim_magento_connector.manager.family_mapping'
             - '@pim_magento_connector.manager.attribute_mapping'
             - '@pim_magento_connector.manager.group_mapping'
-            - '@pim_magento_connector.merger.attribute_id_mapping'
             - '@pim_magento_connector.webservice.magento_soap_client_parameters_registry'
 
     pim_magento_connector.writer.family:

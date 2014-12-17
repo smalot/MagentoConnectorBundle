@@ -1,4 +1,4 @@
-pim_connector_mapping_bundle:
+pim_magento_connector:
     mapping:
         attribute:
             source: "Akeneoの属性"

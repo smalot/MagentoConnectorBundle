@@ -50,7 +50,7 @@ define(
                 this.render();
             },
             render: function() {
-                this.$el.html(this.template({mappingItem: this.model.toJSON(), notBlankError: __('pim_connector_mapping.mapping.not_blank')}));
+                this.$el.html(this.template({mappingItem: this.model.toJSON(), notBlankError: __('pim_magento_connector.mapping.not_blank')}));
                 this.$el.find('.validation-tooltip').hide();
                 return this;
             },
@@ -122,22 +122,16 @@ define(
             render: function() {
                 this.$el.empty();
 
-                if (!this.targets.allowAddition && this.targets.targets.length === 0) {
-                    this.$el.html(this.emptyTemplate({
-                       emptyMessage : __('pim_connector_mapping.mapping.' + this.name + '.empty')
-                    }));
-                } else {
-                    this.$el.html(this.mappingTemplate({
-                       sourceTitle : __('pim_connector_mapping.mapping.' + this.name + '.source'),
-                       targetTitle : __('pim_connector_mapping.mapping.' + this.name + '.target'),
-                       addButton   : __('pim_connector_mapping.mapping.add')
-                    }));
+                this.$el.html(this.mappingTemplate({
+                   sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
+                   targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target'),
+                   addButton   : __('pim_magento_connector.mapping.add')
+                }));
 
 
-                    _.each(this.collection.models, function(mappingItem) {
-                        this.addMappingItem({mappingItem: mappingItem});
-                    }, this);
-                }
+                _.each(this.collection.models, function(mappingItem) {
+                    this.addMappingItem({mappingItem: mappingItem});
+                }, this);
 
                 if (!this.$target.data('rendered')) {
                     this.$target.after(this.$el)
@@ -167,7 +161,7 @@ define(
                 return mappingItem;
             },
             createMappingItemView: function(mappingItem) {
-                var mappingItemView = new MappingItemView({
+            var mappingItemView = new MappingItemView({
                     model: mappingItem,
                     sources: this.sources,
                     targets: this.targets
@@ -190,23 +184,95 @@ define(
 
                 this.$el.children('tbody').append(mappingItemView.$el);
 
-                var select2TargetConfig = {};
-
-                if (this.targets.allowAddition) {
-                    select2TargetConfig.maximumSelectionSize = 1;
-                    select2TargetConfig.tags = this.targets.targets;
-                } else {
-                    select2TargetConfig.data        = this.targets.targets;
-                    select2TargetConfig.placeholder = __('pim_connector_mapping.mapping.' + this.name + '.placeholder');
-                }
-
                 mappingItemView.$el.find('.mapping-source').select2({
-                    tags: this.sources.sources,
-                    maximumSelectionSize: 1
+                    maximumSelectionSize: 1,
+                    createSearchChoice: function(term, data) {
+                        if ($(data).filter(function() {
+                            return this.text.localeCompare(term) === 0;
+                        }).length === 0) {
+                            return {
+                                id: term,
+                                text: term
+                            }
+                        }
+                    },
+                    ajax: {
+                        url: window.magentoConnectorRoutes[this.sources.route],
+                        dataType: 'json',
+                        quietMillis: 250,
+                        results: function(data, page) {
+                            return {
+                                results: data
+                            };
+                        }
+                    },
+                    initSelection: function(element, callback) {
+                        var elementText = $(element).attr('value');
+
+                        callback({"text":elementText,"id":elementText});
+                    }
                 });
 
-                mappingItemView.$el.find('.mapping-target').select2(select2TargetConfig)
-                    .enable(mappingItemView.model.get('deletable'));
+/*
+                $.ajax({
+                    url: window.magentoConnectorRoutes[this.targets.route],
+                    data: {
+                        'soapUsername':this.targets.soapUsername,
+                        'soapApiKey':this.targets.soapApiKey,
+                        'wsdlUrl':this.targets.wsdlUrl,
+                        'magentoUrl':this.targets.magentoUrl,
+                        'defautStoreView':this.targets.defaultStoreView,
+                        'httpLogin':this.targets.httpLogin,
+                        'httpPassword':this.targets.httpPassword
+                    },
+                    dataType: 'json',
+                    type: 'GET',
+                    async: false,
+                    success: function(data) {
+                        tags = data;
+                    }
+                });
+*/
+                var initTargets = this.targets;
+                mappingItemView.$el.find('.mapping-target').select2({
+                    maximumSelectionSize: 1,
+                    createSearchChoice: function(term, data) {
+                        if ($(data).filter(function() {
+                            return this.text.localeCompare(term) === 0;
+                        }).length === 0) {
+                            return {
+                                id: term,
+                                text: term
+                            }
+                        }
+                    },
+                    ajax: {
+                        url: window.magentoConnectorRoutes[this.targets.route],
+                        data: function (data) {
+                            return {
+                                'soapUsername': initTargets.soapUsername,
+                                'soapApiKey': initTargets.soapApiKey,
+                                'wsdlUrl': initTargets.wsdlUrl,
+                                'magentoUrl': initTargets.magentoUrl,
+                                'defautStoreView': initTargets.defaultStoreView,
+                                'httpLogin': initTargets.httpLogin,
+                                'httpPassword': initTargets.httpPassword
+                            };
+                        },
+                        dataType: 'json',
+                        quietMillis: 250,
+                        results: function(data, page) {
+                            return {
+                                results: data
+                            };
+                        }
+                    },
+                    initSelection: function(element, callback) {
+                        var elementText = $(element).attr('value');
+
+                        callback({"text":elementText,"id":elementText});
+                    }
+                }).enable(mappingItemView.model.get('deletable'));
             }
         });
 
@@ -239,7 +305,7 @@ define(
             $element.parents('form').on('submit', function() {
                 var isValid = true;
                 var $error = $('<i class="validation-tooltip" data-placement="right" data-toggle="tooltip" ' +
-                            'data-original-title="' + __('pim_connector_mapping.mapping.not_blank') + '"></i>').tooltip();
+                            'data-original-title="' + __('pim_magento_connector.mapping.not_blank') + '"></i>').tooltip();
 
                 $('.mapping-row').each(function() {
                     $(this).find('.validation-tooltip').hide();

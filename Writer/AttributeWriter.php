@@ -47,18 +47,12 @@ class AttributeWriter extends AbstractWriter
     protected $attributeGroupMappingManager;
 
     /**
-     * @var MagentoMappingMerger
-     */
-    protected $attributeIdMappingMerger;
-
-    /**
      * Constructor
      *
      * @param WebserviceGuesser                   $webserviceGuesser
      * @param FamilyMappingManager                $familyMappingManager
      * @param AttributeMappingManager             $attributeMappingManager
      * @param AttributeGroupMappingManager        $attributeGroupMappingManager
-     * @param MagentoMappingMerger                $attributeIdMappingMerger
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
@@ -66,7 +60,6 @@ class AttributeWriter extends AbstractWriter
         FamilyMappingManager $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
         AttributeGroupMappingManager $attributeGroupMappingManager,
-        MagentoMappingMerger $attributeIdMappingMerger,
         MagentoSoapClientParametersRegistry $clientParametersRegistry
     ) {
         parent::__construct($webserviceGuesser, $clientParametersRegistry);
@@ -74,9 +67,7 @@ class AttributeWriter extends AbstractWriter
         $this->attributeMappingManager      = $attributeMappingManager;
         $this->familyMappingManager         = $familyMappingManager;
         $this->attributeGroupMappingManager = $attributeGroupMappingManager;
-        $this->attributeIdMappingMerger     = $attributeIdMappingMerger;
 
-        $this->attributeIdMappingMerger->setParameters($this->getClientParameters(), $this->getDefaultStoreView());
     }
 
     /**
@@ -107,9 +98,11 @@ class AttributeWriter extends AbstractWriter
      */
     protected function handleAttribute(array $attribute, $pimAttribute)
     {
+        $magentoUrl = $this->getSoapUrl();
+
         if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
             $this->webservice->updateAttribute($attribute);
-            $magentoAttributeId = $this->attributeIdMappingMerger->getMapping()->getTarget($pimAttribute->getCode());
+            $magentoAttributeId = $this->attributeMappingManager->getIdFromAttribute($pimAttribute, $magentoUrl);
             $this->manageAttributeSet($magentoAttributeId, $pimAttribute);
 
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_UPDATED);
@@ -120,7 +113,6 @@ class AttributeWriter extends AbstractWriter
 
             $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_CREATED);
 
-            $magentoUrl = $this->getSoapUrl();
             $this->attributeMappingManager->registerAttributeMapping(
                 $pimAttribute,
                 $magentoAttributeId,
@@ -137,7 +129,7 @@ class AttributeWriter extends AbstractWriter
      */
     protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
     {
-        if ($this->attributeIdMappingMerger->getMapping()->getSource($magentoAttributeId) != $pimAttribute->getCode()) {
+        if (null !== $magentoAttributeId) {
             $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);
         }
     }
@@ -181,12 +173,12 @@ class AttributeWriter extends AbstractWriter
 
         foreach ($families as $family) {
             $magentoGroupId  = $this->getGroupId($pimAttribute, $family);
-            $magentoFamilyId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
+            $magentoSetId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
             try {
-                if (null !== $magentoFamilyId || null !== $magentoFamilyId) {
+                if (null !== $magentoGroupId && null !== $magentoSetId) {
                     $this->webservice->addAttributeToAttributeSet(
                         $magentoAttributeId,
-                        $magentoFamilyId,
+                        $magentoSetId,
                         $magentoGroupId
                     );
                 }
@@ -217,15 +209,26 @@ class AttributeWriter extends AbstractWriter
             $groupName = $group->getCode();
 
             foreach ($families as $family) {
-                $familyMagentoId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
-                if (null === $familyMagentoId) {
+                $magentoSetId = $this->familyMappingManager->getIdFromFamily($family, $this->getSoapUrl());
+                if (null === $magentoSetId) {
                     $magentoAttributeSets = $this->webservice->getAttributeSetList();
                     if (array_key_exists($family->getCode(), $magentoAttributeSets)) {
-                        $familyMagentoId = $magentoAttributeSets[$family->getCode()];
+                        $magentoSetId = $magentoAttributeSets[$family->getCode()];
                     }
                 }
+                if ($magentoSetId === null) {
+                    throw new InvalidItemException(
+                        sprintf(
+                            "Attribute set [%s] not known in Magento. ".
+                            "Did you launch the family export before launching this attribute export ?",
+                            $family->getCode()
+                        ),
+                        ['code' => $pimAttribute->getCode()]
+                    );
+                }
+
                 try {
-                    $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($familyMagentoId, $groupName);
+                    $magentoGroupId = $this->webservice->addAttributeGroupToAttributeSet($magentoSetId, $groupName);
                     $this->attributeGroupMappingManager->registerGroupMapping(
                         $group,
                         $family,

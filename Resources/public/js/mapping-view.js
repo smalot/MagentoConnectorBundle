@@ -42,7 +42,7 @@ define(
                 this.render();
             },
             render: function() {
-                this.$el.html(this.template({mappingItem: this.model.toJSON(), notBlankError: __('pim_connector_mapping.mapping.not_blank')}));
+                this.$el.html(this.template({mappingItem: this.model.toJSON(), notBlankError: __('pim_magento_connector.mapping.not_blank')}));
                 this.$el.find('.validation-tooltip').hide();
                 return this;
             },
@@ -93,8 +93,8 @@ define(
                 this.$el.empty();
 
                 this.$el.html(this.mappingTemplate({
-                   sourceTitle : __('pim_connector_mapping.mapping.' + this.name + '.source'),
-                   targetTitle : __('pim_connector_mapping.mapping.' + this.name + '.target')
+                   sourceTitle : __('pim_magento_connector.mapping.' + this.name + '.source'),
+                   targetTitle : __('pim_magento_connector.mapping.' + this.name + '.target')
                 }));
 
 
@@ -172,7 +172,7 @@ define(
             $element.parents('form').on('submit', function() {
                 var isValid = true;
                 var $error = $('<i class="validation-tooltip" data-placement="right" data-toggle="tooltip" ' +
-                            'data-original-title="' + __('pim_connector_mapping.mapping.not_blank') + '"></i>').tooltip();
+                            'data-original-title="' + __('pim_magento_connector.mapping.not_blank') + '"></i>').tooltip();
 
                 $('.mapping-row').each(function() {
                     $(this).find('.validation-tooltip').hide();
