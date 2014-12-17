@@ -12,6 +12,10 @@ pim_magento_connector:
             title: Magento Attribute Export
             export:
                 title: Attribute Export Step
+        magento_family_export:
+            title: Magento Family export
+            export:
+                title: Family Export Step
 
     export:
         validator:

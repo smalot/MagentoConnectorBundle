@@ -22,12 +22,23 @@ connector:
             title: pim_magento_connector.jobs.magento_attribute_export.title
             type:  export
             steps:
-                export_product:
+                export:
                     title: pim_magento_connector.jobs.magento_attribute_export.export.title
                     services:
                         reader:    pim_magento_connector.reader.attribute
                         processor: pim_magento_connector.processor.attribute
                         writer:    pim_magento_connector.writer.attribute
+
+        magento_family_export:
+            title: pim_magento_connector.jobs.magento_family_export.title
+            type:  export
+            steps:
+                export:
+                    title: pim_magento_connector.jobs.magento_family_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.family
+                        processor: pim_base_connector.processor.dummy
+                        writer:    pim_base_connector.writer.dummy
 
         magento_configurable_export:
             title: pim_magento_connector.jobs.magento_configurable_export.title

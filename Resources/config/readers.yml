@@ -1,6 +1,7 @@
 parameters:
     pim_magento_connector.reader.variant_group.class: Pim\Bundle\MagentoConnectorBundle\Reader\VariantGroupReader
     pim_magento_connector.reader.attribute.class: Pim\Bundle\MagentoConnectorBundle\Reader\AttributeReader
+    pim_magento_connector.reader.family.class: Pim\Bundle\MagentoConnectorBundle\Reader\FamilyReader
     pim_magento_connector.reader.product_association.class: Pim\Bundle\MagentoConnectorBundle\Reader\ProductAssociationReader
 
 services:
@@ -14,6 +15,11 @@ services:
         arguments:
             - '@doctrine.orm.default_entity_manager'
             - %pim_catalog.entity.attribute.class%
+
+    pim_magento_connector.reader.family:
+        class: %pim_magento_connector.reader.family.class%
+        arguments:
+            - '@pim_catalog.repository.family'
 
     pim_magento_connector.reader.product_association:
         class: %pim_magento_connector.reader.product_association.class%
