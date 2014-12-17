@@ -18,6 +18,9 @@ class MagentoSoapClient extends \SoapClient implements MagentoSoapClientInterfac
     const PRODUCT_EXPORT_METHOD = 'import.importEntities';
 
     /** @staticvar string */
+    const ATTRIBUTES_EXPORT_METHOD = 'import.importAttributes';
+
+    /** @staticvar string */
     const CATALOG_PRODUCT_ENTITY_TYPE = 'catalog_product';
 
     /** @staticvar string */
@@ -63,6 +66,21 @@ class MagentoSoapClient extends \SoapClient implements MagentoSoapClientInterfac
         ];
 
         $this->call($this->getValidSession(), static::PRODUCT_EXPORT_METHOD, $params);
+    }
+
+    /**
+     * Allows to export attributes
+     *
+     * @param array $attributes
+     */
+    public function exportAttributes(array $attributes)
+    {
+        $params = [
+            $attributes,
+            static::APPEND_BEHAVIOR
+        ];
+
+        $this->call($this->getValidSession(), static::ATTRIBUTES_EXPORT_METHOD, $params);
     }
 
     /**

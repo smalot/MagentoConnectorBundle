@@ -1,10 +1,17 @@
 parameters:
     pim_magento_connector.writer.product.class: Pim\Bundle\MagentoConnectorBundle\Writer\ProductWriter
+    pim_magento_connector.writer.attribute.class: Pim\Bundle\MagentoConnectorBundle\Writer\AttributeWriter
     pim_magento_connector.writer.abstract.class: Pim\Bundle\MagentoConnectorBundle\Writer\AbstractWriter
 
 services:
     pim_magento_connector.writer.product:
         class: %pim_magento_connector.writer.product.class%
+        parent: pim_magento_connector.writer.abstract
+        arguments:
+            - '@pim_magento_connector.manager.magento_configuration'
+
+    pim_magento_connector.writer.attribute:
+        class: %pim_magento_connector.writer.attribute.class%
         parent: pim_magento_connector.writer.abstract
         arguments:
             - '@pim_magento_connector.manager.magento_configuration'
