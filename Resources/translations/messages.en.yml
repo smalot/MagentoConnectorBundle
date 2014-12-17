@@ -131,4 +131,6 @@ pim_magento_connector:
         thumbnailAttribute:
             label: Thumbnail image attribute
             help: Choose the Akeneo attribute which is corresponding to thumbnail image of the product in Magento
-
+        isAnchor:
+            label: Is Anchor attribute
+            help: Choose if your category is anchored or not

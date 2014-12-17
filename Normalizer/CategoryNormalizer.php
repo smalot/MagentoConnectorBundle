@@ -186,7 +186,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 'url_key'           => $this->generateUrlKey($category, $context['defaultLocale']),
                 'available_sort_by' => 1,
                 'default_sort_by'   => 1,
-                'is_anchor'         => 1
+                'is_anchor'         => $context['is_anchor']
             ],
             $context['defaultStoreView']
         ];
