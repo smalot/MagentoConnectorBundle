@@ -13,6 +13,8 @@ parameters:
     pim_magento_connector.normalizer.group.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\GroupNormalizer
     pim_magento_connector.normalizer.association.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AssociationNormalizer
     pim_magento_connector.normalizer.attribute_option_value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeOptionValueNormalizer
+    pim_magento_connector.normalizer.family.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer
+    pim_magento_connector.normalizer.attribute_group.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeGroupNormalizer
 
 services:
    pim_magento_connector.serializer:
@@ -27,6 +29,16 @@ services:
        class: %pim_magento_connector.normalizer.attribute.class%
        arguments:
           - '@pim_magento_connector.helper.attribute_mapping'
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
+
+   pim_magento_connector.normalizer.family:
+       class: %pim_magento_connector.normalizer.family.class%
+       tags:
+          - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
+
+   pim_magento_connector.normalizer.attribute_group:
+       class: %pim_magento_connector.normalizer.attribute_group.class%
        tags:
           - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 
