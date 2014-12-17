@@ -5,7 +5,6 @@ namespace Pim\Bundle\MagentoConnectorBundle\Processor;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
-use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -15,13 +14,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class AttributeProcessor extends AbstractConfigurableStepElement implements
-    ItemProcessorInterface,
-    StepExecutionAwareInterface
+class AttributeProcessor extends AbstractConfigurableStepElement implements ItemProcessorInterface
 {
-    /** @var StepExecution */
-    protected $stepExecution;
-
     /** @var NormalizerInterface */
     protected $normalizer;
 
@@ -46,6 +40,7 @@ class AttributeProcessor extends AbstractConfigurableStepElement implements
      */
     public function process($item)
     {
+        // TODO remove hard coded context and use MagentoConfiguration
         $context = [
             'defaultLocale'    => 'en_US',
             'defaultStoreView' => 'Default',
@@ -56,13 +51,5 @@ class AttributeProcessor extends AbstractConfigurableStepElement implements
         ];
 
         return $this->normalizer->normalize($item, 'api_import', $context);
-    }
-
-    /**
-     * @param StepExecution $stepExecution
-     */
-    public function setStepExecution(StepExecution $stepExecution)
-    {
-        $this->stepExecution = $stepExecution;
     }
 }

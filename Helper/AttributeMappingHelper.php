@@ -1,10 +1,11 @@
 <?php
 
 namespace Pim\Bundle\MagentoConnectorBundle\Helper;
+
 use Pim\Bundle\CatalogBundle\AttributeType\AbstractAttributeType;
 
 /**
- * This attribute mapping helper allows to retrieve mapping between PIM and Magento attribute types
+ * This attribute mapping helper allows to retrieve mapping between PIM and Magento attribute and backend types
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
@@ -19,11 +20,11 @@ class AttributeMappingHelper
      *
      * @return string
      */
-    public function getMagentoAttributeTypeFor($pimAttributeType)
+    public function getMagentoAttributeType($pimAttributeType)
     {
-        $mapping = static::getAttributeMapping();
+        $mapping = $this->getAttributeMapping();
 
-        return array_key_exists($pimAttributeType, $mapping) ? $mapping[$pimAttributeType] : 'text';
+        return isset($mapping[$pimAttributeType]) ? $mapping[$pimAttributeType] : 'text';
     }
 
     /**
@@ -33,19 +34,20 @@ class AttributeMappingHelper
      *
      * @return string
      */
-    public function getMagentoBackendTypeFor($pimBackendType)
+    public function getMagentoBackendType($pimBackendType)
     {
-        $mapping = static::getBackendMapping();
+        $mapping = $this->getBackendMapping();
 
         return isset($mapping[$pimBackendType]) ? $mapping[$pimBackendType] : 'varchar';
     }
 
     /**
      * Returns mapping between PIM and Magento attribute types
+     * There isn't identifier because it's mapped automatically with the Magento SKU
      *
      * @return array
      */
-    protected static function getAttributeMapping()
+    protected function getAttributeMapping()
     {
         return [
             'pim_catalog_simpleselect'     => 'select',
@@ -67,7 +69,7 @@ class AttributeMappingHelper
      *
      * @return array
      */
-    protected static function getBackendMapping()
+    protected function getBackendMapping()
     {
         return [
             AbstractAttributeType::BACKEND_TYPE_BOOLEAN    => 'int',

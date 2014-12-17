@@ -163,8 +163,8 @@ class VariantGroupHelper
         $isTypeUpdated = false;
 
         foreach ($simpleProductRows as &$row) {
-            if (isset($row[LabelDictionary::PRODUCT_TYPE_HEADER])) {
-                $row[LabelDictionary::PRODUCT_TYPE_HEADER] = LabelDictionary::CONFIGURABLE_PRODUCT_TYPE;
+            if (isset($row[ProductLabelDictionary::PRODUCT_TYPE_HEADER])) {
+                $row[ProductLabelDictionary::PRODUCT_TYPE_HEADER] = ProductLabelDictionary::CONFIGURABLE_PRODUCT_TYPE;
                 $isTypeUpdated = true;
             }
             foreach ($variationAxes as $axis) {
@@ -211,14 +211,14 @@ class VariantGroupHelper
                 if ($attribute->getCode() === $axisCode) {
                     $option = $product->getValue($axisCode)->getOption();
                     $associated[] = [
-                        LabelDictionary::SUPER_PRODUCT_SKU_HEADER      => (string) $product->getIdentifier(),
-                        LabelDictionary::SUPER_ATTRIBUTE_CODE_HEADER   => $axisCode,
-                        LabelDictionary::SUPER_ATTRIBUTE_OPTION_HEADER => $this->normalizer->normalize(
+                        ProductLabelDictionary::SUPER_PRODUCT_SKU_HEADER      => (string) $product->getIdentifier(),
+                        ProductLabelDictionary::SUPER_ATTRIBUTE_CODE_HEADER   => $axisCode,
+                        ProductLabelDictionary::SUPER_ATTRIBUTE_OPTION_HEADER => $this->normalizer->normalize(
                             $option,
                             $format,
                             $context
                         ),
-                        LabelDictionary::SUPER_ATTRIBUTE_PRICE_HEADER  => 0
+                        ProductLabelDictionary::SUPER_ATTRIBUTE_PRICE_HEADER  => 0
                     ];
                 }
             }

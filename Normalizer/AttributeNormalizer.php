@@ -38,23 +38,22 @@ class AttributeNormalizer implements NormalizerInterface, SerializerAwareInterfa
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        $defaultValue     = $object->getDefaultValue();
         $pimAttributeType = $object->getAttributeType();
         $pimBackendType   = $object->getBackendType();
-        $attributeType    = $this->mappingHelper->getMagentoAttributeTypeFor($pimAttributeType);
-        $backendType      = $this->mappingHelper->getMagentoBackendTypeFor($pimBackendType);
+        $attributeType    = $this->mappingHelper->getMagentoAttributeType($pimAttributeType);
+        $backendType      = $this->mappingHelper->getMagentoBackendType($pimBackendType);
 
         $normalized = [
-            LabelDictionary::ATTRIBUTE_ID_HEADER           => $object->getCode(),
-            LabelDictionary::ATTR_DEFAULT_VAL_HEADER       => $defaultValue,
-            LabelDictionary::ATTRIBUTE_INPUT_HEADER        => $attributeType,
-            LabelDictionary::ATTRIBUTE_BACKEND_TYPE_HEADER => $backendType,
-            LabelDictionary::ATTRIBUTE_LABEL_HEADER        =>
+            AttributeLabelDictionary::ID_HEADER            => $object->getCode(),
+            AttributeLabelDictionary::DEFAULT_VALUE_HEADER => $object->getDefaultValue(),
+            AttributeLabelDictionary::INPUT_HEADER         => $attributeType,
+            AttributeLabelDictionary::BACKEND_TYPE_HEADER  => $backendType,
+            AttributeLabelDictionary::LABEL_HEADER         =>
                 $object->getTranslation($context['defaultLocale'])->getLabel(),
-            LabelDictionary::ATTRIBUTE_GLOBAL_HEADER       => 0,
-            LabelDictionary::ATTRIBUTE_REQUIRED_HEADER     => (int) $object->isRequired(),
-            LabelDictionary::ATTRIBUTE_VISIBLE_HEADER      => (int) $context['visibility'],
-            LabelDictionary::ATTRIBUTE_IS_UNIQUE_HEADER    => (int) $object->isUnique()
+            AttributeLabelDictionary::GLOBAL_HEADER        => 0,
+            AttributeLabelDictionary::REQUIRED_HEADER      => (int) $object->isRequired(),
+            AttributeLabelDictionary::VISIBLE_HEADER       => (int) $context['visibility'],
+            AttributeLabelDictionary::IS_UNIQUE_HEADER     => (int) $object->isUnique()
         ];
 
         if ('pim_catalog_simpleselect' === $pimAttributeType ||
