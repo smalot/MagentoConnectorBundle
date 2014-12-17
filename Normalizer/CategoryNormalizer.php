@@ -127,10 +127,11 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get new normalized categories
-     * @param CategoryInterface $category
-     * @param array             $context
      *
+     * @param CategoryInterface $category
+     * @param array $context
      * @return array
+     * @throws CategoryNotMappedException
      */
     protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
     {
@@ -288,5 +289,4 @@ class CategoryNormalizer extends AbstractNormalizer
 
         return $url;
     }
-
 }

@@ -104,6 +104,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
 
     /**
      * @param WebserviceGuesser $webserviceGuesser
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
@@ -412,7 +413,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     /**
      * Get the magento soap client parameters
      *
-     * @return MagentoSoapClientParametersRegistry
+     * @return MagentoSoapClientParameters
      */
     protected function getClientParameters()
     {
