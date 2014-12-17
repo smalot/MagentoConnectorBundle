@@ -33,7 +33,7 @@ Get composer:
 
 Install the MagentoConnector with composer:
 
-    $ php composer.phar require akeneo/connector-mapping-bundle": "v1.0.0-BETA3@dev"
+    $ php composer.phar require akeneo/connector-mapping-bundle:v1.0.0-BETA3@dev
     $ php composer.phar require akeneo/delta-export-bundle:v1.0.0-BETA3@dev
     $ php composer.phar require akeneo/magento-connector-bundle:1.1.*@stable
 
