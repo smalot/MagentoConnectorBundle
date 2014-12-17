@@ -18,7 +18,10 @@ final class AttributeLabelDictionary
     const DEFAULT_VALUE_HEADER = 'default';
 
     /** @staticvar string */
-    const TYPE_HEADER = 'type';
+    const BACKEND_TYPE_HEADER = 'type';
+
+    /** @staticvar string */
+    const INPUT_HEADER = 'input';
 
     /** @staticvar string */
     const LABEL_HEADER = 'label';
