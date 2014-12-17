@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class AttributeOptionValueNormalizer implements NormalizerInterface
 {
-    /** @staticvar itn */
+    /** @staticvar int */
     const DEFAULT_STORE_VIEW_ID = 0;
 
     /**
