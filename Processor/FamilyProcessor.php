@@ -28,35 +28,6 @@ class FamilyProcessor extends AbstractProcessor
     protected $globalContext;
 
     /**
-     * @var boolean
-     */
-    protected $productAttributeSetRemove;
-
-    /**
-     * Get productAttributeSetRemove.
-     *
-     * @return boolean
-     */
-    public function getProductAttributeSetRemove()
-    {
-        return $this->productAttributeSetRemove;
-    }
-
-    /**
-     * Set productAttributeSetRemove.
-     *
-     * @param boolean $productAttributeSetRemove
-     *
-     * @return $this
-     */
-    public function setProductAttributeSetRemove($productAttributeSetRemove)
-    {
-        $this->productAttributeSetRemove = $productAttributeSetRemove;
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function beforeExecute()
@@ -69,7 +40,6 @@ class FamilyProcessor extends AbstractProcessor
         $this->globalContext['magentoFamilies']   = $this->webservice->getAttributeSetList();
         $this->globalContext['magentoStoreViews'] = $magentoStoreViews;
         $this->globalContext['defaultStoreView']  = $this->getDefaultStoreView();
-        $this->globalContext['productAttributeSetRemove'] = $this->productAttributeSetRemove;
     }
 
     /**
@@ -123,24 +93,5 @@ class FamilyProcessor extends AbstractProcessor
         }
 
         return $processedItem;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigurationFields()
-    {
-        return array_merge(
-            parent::getConfigurationFields(),
-            [
-                'productAttributeSetRemove' => [
-                    'type' => 'checkbox',
-                    'options' => [
-                        'help' => 'pim_magento_connector.export.productAttributeSetRemove.help',
-                        'label' => 'pim_magento_connector.export.productAttributeSetRemove.label'
-                    ]
-                ]
-            ]
-        );
     }
 }

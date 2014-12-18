@@ -28,6 +28,16 @@ class FamilyCleaner extends Cleaner
     protected $familyMappingManager;
 
     /**
+     * @var array
+     */
+    protected $globalContext;
+
+    /**
+     * @var boolean
+     */
+    protected $forceAttributeSetRemove;
+
+    /**
      * @param WebserviceGuesser                   $webserviceGuesser
      * @param FamilyMappingManager                $familyMappingManager
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
@@ -43,11 +53,45 @@ class FamilyCleaner extends Cleaner
     }
 
     /**
+     * Get forceAttributeSetRemove.
+     *
+     * @return boolean
+     */
+    public function getforceAttributeSetRemove()
+    {
+        return $this->forceAttributeSetRemove;
+    }
+
+    /**
+     * Set forceAttributeSetRemove.
+     *
+     * @param boolean $forceAttributeSetRemove
+     *
+     * @return $this
+     */
+    public function setforceAttributeSetRemove($forceAttributeSetRemove)
+    {
+        $this->forceAttributeSetRemove = $forceAttributeSetRemove;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function beforeExecute()
+    {
+        parent::beforeExecute();
+
+        $this->globalContext['forceAttributeSetRemove'] = $this->forceAttributeSetRemove;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function execute()
     {
-        parent::beforeExecute();
+        $this->beforeExecute();
 
         $magentoFamilies = $this->webservice->getAttributeSetList();
 
@@ -70,7 +114,7 @@ class FamilyCleaner extends Cleaner
     {
         if (!$this->familyMappingManager->magentoFamilyExists($id, $this->getSoapUrl())
             && !in_array($name, $this->getIgnoredFamilies())) {
-            $this->webservice->removeAttributeSet($id);
+            $this->webservice->removeAttributeSet($id, $this->globalContext['forceAttributeSetRemove']);
             $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
         }
     }
@@ -91,6 +135,13 @@ class FamilyCleaner extends Cleaner
                         'help'     => 'pim_magento_connector.export.notInPimAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notInPimAnymoreAction.label',
                         'attr'     => ['class' => 'select2']
+                    ]
+                ],
+                'forceAttributeSetRemove' => [
+                    'type' => 'checkbox',
+                    'options' => [
+                        'help' => 'pim_magento_connector.export.forceAttributeSetRemove.help',
+                        'label' => 'pim_magento_connector.export.forceAttributeSetRemove.label'
                     ]
                 ]
             ]

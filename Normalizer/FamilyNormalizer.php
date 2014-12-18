@@ -26,10 +26,7 @@ class FamilyNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        $normalizedFamily = [
-            'attributeSetName'          => $object->getCode(),
-            'productAttributeSetRemove' => $context['productAttributeSetRemove']
-        ];
+        $normalizedFamily = ['attributeSetName' => $object->getCode()];
 
         return $normalizedFamily;
     }
