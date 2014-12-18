@@ -48,6 +48,9 @@ class NormalizerGuesser extends AbstractGuesser
     /** @var ProductValueManager */
     protected $productValueManager;
 
+    /** @var \Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer */
+    protected $attributeNormalizer;
+
     /** @var \Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer */
     protected $categoryNormalizer;
 
@@ -78,6 +81,7 @@ class NormalizerGuesser extends AbstractGuesser
         CategoryMappingManager $categoryMappingManager,
         AssociationTypeManager $associationTypeManager,
         ProductValueManager $productValueManager,
+        AttributeNormalizer $attributeNormalizer,
         CategoryNormalizer $categoryNormalizer,
         FamilyNormalizer $familyNormalizer,
         OptionNormalizer $optionNormalizer
@@ -89,6 +93,7 @@ class NormalizerGuesser extends AbstractGuesser
         $this->categoryMappingManager   = $categoryMappingManager;
         $this->associationTypeManager   = $associationTypeManager;
         $this->productValueManager      = $productValueManager;
+        $this->attributeNormalizer      = $attributeNormalizer;
         $this->categoryNormalizer       = $categoryNormalizer;
         $this->familyNormalizer         = $familyNormalizer;
         $this->optionNormalizer         = $optionNormalizer;
@@ -254,7 +259,7 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                return new AttributeNormalizer($this->productValueNormalizer, $this->productValueManager);
+                return $this->attributeNormalizer;
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
