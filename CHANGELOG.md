@@ -6,6 +6,7 @@
 ## BC Breaks
  - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
  - All ConnectorMappingBundle dependencies should be replaced by MagentoConnectorBundle ones
+ - magento_attribute_export, magento_option_export and magento_attributeset_export has been removed. These jobs are deprecated because they should be launch in a specific order
 
 # 1.1.8 (2014-12-01)
 ## Bug fixes
