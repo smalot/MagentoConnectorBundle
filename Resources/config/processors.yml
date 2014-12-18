@@ -4,6 +4,7 @@ parameters:
     pim_magento_connector.processor.associated_product_to_array.class: Pim\Bundle\MagentoConnectorBundle\Processor\AssociatedProductToArrayProcessor
     pim_magento_connector.processor.attribute.class: Pim\Bundle\MagentoConnectorBundle\Processor\AttributeProcessor
     pim_magento_connector.processor.family.class: Pim\Bundle\MagentoConnectorBundle\Processor\FamilyProcessor
+    pim_magento_connector.processor.add_attribute_to_sets.class: Pim\Bundle\MagentoConnectorBundle\Processor\AddAttributeToSetsProcessor
 
 services:
     pim_magento_connector.processor.product_to_array:
@@ -13,6 +14,11 @@ services:
 
     pim_magento_connector.processor.attribute:
         class: %pim_magento_connector.processor.attribute.class%
+        arguments:
+          - '@pim_magento_connector.serializer'
+
+    pim_magento_connector.processor.add_attribute_to_sets:
+        class: %pim_magento_connector.processor.add_attribute_to_sets.class%
         arguments:
           - '@pim_magento_connector.serializer'
 

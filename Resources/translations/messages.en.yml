@@ -16,6 +16,10 @@ pim_magento_connector:
             title: Magento Family export
             export:
                 title: Family Export Step
+        magento_association_attribute_to_sets_export:
+            title: Magento Association Attributes To Sets Export
+            export:
+                title: Association Attributes To Sets Step
 
     export:
         validator:

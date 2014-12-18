@@ -12,5 +12,11 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 final class FamilyLabelDictionary
 {
     /** @staticvar string */
-    const ATTRIBUTE_SET_HEADER = 'attribute_set_name';
+    const ATTRIBUTE_SET_NAME_HEADER = 'attribute_set_name';
+
+    /** @staticvar string */
+    const ATTRIBUTE_SET_ID_HEADER = 'attribute_set_id';
+
+    /** @staticvar string */
+    const ATTRIBUTE_GROUP_ID_HEADER = 'attribute_group_id';
 }

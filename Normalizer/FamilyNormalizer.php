@@ -21,7 +21,7 @@ class FamilyNormalizer implements NormalizerInterface
     {
         $object->setLocale($context['defaultLocale']);
 
-        return [FamilyLabelDictionary::ATTRIBUTE_SET_HEADER => $object->getLabel()];
+        return [FamilyLabelDictionary::ATTRIBUTE_SET_NAME_HEADER => $object->getLabel()];
     }
 
     /**

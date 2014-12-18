@@ -37,4 +37,7 @@ final class AttributeLabelDictionary
 
     /** @staticvar string */
     const IS_UNIQUE_HEADER = 'unique';
+
+    /** @staticvar string */
+    const SORT_ORDER_HEADER = 'sort_order';
 }
