@@ -127,10 +127,13 @@ class CategoryNormalizer extends AbstractNormalizer
 
     /**
      * Get new normalized categories
+     *
      * @param CategoryInterface $category
      * @param array             $context
      *
      * @return array
+     *
+     * @throws CategoryNotMappedException
      */
     protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
     {
@@ -186,7 +189,7 @@ class CategoryNormalizer extends AbstractNormalizer
                 'url_key'           => $this->generateUrlKey($category, $context['defaultLocale']),
                 'available_sort_by' => 1,
                 'default_sort_by'   => 1,
-                'is_anchor'         => 1
+                'is_anchor'         => $context['is_anchor']
             ],
             $context['defaultStoreView']
         ];
@@ -288,5 +291,4 @@ class CategoryNormalizer extends AbstractNormalizer
 
         return $url;
     }
-
 }

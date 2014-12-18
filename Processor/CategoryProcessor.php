@@ -32,8 +32,13 @@ class CategoryProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
+     * @var boolean
+     */
+    protected $isAnchor;
+
+    /**
      * @param WebserviceGuesser                   $webserviceGuesser
-     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param NormalizerGuesser                   $normalizerGuesser
      * @param LocaleManager                       $localeManager
      * @param MagentoMappingMerger                $storeViewMappingMerger
      * @param MagentoMappingMerger                $categoryMappingMerger
@@ -91,6 +96,30 @@ class CategoryProcessor extends AbstractProcessor
     }
 
     /**
+     * Get isAnchor.
+     *
+     * @return boolean
+     */
+    public function getIsAnchor()
+    {
+        return $this->isAnchor;
+    }
+
+    /**
+     * Set isAnchor.
+     *
+     * @param boolean $isAnchor
+     *
+     * @return CategoryProcessor
+     */
+    public function setIsAnchor($isAnchor)
+    {
+        $this->isAnchor = $isAnchor;
+
+        return $this;
+    }
+
+    /**
      * Function called before all process
      */
     protected function beforeExecute()
@@ -110,7 +139,8 @@ class CategoryProcessor extends AbstractProcessor
                 'defaultLocale'     => $this->defaultLocale,
                 'magentoStoreViews' => $magentoStoreViews,
                 'categoryMapping'   => $this->categoryMappingMerger->getMapping(),
-                'defaultStoreView'  => $this->getDefaultStoreView()
+                'defaultStoreView'  => $this->getDefaultStoreView(),
+                'is_anchor'         => $this->isAnchor
             ]
         );
     }
@@ -187,6 +217,15 @@ class CategoryProcessor extends AbstractProcessor
     {
         return array_merge(
             parent::getConfigurationFields(),
+            [
+                'isAnchor' => [
+                    'type'    => 'checkbox',
+                    'options' => [
+                        'help'  => 'pim_magento_connector.export.isAnchor.help',
+                        'label' => 'pim_magento_connector.export.isAnchor.label'
+                    ]
+                ]
+            ],
             $this->categoryMappingMerger->getConfigurationField()
         );
     }

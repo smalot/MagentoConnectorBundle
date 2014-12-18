@@ -131,3 +131,6 @@ pim_magento_connector:
         thumbnailAttribute:
             label: Attribut image de vignette
             help: Choisissez l'attribut Akeneo correspondant à l'image vignette (thumbnail) du produit dans Magento
+        isAnchor:
+            label: Attribut Is Anchor
+            help: Choisissez si les catégories sont encrées ou pas
