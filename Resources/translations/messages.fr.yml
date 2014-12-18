@@ -134,3 +134,6 @@ pim_magento_connector:
         isAnchor:
             label: Attribut Is Anchor
             help: Choisissez si les catégories sont encrées ou pas
+        productAttributeSetRemove:
+            label: Supprimer les produits dont le jeu d'attribut a été supprimé
+            help: Choississez si, lorsqu'un jeu d'attribut (famille dans Akeneo) est supprimée, les produits qui lui sont liés doivent aussi être supprimés dans Magento
