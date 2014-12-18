@@ -103,7 +103,7 @@ abstract class MagentoItemStep extends AbstractConfigurableStepElement implement
     protected $eventDispatcher;
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
+     * @param WebserviceGuesser                   $webserviceGuesser
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(

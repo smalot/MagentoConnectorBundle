@@ -32,12 +32,12 @@ class CategoryProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
-     * @param WebserviceGuesser                     $webserviceGuesser
-     * @param NormalizerGuesser                     $normalizerGuesser
-     * @param LocaleManager                         $localeManager
-     * @param MagentoMappingMerger                  $storeViewMappingMerger
-     * @param MagentoMappingMerger                  $categoryMappingMerger
-     * @param MagentoSoapClientParametersRegistry   $clientParametersRegistry
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param NormalizerGuesser                   $normalizerGuesser
+     * @param LocaleManager                       $localeManager
+     * @param MagentoMappingMerger                $storeViewMappingMerger
+     * @param MagentoMappingMerger                $categoryMappingMerger
+     * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
         WebserviceGuesser $webserviceGuesser,
