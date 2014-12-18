@@ -19,3 +19,4 @@ services:
             - '@pim_magento_connector.manager.association_type'
             - '@pim_magento_connector.manager.product_value'
             - '@pim_magento_connector.normalizer.family'
+            - '@pim_magento_connector.normalizer.option'
