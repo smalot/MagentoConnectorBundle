@@ -130,7 +130,9 @@ class CategoryNormalizer extends AbstractNormalizer
      *
      * @param CategoryInterface $category
      * @param array             $context
+     *
      * @return array
+     *
      * @throws CategoryNotMappedException
      */
     protected function getNormalizedNewCategory(CategoryInterface $category, array $context)
