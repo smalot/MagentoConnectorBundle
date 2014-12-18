@@ -33,7 +33,7 @@ class CategoryProcessor extends AbstractProcessor
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
-     * @param ProductNormalizerGuesser            $normalizerGuesser
+     * @param NormalizerGuesser                   $normalizerGuesser
      * @param LocaleManager                       $localeManager
      * @param MagentoMappingMerger                $storeViewMappingMerger
      * @param MagentoMappingMerger                $categoryMappingMerger

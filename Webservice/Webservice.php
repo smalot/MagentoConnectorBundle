@@ -182,7 +182,7 @@ class Webservice
      *
      * @throws AttributeSetNotFoundException If If the attribute doesn't exist on Magento side
      *
-     * @return void
+     * @return mixed
      */
     public function getAttributeSetId($code)
     {
@@ -869,7 +869,7 @@ class Webservice
      *
      * @param array $productPart
      *
-     * @return $productPart
+     * @return array
      */
     protected function removeNonUpdatePart(array $productPart)
     {
