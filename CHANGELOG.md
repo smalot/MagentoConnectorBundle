@@ -9,6 +9,7 @@
  - All ConnectorMappingBundle dependencies should be replaced by MagentoConnectorBundle ones
  - Inject AttributeNormalizer, CategoryNormalizer, FamilyNormalizer and OptionNormalizer in the NormalizerGuesser (MC-98)
  - magento_attribute_export, magento_option_export and magento_attributeset_export has been removed. These jobs are deprecated because they should be launch in a specific order
+ - Categories export step has been removed from structure export
 
 # 1.1.8 (2014-12-01)
 ## Bug fixes
