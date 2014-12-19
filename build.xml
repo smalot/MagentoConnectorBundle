@@ -58,6 +58,7 @@
                 <include name="**/*.php" />
                 <exclude name="**/vendor/**" />
                 <exclude name="**/bin/**" />
+                <exclude name="**/Resources/jenkins/**" />
                 <modified />
             </fileset>
         </apply>
@@ -68,7 +69,7 @@
             <arg value="--jdepend-xml=${basedir}/app/build/logs/jdepend.xml" />
             <arg value="--jdepend-chart=${basedir}/app/build/pdepend/dependencies.svg" />
             <arg value="--overview-pyramid=${basedir}/app/build/pdepend/overview-pyramid.svg" />
-            <arg value="--ignore=${basedir}/vendor/,${basedir}/bin/,${basedir}/spec/" />
+            <arg value="--ignore=${basedir}/vendor/,${basedir}/bin/,${basedir}/spec/,${basedir}/Resources/jenkins" />
             <arg path="${basedir}/" />
         </exec>
     </target>
@@ -80,7 +81,7 @@
             <arg value="--reportfile" />
             <arg value="${basedir}/app/build/logs/pmd.xml" />
             <arg value="--exclude" />
-            <arg value="${basedir}/bin/,${basedir}/spec/,${basedir}/vendor/" />
+            <arg value="${basedir}/bin/,${basedir}/spec/,${basedir}/vendor/,${basedir}/Resources/jenkins" />
         </exec>
     </target>
 
@@ -90,7 +91,7 @@
             <arg value="--report-file=${basedir}/app/build/logs/checkstyle.xml" />
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
-            <arg value="--ignore=${basedir}/vendor/,${basedir}/bin/,${basedir}/spec/" />
+            <arg value="--ignore=${basedir}/vendor/,${basedir}/bin/,${basedir}/spec/,${basedir}/Resources/jenkins" />
             <arg path="${basedir}/" />
         </exec>
     </target>
