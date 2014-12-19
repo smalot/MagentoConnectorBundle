@@ -177,10 +177,8 @@ class AttributeNormalizer implements NormalizerInterface
      * @throws InvalidAttributeNameException If attribute name is not valid
      * @return string
      */
-    protected function getNormalizedCode(
-        AbstractAttribute $attribute,
-        array             $attributeCodeMapping
-    ) {
+    protected function getNormalizedCode(AbstractAttribute $attribute, array $attributeCodeMapping)
+    {
         $magentoAttributeCode = $this->getMagentoAttributeCode(
             $attribute->getCode(),
             $attributeCodeMapping

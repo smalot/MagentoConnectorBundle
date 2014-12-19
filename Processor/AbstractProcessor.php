@@ -157,7 +157,7 @@ abstract class AbstractProcessor extends MagentoItemStep implements ItemProcesso
                 return (
                     isset($storeView['source']) &&
                     isset($storeView['target']) &&
-                    !empty($storeView['target']) &&
+                    !empty($storeView['source']) &&
                     !empty($storeView['target'])
                 );
             }

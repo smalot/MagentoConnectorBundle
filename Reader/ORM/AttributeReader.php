@@ -182,7 +182,6 @@ class AttributeReader extends MagentoItemStep implements ItemReaderInterface
 
         if (null != $this->webservice) {
             $attributes = $this->webservice->getAllAttributes();
-            error_log("DEBUG magento attributes:".print_r($attributes, true));
         }
 
         return [
