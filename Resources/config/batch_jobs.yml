@@ -22,34 +22,24 @@ connector:
             title: pim_magento_connector.jobs.magento_attribute_export.title
             type:  export
             steps:
-                export:
-                    title: pim_magento_connector.jobs.magento_attribute_export.export.title
-                    services:
-                        reader:    pim_magento_connector.reader.attribute
-                        processor: pim_magento_connector.processor.attribute
-                        writer:    pim_magento_connector.writer.attribute
-
-        magento_association_attribute_to_sets_export:
-            title: pim_magento_connector.jobs.magento_association_attribute_to_sets_export.title
-            type:  export
-            steps:
-                export:
-                    title: pim_magento_connector.jobs.magento_association_attribute_to_sets_export.export.title
-                    services:
-                        reader:    pim_magento_connector.reader.attribute
-                        processor: pim_magento_connector.processor.add_attribute_to_sets
-                        writer:    pim_magento_connector.writer.add_attribute_to_sets
-
-        magento_family_export:
-            title: pim_magento_connector.jobs.magento_family_export.title
-            type:  export
-            steps:
-                export:
+                export_family:
                     title: pim_magento_connector.jobs.magento_family_export.export.title
                     services:
                         reader:    pim_magento_connector.reader.family
                         processor: pim_magento_connector.processor.family
                         writer:    pim_magento_connector.writer.family
+                export_attribute:
+                    title: pim_magento_connector.jobs.magento_attribute_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.attribute
+                        processor: pim_magento_connector.processor.attribute
+                        writer:    pim_magento_connector.writer.attribute
+                export_association:
+                    title: pim_magento_connector.jobs.magento_association_attribute_to_sets_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.attribute
+                        processor: pim_magento_connector.processor.add_attribute_to_sets
+                        writer:    pim_magento_connector.writer.add_attribute_to_sets
 
         magento_configurable_export:
             title: pim_magento_connector.jobs.magento_configurable_export.title
