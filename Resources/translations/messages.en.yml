@@ -136,4 +136,4 @@ pim_magento_connector:
             help: Choose if your category is anchored or not
         forceAttributeSetRemove:
             label: Force attribute set removing
-            help: Choose if you want to remove attribute sets that have products or only empty attribute sets
+            help: Choose if you want to remove attribute sets that have products and thes products, or only empty attribute sets

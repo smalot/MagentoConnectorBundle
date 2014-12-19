@@ -777,13 +777,13 @@ class Webservice
      *  Allows you to remove an existing attribute set.
      *
      * @param integer $attributeSetId      Attribute set ID
-     * @param boolean $forceProductsRemove Force product remove flag (optional)
+     * @param boolean  $forceProductsRemove Force product remove flag (optional)
      *
      * @return boolean True (1) if the attribute set is removed
      */
     public function removeAttributeSet(
         $attributeSetId,
-        $forceProductsRemove = null
+        $forceProductsRemove = false
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE,

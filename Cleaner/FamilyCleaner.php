@@ -62,7 +62,7 @@ class FamilyCleaner extends Cleaner
      *
      * @param boolean $forceAttributeSetRemove
      *
-     * @return $this
+     * @return FamilyCleaner
      */
     public function setforceAttributeSetRemove($forceAttributeSetRemove)
     {
@@ -101,7 +101,7 @@ class FamilyCleaner extends Cleaner
             && !in_array($name, $this->getIgnoredFamilies())) {
             $this->webservice->removeAttributeSet(
                 $id,
-                $this->forceAttributeSetRemove = true ? '1' : null
+                $this->forceAttributeSetRemove
             );
             $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
         }
