@@ -3,6 +3,8 @@
 namespace Pim\Bundle\MagentoConnectorBundle;
 
 use Akeneo\Bundle\BatchBundle\Connector\Connector;
+use Pim\Bundle\MagentoConnectorBundle\DependencyInjection\Compiler\NormalizerPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Pim Magento connector to import/export data from magento platform
@@ -14,4 +16,11 @@ use Akeneo\Bundle\BatchBundle\Connector\Connector;
  */
 class PimMagentoConnectorBundle extends Connector
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new NormalizerPass());
+    }
 }
