@@ -4,6 +4,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\ProductValueInterface;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\ProductLabelDictionary;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\BackendTypeNotFoundException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;

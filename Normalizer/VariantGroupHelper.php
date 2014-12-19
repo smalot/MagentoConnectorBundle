@@ -7,6 +7,8 @@ use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\ProductLabelDictionary;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\TypeNotFoundException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
 

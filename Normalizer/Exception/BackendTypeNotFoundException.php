@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
+namespace Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception;
 
 /**
  * Occurs during ProductValue normalization when a the attribute backend type is not referred and can not be normalized

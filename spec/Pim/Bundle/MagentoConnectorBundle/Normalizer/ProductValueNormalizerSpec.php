@@ -9,7 +9,7 @@ use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
 use Pim\Bundle\CatalogBundle\Model\AbstractProductMedia;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\BackendTypeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\BackendTypeNotFoundException;
 use Prophecy\Argument;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;

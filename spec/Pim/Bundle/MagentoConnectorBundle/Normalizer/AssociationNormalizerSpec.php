@@ -10,7 +10,7 @@ use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\MandatoryAttributeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\MandatoryAttributeNotFoundException;
 
 class AssociationNormalizerSpec extends ObjectBehavior
 {

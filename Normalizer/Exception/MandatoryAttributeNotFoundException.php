@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
+namespace Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception;
 
 /**
  * Occurs during product processing or normalizing when a mandatory attribute is not found

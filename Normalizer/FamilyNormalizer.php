@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\FamilyLabelDictionary;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
