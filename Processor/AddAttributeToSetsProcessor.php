@@ -6,8 +6,8 @@ use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Pim\Bundle\CatalogBundle\Entity\AttributeGroup;
 use Pim\Bundle\CatalogBundle\Entity\Family;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeLabelDictionary;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyLabelDictionary;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\AttributeLabelDictionary;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\FamilyLabelDictionary;
 
 /**
  * Associates attributes to attribute sets and groups
