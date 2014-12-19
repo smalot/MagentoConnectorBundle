@@ -8,6 +8,18 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
  */
 class NormalizerRegistry
 {
+    /** @staticvar string */
+    const ATTRIBUTE_NORMALIZER = 'attribute';
+
+    /** @staticvar string */
+    const CATEGORY_NORMALIZER  = 'category';
+
+    /** @staticvar string */
+    const FAMILY_NORMALIZER    = 'family';
+
+    /** @staticvar string */
+    const OPTION_NORMALIZER    = 'option';
+
     /** @var NormalizerInterface[] */
     protected $normalizers = [];
 
