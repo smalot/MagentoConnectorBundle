@@ -26,9 +26,7 @@ class MappingDataController extends ContainerAware
      */
     public function pimAttributesAction()
     {
-        $entityManager = $this->container->get('doctrine.orm.entity_manager');
-
-        $attributeRepo = $entityManager->getRepository('Pim\Bundle\CatalogBundle\Entity\Attribute');
+        $attributeRepo = $this->container->get('pim_catalog.repository.attribute');
 
         $attributes = $attributeRepo->findAll();
 
@@ -73,11 +71,9 @@ class MappingDataController extends ContainerAware
      */
     public function pimLocalesAction()
     {
-        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        $localeRepo = $this->container->get('pim_catalog.repository.locale');
 
-        $localeRepo = $entityManager->getRepository('Pim\Bundle\CatalogBundle\Entity\Locale');
-
-        $locales = $localeRepo->findAll();
+        $locales = $localeRepo->getActivatedLocales();
 
         $localeData = [];
 
