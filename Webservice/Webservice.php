@@ -783,7 +783,7 @@ class Webservice
      */
     public function removeAttributeSet(
         $attributeSetId,
-        $forceProductsRemove = false
+        $forceProductsRemove = null
     ) {
         return $this->client->call(
             self::SOAP_ACTION_PRODUCT_ATTRIBUTE_SET_REMOVE,

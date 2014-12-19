@@ -28,11 +28,6 @@ class FamilyCleaner extends Cleaner
     protected $familyMappingManager;
 
     /**
-     * @var array
-     */
-    protected $globalContext;
-
-    /**
      * @var boolean
      */
     protected $forceAttributeSetRemove;
@@ -79,19 +74,9 @@ class FamilyCleaner extends Cleaner
     /**
      * {@inheritdoc}
      */
-    protected function beforeExecute()
-    {
-        parent::beforeExecute();
-
-        $this->globalContext['forceAttributeSetRemove'] = $this->forceAttributeSetRemove;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function execute()
     {
-        $this->beforeExecute();
+        parent::beforeExecute();
 
         $magentoFamilies = $this->webservice->getAttributeSetList();
 
@@ -114,7 +99,10 @@ class FamilyCleaner extends Cleaner
     {
         if (!$this->familyMappingManager->magentoFamilyExists($id, $this->getSoapUrl())
             && !in_array($name, $this->getIgnoredFamilies())) {
-            $this->webservice->removeAttributeSet($id, $this->globalContext['forceAttributeSetRemove']);
+            $this->webservice->removeAttributeSet(
+                $id,
+                $this->forceAttributeSetRemove = true ? '1' : null
+            );
             $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
         }
     }
