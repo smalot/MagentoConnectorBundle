@@ -3,6 +3,7 @@ parameters:
     pim_magento_connector.writer.attribute.class: Pim\Bundle\MagentoConnectorBundle\Writer\AttributeWriter
     pim_magento_connector.writer.family.class: Pim\Bundle\MagentoConnectorBundle\Writer\FamilyWriter
     pim_magento_connector.writer.abstract.class: Pim\Bundle\MagentoConnectorBundle\Writer\AbstractWriter
+    pim_magento_connector.writer.add_attribute_to_sets.class: Pim\Bundle\MagentoConnectorBundle\Writer\AddAttributeToSetsWriter
 
 services:
     pim_magento_connector.writer.product:
@@ -15,6 +16,10 @@ services:
 
     pim_magento_connector.writer.family:
         class: %pim_magento_connector.writer.family.class%
+        parent: pim_magento_connector.writer.abstract
+
+    pim_magento_connector.writer.add_attribute_to_sets:
+        class: %pim_magento_connector.writer.add_attribute_to_sets.class%
         parent: pim_magento_connector.writer.abstract
 
     pim_magento_connector.writer.abstract:
