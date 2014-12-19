@@ -3,6 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 /**
+ * Registry of Magento normalizers
  *
  * @author Romain Monceau <romain@akeneo.com>
  */
@@ -41,9 +42,7 @@ class NormalizerRegistry
     public function getNormalizer($key)
     {
         if (isset($this->normalizers[$key])) {
-            throw new \InvalidItemException(
-                sprintf('Normalizer "%s" unknown', $key)
-            );
+            throw new \InvalidItemException(sprintf('Normalizer "%s" unknown', $key));
         }
 
         return $this->normalizers[$key];
