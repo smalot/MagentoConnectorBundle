@@ -8,17 +8,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ProductToArrayProcessorSpec extends ObjectBehavior
 {
-    public function let(NormalizerInterface $normalizer)
+    function let(NormalizerInterface $normalizer)
     {
         $this->beConstructedWith($normalizer);
     }
 
-    public function it_is_initializable()
+    function it_is_initializable()
     {
         $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Processor\ProductToArrayProcessor');
     }
 
-    public function it_processes_a_product_in_array(ProductInterface $product, $normalizer)
+    function it_processes_a_product_in_array(ProductInterface $product, $normalizer)
     {
         $context = [
             'defaultStoreView'    => 'Default',
@@ -40,7 +40,7 @@ class ProductToArrayProcessorSpec extends ObjectBehavior
         $this->process($product);
     }
 
-    public function it_returns_configuration_fields()
+    function it_returns_configuration_fields()
     {
         $this->getConfigurationFields()->shouldReturn([]);
     }
