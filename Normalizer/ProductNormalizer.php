@@ -20,7 +20,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     const SIMPLE_PRODUCT_TYPE = 'simple';
 
     /** @staticvar string */
-    CONST DATE_FORMAT = 'Y-m-d H:i:s';
+    const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /** @var NormalizerInterface */
     protected $normalizer;

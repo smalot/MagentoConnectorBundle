@@ -8,7 +8,6 @@ use Pim\Bundle\MagentoConnectorBundle\Entity\MagentoConfiguration;
 use Pim\Bundle\MagentoConnectorBundle\Entity\Repository\MagentoConfigurationRepository;
 use Pim\Bundle\MagentoConnectorBundle\Factory\MagentoSoapClientFactory;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Prophecy\Argument;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class MagentoConfigurationManagerSpec extends ObjectBehavior
