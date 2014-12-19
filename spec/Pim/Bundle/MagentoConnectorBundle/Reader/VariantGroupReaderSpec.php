@@ -5,7 +5,6 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Reader;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use PhpSpec\ObjectBehavior;
 use Pim\Bundle\BaseConnectorBundle\Reader\Doctrine\ORMProductReader;
-use Pim\Bundle\CatalogBundle\Entity\Group;
 
 class VariantGroupReaderSpec extends ObjectBehavior
 {

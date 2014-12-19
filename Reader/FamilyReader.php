@@ -3,9 +3,7 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Reader;
 
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Akeneo\Bundle\BatchBundle\Item\ItemReaderInterface;
-use Pim\Bundle\BaseConnectorBundle\Reader\ORM\EntityReader;
 use Pim\Bundle\CatalogBundle\Entity\Repository\FamilyRepository;
 
 /**
