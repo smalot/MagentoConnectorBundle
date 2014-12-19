@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
+namespace Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception;
 
 /**
  * Occurs during transformation from simple product to configurable if the type of the simple product is not found

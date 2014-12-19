@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
+namespace Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary;
 
 /**
  * This dictionary allows to manage constants about API Import attributes

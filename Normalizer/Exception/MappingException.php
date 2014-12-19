@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
+namespace Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception;
 
 /**
  * Mapping exception threw when an issue occurs with the mapping

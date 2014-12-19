@@ -13,7 +13,7 @@ use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\TypeNotFoundException;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\TypeNotFoundException;
 use Prophecy\Argument;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
