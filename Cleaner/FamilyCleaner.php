@@ -52,7 +52,7 @@ class FamilyCleaner extends Cleaner
      *
      * @return boolean
      */
-    public function getforceAttributeSetRemove()
+    public function getForceAttributeSetRemove()
     {
         return $this->forceAttributeSetRemove;
     }
@@ -64,7 +64,7 @@ class FamilyCleaner extends Cleaner
      *
      * @return FamilyCleaner
      */
-    public function setforceAttributeSetRemove($forceAttributeSetRemove)
+    public function setForceAttributeSetRemove($forceAttributeSetRemove)
     {
         $this->forceAttributeSetRemove = $forceAttributeSetRemove;
 
