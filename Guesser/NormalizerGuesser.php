@@ -151,12 +151,14 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                return new ConfigurableNormalizer(
-                    $this->channelManager,
-                    $productNormalizer,
-                    $priceMappingManager,
-                    $visibility
-                );
+                $configurableNormalizer = $this
+                    ->normalizerRegistry
+                    ->getNormalizer(NormalizerRegistry::CONFIGURABLE_NORMALIZER);
+                $configurableNormalizer
+                    ->setPriceMappingManager($priceMappingManager)
+                    ->setVisibility($visibility);
+
+                return $configurableNormalizer;
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }

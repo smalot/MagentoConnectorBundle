@@ -24,6 +24,9 @@ class NormalizerRegistry
     /** @staticvar string */
     const PRODUCT_NORMALIZER   = 'product';
 
+    /** @staticvar string */
+    const CONFIGURABLE_NORMALIZER = 'configurable';
+
     /** @var NormalizerInterface[] */
     protected $normalizers = [];
 
