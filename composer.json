@@ -24,8 +24,7 @@
     ],
     "require": {
         "guzzle/service": ">=3.6.0,<3.8.0",
-        "akeneo/pim-community-dev": "1.2.*@stable",
-        "akeneo/connector-mapping-bundle": "v1.0.0-BETA3"
+        "akeneo/pim-community-dev": "1.2.*@stable"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
