@@ -12,10 +12,4 @@ services:
         class: %pim_magento_connector.guesser.magento_normalizer.class%
         arguments:
             - '@pim_magento_connector.factory.magento_soap_client'
-            - '@pim_catalog.manager.channel'
-            - '@pim_catalog.manager.media'
-            - '@pim_magento_connector.normalizer.value'
-            - '@pim_magento_connector.manager.category_mapping'
-            - '@pim_magento_connector.manager.association_type'
-            - '@pim_magento_connector.manager.product_value'
             - '@pim_magento_connector.normalizer.registry'

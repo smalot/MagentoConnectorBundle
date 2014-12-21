@@ -4,23 +4,10 @@ namespace Pim\Bundle\MagentoConnectorBundle\Guesser;
 
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\NormalizerRegistry;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParameters;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientFactory;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
-use Pim\Bundle\CatalogBundle\Manager\MediaManager;
 use Pim\Bundle\MagentoConnectorBundle\Manager\PriceMappingManager;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizerInterface;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Manager\CategoryMappingManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\AssociationTypeManager;
-use Pim\Bundle\MagentoConnectorBundle\Manager\ProductValueManager;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer;
 
 /**
  * A magento guesser to get the proper normalizer
@@ -34,52 +21,19 @@ class NormalizerGuesser extends AbstractGuesser
     /** @var MagentoSoapClientFactory */
     protected $magentoSoapClientFactory;
 
-    /** @var ChannelManager */
-    protected $channelManager;
-
-    /** @var MediaManager */
-    protected $mediaManager;
-
-    /** @var ProductValueNormalizer */
-    protected $productValueNormalizer;
-
-    /** @var AssociationTypeManager */
-    protected $associationTypeManager;
-
-    /** @var ProductValueManager */
-    protected $productValueManager;
-
     /** @var \Pim\Bundle\MagentoConnectorBundle\Normalizer\NormalizerRegistry */
     protected $normalizerRegistry;
 
     /**
      * Constructor
      * @param MagentoSoapClientFactory $magentoSoapClientFactory
-     * @param ChannelManager           $channelManager
-     * @param MediaManager             $mediaManager
-     * @param ProductValueNormalizer   $productValueNormalizer
-     * @param CategoryMappingManager   $categoryMappingManager
-     * @param AssociationTypeManager   $associationTypeManager
-     * @param ProductValueManager      $productValueManager
      * @param NormalizerRegistry       $registryNormalizer
      */
     public function __construct(
         MagentoSoapClientFactory $magentoSoapClientFactory,
-        ChannelManager $channelManager,
-        MediaManager $mediaManager,
-        ProductValueNormalizer $productValueNormalizer,
-        CategoryMappingManager $categoryMappingManager,
-        AssociationTypeManager $associationTypeManager,
-        ProductValueManager $productValueManager,
         NormalizerRegistry $normalizerRegistry
     ) {
         $this->magentoSoapClientFactory = $magentoSoapClientFactory;
-        $this->channelManager           = $channelManager;
-        $this->mediaManager             = $mediaManager;
-        $this->productValueNormalizer   = $productValueNormalizer;
-        $this->categoryMappingManager   = $categoryMappingManager;
-        $this->associationTypeManager   = $associationTypeManager;
-        $this->productValueManager      = $productValueManager;
         $this->normalizerRegistry       = $normalizerRegistry;
     }
 
