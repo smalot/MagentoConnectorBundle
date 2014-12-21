@@ -62,23 +62,13 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      * @param ProductValueNormalizer $productValueNormalizer
      * @param CategoryMappingManager $categoryMappingManager
      * @param AssociationTypeManager $associationTypeManager
-     * @param bool                   $enabled
-     * @param bool                   $visibility
-     * @param bool                   $variantMemberVisibility
-     * @param string                 $currencyCode
-     * @param string                 $magentoUrl
      */
     public function __construct(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
         CategoryMappingManager $categoryMappingManager,
-        AssociationTypeManager $associationTypeManager,
-        $enabled,
-        $visibility,
-        $variantMemberVisibility,
-        $currencyCode,
-        $magentoUrl
+        AssociationTypeManager $associationTypeManager
     ) {
         parent::__construct($channelManager);
 
@@ -86,11 +76,66 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
         $this->productValueNormalizer  = $productValueNormalizer;
         $this->categoryMappingManager  = $categoryMappingManager;
         $this->associationTypeManager  = $associationTypeManager;
-        $this->enabled                 = $enabled;
-        $this->visibility              = $visibility;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return ProductNormalizer
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $visibility
+     *
+     * @return ProductNormalizer
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $variantMemberVisibility
+     *
+     * @return ProductNormalizer
+     */
+    public function setVariantMemberVisibility($variantMemberVisibility)
+    {
         $this->variantMemberVisibility = $variantMemberVisibility;
-        $this->currencyCode            = $currencyCode;
-        $this->magentoUrl              = $magentoUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param string $currencyCode
+     *
+     * @return ProductNormalizer
+     */
+    public function setCurrencyCode($currencyCode)
+    {
+        $this->currencyCode = $currencyCode;
+
+        return $this;
+    }
+
+    /**
+     * @param string $magentoUrl
+     *
+     * @return ProductNormalizer
+     */
+    public function setMagentoUrl($magentoUrl)
+    {
+        $this->magentoUrl = $magentoUrl;
+
+        return $this;
     }
 
     /**

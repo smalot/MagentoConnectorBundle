@@ -110,31 +110,16 @@ class NormalizerGuesser extends AbstractGuesser
             case AbstractGuesser::MAGENTO_VERSION_1_9:
             case AbstractGuesser::MAGENTO_VERSION_1_8:
             case AbstractGuesser::MAGENTO_VERSION_1_7:
-                return new ProductNormalizer(
-                    $this->channelManager,
-                    $this->mediaManager,
-                    $this->productValueNormalizer,
-                    $this->categoryMappingManager,
-                    $this->associationTypeManager,
-                    $enabled,
-                    $visibility,
-                    $variantMemberVisibility,
-                    $currencyCode,
-                    $clientParameters->getSoapUrl()
-                );
+                $productNormalizer = $this->normalizerRegistry->getNormalizer(NormalizerRegistry::PRODUCT_NORMALIZER);
+                $productNormalizer
+                    ->setEnabled($enabled)
+                    ->setVisibility($visibility)
+                    ->setVariantMemberVisibility($variantMemberVisibility)
+                    ->setCurrencyCode($currencyCode)
+                    ->setMagentoUrl($clientParameters->getSoapUrl());
+
+                return $productNormalizer;
             case AbstractGuesser::MAGENTO_VERSION_1_6:
-                return new ProductNormalizer16(
-                    $this->channelManager,
-                    $this->mediaManager,
-                    $this->productValueNormalizer,
-                    $this->categoryMappingManager,
-                    $this->associationTypeManager,
-                    $enabled,
-                    $visibility,
-                    $variantMemberVisibility,
-                    $currencyCode,
-                    $clientParameters->getSoapUrl()
-                );
             default:
                 throw new NotSupportedVersionException(AbstractGuesser::MAGENTO_VERSION_NOT_SUPPORTED_MESSAGE);
         }
