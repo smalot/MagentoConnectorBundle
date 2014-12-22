@@ -160,7 +160,11 @@ class CategoryNormalizer extends AbstractNormalizer
                     (string) $parentCategoryId,
                     [
                         'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
-                        'url_key'           => $this->generateUrlKey($category, $context['defaultLocale']),
+                        'url_key'           => $this->generateUrlKey(
+                            $category,
+                            $context['defaultLocale'],
+                            $context['urlKey']
+                        ),
                         'is_active'         => 1,
                         'include_in_menu'   => 1,
                         'available_sort_by' => 1,
@@ -186,7 +190,11 @@ class CategoryNormalizer extends AbstractNormalizer
             $this->getMagentoCategoryId($category, $context['magentoUrl']),
             [
                 'name'              => $this->getCategoryLabel($category, $context['defaultLocale']),
-                'url_key'           => $this->generateUrlKey($category, $context['defaultLocale']),
+                'url_key'           => $this->generateUrlKey(
+                    $category,
+                    $context['defaultLocale'],
+                    $context['urlKey']
+                ),
                 'available_sort_by' => 1,
                 'default_sort_by'   => 1,
                 'is_anchor'         => $context['is_anchor']
@@ -279,15 +287,20 @@ class CategoryNormalizer extends AbstractNormalizer
      *
      * @param CategoryInterface $category
      * @param string            $localeCode
+     * @param boolean           $urlKey
      *
-     * @return string
+     * @return null|string
      */
-    protected function generateUrlKey(CategoryInterface $category, $localeCode)
+    protected function generateUrlKey(CategoryInterface $category, $localeCode, $urlKey)
     {
-        $code = $category->getCode();
-        $label = $this->getCategoryLabel($category, $localeCode);
+        if (false === $urlKey) {
+            $code = $category->getCode();
+            $label = $this->getCategoryLabel($category, $localeCode);
 
-        $url = Urlizer::urlize($label.'-'.$code);
+            $url = Urlizer::urlize($label.'-'.$code);
+        } else {
+            $url = null;
+        }
 
         return $url;
     }
