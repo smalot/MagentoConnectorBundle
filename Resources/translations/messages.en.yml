@@ -134,3 +134,6 @@ pim_magento_connector:
         isAnchor:
             label: Is Anchor attribute
             help: Choose if your category is anchored or not
+        forceAttributeSetRemoval:
+            label: Force attribute set removing
+            help: Choose if you want to remove attribute sets that have products and these products, or only empty attribute sets
