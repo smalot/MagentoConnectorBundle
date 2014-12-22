@@ -134,6 +134,6 @@ pim_magento_connector:
         isAnchor:
             label: Attribut Is Anchor
             help: Choisissez si les catégories sont encrées ou pas
-        forceAttributeSetRemove:
+        forceAttributeSetRemoval:
             label: Forcer la suppression du jeu d'attribut
             help: Choississez si vous voulez effacer les jeux d'attributs contenant des produits et leurs produits, ou seulement les jeux d'attributs vides

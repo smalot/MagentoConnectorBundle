@@ -20,8 +20,8 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class FamilyCleaner extends Cleaner
 {
-    const FAMILY_DELETED                          = 'Family deleted';
-    const SOAP_ACTION_UNABLE_REMOVE_ATTRIBUTE_SET = 105;
+    const FAMILY_DELETED              = 'Family deleted';
+    const SOAP_FAULT_PRODUCTS_IN_SETT = 105;
 
     /**
      * @var FamilyMappingManager
@@ -31,7 +31,7 @@ class FamilyCleaner extends Cleaner
     /**
      * @var boolean
      */
-    protected $forceAttributeSetRemove;
+    protected $forceAttributeSetRemoval;
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
@@ -51,19 +51,19 @@ class FamilyCleaner extends Cleaner
     /**
      * @return boolean
      */
-    public function isForceAttributeSetRemove()
+    public function isForceAttributeSetRemoval()
     {
-        return $this->forceAttributeSetRemove;
+        return $this->forceAttributeSetRemoval;
     }
 
     /**
-     * @param boolean $forceAttributeSetRemove
+     * @param boolean $forceAttributeSetRemoval
      *
      * @return FamilyCleaner
      */
-    public function setForceAttributeSetRemove($forceAttributeSetRemove)
+    public function setForceAttributeSetRemoval($forceAttributeSetRemoval)
     {
-        $this->forceAttributeSetRemove = $forceAttributeSetRemove;
+        $this->forceAttributeSetRemoval = $forceAttributeSetRemoval;
 
         return $this;
     }
@@ -102,11 +102,11 @@ class FamilyCleaner extends Cleaner
             try {
                 $this->webservice->removeAttributeSet(
                     $id,
-                    $this->forceAttributeSetRemove
+                    $this->forceAttributeSetRemoval
                 );
                 $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
             } catch (SoapCallException $e) {
-                if ($e->getPrevious()->faultcode == self::SOAP_ACTION_UNABLE_REMOVE_ATTRIBUTE_SET) {
+                if ($e->getPrevious()->faultcode == self::SOAP_FAULT_PRODUCTS_IN_SET) {
                     throw new InvalidItemException(
                         'Unable to remove attribute set as it has related products. ' .
                         'Try to set "Force attribute set removing" if you want to remove ' .
@@ -138,11 +138,11 @@ class FamilyCleaner extends Cleaner
                         'attr'     => ['class' => 'select2']
                     ]
                 ],
-                'forceAttributeSetRemove' => [
+                'forceAttributeSetRemoval' => [
                     'type' => 'checkbox',
                     'options' => [
-                        'help' => 'pim_magento_connector.export.forceAttributeSetRemove.help',
-                        'label' => 'pim_magento_connector.export.forceAttributeSetRemove.label'
+                        'help' => 'pim_magento_connector.export.forceAttributeSetRemoval.help',
+                        'label' => 'pim_magento_connector.export.forceAttributeSetRemoval.label'
                     ]
                 ]
             ]
