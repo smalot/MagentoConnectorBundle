@@ -20,7 +20,8 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class FamilyCleaner extends Cleaner
 {
-    const FAMILY_DELETED  = 'Family deleted';
+    const FAMILY_DELETED                          = 'Family deleted';
+    const SOAP_ACTION_UNABLE_REMOVE_ATTRIBUTE_SET = 105;
 
     /**
      * @var FamilyMappingManager
@@ -48,18 +49,14 @@ class FamilyCleaner extends Cleaner
     }
 
     /**
-     * Get forceAttributeSetRemove.
-     *
      * @return boolean
      */
-    public function getForceAttributeSetRemove()
+    public function isForceAttributeSetRemove()
     {
         return $this->forceAttributeSetRemove;
     }
 
     /**
-     * Set forceAttributeSetRemove.
-     *
      * @param boolean $forceAttributeSetRemove
      *
      * @return FamilyCleaner
@@ -94,16 +91,32 @@ class FamilyCleaner extends Cleaner
      *
      * @param string $name
      * @param int    $id
+     *
+     * @throws InvalidItemException
+     * @throws \Exception
      */
     protected function handleFamilyNotInPimAnymore($name, $id)
     {
         if (!$this->familyMappingManager->magentoFamilyExists($id, $this->getSoapUrl())
             && !in_array($name, $this->getIgnoredFamilies())) {
-            $this->webservice->removeAttributeSet(
-                $id,
-                $this->forceAttributeSetRemove
-            );
-            $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
+            try {
+                $this->webservice->removeAttributeSet(
+                    $id,
+                    $this->forceAttributeSetRemove
+                );
+                $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
+            } catch (SoapCallException $e) {
+                if ($e->getPrevious()->faultcode == self::SOAP_ACTION_UNABLE_REMOVE_ATTRIBUTE_SET) {
+                    throw new InvalidItemException(
+                        'Unable to remove attribute set as it has related products. ' .
+                        'Try to set "Force attribute set removing" if you want to remove ' .
+                        'attribute set and products.',
+                        [$name]
+                    );
+                } else {
+                    throw $e;
+                }
+            }
         }
     }
 
