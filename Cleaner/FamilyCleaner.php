@@ -20,7 +20,6 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class FamilyCleaner extends Cleaner
 {
-    const FAMILY_DELETED              = 'Family deleted';
     const SOAP_FAULT_PRODUCTS_IN_SETT = 105;
 
     /**
@@ -93,7 +92,7 @@ class FamilyCleaner extends Cleaner
      * @param int    $id
      *
      * @throws InvalidItemException
-     * @throws \Exception
+     * @throws SoapCallException
      */
     protected function handleFamilyNotInPimAnymore($name, $id)
     {
@@ -104,7 +103,7 @@ class FamilyCleaner extends Cleaner
                     $id,
                     $this->forceAttributeSetRemoval
                 );
-                $this->stepExecution->incrementSummaryInfo(self::FAMILY_DELETED);
+                $this->stepExecution->incrementSummaryInfo('family_deleted');
             } catch (SoapCallException $e) {
                 if ($e->getPrevious()->faultcode == self::SOAP_FAULT_PRODUCTS_IN_SET) {
                     throw new InvalidItemException(

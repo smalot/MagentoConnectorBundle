@@ -21,8 +21,6 @@ use Doctrine\ORM\EntityManager;
  */
 class AttributeCleaner extends Cleaner
 {
-    const ATTRIBUTE_DELETED = 'Attribute deleted';
-
     /**
      * @var MagentoMappingMerger
      */
@@ -142,7 +140,7 @@ class AttributeCleaner extends Cleaner
     {
         if ($this->notInPimAnymoreAction === self::DELETE) {
             $this->webservice->deleteAttribute($attribute['code']);
-            $this->stepExecution->incrementSummaryInfo(self::ATTRIBUTE_DELETED);
+            $this->stepExecution->incrementSummaryInfo('attribute_deleted');
         }
     }
 
