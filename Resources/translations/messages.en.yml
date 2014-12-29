@@ -137,3 +137,6 @@ pim_magento_connector:
         forceAttributeSetRemoval:
             label: Force attribute set removing
             help: Choose if you want to remove attribute sets that have products and these products, or only empty attribute sets
+        urlKey:
+            label: Let Magento handle url_key generation
+            help: Caution: if you let Magento handle url_key generation, you could face duplications

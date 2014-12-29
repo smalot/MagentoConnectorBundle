@@ -8,6 +8,7 @@ use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\MagentoConnectorBundle\Manager\LocaleManager;
 use Pim\Bundle\MagentoConnectorBundle\Merger\MagentoMappingMerger;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\NormalizeException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\CategoryNotMappedException;
@@ -32,9 +33,19 @@ class CategoryProcessor extends AbstractProcessor
     protected $categoryMappingMerger;
 
     /**
+     * @var CategoryNormalizer
+     */
+    protected $categoryNormalizer;
+
+    /**
      * @var boolean
      */
     protected $isAnchor;
+
+    /**
+     * @var boolean
+     */
+    protected $urlKey;
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
@@ -100,7 +111,7 @@ class CategoryProcessor extends AbstractProcessor
      *
      * @return boolean
      */
-    public function getIsAnchor()
+    public function isIsAnchor()
     {
         return $this->isAnchor;
     }
@@ -115,6 +126,26 @@ class CategoryProcessor extends AbstractProcessor
     public function setIsAnchor($isAnchor)
     {
         $this->isAnchor = $isAnchor;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUrlKey()
+    {
+        return $this->urlKey;
+    }
+
+    /**
+     * @param boolean $urlKey
+     *
+     * @return CategoryProcessor
+     */
+    public function setUrlKey($urlKey)
+    {
+        $this->urlKey = $urlKey;
 
         return $this;
     }
@@ -140,7 +171,8 @@ class CategoryProcessor extends AbstractProcessor
                 'magentoStoreViews' => $magentoStoreViews,
                 'categoryMapping'   => $this->categoryMappingMerger->getMapping(),
                 'defaultStoreView'  => $this->getDefaultStoreView(),
-                'is_anchor'         => $this->isAnchor
+                'is_anchor'         => $this->isAnchor,
+                'urlKey'            => $this->urlKey
             ]
         );
     }
@@ -223,6 +255,13 @@ class CategoryProcessor extends AbstractProcessor
                     'options' => [
                         'help'  => 'pim_magento_connector.export.isAnchor.help',
                         'label' => 'pim_magento_connector.export.isAnchor.label'
+                    ]
+                ],
+                'urlKey' => [
+                    'type'    => 'checkbox',
+                    'options' => [
+                        'help'  => 'pim_magento_connector.export.urlKey.help',
+                        'label' => 'pim_magento_connector.export.urlKey.label'
                     ]
                 ]
             ],
