@@ -83,9 +83,9 @@ class ProductCleaner extends Cleaner
     }
 
     /**
-     * @param WebserviceGuesser $webserviceGuesser
-     * @param ChannelManager    $channelManager
-     * @param ProductManager    $productManager
+     * @param WebserviceGuesser                   $webserviceGuesser
+     * @param ChannelManager                      $channelManager
+     * @param ProductManager                      $productManager
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry
      */
     public function __construct(
