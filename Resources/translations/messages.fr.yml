@@ -137,6 +137,9 @@ pim_magento_connector:
         forceAttributeSetRemoval:
             label: Forcer la suppression du jeu d'attribut
             help: Choississez si vous voulez effacer les jeux d'attributs contenant des produits et leurs produits, ou seulement les jeux d'attributs vides
+        urlKey:
+            label: Laisser Magento générer les url_key
+            help: Attention : si vous laissez Magento générer les url_key à la place d'Akeneo, vous risquez d'obtenir des doublons
 
 job_execution.summary:
     attribute_created:         Attributs créés
@@ -159,6 +162,3 @@ job_execution.summary:
     product_image_sent:        Images des produits envoyées
     product_sent:              Produits envoyés
     product_translation_sent:  Traduction des produits envoyées
-        urlKey:
-            label: Laisser Magento générer les url_key
-            help: Attention : si vous laissez Magento générer les url_key à la place d'Akeneo, vous risquez d'obtenir des doublons
