@@ -7,7 +7,6 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Pim\Bundle\MagentoConnectorBundle\Guesser\WebserviceGuesser;
 use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\SoapCallException;
-use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegistry;
 
 /**
@@ -19,10 +18,6 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegi
  */
 class ProductWriter extends AbstractWriter
 {
-    const PRODUCT_SENT             = 'Products sent';
-    const PRODUCT_IMAGE_SENT       = 'Products images sent';
-    const PRODUCT_TRANSLATION_SENT = 'Products images sent';
-
     /**
      * @var ChannelManager
      */
@@ -142,15 +137,15 @@ class ProductWriter extends AbstractWriter
         switch ($storeViewCode) {
             case $this->getDefaultStoreView():
                 $this->webservice->sendProduct($productPart);
-                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_SENT);
+                $this->stepExecution->incrementSummaryInfo('product_sent');
                 break;
             case Webservice::IMAGES:
                 $this->webservice->sendImages($productPart);
-                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_IMAGE_SENT);
+                $this->stepExecution->incrementSummaryInfo('product_image_sent');
                 break;
             default:
                 $this->webservice->updateProductPart($productPart);
-                $this->stepExecution->incrementSummaryInfo(self::PRODUCT_TRANSLATION_SENT);
+                $this->stepExecution->incrementSummaryInfo('product_translation_sent');
         }
     }
 

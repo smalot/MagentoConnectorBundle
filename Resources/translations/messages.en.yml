@@ -137,6 +137,28 @@ pim_magento_connector:
         forceAttributeSetRemoval:
             label: Force attribute set removing
             help: Choose if you want to remove attribute sets that have products and these products, or only empty attribute sets
+
+job_execution.summary:
+    attribute_created:         Attributes created
+    attribute_deleted:         Attributes deleted
+    attribute_updated:         Attributes updated
+    category_created:          Categories created
+    category_deleted:          Categories deleted
+    category_disabled:         Categories disabled
+    category_moved:            Categories moved
+    category_translation_sent: Categories translations sent
+    category_updated:          Categories updated
+    family_created:            Families created
+    family_deleted:            Families deleted
+    family_exists:             Families already in magento
+    option_created:            Options created
+    option_deleted:            Options deleted
+    product_deleted:           Products deleted
+    product_disabled:          Products disabled
+    product_linked:            Products linked
+    product_image_sent:        Products images sent
+    product_sent:              Products sent
+    product_translation_sent:  Products images sent
         urlKey:
             label: Let Magento handle url_key generation
             help: Caution: if you let Magento handle url_key generation, you could face duplications
