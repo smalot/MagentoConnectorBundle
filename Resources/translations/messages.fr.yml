@@ -131,3 +131,34 @@ pim_magento_connector:
         thumbnailAttribute:
             label: Attribut image de vignette
             help: Choisissez l'attribut Akeneo correspondant à l'image vignette (thumbnail) du produit dans Magento
+        isAnchor:
+            label: Attribut Is Anchor
+            help: Choisissez si les catégories sont encrées ou pas
+        forceAttributeSetRemoval:
+            label: Forcer la suppression du jeu d'attribut
+            help: Choississez si vous voulez effacer les jeux d'attributs contenant des produits et leurs produits, ou seulement les jeux d'attributs vides
+        urlKey:
+            label: Laisser Magento générer les url_key
+            help: Attention : si vous laissez Magento générer les url_key à la place d'Akeneo, vous risquez d'obtenir des doublons
+
+job_execution.summary:
+    attribute_created:         Attributs créés
+    attribute_deleted:         Attributs effacées
+    attribute_updated:         Attributs mis à jour
+    category_created:          Categories créées
+    category_deleted:          Categories effacées
+    category_disabled:         Categories désactivées
+    category_moved:            Categories déplacées
+    category_translation_sent: Traductions des catégories envoyées
+    category_updated:          Categories mises à jour
+    family_created:            Familles créées
+    family_deleted:            Familles effacées
+    family_exists:             Familles déjà présentes dans Magento
+    option_created:            Options créées
+    option_deleted:            Options effacées
+    product_deleted:           Produits effacés
+    product_disabled:          Produits désactivés
+    product_linked:            Produits liés
+    product_image_sent:        Images des produits envoyées
+    product_sent:              Produits envoyés
+    product_translation_sent:  Traduction des produits envoyées
