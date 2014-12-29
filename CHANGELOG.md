@@ -1,3 +1,13 @@
+# 1.1.11 (2014-12-29)
+## New features
+ - Add an option to avoid generating category URL_KEY and let Magento handle it.
+ - Add an option to set the is_anchor property for all categories.
+ - Add an option to force attribute set removal.
+
+## Bug fixes
+ - option "Do nothing" didn't prevent removal of empty families, it now does.
+ - job_execution.summary are now displayed correctly during export and in exports history.
+
 # 1.1.8 (2014-12-01)
 ## Bug fixes
  - removes sending of url_key when updating product, as it breaks with Magento 1.3.1.0 (see http://www.magentocommerce.com/knowledge-base/entry/ee113-later-release-notes#ee113-11302-seo-uniqueness-rules)
