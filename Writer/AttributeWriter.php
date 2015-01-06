@@ -170,8 +170,6 @@ class AttributeWriter extends AbstractWriter
      *
      * @throws \Exception
      * @throws SoapCallException
-     *
-     * @return void
      */
     protected function addAttributeToAttributeSet($magentoAttributeId, $pimAttribute)
     {
@@ -203,8 +201,6 @@ class AttributeWriter extends AbstractWriter
      *
      * @throws \Exception
      * @throws SoapCallException
-     *
-     * @return void
      */
     protected function addGroupToAttributeSet($pimAttribute)
     {
