@@ -34,7 +34,6 @@ class ConfigurableNormalizer extends AbstractNormalizer
     protected $visibility;
 
     /**
-     * Constructor
      * @param ChannelManager      $channelManager
      * @param ProductNormalizer   $productNormalizer
      * @param PriceMappingManager $priceMappingManager
@@ -128,6 +127,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get default configurable
+     *
      * @param Group             $group
      * @param string            $sku
      * @param int               $attributeSetId
@@ -142,6 +142,8 @@ class ConfigurableNormalizer extends AbstractNormalizer
      * @param bool              $create
      *
      * @return array
+     *
+     * @throws InvalidPriceMappingException
      */
     protected function getDefaultConfigurable(
         Group $group,
@@ -194,8 +196,18 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $defaultProductValues[ProductNormalizer::VISIBILITY] = $this->visibility;
         $defaultProductValues[ProductNormalizer::URL_KEY] = $defaultProductValues[ProductNormalizer::URL_KEY].'-conf-'.$group->getId();
 
+        $configurableAttributes['configurable_attributes'] = [];
+        $attributes = $group->getAttributes();
+
+        foreach ($attributes as $attribute) {
+            $magentoAttributeCode = $attributeMapping->getTarget($attribute->getCode());
+            $magentoAttributeId = $magentoAttributes[$magentoAttributeCode]['attribute_id'];
+            $configurableAttributes['configurable_attributes'][] = $magentoAttributeId;
+        }
+
         $defaultConfigurableValues = array_merge(
             $defaultProductValues,
+            $configurableAttributes,
             $priceMapping,
             [self::ASSOCIATED_SKUS => $associatedSkus]
         );
@@ -213,6 +225,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
 
     /**
      * Get the configurable for a new call
+     *
      * @param string $sku
      * @param array  $configurableValues
      * @param int    $attributeSetId
@@ -225,7 +238,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
             AbstractNormalizer::MAGENTO_CONFIGURABLE_PRODUCT_KEY,
             $attributeSetId,
             $sku,
-            $configurableValues
+            $configurableValues,
         ];
     }
 
@@ -240,12 +253,13 @@ class ConfigurableNormalizer extends AbstractNormalizer
     {
         return [
             $sku,
-            $configurableValues
+            $configurableValues,
         ];
     }
 
     /**
      * Get all products skus
+     *
      * @param array $products
      *
      * @return array
