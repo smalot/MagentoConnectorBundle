@@ -3,6 +3,7 @@
  - Delta Export is directly integrated in MagentoConnector (DeltaExportBundle is now deprecated)
  - Connector Mapping is directly integrated in MagentoConnector (ConnectorMappingBundle is now deprecated)
  - Attribute, Category, Family and Option normalizers are now in the DI
+ - Only used configurable attributes are now chosen to build configurable product
 
 ## BC Breaks
  - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
