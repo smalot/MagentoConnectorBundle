@@ -3,6 +3,7 @@ parameters:
     pim_magento_connector.reader.attribute.class: Pim\Bundle\MagentoConnectorBundle\Reader\AttributeReader
     pim_magento_connector.reader.family.class: Pim\Bundle\MagentoConnectorBundle\Reader\FamilyReader
     pim_magento_connector.reader.product_association.class: Pim\Bundle\MagentoConnectorBundle\Reader\ProductAssociationReader
+    pim_magento_connector.reader.category.class: Pim\Bundle\MagentoConnectorBundle\Reader\CategoryReader
 
 services:
     pim_magento_connector.reader.variant_group:
@@ -25,3 +26,9 @@ services:
         class: %pim_magento_connector.reader.product_association.class%
         arguments:
             - '@pim_base_connector.reader.doctrine.product'
+
+    pim_magento_connector.reader.category:
+        class: %pim_magento_connector.reader.category.class%
+        arguments:
+            - '@pim_catalog.repository.category'
+            - '@pim_catalog.manager.channel'
