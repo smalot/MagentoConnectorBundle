@@ -1,9 +1,10 @@
-# 1.1.11 (2015-xx-yy)
+# 1.1.11 (2015-01-06)
 ## New features
  - Add an option to avoid generating category URL_KEY and let Magento handle it.
  - Add an option to set the is_anchor property for all categories.
  - Add an option to force attribute set removal.
  - Add the SOAP URL to SoapFault error to add further diagnosis if necessary
+ - Only used configurable attributes are now added to build configurable product.
 
 ## Bug fixes
  - option "Do nothing" didn't prevent removal of empty families, it now does.
