@@ -3,6 +3,7 @@
  - Add an option to avoid generating category URL_KEY and let Magento handle it.
  - Add an option to set the is_anchor property for all categories.
  - Add an option to force attribute set removal.
+ - MC-136: Only used configurable attributes are now added to build configurable product.
 
 ## Bug fixes
  - option "Do nothing" didn't prevent removal of empty families, it now does.
