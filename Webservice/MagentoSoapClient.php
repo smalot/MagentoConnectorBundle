@@ -75,7 +75,11 @@ class MagentoSoapClient
             );
         } catch (\Exception $e) {
             throw new InvalidCredentialException(
-                $e->getMessage(),
+                sprintf(
+                    'Error on Magento SOAP login to "%s" : "%s"',
+                    $this->clientParameters->getSoapUrl(),
+                    $e->getMessage()
+                ),
                 $e->getCode(),
                 $e
             );
@@ -115,10 +119,11 @@ class MagentoSoapClient
                 } elseif ($e->getMessage() === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
                     throw new SoapCallException(
                         sprintf(
-                            '%s Called resource : "%s" with parameters : %s.' .
+                            'Error on Magento soap call to "%s" : "%s" Called resource : "%s" with parameters : %s.' .
                             ' Soap user needs access on this resource. Please ' .
                             'check in your Magento webservice soap roles and ' .
                             'users configuration.',
+                            $this->clientParameters->getSoapUrl(),
                             $e->getMessage(),
                             $resource,
                             json_encode($params)
@@ -129,7 +134,8 @@ class MagentoSoapClient
                 } else {
                     throw new SoapCallException(
                         sprintf(
-                            'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s',
+                            'Error on Magento soap call to "%s" : "%s". Called resource : "%s" with parameters : %s',
+                            $this->clientParameters->getSoapUrl(),
                             $e->getMessage(),
                             $resource,
                             json_encode($params)
@@ -143,8 +149,9 @@ class MagentoSoapClient
             if (is_array($response) && isset($response['isFault']) && $response['isFault']) {
                 throw new SoapCallException(
                     sprintf(
-                        'Error on Magento soap call : "%s". Called resource : "%s" with parameters : %s.' .
+                        'Error on Magento soap call to "%s" : "%s". Called resource : "%s" with parameters : %s.' .
                         'Response from API : %s',
+                        $this->clientParameters->getSoapUrl(),
                         $e->getMessage(),
                         $resource,
                         json_encode($params),
