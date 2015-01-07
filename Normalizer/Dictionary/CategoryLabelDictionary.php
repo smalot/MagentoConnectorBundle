@@ -41,8 +41,11 @@ class CategoryLabelDictionary
     const INCLUDE_IN_MENU_HEADER = 'include_in_menu';
 
     /** @staticvar string */
-    const AVAILABLE_SORT_BY = 'available_sort_by';
+    const AVAILABLE_SORT_BY_HEADER = 'available_sort_by';
 
     /** @staticvar string */
-    const DEFAULT_SORT_BY = 'default_sort_by';
+    const DEFAULT_SORT_BY_HEADER = 'default_sort_by';
+
+    /** @staticvar string */
+    const SEPARATOR = '/';
 }

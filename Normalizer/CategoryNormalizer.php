@@ -30,33 +30,32 @@ class CategoryNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($category, $format = null, array $context = [])
     {
         $defaultLocale = $context['defaultLocale'];
-        $categoryTree  = $this->getTranslatedCategoryTree($object, $defaultLocale);
-        $rootName      = $this->getRootName($categoryTree, $context['userCategoryMapping']);
-        $categoryPath  = $this->getCategoryPath($categoryTree);
-        $categoryName  = $this->getTranslatedName($object, $defaultLocale);
+        $rootName      = $this->getRootName($category, $context['userCategoryMapping'], $defaultLocale);
+        $categoryPath  = $this->getFormattedPath($category, $defaultLocale);
+        $categoryName  = $this->getTranslatedName($category, $defaultLocale);
 
         $normalized = [
-            CategoryLabelDictionary::ROOT_HEADER            => $rootName,
-            CategoryLabelDictionary::NAME_HEADER            => $categoryName,
-            CategoryLabelDictionary::CATEGORY_HEADER        => $categoryPath,
-            CategoryLabelDictionary::ACTIVE_HEADER          => 'yes',
-            CategoryLabelDictionary::POSITION_HEADER        => $object->getLeft(),
-            CategoryLabelDictionary::INCLUDE_IN_MENU_HEADER => 'yes',
-            CategoryLabelDictionary::AVAILABLE_SORT_BY      => 'position',
-            CategoryLabelDictionary::DEFAULT_SORT_BY        => 'position'
+            CategoryLabelDictionary::ROOT_HEADER              => $rootName,
+            CategoryLabelDictionary::NAME_HEADER              => $categoryName,
+            CategoryLabelDictionary::CATEGORY_HEADER          => $categoryPath,
+            CategoryLabelDictionary::ACTIVE_HEADER            => 'yes',
+            CategoryLabelDictionary::POSITION_HEADER          => $category->getLeft(),
+            CategoryLabelDictionary::INCLUDE_IN_MENU_HEADER   => 'yes',
+            CategoryLabelDictionary::AVAILABLE_SORT_BY_HEADER => 'position',
+            CategoryLabelDictionary::DEFAULT_SORT_BY_HEADER   => 'position'
         ];
 
-        $updateParts = $this->getTheStoreViewsUpdateParts(
-            $object,
+        $storeViewParts = $this->getStoreViewParts(
+            $category,
             $context['storeViewMapping'],
             $categoryPath,
             $rootName
         );
 
-        return array_merge([$normalized], $updateParts);
+        return array_merge([$normalized], $storeViewParts);
     }
 
     /**
@@ -68,28 +67,28 @@ class CategoryNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get the store views update parts which translate categories
+     * Get the store views parts which translate categories
      * Returns [['NAME_HEADER' => 'name', 'STORE_HEADER' => 'store', 'ROOT_HEADER' => 'root'], ...]
      *
      * @param CategoryInterface $category
      * @param array             $storeViewMapping
      * @param string            $rootName
      *
-     * @returns array
+     * @return array
      */
-    protected function getTheStoreViewsUpdateParts(CategoryInterface $category, array $storeViewMapping, $rootName)
+    protected function getStoreViewParts(CategoryInterface $category, array $storeViewMapping, $rootName)
     {
-        $updateParts = [];
+        $storeViewParts = [];
 
         foreach ($storeViewMapping as $locale => $storeView) {
-            $updateParts[] = [
+            $storeViewParts[] = [
                 CategoryLabelDictionary::NAME_HEADER  => $this->getTranslatedName($category, $locale),
                 CategoryLabelDictionary::STORE_HEADER => $storeView,
                 CategoryLabelDictionary::ROOT_HEADER  => $rootName
             ];
         }
 
-        return $updateParts;
+        return $storeViewParts;
     }
 
     /**
@@ -106,50 +105,41 @@ class CategoryNormalizer implements NormalizerInterface
     }
 
     /**
-     * Get tree of the given category translated with the locale
+     * Returns the category root name
+     *
+     * @param CategoryInterface $category
+     * @param array             $rootCategoryMapping
+     * @param string            $defaultLocale
+     *
+     * @return string
+     */
+    protected function getRootName(CategoryInterface $category, array $rootCategoryMapping, $defaultLocale)
+    {
+        $rootId   = $category->getRoot();
+        $root     = $this->categoryRepository->getCategoriesByIds([$rootId])->first();
+        $rootName = $this->getTranslatedName($root, $defaultLocale);
+
+        return $rootCategoryMapping[$rootName];
+    }
+
+    /**
+     * Returns the category path imploding with / and without root
      *
      * @param CategoryInterface $category
      * @param string            $locale
      *
-     * @return string[]
+     * @return string
      */
-    protected function getTranslatedCategoryTree(CategoryInterface $category, $locale)
+    protected function getFormattedPath(CategoryInterface $category, $locale)
     {
-        $categoryTree = $this->categoryRepository->getPath($category);
+        $translatedPath = [];
+        $categoryPath = $this->categoryRepository->getPath($category);
+        unset($categoryPath[0]);
 
-        foreach ($categoryTree as &$categoryNode) {
-            $categoryNode = $this->getTranslatedName($categoryNode, $locale);
+        foreach ($categoryPath as $categoryNode) {
+            $translatedPath[] = $this->getTranslatedName($categoryNode, $locale);
         }
 
-        return $categoryTree;
-    }
-
-    /**
-     * Returns the category root name
-     *
-     * @param array $categoryTree
-     * @param array $categoryMapping
-     *
-     * @return string
-     */
-    protected function getRootName(array $categoryTree, array $categoryMapping)
-    {
-        $root = array_shift($categoryTree);
-
-        return $categoryMapping[$root];
-    }
-
-    /**
-     * Returns the category path imploding tree with / and removing first value which is the root
-     *
-     * @param array $fullCatTree
-     *
-     * @return string
-     */
-    protected function getCategoryPath(array $fullCatTree)
-    {
-        array_shift($fullCatTree);
-
-        return implode('/', $fullCatTree);
+        return implode(CategoryLabelDictionary::SEPARATOR, $translatedPath);
     }
 }
