@@ -5,6 +5,7 @@ parameters:
     pim_magento_connector.normalizer.family.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer
     pim_magento_connector.normalizer.option.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\OptionNormalizer
     pim_magento_connector.normalizer.product.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
+    pim_magento_connector.normalizer.product16.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer16
     pim_magento_connector.normalizer.configurable.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ConfigurableNormalizer
     pim_magento_connector.normalizer.registry.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\NormalizerRegistry
 
@@ -50,6 +51,12 @@ services:
             - '@pim_magento_connector.manager.association_type'
         tags:
             - { name: magento_normalizer, normalizer_key: 'product' }
+
+    pim_magento_connector.normalizer.product16:
+        class: %pim_magento_connector.normalizer.product16.class%
+        parent: pim_magento_connector.normalizer.product
+        tags:
+            - { name: magento_normalizer, normalizer_key: 'product16' }
 
     pim_magento_connector.normalizer.configurable:
         class: %pim_magento_connector.normalizer.configurable.class%

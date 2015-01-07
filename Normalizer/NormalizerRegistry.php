@@ -25,6 +25,9 @@ class NormalizerRegistry
     const PRODUCT_NORMALIZER   = 'product';
 
     /** @staticvar string */
+    const PRODUCT_NORMALIZER_16 = 'product16';
+
+    /** @staticvar string */
     const CONFIGURABLE_NORMALIZER = 'configurable';
 
     /** @var NormalizerInterface[] */
