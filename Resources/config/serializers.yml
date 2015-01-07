@@ -6,6 +6,7 @@ parameters:
     pim_magento_connector.normalizer.attribute_option.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeOptionNormalizer
     pim_magento_connector.normalizer.metric.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\MetricNormalizer
     pim_magento_connector.normalizer.datetime.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\DateTimeNormalizer
+    pim_magento_connector.normalizer.category.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer
     pim_magento_connector.normalizer.collection.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\CollectionNormalizer
     pim_magento_connector.normalizer.product_category.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCategoryNormalizer
     pim_magento_connector.normalizer.product_media.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductMediaNormalizer
@@ -81,6 +82,13 @@ services:
 
     pim_magento_connector.normalizer.collection:
         class: %pim_magento_connector.normalizer.collection.class%
+        tags:
+            - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
+
+    pim_magento_connector.normalizer.category:
+        class: %pim_magento_connector.normalizer.category.class%
+        arguments:
+            - '@pim_catalog.repository.category'
         tags:
             - { name: pim_magento_connector.serializer.normalizer, priority: 100 }
 
