@@ -18,12 +18,9 @@ class CategoryWriter extends AbstractWriter
      */
     public function write(array $items)
     {
-        $categories = [];
-        foreach ($items as $item) {
-            $categories = array_merge($categories, $item);
-        }
-
+        $categories   = $this->getFlattenedCategories($items);
         $indexedNames = $this->getIndexedNames($categories);
+
         try {
             $this->client->exportCategories($categories);
         } catch (\SoapFault $e) {
@@ -97,5 +94,25 @@ class CategoryWriter extends AbstractWriter
                 $this->addWarning($error, [], [$name]);
             }
         }
+    }
+
+    /**
+     * Flatten categories by concatenating categories parts into one array
+     * $items = [category1, c2, c3, ...]
+     * category = [part1, part2, p3, ...]
+     * Returns [category1 part1, c1p2, c2p1, c2p2, c3p1, ...]
+     *
+     * @param array $items Items received from ItemStep
+     *
+     * @return array
+     */
+    protected function getFlattenedCategories(array $items)
+    {
+        $categories = [];
+        foreach ($items as $item) {
+            $categories = array_merge($categories, $item);
+        }
+
+        return $categories;
     }
 }
