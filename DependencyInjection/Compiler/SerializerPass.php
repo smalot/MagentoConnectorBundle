@@ -52,8 +52,10 @@ class SerializerPass implements CompilerPassInterface
 
         if (empty($normalizers) && empty($encoders)) {
             throw new \RuntimeException(
-                sprintf('You must tag at least one normalizer or encoder as "%s" to use the Serializer service',
-                    $this->serializerServiceId)
+                sprintf(
+                    'You must tag at least one normalizer or encoder as "%s" to use the Serializer service',
+                    $this->serializerServiceId
+                )
             );
         }
 

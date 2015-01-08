@@ -25,7 +25,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * TODO : Move the addWarning method in BatchBundle
  */
 abstract class AbstractWriter extends AbstractConfigurableStepElement implements
-    ItemWriterInterface, StepExecutionAwareInterface
+    ItemWriterInterface,
+    StepExecutionAwareInterface
 {
     /** @var MagentoConfigurationManager */
     protected $configurationManager;

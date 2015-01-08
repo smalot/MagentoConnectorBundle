@@ -37,11 +37,9 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             case 'object':
                 $value = $this->normalizer->normalize($data, $format, $context);
                 break;
-
             case 'string':
                 $value = $this->getStringValue($object, $attribute, $data);
                 break;
-
             case 'boolean':
                 $value = $this->getBooleanValue($data);
                 break;
@@ -142,12 +140,10 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
             case 'decimal':
                 $value = $this->getDecimalValue($data);
                 break;
-
             case 'text':
             case 'varchar':
                 $value = $this->getTextValue($data);
                 break;
-
             default:
                 throw new BackendTypeNotFoundException(
                     sprintf(
