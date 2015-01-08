@@ -1,21 +1,21 @@
 parameters:
-    pim_magento_connector.normalizer.product.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
-    pim_magento_connector.normalizer.attribute.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer
-    pim_magento_connector.normalizer.product_value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer
-    pim_magento_connector.normalizer.product_price.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductPriceNormalizer
-    pim_magento_connector.normalizer.attribute_option.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeOptionNormalizer
-    pim_magento_connector.normalizer.metric.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\MetricNormalizer
-    pim_magento_connector.normalizer.datetime.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\DateTimeNormalizer
-    pim_magento_connector.normalizer.category.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer
-    pim_magento_connector.normalizer.collection.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\CollectionNormalizer
-    pim_magento_connector.normalizer.product_category.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCategoryNormalizer
-    pim_magento_connector.normalizer.product_media.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductMediaNormalizer
-    pim_magento_connector.normalizer.variant_group_helper.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\VariantGroupHelper
-    pim_magento_connector.normalizer.group.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\GroupNormalizer
-    pim_magento_connector.normalizer.association.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AssociationNormalizer
+    pim_magento_connector.normalizer.product.class:                Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductNormalizer
+    pim_magento_connector.normalizer.attribute.class:              Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeNormalizer
+    pim_magento_connector.normalizer.product_value.class:          Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductValueNormalizer
+    pim_magento_connector.normalizer.product_price.class:          Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductPriceNormalizer
+    pim_magento_connector.normalizer.attribute_option.class:       Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeOptionNormalizer
+    pim_magento_connector.normalizer.metric.class:                 Pim\Bundle\MagentoConnectorBundle\Normalizer\MetricNormalizer
+    pim_magento_connector.normalizer.datetime.class:               Pim\Bundle\MagentoConnectorBundle\Normalizer\DateTimeNormalizer
+    pim_magento_connector.normalizer.category.class:               Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer
+    pim_magento_connector.normalizer.collection.class:             Pim\Bundle\MagentoConnectorBundle\Normalizer\CollectionNormalizer
+    pim_magento_connector.normalizer.product_category.class:       Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductCategoryNormalizer
+    pim_magento_connector.normalizer.product_media.class:          Pim\Bundle\MagentoConnectorBundle\Normalizer\ProductMediaNormalizer
+    pim_magento_connector.normalizer.variant_group_helper.class:   Pim\Bundle\MagentoConnectorBundle\Normalizer\VariantGroupHelper
+    pim_magento_connector.normalizer.group.class:                  Pim\Bundle\MagentoConnectorBundle\Normalizer\GroupNormalizer
+    pim_magento_connector.normalizer.association.class:            Pim\Bundle\MagentoConnectorBundle\Normalizer\AssociationNormalizer
     pim_magento_connector.normalizer.attribute_option_value.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeOptionValueNormalizer
-    pim_magento_connector.normalizer.family.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer
-    pim_magento_connector.normalizer.attribute_group.class: Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeGroupNormalizer
+    pim_magento_connector.normalizer.family.class:                 Pim\Bundle\MagentoConnectorBundle\Normalizer\FamilyNormalizer
+    pim_magento_connector.normalizer.attribute_group.class:        Pim\Bundle\MagentoConnectorBundle\Normalizer\AttributeGroupNormalizer
 
 services:
     pim_magento_connector.serializer:
