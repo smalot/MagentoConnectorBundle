@@ -1,8 +1,11 @@
 #1.2.0
 ## New feature
- - Delta Export is directly integrated in MagentoConnector (DeltaExportBundle is now deprecated)
+ - Delta export on products
  - Connector Mapping is directly integrated in MagentoConnector (ConnectorMappingBundle is now deprecated)
- - Attribute, Category, Family, Option and Product normalizers are now in the DI
+
+# Improvements
+ - Normalizers are in the DI
+ - Delta Export is directly integrated in MagentoConnector (DeltaExportBundle is now deprecated)
 
 ## BC Breaks
  - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
