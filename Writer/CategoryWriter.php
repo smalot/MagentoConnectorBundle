@@ -23,14 +23,14 @@ class CategoryWriter extends AbstractWriter
             $categories = array_merge($categories, $item);
         }
 
-        $mappedNames = $this->getMappedNames($categories);
+        $indexedNames = $this->getIndexedNames($categories);
         try {
             $this->client->exportCategories($categories);
         } catch (\SoapFault $e) {
             $failedCategories = json_decode($e->getMessage(), true);
 
             if (null !== $failedCategories) {
-                $errors = $this->getFailedCategories($failedCategories, $mappedNames);
+                $errors = $this->getFailedCategories($failedCategories, $indexedNames);
                 $this->manageFailedCategories($errors);
             } else {
                 $this->addWarning($e->getMessage());
@@ -40,25 +40,28 @@ class CategoryWriter extends AbstractWriter
 
     /**
      * Gives lines mapped to categories name
+     * Each error returned by API Import is associate to the index of the line in the sent array.
+     * This method provide a way to know to which category is linked this index.
+     * Returns ['index' => 'name', ...]
      *
      * @param array $categories
      *
      * @return array
      */
-    protected function getMappedNames(array $categories)
+    protected function getIndexedNames(array $categories)
     {
-        $mappedNames  = [];
+        $indexedNames = [];
         $previousName = '';
         foreach ($categories as $key => $category) {
             if (!empty($category[CategoryLabelDictionary::NAME_HEADER])) {
-                $mappedNames[$key] = $category[CategoryLabelDictionary::NAME_HEADER];
-                $previousName      = $category[CategoryLabelDictionary::NAME_HEADER];
+                $indexedNames[$key] = $category[CategoryLabelDictionary::NAME_HEADER];
+                $previousName       = $category[CategoryLabelDictionary::NAME_HEADER];
             } else {
-                $mappedNames[$key] = $previousName;
+                $indexedNames[$key] = $previousName;
             }
         }
 
-        return $mappedNames;
+        return $indexedNames;
     }
 
     /**
