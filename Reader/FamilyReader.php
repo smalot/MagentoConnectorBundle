@@ -22,14 +22,14 @@ class FamilyReader extends AbstractConfigurableStepElement implements ItemReader
     protected $results;
 
     /** @var FamilyRepository */
-    protected $familyRepo;
+    protected $familyRepository;
 
     /**
-     * @param FamilyRepository $familyRepo
+     * @param FamilyRepository $familyRepository
      */
-    public function __construct(FamilyRepository $familyRepo)
+    public function __construct(FamilyRepository $familyRepository)
     {
-        $this->familyRepo = $familyRepo;
+        $this->familyRepository = $familyRepository;
     }
 
     /**
@@ -67,7 +67,7 @@ class FamilyReader extends AbstractConfigurableStepElement implements ItemReader
      */
     protected function getQuery()
     {
-        return $this->familyRepo
+        return $this->familyRepository
             ->createQueryBuilder('f')
             ->select('f', 'a', 'ag')
             ->join('f.attributes', 'a')
