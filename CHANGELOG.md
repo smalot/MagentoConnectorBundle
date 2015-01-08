@@ -1,3 +1,7 @@
+# 1.1.12 (2015-**-**)
+## Bug fixes
+ - When a category is moved in Akeneo but stay in the same parent category, change is now correctly passed on Magento.
+
 # 1.1.11 (2015-01-06)
 ## New features
  - Add an option to avoid generating category URL_KEY and let Magento handle it.
