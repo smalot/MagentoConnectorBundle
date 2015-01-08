@@ -15,7 +15,7 @@ class MagentoSoapClient extends \SoapClient implements MagentoSoapClientInterfac
     const DEFAULT_SOCKET_TIMEOUT_VALUE = '120';
 
     /** @staticvar string */
-    const PRODUCT_EXPORT_METHOD = 'import.importEntities';
+    const ENTITIES_EXPORT_METHOD = 'import.importEntities';
 
     /** @staticvar string */
     const ATTRIBUTES_EXPORT_METHOD = 'import.importAttributes';
@@ -28,6 +28,9 @@ class MagentoSoapClient extends \SoapClient implements MagentoSoapClientInterfac
 
     /** @staticvar string */
     const CATALOG_PRODUCT_ENTITY_TYPE = 'catalog_product';
+
+    /** @staticvar string */
+    const CATALOG_CATEGORY_ENTITY_TYPE = 'catalog_category';
 
     /** @staticvar string */
     const APPEND_BEHAVIOR = 'append';
@@ -71,7 +74,23 @@ class MagentoSoapClient extends \SoapClient implements MagentoSoapClientInterfac
             static::APPEND_BEHAVIOR
         ];
 
-        $this->call($this->getValidSession(), static::PRODUCT_EXPORT_METHOD, $params);
+        $this->call($this->getValidSession(), static::ENTITIES_EXPORT_METHOD, $params);
+    }
+
+    /**
+     * Allows to export products
+     *
+     * @param array $categories
+     */
+    public function exportCategories(array $categories)
+    {
+        $params = [
+            $categories,
+            static::CATALOG_CATEGORY_ENTITY_TYPE,
+            static::APPEND_BEHAVIOR
+        ];
+
+        $this->call($this->getValidSession(), static::ENTITIES_EXPORT_METHOD, $params);
     }
 
     /**
