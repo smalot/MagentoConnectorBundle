@@ -132,13 +132,13 @@ class MagentoContext extends RawMinkContext implements PageObjectAwareInterface
      * @param string    $type
      * @param TableNode $table
      *
-     * @Then /^I check if "([^"]*)" were sent in Magento:$/
+     * @Then /^I check if "([^"]*)" were sent to Magento:$/
      */
-    public function iCheckIfWereSentInMagento($type, TableNode $table)
+    public function iCheckIfWereSentToMagento($type, TableNode $table)
     {
         $adminUrl   = 'http://magento.local/admin';
         $adminLogin = 'admin';
-        $adminPwd   = 'magent0';
+        $adminPwd   = 'magento1';
 
         $connectionManager  = new MagentoAdminConnectionManager($adminUrl, $adminLogin, $adminPwd);
 

@@ -80,7 +80,7 @@ Feature: Magento attribute export
     And I press the "Save" button and I wait "30"s
     Then I launch the export job
     And I wait for the "magento_option_export" job to finish
-    Then I check if "attributes" were sent in Magento:
+    Then I check if "attributes" were sent to Magento:
       | attribute_code    | store_view         | title                   | options           | frontend_input | is_global  | is_unique | is_required | is_searchable |
       | color             | Admin              | color                   | red, black, blue  | Dropdown       | Store View | No        | No          | Yes           |
       | color             | Default Store View | Color                   | Red, Black, Blue  |                |            |           |             |               |

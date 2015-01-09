@@ -21,7 +21,7 @@ Feature: Magento category export
     And the following Magento configuration:
       | property            | value                               |
       | code                | magento1                            |
-      | label               | My magento configuration 1          |
+      | label               | Magento Configuration 1             |
       | soapUsername        | adminsoap                           |
       | soapApiKey          | adminsoap                           |
       | soapUrl             | http://magento.local/api/soap/?wsdl |
@@ -31,21 +31,20 @@ Feature: Magento category export
       | storeViewMapping    | {}                                  |
       | attributeMapping    | {}                                  |
     And I am logged in as "peter"
+    And I am on the exports page
     And I create a new export
     When I fill in the following information in the popin:
-    | Code  | mage_cat_export              |
+    | Code  | magento_category_export      |
     | Label | Export categories to Magento |
     | Job   | Magento Category Export      |
     And I press the "Save" button
-
-    And I fill in the "storeview" mapping:
-      | fr_FR | fr_fr |
-    And I fill in the "category" mapping:
-      | Master catalog (default) | Default Category |
+    And I fill in the following information:
+      | Channel               | Magento                 |
+      | Magento configuration | Magento Configuration 1 |
     And I press the "Save" button
     Then I launch the export job
     And I wait for the "magento_category_export" job to finish
-    Then I check if "categories" were sent in Magento:
+    Then I check if "categories" were sent to Magento:
       | store_view         | text                        | parent                    | root             |
       | Default Store View | Computers                   | Default Category          | Default Category |
       | Default Store View | Desktops                    | Computers                 |                  |

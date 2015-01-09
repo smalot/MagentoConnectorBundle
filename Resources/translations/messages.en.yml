@@ -13,9 +13,13 @@ pim_magento_connector:
             export:
                 title: Attribute Export Step
         magento_family_export:
-            title: Magento Family export
+            title: Magento Family Export
             export:
                 title: Family Export Step
+        magento_category_export:
+            title: Magento Category Export
+            export:
+                title: Category Export Step
         magento_association_attribute_to_sets_export:
             title: Magento Association Attributes To Sets Export
             export:

@@ -24,7 +24,7 @@ Feature: Magento product export
     And I press the "Save" button and I wait "60"s
     Then I launch the export job
     And I wait for the "magento_product_export" job to finish for "240"s and refresh
-    Then I check if "products" were sent in Magento:
+    Then I check if "products" were sent to Magento:
       | sku            | type         | attribute         | associated   | value                                      | store_view         |
       | sku-000        |              | name              |              | Product example                            | Default Store View |
       | sku-000        |              | name              |              | Exemple de produit                         | fr_fr              |

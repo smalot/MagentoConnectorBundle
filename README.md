@@ -5,7 +5,7 @@ A connector bundle for the magento platform
 ## Launching Behat tests
 ### Pre-requisites
  - a working pim-community-dev installation with Behat support (see http://docs.akeneo.com/latest/contributing/behat.html for details). Run some Behat tests to check that the whole setup works well (with Firefox and Selenium)
- - a working Magento CE 1.9 configured with the right SOAP user and roles (see above). Right now, the Behat tests assume the following configuration:
+ - a working Magento CE 1.9 configured with the API Import module and the right SOAP user and roles (see above). Right now, the Behat tests assume the following configuration:
 
 ```
   Magento URL: http://magento.local/
