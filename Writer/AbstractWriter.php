@@ -133,7 +133,7 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
      * @param array  $messageParameters
      * @param mixed  $item
      */
-    protected function addWarning($message, array $messageParameters = [], $item = null)
+    protected function addWarning($message, array $messageParameters = [], $item = [])
     {
         $this->stepExecution->addWarning(
             $this->getName(),

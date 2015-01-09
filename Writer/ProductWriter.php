@@ -25,8 +25,14 @@ class ProductWriter extends AbstractWriter
         try {
             $this->client->exportProducts($products);
         } catch (\SoapFault $e) {
-            $failedProducts = $this->getFailedProducts(unserialize($e->getMessage()), $mappedSkus);
-            $this->manageFailedProducts($failedProducts);
+            $failedProducts = json_decode($e->getMessage(), true);
+
+            if (null !== $failedProducts) {
+                $errors = $this->getFailedProducts($failedProducts, $mappedSkus);
+                $this->manageFailedProducts($errors);
+            } else {
+                $this->addWarning($e->getMessage());
+            }
         }
     }
 
@@ -39,7 +45,7 @@ class ProductWriter extends AbstractWriter
      */
     protected function getMappedSkus(array $products)
     {
-        $mappedSkus   = [];
+        $mappedSkus  = [];
         $previousSku = '';
         foreach ($products as $key => $product) {
             if (!empty($product['sku'])) {
