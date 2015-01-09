@@ -1,9 +1,9 @@
 parameters:
-    pim_magento_connector.writer.product.class: Pim\Bundle\MagentoConnectorBundle\Writer\ProductWriter
-    pim_magento_connector.writer.attribute.class: Pim\Bundle\MagentoConnectorBundle\Writer\AttributeWriter
-    pim_magento_connector.writer.family.class: Pim\Bundle\MagentoConnectorBundle\Writer\FamilyWriter
-    pim_magento_connector.writer.category.class: Pim\Bundle\MagentoConnectorBundle\Writer\CategoryWriter
-    pim_magento_connector.writer.abstract.class: Pim\Bundle\MagentoConnectorBundle\Writer\AbstractWriter
+    pim_magento_connector.writer.product.class:               Pim\Bundle\MagentoConnectorBundle\Writer\ProductWriter
+    pim_magento_connector.writer.attribute.class:             Pim\Bundle\MagentoConnectorBundle\Writer\AttributeWriter
+    pim_magento_connector.writer.family.class:                Pim\Bundle\MagentoConnectorBundle\Writer\FamilyWriter
+    pim_magento_connector.writer.category.class:              Pim\Bundle\MagentoConnectorBundle\Writer\CategoryWriter
+    pim_magento_connector.writer.abstract.class:              Pim\Bundle\MagentoConnectorBundle\Writer\AbstractWriter
     pim_magento_connector.writer.add_attribute_to_sets.class: Pim\Bundle\MagentoConnectorBundle\Writer\AddAttributeToSetsWriter
 
 services:
