@@ -20,7 +20,7 @@ class ProductExportRepository extends EntityRepository
      *
      * @param AbstractProduct $product
      * @param JobInstance     $jobInstance
-     * @param DateTime        $lastUpdate
+     * @param DateTime       $lastUpdate
      *
      * @return array(1)
      */

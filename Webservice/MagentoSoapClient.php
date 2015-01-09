@@ -103,7 +103,7 @@ class MagentoSoapClient
      * @throws NotConnectedException
      * @throws SoapCallException
      */
-    public function call($resource, $params = null)
+    public function call($resource, array $params = [])
     {
         if ($this->isConnected()) {
             try {

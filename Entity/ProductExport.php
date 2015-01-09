@@ -35,7 +35,7 @@ class ProductExport
      *
      * @return ProductExport
      */
-    public function setDate($date)
+    public function setDate(\DateTime $date)
     {
         $this->date = $date;
 

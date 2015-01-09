@@ -245,8 +245,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     protected function getDefaultProduct(
         ProductInterface $product,
-        $magentoAttributes,
-        $magentoAttributesOptions,
+        array $magentoAttributes,
+        array $magentoAttributesOptions,
         $attributeSetId,
         $defaultLocale,
         $channel,
@@ -330,8 +330,8 @@ class ProductNormalizer extends AbstractNormalizer implements ProductNormalizerI
      */
     public function getValues(
         ProductInterface $product,
-        $magentoAttributes,
-        $magentoAttributesOptions,
+        array $magentoAttributes,
+        array $magentoAttributesOptions,
         $localeCode,
         $scopeCode,
         MappingCollection $categoryMapping,

@@ -81,7 +81,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
      *
      * @return string
      */
-    protected function getStoreViewForLocale($locale, $magentoStoreViews, MappingCollection $storeViewMapping)
+    protected function getStoreViewForLocale($locale, array $magentoStoreViews, MappingCollection $storeViewMapping)
     {
         return $this->getStoreView($storeViewMapping->getTarget($locale), $magentoStoreViews);
     }

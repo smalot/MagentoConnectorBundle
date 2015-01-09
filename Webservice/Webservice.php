@@ -143,7 +143,9 @@ class Webservice
 
             $this->attributes[$attributeSetCode] = $this->client->call(
                 self::SOAP_ACTION_PRODUCT_ATTRIBUTE_LIST,
-                $id
+                [
+                    $id,
+                ]
             );
         }
 
@@ -160,7 +162,7 @@ class Webservice
     {
         $skus = $this->getProductsIds($products);
 
-        return $this->getStatusForSkus($skus);
+        return $this->getStatusForSkus([$skus]);
     }
 
     /**
@@ -173,7 +175,7 @@ class Webservice
     {
         $skus = $this->getConfigurablesIds($configurables);
 
-        return $this->getStatusForSkus($skus);
+        return $this->getStatusForSkus([$skus]);
     }
 
     /**
@@ -244,7 +246,7 @@ class Webservice
      *
      * @param array $images All images to send
      */
-    public function sendImages($images)
+    public function sendImages(array $images)
     {
         foreach ($images as $image) {
             $this->client->addCall(
@@ -279,7 +281,7 @@ class Webservice
      * Add the call to update the given product part
      * @param array $productPart
      */
-    public function updateProductPart($productPart)
+    public function updateProductPart(array $productPart)
     {
         $this->client->addCall(
             [self::SOAP_ACTION_CATALOG_PRODUCT_UPDATE, $productPart]
@@ -290,7 +292,7 @@ class Webservice
      * Add a call for the given product part
      * @param array $productPart
      */
-    public function sendProduct($productPart)
+    public function sendProduct(array $productPart)
     {
         if (count($productPart) == self::CREATE_PRODUCT_SIZE ||
             count($productPart) == self::CREATE_CONFIGURABLE_SIZE &&
@@ -529,7 +531,7 @@ class Webservice
      * Create an option
      * @param array $option
      */
-    public function createOption($option)
+    public function createOption(array $option)
     {
         $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_OPTION_ADD,
@@ -543,11 +545,11 @@ class Webservice
      *
      * @return integer ID of the created attribute
      */
-    public function createAttribute($attribute)
+    public function createAttribute(array $attribute)
     {
         $result = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_CREATE,
-            [$attribute]
+            $attribute
         );
 
         return $result;
@@ -559,7 +561,7 @@ class Webservice
      *
      * @return boolean
      */
-    public function updateAttribute($attribute)
+    public function updateAttribute(array $attribute)
     {
         $result = $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_UPDATE,
@@ -577,7 +579,9 @@ class Webservice
     {
         $this->client->call(
             self::SOAP_ACTION_ATTRIBUTE_REMOVE,
-            $attributeCode
+            [
+                $attributeCode,
+            ]
         );
     }
 
@@ -800,7 +804,7 @@ class Webservice
      *
      * @return array
      */
-    protected function getStatusForSkus($skus)
+    protected function getStatusForSkus(array $skus)
     {
         if ($skus) {
             $filters = json_decode(
@@ -822,7 +826,7 @@ class Webservice
 
         return $this->client->call(
             self::SOAP_ACTION_CATALOG_PRODUCT_LIST,
-            $filters
+            [$filters]
         );
     }
 

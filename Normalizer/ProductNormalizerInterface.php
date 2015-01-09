@@ -21,7 +21,7 @@ interface ProductNormalizerInterface
      * @param array             $magentoAttributes        Attribute list from Magento
      * @param array             $magentoAttributesOptions Attribute options list from Magento
      * @param string            $localeCode               The locale to apply
-     * @param string            $scopeCode                The akeno scope
+     * @param string            $scopeCode                The akeneo scope
      * @param MappingCollection $categoryMapping          Root category mapping
      * @param MappingCollection $attributeMapping         Attribute mapping
      * @param boolean           $onlyLocalized            If true, only get translatable attributes
@@ -31,8 +31,8 @@ interface ProductNormalizerInterface
      */
     public function getValues(
         ProductInterface $product,
-        $magentoAttributes,
-        $magentoAttributesOptions,
+        array $magentoAttributes,
+        array $magentoAttributesOptions,
         $localeCode,
         $scopeCode,
         MappingCollection $categoryMapping,

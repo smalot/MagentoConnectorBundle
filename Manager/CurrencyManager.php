@@ -85,7 +85,7 @@ class CurrencyManager
      *
      * @return \Doctrine\Common\Persistence\mixed
      */
-    public function getCurrencies($criterias = array())
+    public function getCurrencies(array $criterias = [])
     {
         return $this->baseCurrencyManager->getCurrencies($criterias);
     }

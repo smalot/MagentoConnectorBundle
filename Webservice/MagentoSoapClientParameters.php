@@ -60,7 +60,7 @@ class MagentoSoapClientParameters
      * @param string $soapApiKey       Magento soap api key
      * @param string $magentoUrl       Magento url (only the domain)
      * @param string $wsdlUrl          Only wsdl soap api extension
-     * @param string $defaultStoreView Default stroe view
+     * @param string $defaultStoreView Default store view
      * @param string $httpLogin        Login http authentication
      * @param string $httpPassword     Password http authentication
      */

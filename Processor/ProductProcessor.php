@@ -188,7 +188,7 @@ class ProductProcessor extends AbstractProductProcessor
      *
      * @return array processed item
      */
-    protected function normalizeProduct(ProductInterface $product, $context)
+    protected function normalizeProduct(ProductInterface $product, array $context)
     {
         $processedItem = $this->productNormalizer->normalize(
             $product,
@@ -207,7 +207,7 @@ class ProductProcessor extends AbstractProductProcessor
      *
      * @return bool
      */
-    protected function magentoProductExists(ProductInterface $product, $magentoProducts)
+    protected function magentoProductExists(ProductInterface $product, array $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier()->getData()) {
@@ -226,7 +226,7 @@ class ProductProcessor extends AbstractProductProcessor
      *
      * @return bool
      */
-    protected function attributeSetChanged(ProductInterface $product, $magentoProducts)
+    protected function attributeSetChanged(ProductInterface $product, array $magentoProducts)
     {
         foreach ($magentoProducts as $magentoProduct) {
             if ($magentoProduct['sku'] == $product->getIdentifier()->getData() &&

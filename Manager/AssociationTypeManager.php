@@ -35,11 +35,11 @@ class AssociationTypeManager
     /**
      * Get association types with criterias
      *
-     * @param string[] $criterias
+     * @param array $criterias
      *
      * @return array
      */
-    public function getAssociationTypes($criterias = [])
+    public function getAssociationTypes(array $criterias = [])
     {
         return $this->getEntityRepository()->findBy($criterias);
     }
@@ -47,11 +47,11 @@ class AssociationTypeManager
     /**
      * Get association types with criterias
      *
-     * @param string[] $criterias
+     * @param array $criterias
      *
      * @return AssociationType|null
      */
-    public function getAssociationType($criterias = [])
+    public function getAssociationType(array $criterias = [])
     {
         return $this->getEntityRepository()->findOneBy($criterias);
     }
@@ -74,9 +74,9 @@ class AssociationTypeManager
      *
      * @param array $criterias
      *
-     * @return string[]
+     * @return array
      */
-    public function getAssociationTypeChoices($criterias = [])
+    public function getAssociationTypeChoices(array $criterias = [])
     {
         $associationTypes = $this->getAssociationTypes($criterias);
 

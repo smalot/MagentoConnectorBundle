@@ -75,7 +75,7 @@ class UrlExplorer
      *
      * @throws \Exception
      */
-    protected function connect($clientParameters)
+    protected function connect(MagentoSoapClientParameters $clientParameters)
     {
         $parametersHash = $clientParameters->getHash();
 

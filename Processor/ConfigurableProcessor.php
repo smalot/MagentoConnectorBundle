@@ -153,7 +153,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      * @throws InvalidItemException If a normalization error occured
      * @return array                processed item
      */
-    protected function normalizeConfigurable($configurable, $context)
+    protected function normalizeConfigurable(array $configurable, array $context)
     {
         $processedItem = $this->configurableNormalizer->normalize(
             $configurable,
@@ -172,7 +172,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      *
      * @return bool
      */
-    protected function magentoConfigurableExist($configurable, $magentoConfigurables)
+    protected function magentoConfigurableExist(array $configurable, array $magentoConfigurables)
     {
         foreach ($magentoConfigurables as $magentoConfigurable) {
             if ($magentoConfigurable['sku'] == sprintf(
@@ -195,7 +195,7 @@ class ConfigurableProcessor extends AbstractProductProcessor
      *
      * @return Family
      */
-    protected function getGroupFamily($configurable)
+    protected function getGroupFamily(array $configurable)
     {
         $groupFamily = $configurable['products'][0]->getFamily();
 

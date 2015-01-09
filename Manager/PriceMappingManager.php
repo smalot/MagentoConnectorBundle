@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Manager;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
@@ -122,16 +124,17 @@ class PriceMappingManager
 
     /**
      * Get sorted attributes for mapping
-     * @param ArrayCollection   $attributes
-     * @param array             $products
-     * @param float             $basePrice
-     * @param MappingCollection $attributeMapping
-     * @param boolean           $lowest
+     *
+     * @param PersistentCollection $attributes
+     * @param array                $products
+     * @param float                $basePrice
+     * @param MappingCollection    $attributeMapping
+     * @param boolean              $lowest
      *
      * @return array
      */
     protected function getSortedAttributes(
-        $attributes,
+        PersistentCollection $attributes,
         array $products,
         $basePrice,
         MappingCollection $attributeMapping,

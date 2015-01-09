@@ -2,6 +2,7 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Pim\Bundle\CatalogBundle\Entity\AttributeOption;
 use Pim\Bundle\CatalogBundle\Model\AbstractAttribute;
@@ -234,7 +235,7 @@ class ProductValueNormalizer implements NormalizerInterface
         AbstractAttribute $attribute,
         $attributeCode,
         $attributeScope,
-        $magentoAttributesOptions,
+        array $magentoAttributesOptions,
         $currencyCode,
         MappingCollection $attributeMapping
     ) {
@@ -266,8 +267,8 @@ class ProductValueNormalizer implements NormalizerInterface
 
     /**
      * Does the attribute scope match with attributeScope on magento ?
-     * @param Attribute $attribute
-     * @param string    $attributeScope
+     * @param AbstractAttribute $attribute
+     * @param string            $attributeScope
      *
      * @return boolean
      */
@@ -432,15 +433,15 @@ class ProductValueNormalizer implements NormalizerInterface
     /**
      * Normalize the value collection
      *
-     * @param array  $collection
-     * @param string $attributeCode
-     * @param array  $magentoAttributesOptions
-     * @param string $currencyCode
+     * @param ArrayCollection $collection
+     * @param string          $attributeCode
+     * @param array           $magentoAttributesOptions
+     * @param string          $currencyCode
      *
      * @return string
      */
     protected function normalizeCollectionData(
-        $collection,
+        ArrayCollection $collection,
         $attributeCode,
         array $magentoAttributesOptions,
         $currencyCode
@@ -475,7 +476,7 @@ class ProductValueNormalizer implements NormalizerInterface
      * @throws InvalidOptionException If the given option doesn't exist on Magento
      * @return integer
      */
-    protected function getOptionId($attributeCode, $optionCode, $magentoAttributesOptions)
+    protected function getOptionId($attributeCode, $optionCode, array $magentoAttributesOptions)
     {
         if (!in_array($attributeCode, $this->getIgnoredAttributesForOptionIdTransformation())) {
             if (!isset($magentoAttributesOptions[$attributeCode][$optionCode])) {

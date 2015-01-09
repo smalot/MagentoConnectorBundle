@@ -62,7 +62,7 @@ class ProductExportManager
      * @param array       $products
      * @param JobInstance $jobInstance
      */
-    public function updateProductExports($products, JobInstance $jobInstance)
+    public function updateProductExports(array $products, JobInstance $jobInstance)
     {
         foreach ($products as $product) {
             $this->updateProductExport($product->getIdentifier(), $jobInstance);
@@ -123,7 +123,7 @@ class ProductExportManager
      *
      * @return AbstractProduct
      */
-    public function filterProducts($products, JobInstance $jobInstance)
+    public function filterProducts(array $products, JobInstance $jobInstance)
     {
         $productsToExport = array();
 

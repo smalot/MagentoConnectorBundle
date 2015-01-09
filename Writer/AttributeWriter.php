@@ -110,7 +110,7 @@ class AttributeWriter extends AbstractWriter
      *
      * @throws InvalidItemException
      */
-    protected function handleAttribute(array $attribute, $pimAttribute)
+    protected function handleAttribute(array $attribute, AbstractAttribute $pimAttribute)
     {
         if (count($attribute) === self::ATTRIBUTE_UPDATE_SIZE) {
             $this->webservice->updateAttribute($attribute);
@@ -140,7 +140,7 @@ class AttributeWriter extends AbstractWriter
      * @param integer           $magentoAttributeId
      * @param AbstractAttribute $pimAttribute
      */
-    protected function manageAttributeSet($magentoAttributeId, $pimAttribute)
+    protected function manageAttributeSet($magentoAttributeId, AbstractAttribute $pimAttribute)
     {
         if ($this->attributeIdMappingMerger->getMapping()->getSource($magentoAttributeId) != $pimAttribute->getCode()) {
             $this->addAttributeToAttributeSet($magentoAttributeId, $pimAttribute);

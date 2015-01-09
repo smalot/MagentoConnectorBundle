@@ -114,7 +114,7 @@ class ProductWriter extends AbstractWriter
      *
      * @param array $product The product and his parts
      */
-    protected function computeProduct($product)
+    protected function computeProduct(array $product)
     {
         $sku    = $this->getProductSku($product);
         $images = $this->webservice->getImages($sku, $this->defaultStoreView);
@@ -132,7 +132,7 @@ class ProductWriter extends AbstractWriter
      * @param array  $productPart   A product part
      * @param string $storeViewCode The store view code
      */
-    protected function createCall($productPart, $storeViewCode)
+    protected function createCall(array $productPart, $storeViewCode)
     {
         switch ($storeViewCode) {
             case $this->getDefaultStoreView():
@@ -156,7 +156,7 @@ class ProductWriter extends AbstractWriter
      *
      * @return string
      */
-    protected function getProductSku($product)
+    protected function getProductSku(array $product)
     {
         $defaultStoreViewProduct = $product[$this->getDefaultStoreView()];
 

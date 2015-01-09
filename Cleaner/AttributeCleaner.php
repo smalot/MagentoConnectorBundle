@@ -35,7 +35,7 @@ class AttributeCleaner extends Cleaner
 
     /**
      * @param WebserviceGuesser                   $webserviceGuesser
-     * @param MagentoMappingMerger                $attributeMappingMerger
+     * @param MagentoMappingMerger                $attributeCodeMappingMerger
      * @param EntityManager                       $em
      * @param string                              $attributeClassName
      * @param MagentoSoapClientParametersRegistry $clientParametersRegistry

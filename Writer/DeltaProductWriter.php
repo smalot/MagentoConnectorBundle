@@ -23,7 +23,7 @@ class DeltaProductWriter extends ProductWriter
     protected $productExportManager;
 
     /**
-     * @var JobInstance
+     * @var \Akeneo\Bundle\BatchBundle\Entity\JobInstance
      */
     protected $jobInstance;
 
@@ -51,7 +51,7 @@ class DeltaProductWriter extends ProductWriter
      *
      * @param array $product The product and his parts
      */
-    protected function computeProduct($product)
+    protected function computeProduct(array $product)
     {
         $sku = $this->getProductSku($product);
 

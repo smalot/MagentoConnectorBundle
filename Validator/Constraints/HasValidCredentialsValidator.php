@@ -64,12 +64,7 @@ class HasValidCredentialsValidator extends ConstraintValidator
     }
 
     /**
-     * Checks if the passed value is valid.
-     *
-     * @param AbstractConfigurableStepElement $protocol   The value that should be validated
-     * @param Constraint                      $constraint The constraint for the validation
-     *
-     * @api
+     * @inheritdoc
      */
     public function validate($protocol, Constraint $constraint)
     {
