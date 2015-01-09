@@ -13,13 +13,12 @@
         }
     ],
     "require": {
-        "akeneo/pim-community-dev": "1.2.*@stable",
-        "symfony/symfony": "2.3.18",
-        "symfony/icu": "v1.1.0",
+        "akeneo/pim-community-dev": "1.2.*",
         "guzzle/service": ">=3.6.0,<3.8.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "2.0.*@dev"
+        "phpspec/phpspec": "2.1.0-RC1",
+        "akeneo/magento-admin-extractor": "dev-master@dev"
     },
     "repositories": [
         {
@@ -31,12 +30,13 @@
             "url": "https://github.com/akeneo/platform.git"
         }
     ],
+    "bin": ["scripts/install_behat_links.sh"],
     "config": {
         "bin-dir": "bin"
     },
     "autoload": {
         "psr-0": { "Pim\\Bundle\\MagentoConnectorBundle\\": "" }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "target-dir": "Pim/Bundle/MagentoConnectorBundle"
 }
