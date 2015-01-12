@@ -16,6 +16,7 @@ use Pim\Bundle\MagentoConnectorBundle\Normalizer\AbstractNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\CategoryNormalizer;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\Webservice;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class CategoryProcessorSpec extends ObjectBehavior
 {
@@ -29,7 +30,8 @@ class CategoryProcessorSpec extends ObjectBehavior
         CategoryNormalizer $categoryNormalizer,
         StepExecution $stepExecution,
         MagentoSoapClientParametersRegistry $clientParametersRegistry,
-        MagentoSoapClientParameters $clientParameters
+        MagentoSoapClientParameters $clientParameters,
+        EventDispatcher $eventDispatcher
     ) {
         $this->beConstructedWith(
             $webserviceGuesser,
@@ -40,6 +42,7 @@ class CategoryProcessorSpec extends ObjectBehavior
             $clientParametersRegistry
         );
         $this->setStepExecution($stepExecution);
+        $this->setEventDispatcher($eventDispatcher);
 
         $clientParametersRegistry->getInstance(null, null, null, '/api/soap/?wsdl', 'default', null, null)->willReturn($clientParameters);
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
@@ -173,6 +176,20 @@ class CategoryProcessorSpec extends ObjectBehavior
                 ],
             ],
             'fooo' => 'baar',
+            'isAnchor' => [
+                'type'    => 'checkbox',
+                'options' => [
+                    'help'  => 'pim_magento_connector.export.isAnchor.help',
+                    'label' => 'pim_magento_connector.export.isAnchor.label'
+                ]
+            ],
+            'urlKey' => [
+                'type'    => 'checkbox',
+                'options' => [
+                    'help'  => 'pim_magento_connector.export.urlKey.help',
+                    'label' => 'pim_magento_connector.export.urlKey.label'
+                ]
+            ],
             'foo' => 'bar',
         ]);
     }
