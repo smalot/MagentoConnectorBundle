@@ -1,7 +1,8 @@
-# 1.1.12 (2015-**-**)
+# 1.1.13 (2015-**-**)
 ## New features
  - Add an option to prevent or allow removal of products with type non managed by Akeneo.
 
+# 1.1.12 (2015-01-09)
 ## Bug fixes
  - When a category is moved in Akeneo but stay in the same parent category, change is now correctly passed on Magento.
 
