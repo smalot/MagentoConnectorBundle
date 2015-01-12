@@ -4,6 +4,7 @@
  - Connector Mapping is directly integrated in MagentoConnector (ConnectorMappingBundle is now deprecated)
  - Attribute, Category, Family and Option normalizers are now in the DI
  - Category export only create/update categories from the exported channel
+ - Make it compatible with EE-1.11 and EE-1.12
 
 ## BC Breaks
  - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
