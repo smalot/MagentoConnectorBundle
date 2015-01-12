@@ -6,6 +6,7 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemProcessorInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -25,12 +26,20 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
     /** @var StepExecution */
     protected $stepExecution;
 
+    /** @var ChannelManager */
+    protected $channelManager;
+
+    /** @var string */
+    protected $channel;
+
     /**
      * @param NormalizerInterface $normalizer
+     * @param ChannelManager      $channelManager
      */
-    public function __construct(NormalizerInterface $normalizer)
+    public function __construct(NormalizerInterface $normalizer, ChannelManager $channelManager)
     {
-        $this->normalizer = $normalizer;
+        $this->normalizer     = $normalizer;
+        $this->channelManager = $channelManager;
     }
 
     /**
@@ -44,6 +53,7 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
     {
         // Temporary for the need of POC
         $context = [
+            'channel' => $this->channelManager->getChannelByCode($this->getChannel()),
             'defaultStoreView'    => 'Default',
             'defaultLocale'       => 'en_US',
             'website'             => 'base',
@@ -55,21 +65,51 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
             ],
             'userCategoryMapping' => [
                 'Master catalog' => 'Default Category'
+            ],
+            'associationMapping'  => [
+                'UPSELL'  => 'upsell',
+                'X_SELL'  => 'crosssell',
+                'RELATED' => 'related',
+                'PACK'    => ''
+            ],
+            'attributeMapping'    => [
+                'sku'               => 'sku',
+                'name'              => 'name',
+                'description'       => 'description',
+                'short_description' => 'short_description',
+                'status'            => 'enabled'
             ]
         ];
 
-        return $this->normalizer->normalize($item, 'api_import', $context);
+        $product = $this->normalizer->normalize($item, 'api_import', $context);
+
+        foreach ($item->getAssociations() as $association) {
+            $associationPart = $this->normalizer->normalize($association, 'api_import', $context);
+            if (is_array($associationPart)) {
+                $product = array_merge($product, $associationPart);
+            }
+        }
+
+        return $product;
     }
 
     /**
-     * Return an array of fields for the configuration form
-     *
-     * @return array
-     *
+     * {@inheritdoc}
      */
     public function getConfigurationFields()
     {
-        return [];
+        return [
+            'channel' => [
+                'type'    => 'choice',
+                'options' => [
+                    'choices'  => $this->channelManager->getChannelChoices(),
+                    'required' => true,
+                    'select2'  => true,
+                    'label'    => 'pim_base_connector.export.channel.label',
+                    'help'     => 'pim_base_connector.export.channel.help'
+                ]
+            ]
+        ];
     }
 
     /**
@@ -78,5 +118,21 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
     public function setStepExecution(StepExecution $stepExecution)
     {
         $this->stepExecution = $stepExecution;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @param string $channel
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
     }
 }

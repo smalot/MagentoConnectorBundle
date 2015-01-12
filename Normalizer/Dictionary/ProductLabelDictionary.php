@@ -107,21 +107,6 @@ final class ProductLabelDictionary
     const CONFIGURABLE_PRODUCT_TYPE = 'configurable';
 
     /**
-     * Returns mandatory attributes needed to create the base product to update associations
-     *
-     * @return array
-     */
-    public static function getMandatoryAssociationAttributes()
-    {
-        return [
-            static::SKU_HEADER,
-            static::DESCRIPTION_HEADER,
-            static::SHORT_DESCRIPTION_HEADER,
-            static::NAME_HEADER
-        ];
-    }
-
-    /**
      * Returns the header in terms of the type code and the pattern
      *
      * @param string $typeCode

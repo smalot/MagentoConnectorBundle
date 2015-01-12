@@ -35,26 +35,16 @@ class AssociationNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($association, $format = null, array $context = [])
     {
         $associations       = [];
         $channel            = $context['channel'];
-        $validProducts      = $this->validProductHelper->getValidProducts($channel, $object->getProducts());
+        $validProducts      = $this->validProductHelper->getValidProducts($channel, $association->getProducts());
         $associationMapping = $context['associationMapping'];
-        $typeCode           = $associationMapping[$object->getAssociationType()->getCode()];
+        $typeCode           = $associationMapping[$association->getAssociationType()->getCode()];
 
         if (!empty($validProducts) && !empty($typeCode)) {
             $header = ProductLabelDictionary::getAssociationTypeHeader($typeCode);
-            $associations[] = array_merge(
-                $this->getBaseProduct(
-                    $object->getOwner(),
-                    $context['attributeMapping'],
-                    ProductLabelDictionary::getMandatoryAssociationAttributes(),
-                    $context['defaultLocale'],
-                    $channel->getCode()
-                ),
-                [ProductLabelDictionary::STATUS_HEADER => $context['enabled']]
-            );
 
             foreach ($validProducts as $associatedProduct) {
                 $associations[][$header] = (string) $associatedProduct->getIdentifier();
@@ -70,49 +60,5 @@ class AssociationNormalizer implements NormalizerInterface
     public function supportsNormalization($data, $format = null)
     {
         return $data instanceof AbstractAssociation && 'api_import' === $format;
-    }
-
-    /**
-     * Create the first line of a simple product to be able to update it with next rows
-     *
-     * @param ProductInterface $product
-     * @param array            $attributeMapping
-     * @param array            $mandatoryAttributes
-     * @param string           $locale
-     * @param string           $channelCode
-     *
-     * @throws MandatoryAttributeNotFoundException
-     *
-     * @return array
-     */
-    protected function getBaseProduct(
-        ProductInterface $product,
-        array $attributeMapping,
-        array $mandatoryAttributes,
-        $locale,
-        $channelCode
-    ) {
-        $baseProduct = [];
-
-        foreach ($mandatoryAttributes as $mandatoryAttribute) {
-            $mandatoryAttributeValue = $product->getValue(
-                $attributeMapping[$mandatoryAttribute],
-                $locale,
-                $channelCode
-            );
-            if (null === $mandatoryAttributeValue) {
-                throw new MandatoryAttributeNotFoundException(
-                    sprintf(
-                        'Mandatory attribute with code "%s" not found in product "%s" during association creation.',
-                        $attributeMapping[$mandatoryAttribute],
-                        (string) $product->getIdentifier()
-                    )
-                );
-            }
-
-            $baseProduct[$mandatoryAttribute] = $mandatoryAttributeValue->getData();
-        }
-
-        return $baseProduct;
     }
 }
