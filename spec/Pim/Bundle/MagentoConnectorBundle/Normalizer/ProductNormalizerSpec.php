@@ -81,6 +81,8 @@ class ProductNormalizerSpec extends ObjectBehavior
         $attributeMapping->getTarget('updated_at')->willReturn('updated_at');
         $attributeMapping->getTarget('status')->willReturn('status');
         $attributeMapping->getTarget('categories')->willReturn('categories');
+        $attributeMapping->getTarget('url_key')->willReturn('my-url-key');
+        $attributeMapping->getSource('name')->willReturn('my-name');
 
         $channelManager->getChannelByCode('channel')->willReturn($channel);
         $channel->getLocales()->willReturn([$localeEN, $localeFR]);
@@ -94,6 +96,8 @@ class ProductNormalizerSpec extends ObjectBehavior
         $product->getCreated()->willReturn($this->globalContext['created_date']);
         $product->getUpdated()->willReturn($this->globalContext['updated_date']);
         $product->getValues()->willReturn(new ArrayCollection([$productValue, $imageValue]));
+        $product->getValue('my-name', Argument::any(), Argument::any())->willReturn('my-name');
+
         $storeViewMapping->getTarget('default_locale')->willReturn('default_locale');
         $storeViewMapping->getTarget('fr_FR')->willReturn('fr_fr');
 
@@ -119,6 +123,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
                     'websites'   => ['website'],
+                    'url_key'    => 'my-url-key'
                 ],
                 'default',
             ],
@@ -131,6 +136,7 @@ class ProductNormalizerSpec extends ObjectBehavior
                     'updated_at' => $this->globalContext['updated_date']->format('Y-m-d H:i:s'),
                     'value'      => 'productValueNormalized',
                     'visibility' => 4,
+                    'url_key'    => 'my-url-key'
                 ],
                 'fr_fr',
                 'sku',

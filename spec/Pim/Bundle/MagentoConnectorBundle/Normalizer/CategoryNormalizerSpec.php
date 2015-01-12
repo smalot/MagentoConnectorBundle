@@ -29,6 +29,8 @@ class CategoryNormalizerSpec extends ObjectBehavior
             'categoryMapping'   => $categoryMapping,
             'storeViewMapping'  => $storeViewMapping,
             'defaultStoreView'  => 'default',
+            'urlKey'            => true,
+            'is_anchor'         => 1
         ];
     }
 
