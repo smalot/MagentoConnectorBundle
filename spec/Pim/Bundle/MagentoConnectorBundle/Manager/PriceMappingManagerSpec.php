@@ -36,7 +36,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         ProductPrice $productPrice3,
         MappingCollection $attributeMapping
     ) {
-        $this->beConstructedWith('locale', 'currency');
+        $this->beConstructedWith('locale', 'currency', 'channel');
 
         $group->getAttributes()->willReturn([$attribute1, $attribute2]);
 
@@ -64,23 +64,24 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $productValueOption22->getData()->willReturn($attributeOption22);
 
         //Get product prices
-        $product1->getValue('price', 'locale')->willReturn($productValuePrice1);
+        $product1->getValue('price', 'locale', 'channel')->willReturn($productValuePrice1);
         $product1->getIdentifier()->willReturn('product_1');
         $productValuePrice1->getPrice('currency')->willReturn($productPrice1);
         $productPrice1->getData()->willReturn(5.0);
 
-        $product2->getValue('price', 'locale')->willReturn($productValuePrice2);
+        $product2->getValue('price', 'locale', 'channel')->willReturn($productValuePrice2);
         $product2->getIdentifier()->willReturn('product_2');
         $productValuePrice2->getPrice('currency')->willReturn($productPrice2);
         $productPrice2->getData()->willReturn(15.0);
 
-        $product3->getValue('price', 'locale')->willReturn($productValuePrice3);
+        $product3->getValue('price', 'locale', 'channel')->willReturn($productValuePrice3);
         $product3->getIdentifier()->willReturn('product_3');
         $productValuePrice3->getPrice('currency')->willReturn($productPrice3);
         $productPrice3->getData()->willReturn(10.0);
 
         $attributeMapping->getSource('attribute_1')->willReturn('attribute_1');
         $attributeMapping->getSource('attribute_2')->willReturn('attribute_2');
+        $attributeMapping->getSource('price')->willReturn('price');
         $attributeMapping->getTarget('attribute_1')->willReturn('attribute_1');
         $attributeMapping->getTarget('attribute_2')->willReturn('attribute_2');
     }
