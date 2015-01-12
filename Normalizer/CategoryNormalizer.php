@@ -51,7 +51,6 @@ class CategoryNormalizer implements NormalizerInterface
         $storeViewParts = $this->getStoreViewParts(
             $category,
             $context['storeViewMapping'],
-            $categoryPath,
             $rootName
         );
 
