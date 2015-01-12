@@ -30,7 +30,7 @@
             "url": "https://github.com/akeneo/platform.git"
         }
     ],
-    "bin": ["scripts/install_behat_links.sh"],
+    "bin": ["scripts/magento_behat_links.sh"],
     "config": {
         "bin-dir": "bin"
     },
