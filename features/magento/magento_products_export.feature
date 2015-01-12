@@ -1,3 +1,4 @@
+@skip
 @javascript
 Feature: Magento product export
   In order to view products in Magento

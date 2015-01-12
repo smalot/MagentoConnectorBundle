@@ -1,3 +1,4 @@
+@skip
 @javascript
 Feature: Magento attribute export
   In order to view attributes in Magento

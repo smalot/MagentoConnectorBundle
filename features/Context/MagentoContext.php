@@ -727,7 +727,12 @@ class MagentoContext extends RawMinkContext implements PageObjectAwareInterface
      */
     public function purgeMagentoDatabase()
     {
-        exec('mysql -u root magento < '. __DIR__ . '/fixtures/magento_CE_1_9.sql');
+        $magentoDatabase = getenv('MAGENTO_DB');
+        if (false === $magentoDatabase) {
+            $magentoDatabase = 'magento';
+        }
+        $cmd = sprintf('mysql -u root %s < '. __DIR__ . '/fixtures/magento_CE_1_9.sql', $magentoDatabase);
+        exec($cmd);
     }
 
     /**
