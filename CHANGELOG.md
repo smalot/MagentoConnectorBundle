@@ -3,6 +3,7 @@
  - Delta Export is directly integrated in MagentoConnector (DeltaExportBundle is now deprecated)
  - Connector Mapping is directly integrated in MagentoConnector (ConnectorMappingBundle is now deprecated)
  - Attribute, Category, Family and Option normalizers are now in the DI
+ - Category export only create/update categories from the exported channel
 
 ## BC Breaks
  - All DeltaExportBundle dependencies should be replaced by MagentoConnectorBundle ones
@@ -10,6 +11,8 @@
  - Inject AttributeNormalizer, CategoryNormalizer, FamilyNormalizer and OptionNormalizer in the NormalizerGuesser (MC-98)
  - magento_attribute_export, magento_option_export and magento_attributeset_export has been removed. These jobs are deprecated because they should be launch in a specific order
  - Categories export step has been removed from structure export
+ - Inject ChannelManager inside CategoryReader
+ - CategoryRepository::findOrderCategories takes a CategoryInterface
 
 # 1.1.11 (2014-12-29)
 ## New features
