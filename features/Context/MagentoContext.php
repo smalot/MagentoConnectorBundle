@@ -136,9 +136,18 @@ class MagentoContext extends RawMinkContext implements PageObjectAwareInterface
      */
     public function iCheckIfWereSentToMagento($type, TableNode $table)
     {
-        $adminUrl   = 'http://magento.local/admin';
-        $adminLogin = 'admin';
-        $adminPwd   = 'magento1';
+        $adminUrl = getenv('MAGENTO_ADMIN_URL');
+        if (false === $adminUrl) {
+            $adminURL = 'http://magento.local/admin';
+        }
+        $adminLogin = getenv('MAGENTO_ADMIN_LOGIN');
+        if (false === $adminLogin) {
+            $adminLogin = 'http://magento.local/admin';
+        }
+        $adminPwd = getenv('MAGENTO_ADMIN_PASSWORD');
+        if (false === $adminPwd) {
+            $adminPwd = 'http://magento.local/admin';
+        }
 
         $connectionManager  = new MagentoAdminConnectionManager($adminUrl, $adminLogin, $adminPwd);
 
