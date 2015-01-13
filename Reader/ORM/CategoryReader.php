@@ -48,23 +48,12 @@ class CategoryReader extends EntityReader
         if (!$this->query) {
             $channel = $this->channelManager->getChannelByCode($this->channel);
 
-            $this->query = $this
-                ->getRepository()
+            $this->query = $this->repository
                 ->findOrderedCategories($channel->getCategory())
                 ->getQuery();
         }
 
         return $this->query;
-    }
-
-    /**
-     * Get the custom category repository
-     *
-     * @return CategoryRepository
-     */
-    protected function getRepository()
-    {
-        return $this->repository;
     }
 
     /**
