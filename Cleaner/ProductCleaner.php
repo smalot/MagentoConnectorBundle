@@ -30,6 +30,25 @@ class ProductCleaner extends Cleaner
     protected $channel;
 
     /**
+     * @var array
+     */
+    protected $productTypesNotHandledByPim = [
+        AbstractNormalizer::MAGENTO_BUNDLE_PRODUCT_KEY,
+        AbstractNormalizer::MAGENTO_DOWNLOADABLE_PRODUCT_KEY,
+        AbstractNormalizer::MAGENTO_VIRTUAL_PRODUCT_KEY,
+    ];
+
+    /**
+     * @var string
+     */
+    protected $notCompleteAnymoreAction;
+
+    /**
+     * @var boolean
+     */
+    protected $removeProductsNotHandledByPim;
+
+    /**
      * get channel
      *
      * @return string channel
@@ -54,11 +73,6 @@ class ProductCleaner extends Cleaner
     }
 
     /**
-     * @var string
-     */
-    protected $notCompleteAnymoreAction;
-
-    /**
      * get notCompleteAnymoreAction
      *
      * @return string notCompleteAnymoreAction
@@ -78,6 +92,26 @@ class ProductCleaner extends Cleaner
     public function setNotCompleteAnymoreAction($notCompleteAnymoreAction)
     {
         $this->notCompleteAnymoreAction = $notCompleteAnymoreAction;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRemoveProductsNotHandledByPim()
+    {
+        return $this->removeProductsNotHandledByPim;
+    }
+
+    /**
+     * @param boolean $removeProductsNotHandledByPim
+     *
+     * @return ProductCleaner
+     */
+    public function setRemoveProductsNotHandledByPim($removeProductsNotHandledByPim)
+    {
+        $this->removeProductsNotHandledByPim = $removeProductsNotHandledByPim;
 
         return $this;
     }
@@ -113,7 +147,10 @@ class ProductCleaner extends Cleaner
 
         foreach ($magentoProducts as $product) {
             try {
-                if ($product['type'] === AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY) {
+                if (
+                    AbstractNormalizer::MAGENTO_SIMPLE_PRODUCT_KEY === $product['type'] ||
+                    in_array($product['type'], $this->productTypesNotHandledByPim)
+                ) {
                     if (!in_array($product['sku'], $pimProducts)) {
                         $this->handleProductNotInPimAnymore($product);
                     } elseif (!in_array($product['sku'], $exportedProducts)) {
@@ -182,7 +219,11 @@ class ProductCleaner extends Cleaner
      */
     protected function handleProductNotInPimAnymore(array $product)
     {
-        $this->handleProduct($product, $this->notInPimAnymoreAction);
+        $this->handleProduct(
+            $product,
+            $this->notInPimAnymoreAction,
+            $this->removeProductsNotHandledByPim
+        );
     }
 
     /**
@@ -191,20 +232,35 @@ class ProductCleaner extends Cleaner
      */
     protected function handleProductNotCompleteAnymore(array $product)
     {
-        $this->handleProduct($product, $this->notCompleteAnymoreAction);
+        $this->handleProduct(
+            $product,
+            $this->notCompleteAnymoreAction,
+            $this->removeProductsNotHandledByPim
+        );
     }
 
     /**
      * Handle product for the given action
-     * @param array  $product
-     * @param string $action
+     * @param array   $product
+     * @param string  $notAnymoreAction
+     * @param boolean $removeProductsNotHandledByPim
      */
-    protected function handleProduct(array $product, $action)
+    protected function handleProduct(array $product, $notAnymoreAction, $removeProductsNotHandledByPim = false)
     {
-        if ($action === self::DISABLE) {
+        if (
+            false === $removeProductsNotHandledByPim &&
+            in_array($product['type'], $this->productTypesNotHandledByPim)
+        ) {
+            $this->stepExecution->incrementSummaryInfo('product_not_removed');
+            $this->addWarning('Non removed product\'s SKU: %sku%', ['%sku%' => $product['sku']], $product);
+
+            return;
+        }
+
+        if (self::DISABLE === $notAnymoreAction) {
             $this->webservice->disableProduct($product['sku']);
             $this->stepExecution->incrementSummaryInfo('product_disabled');
-        } elseif ($action === self::DELETE) {
+        } elseif (self::DELETE === $notAnymoreAction) {
             $this->webservice->deleteProduct($product['sku']);
             $this->stepExecution->incrementSummaryInfo('product_deleted');
         }
@@ -224,20 +280,27 @@ class ProductCleaner extends Cleaner
                         'choices'  => [
                             Cleaner::DO_NOTHING => 'pim_magento_connector.export.do_nothing.label',
                             Cleaner::DISABLE    => 'pim_magento_connector.export.disable.label',
-                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label'
+                            Cleaner::DELETE     => 'pim_magento_connector.export.delete.label',
                         ],
                         'required' => true,
                         'help'     => 'pim_magento_connector.export.notCompleteAnymoreAction.help',
                         'label'    => 'pim_magento_connector.export.notCompleteAnymoreAction.label',
-                        'attr'     => ['class' => 'select2']
-                    ]
+                        'attr'     => ['class' => 'select2'],
+                    ],
                 ],
-                'channel'      => [
+                'channel' => [
                     'type'    => 'choice',
                     'options' => [
                         'choices'  => $this->channelManager->getChannelChoices(),
-                        'required' => true
-                    ]
+                        'required' => true,
+                    ],
+                ],
+                'removeProductsNotHandledByPim' => [
+                    'type' => 'checkbox',
+                    'options' => [
+                        'help' => 'pim_magento_connector.export.removeProductsNotHandledByPim.help',
+                        'label' => 'pim_magento_connector.export.removeProductsNotHandledByPim.label'
+                    ],
                 ]
             ]
         );
