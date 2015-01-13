@@ -142,11 +142,11 @@ class MagentoContext extends RawMinkContext implements PageObjectAwareInterface
         }
         $adminLogin = getenv('MAGENTO_ADMIN_LOGIN');
         if (false === $adminLogin) {
-            $adminLogin = 'http://magento.local/admin';
+            $adminLogin = 'admin';
         }
         $adminPwd = getenv('MAGENTO_ADMIN_PASSWORD');
         if (false === $adminPwd) {
-            $adminPwd = 'http://magento.local/admin';
+            $adminPwd = 'magento1';
         }
 
         $connectionManager  = new MagentoAdminConnectionManager($adminUrl, $adminLogin, $adminPwd);
