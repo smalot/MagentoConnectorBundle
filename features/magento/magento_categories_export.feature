@@ -19,17 +19,17 @@ Feature: Magento category export
       | shoes_male   | Shoes Male       | Chaussures homme            | shoes     |
       | shoes_female | Shoes Female     | Chaussures femme            | shoes     |
     And the following Magento configuration:
-      | property            | value                               |
-      | code                | magento1                            |
-      | label               | Magento Configuration 1             |
-      | soapUsername        | adminsoap                           |
-      | soapApiKey          | adminsoap                           |
-      | soapUrl             | http://magento.local/api/soap/?wsdl |
-      | defaultStoreView    | default                             |
-      | defaultLocale       | en_US                               |
-      | rootCategoryMapping | {"Master": "default"}               |
-      | storeViewMapping    | {}                                  |
-      | attributeMapping    | {}                                  |
+      | property            | value                                              |
+      | code                | magento1                                           |
+      | label               | Magento Configuration 1                            |
+      | soapUsername        | adminsoap                                          |
+      | soapApiKey          | adminsoap                                          |
+      | soapUrl             | http://magento-connector-magento.ci/api/soap/?wsdl |
+      | defaultStoreView    | default                                            |
+      | defaultLocale       | en_US                                              |
+      | rootCategoryMapping | {"Master": "default"}                              |
+      | storeViewMapping    | {}                                                 |
+      | attributeMapping    | {}                                                 |
     And I am logged in as "peter"
     And I am on the exports page
     And I create a new export
