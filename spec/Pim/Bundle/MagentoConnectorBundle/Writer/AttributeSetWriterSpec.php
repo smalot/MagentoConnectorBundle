@@ -15,7 +15,7 @@ use Prophecy\Argument;
 
 class AttributeSetWriterSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         WebserviceGuesser $webserviceGuesser,
         FamilyMappingManager $familyMappingManager,
         AttributeMappingManager $attributeMappingManager,
@@ -38,7 +38,7 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $this->setStepExecution($stepExecution);
     }
 
-    public function it_sends_families_to_create_on_magento_webservice(
+    function it_sends_families_to_create_on_magento_webservice(
         Family $family,
         $webservice,
         FamilyMappingManager $familyMappingManager
@@ -61,7 +61,7 @@ class AttributeSetWriterSpec extends ObjectBehavior
         $this->write($batches);
     }
 
-    public function it_increments_summary_info_with_family_exists_if_it_exists(
+    function it_increments_summary_info_with_family_exists_if_it_exists(
         $webservice,
         $stepExecution,
         Family $family,

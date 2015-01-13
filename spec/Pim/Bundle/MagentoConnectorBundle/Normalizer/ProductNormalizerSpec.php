@@ -23,7 +23,7 @@ class ProductNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext = [];
 
-    public function let(
+    function let(
         ChannelManager $channelManager,
         MediaManager $mediaManager,
         ProductValueNormalizer $productValueNormalizer,
@@ -107,7 +107,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $productValueNormalizer->normalize($imageValue, Argument::cetera())->willReturn(null);
     }
 
-    public function it_normalizes_the_given_new_product($product)
+    function it_normalizes_the_given_new_product($product)
     {
         $product->getGroups()->willReturn([]);
         $product->getAssociationForTypeCode('pim_grouped')->willReturn(null);
@@ -148,7 +148,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         );
     }
 
-    public function it_raises_an_exception_if_product_category_is_not_found(
+    function it_raises_an_exception_if_product_category_is_not_found(
         $product,
         $categoryMappingManager,
         $category,
@@ -165,7 +165,7 @@ class ProductNormalizerSpec extends ObjectBehavior
             );
     }
 
-    public function it_raises_an_exception_if_a_storeview_is_missing($product)
+    function it_raises_an_exception_if_a_storeview_is_missing($product)
     {
         $product->getGroups()->willReturn([]);
         $product->getAssociationForTypeCode('pim_grouped')->willReturn(null);
@@ -181,7 +181,7 @@ class ProductNormalizerSpec extends ObjectBehavior
             );
     }
 
-    public function it_normalizes_images_for_given_product(
+    function it_normalizes_images_for_given_product(
         $product,
         $imageValue,
         ProductMedia $image,
@@ -222,7 +222,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         );
     }
 
-    public function it_normalizes_the_given_updated_product($product)
+    function it_normalizes_the_given_updated_product($product)
     {
         $this->globalContext['create']           = false;
         $this->globalContext['defaultStoreView'] = 'default';

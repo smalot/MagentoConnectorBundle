@@ -17,7 +17,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
 {
     protected $globalContext = [];
 
-    public function let(
+    function let(
         ChannelManager $channelManager,
         ProductNormalizer $productNormalizer,
         PriceMappingManager $priceMappingManager,
@@ -64,7 +64,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         $product->getIdentifier()->willReturn('sku-000');
     }
 
-    public function it_normalizes_a_new_configurable_product($group, $product, $priceMappingManager, $attributeMapping)
+    function it_normalizes_a_new_configurable_product($group, $product, $priceMappingManager, $attributeMapping)
     {
         $products = [$product];
 
@@ -104,7 +104,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             );
     }
 
-    public function it_normalizes_a_updated_configurable_product(
+    function it_normalizes_a_updated_configurable_product(
         $group,
         $product,
         $priceMappingManager,
@@ -148,7 +148,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             );
     }
 
-    public function it_raises_an_expcetion_if_the_locale_does_not_have_a_corresponding_storeview(
+    function it_raises_an_expcetion_if_the_locale_does_not_have_a_corresponding_storeview(
         $group,
         $product,
         $priceMappingManager,
@@ -178,7 +178,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
         );
     }
 
-    public function it_raises_an_expcetion_if_the_price_mapping_is_not_valid(
+    function it_raises_an_expcetion_if_the_price_mapping_is_not_valid(
         $group,
         $product,
         $priceMappingManager,

@@ -33,7 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class ConfigurableProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
@@ -130,7 +130,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $group->getId()->willReturn(1);
     }
 
-    public function it_processes_products(
+    function it_processes_products(
         $groupRepository,
         $webservice,
         $group,
@@ -154,7 +154,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->process([$product]);
     }
 
-    public function it_processes_products_even_if_magento_configurable_doesnt_exist(
+    function it_processes_products_even_if_magento_configurable_doesnt_exist(
         $groupRepository,
         $webservice,
         $group,
@@ -183,7 +183,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->process([$product]);
     }
 
-    public function it_throws_an_exception_if_a_normalization_error_occured(
+    function it_throws_an_exception_if_a_normalization_error_occured(
         $groupRepository,
         $webservice,
         $group,
@@ -222,7 +222,7 @@ class ConfigurableProcessorSpec extends ObjectBehavior
         $this->process([$product]);
     }
 
-    public function it_throws_an_exception_if_a_soap_call_error_occured_during_normalization(
+    function it_throws_an_exception_if_a_soap_call_error_occured_during_normalization(
         $groupRepository,
         $webservice,
         $group,

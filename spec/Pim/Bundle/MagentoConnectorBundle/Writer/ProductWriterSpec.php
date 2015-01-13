@@ -20,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class ProductWriterSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         WebserviceGuesser $webserviceGuesser,
         ChannelManager $channelManager,
         StepExecution $stepExecution,
@@ -39,7 +39,7 @@ class ProductWriterSpec extends ObjectBehavior
         $webserviceGuesser->getWebservice($clientParameters)->willReturn($webservice);
     }
 
-    public function it_updates_a_product($webservice, $stepExecution)
+    function it_updates_a_product($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
@@ -65,7 +65,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    public function it_creates_a_product($webservice, $stepExecution)
+    function it_creates_a_product($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
@@ -95,7 +95,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    public function it_updates_a_product_and_prunes_old_images($webservice, $stepExecution)
+    function it_updates_a_product_and_prunes_old_images($webservice, $stepExecution)
     {
         $products = [
             'batch_1' => [
@@ -123,7 +123,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    public function it_fails_if_something_went_wrong_when_it_updates_a_product(
+    function it_fails_if_something_went_wrong_when_it_updates_a_product(
         $webservice,
         $stepExecution,
         $eventDispatcher
@@ -160,7 +160,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    public function it_fails_if_something_went_wrong_when_it_prunes_images(
+    function it_fails_if_something_went_wrong_when_it_prunes_images(
         $webservice,
         $stepExecution,
         $eventDispatcher
@@ -199,7 +199,7 @@ class ProductWriterSpec extends ObjectBehavior
         $this->write($products);
     }
 
-    public function it_gives_a_configuration_field()
+    function it_gives_a_configuration_field()
     {
         $this->getConfigurationFields()->shouldReturn(
             [

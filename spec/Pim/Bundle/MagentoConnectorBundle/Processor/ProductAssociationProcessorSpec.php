@@ -21,7 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ProductAssociationProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         WebserviceGuesser $webserviceGuesser,
@@ -52,7 +52,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->setPimUpSell('UPSELL');
     }
 
-    public function it_generates_association_calls_for_given_products(
+    function it_generates_association_calls_for_given_products(
         $webservice,
         ProductInterface $product,
         ProductInterface $associatedProduct,
@@ -95,7 +95,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_an_exception_if_something_went_wrong_with_soap_call(
+    function it_throws_an_exception_if_something_went_wrong_with_soap_call(
         $webservice,
         $eventDispatcher,
         ProductInterface $product
@@ -114,7 +114,7 @@ class ProductAssociationProcessorSpec extends ObjectBehavior
         $this->process($product);
     }
 
-    public function it_is_configurable()
+    function it_is_configurable()
     {
         $this->setPimUpSell('foo');
         $this->setPimCrossSell('bar');

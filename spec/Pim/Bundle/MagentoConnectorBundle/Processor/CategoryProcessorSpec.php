@@ -20,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class CategoryProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         LocaleManager $localeManager,
         MagentoMappingMerger $storeViewMappingMerger,
         MagentoMappingMerger $categoryMappingMerger,
@@ -50,7 +50,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $normalizerGuesser->getCategoryNormalizer($clientParameters)->willReturn($categoryNormalizer);
     }
 
-    public function it_normalizes_categories(
+    function it_normalizes_categories(
         Category $category,
         Category $parentCategory,
         $webservice,
@@ -90,7 +90,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_gives_category_mapping_in_json($categoryMappingMerger, MappingCollection $mappingCollection)
+    function it_gives_category_mapping_in_json($categoryMappingMerger, MappingCollection $mappingCollection)
     {
         $categoryMappingMerger->getMapping()->willReturn($mappingCollection);
         $mappingCollection->toArray()->willReturn(['foo']);
@@ -98,7 +98,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->getCategoryMapping()->shouldReturn('["foo"]');
     }
 
-    public function it_gives_a_proper_configuration_for_fields($categoryMappingMerger, $storeViewMappingMerger)
+    function it_gives_a_proper_configuration_for_fields($categoryMappingMerger, $storeViewMappingMerger)
     {
         $categoryMappingMerger->getConfigurationField()->willReturn(['foo' => 'bar']);
         $storeViewMappingMerger->getConfigurationField()->willReturn(['fooo' => 'baar']);
@@ -194,7 +194,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_sets_storeview_mapping($storeViewMappingMerger, MappingCollection $mappingCollection)
+    function it_sets_storeview_mapping($storeViewMappingMerger, MappingCollection $mappingCollection)
     {
         $storeViewMappingMerger->setParameters(Argument::cetera())->shouldBeCalled();
         $storeViewMappingMerger->setMapping(json_decode('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}', true))->willReturn(['fr_FR' => ['source' => 'fr_FR', 'target' => 'fr_fr']]);
@@ -204,7 +204,7 @@ class CategoryProcessorSpec extends ObjectBehavior
         $this->setStoreviewMapping('{"fr_FR":{"source":"fr_FR","target":"fr_fr"}}')->shouldReturn($this);
     }
 
-    public function it_is_configurable()
+    function it_is_configurable()
     {
         $this->setDefaultLocale('en_US');
         $this->setWebsite('http://mywebsite.com');

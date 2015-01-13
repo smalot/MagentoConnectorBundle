@@ -13,7 +13,7 @@ use PhpSpec\ObjectBehavior;
 
 class PriceMappingManagerSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         Group $group,
         Product $product1,
         Product $product2,
@@ -86,7 +86,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $attributeMapping->getTarget('attribute_2')->willReturn('attribute_2');
     }
 
-    public function it_gives_simple_price_mapping(
+    function it_gives_simple_price_mapping(
         $group,
         $product1,
         $productValueOption11,
@@ -111,7 +111,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         );
     }
 
-    public function it_gives_complexe_price_mapping_from_upper_price(
+    function it_gives_complexe_price_mapping_from_upper_price(
         $group,
         $product1,
         $product2,
@@ -153,7 +153,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);
     }
 
-    public function it_gives_complexe_price_mapping_from_lower_price(
+    function it_gives_complexe_price_mapping_from_lower_price(
         $group,
         $product1,
         $product2,
@@ -195,7 +195,7 @@ class PriceMappingManagerSpec extends ObjectBehavior
         $this->validatePriceMapping($products, $priceMapping['price_changes'], $priceMapping['price'], $attributeMapping);
     }
 
-    public function it_gives_an_other_complexe_price_mapping_from_lower_price(
+    function it_gives_an_other_complexe_price_mapping_from_lower_price(
         $group,
         $product1,
         $product2,

@@ -34,7 +34,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class ProductProcessorSpec extends ObjectBehavior
 {
-    public function let(
+    function let(
         WebserviceGuesser $webserviceGuesser,
         NormalizerGuesser $normalizerGuesser,
         LocaleManager $localeManager,
@@ -134,7 +134,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $channelManager->getChannelByCode(null)->willReturn($channel);
     }
 
-    public function it_is_configurable(
+    function it_is_configurable(
         $categoryMappingMerger,
         $attributeMappingMerger,
         $mappingCollection
@@ -162,7 +162,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->getPimGrouped()->shouldReturn('group');
     }
 
-    public function it_processes_new_products(
+    function it_processes_new_products(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,
@@ -196,7 +196,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->process($product);
     }
 
-    public function it_processes_already_created_products(
+    function it_processes_already_created_products(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,
@@ -230,7 +230,7 @@ class ProductProcessorSpec extends ObjectBehavior
         $this->process($product);
     }
 
-    public function it_throws_an_exception_if_something_went_wrong_during_normalization(
+    function it_throws_an_exception_if_something_went_wrong_during_normalization(
         $webservice,
         $attributeMappingMerger,
         $categoryMappingMerger,
