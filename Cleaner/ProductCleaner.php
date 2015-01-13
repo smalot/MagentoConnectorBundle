@@ -245,15 +245,15 @@ class ProductCleaner extends Cleaner
      * @param string  $notAnymoreAction
      * @param boolean $removeProductsNotHandledByPim
      */
-    protected function handleProduct(array $product, $notAnymoreAction, $removeProductsNotHandledByPim)
+    protected function handleProduct(array $product, $notAnymoreAction, $removeProductsNotHandledByPim = false)
     {
-
         if (
             false === $removeProductsNotHandledByPim &&
             in_array($product['type'], $this->productTypesNotHandledByPim)
         ) {
             $this->stepExecution->incrementSummaryInfo('product_not_removed');
             $this->addWarning('Non removed product\'s SKU: %sku%', ['%sku%' => $product['sku']], $product);
+
             return;
         }
 
