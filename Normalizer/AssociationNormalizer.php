@@ -51,7 +51,7 @@ class AssociationNormalizer implements NormalizerInterface
             }
         }
 
-        return empty($associations) ? null : $associations;
+        return $associations;
     }
 
     /**

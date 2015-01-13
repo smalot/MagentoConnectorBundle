@@ -85,9 +85,7 @@ class ProductToArrayProcessor extends AbstractConfigurableStepElement implements
 
         foreach ($item->getAssociations() as $association) {
             $associationPart = $this->normalizer->normalize($association, 'api_import', $context);
-            if (is_array($associationPart)) {
-                $product = array_merge($product, $associationPart);
-            }
+            $product = array_merge($product, $associationPart);
         }
 
         return $product;
