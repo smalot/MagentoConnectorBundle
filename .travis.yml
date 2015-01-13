@@ -10,8 +10,8 @@ cache:
 
 before_script:
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-    - composer self-update --no-interaction
-    - composer update --prefer-dist --no-scripts --no-interaction
+    - curl -sS https://getcomposer.org/installer | php
+    - php -d "memory_limit = -1" composer.phar update --prefer-dist --no-scripts --no-interaction
 
 script: bin/phpspec run -fpretty -v
 
