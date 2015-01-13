@@ -45,10 +45,17 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
             'attributeCodeMapping'     => $attributeMapping,
             'create'                   => true,
             'defaultStoreView'         => 'default',
+            'smallImageAttribute'      => 'smallImageAttr',
+            'baseImageAttribute'       => 'baseImageAttr',
+            'thumbnailAttribute'       => 'thumbnailAttr'
         ];
 
-        $productNormalizer->getNormalizedImages($product, 'conf-group_code')->willReturn([]);
-        $productNormalizer->getValues(Argument::cetera())->willReturn([ProductNormalizer::URL_KEY => 'my-url-key']);
+        $productNormalizer
+            ->getNormalizedImages($product, 'conf-group_code', 'smallImageAttr', 'baseImageAttr', 'thumbnailAttr')
+            ->willReturn([]);
+        $productNormalizer
+            ->getValues(Argument::cetera())
+            ->willReturn([ProductNormalizer::URL_KEY => 'my-url-key']);
 
         $channelManager->getChannelByCode('channel')->willReturn($channel);
         $channel->getLocales()->willReturn([$localeEN, $localeFR]);
@@ -87,17 +94,17 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
                         0,
                         'conf-group_code',
                         [
+                            'url_key'         => 'my-url-key-conf-44',
                             'visibility'      => 4,
                             'price_changes'   => [],
                             'price'           => [],
                             'associated_skus' => ['sku-000'],
-                            'websites'        => ['website'],
-                            'url_key'         => 'my-url-key-conf-44'
+                            'websites'        => ['website']
                         ],
                     ],
                     'fr_fr'   => [
                         'conf-group_code',
-                        [],
+                        ['url_key' => 'my-url-key'],
                         'fr_fr',
                     ],
                 ]
@@ -132,6 +139,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
                     'default' => [
                         'conf-group_code',
                         [
+                            'url_key'         => 'my-url-key-conf-44',
                             'visibility'      => 4,
                             'price_changes'   => [],
                             'price'           => [],
@@ -141,7 +149,7 @@ class ConfigurableNormalizerSpec extends ObjectBehavior
                     ],
                     'fr_fr'   => [
                         'conf-group_code',
-                        [],
+                        ['url_key' => 'my-url-key'],
                         'fr_fr',
                     ],
                 ]
