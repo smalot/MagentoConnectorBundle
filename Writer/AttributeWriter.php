@@ -188,7 +188,7 @@ class AttributeWriter extends AbstractWriter
                     );
                 }
             } catch (SoapCallException $e) {
-                if (static::SOAP_FAULT_ATTRIBUTE_ALREADY_IN_SET == $e->getPrevious()->faultcode) {
+                if (static::SOAP_FAULT_ATTRIBUTE_ALREADY_IN_SET === $e->getPrevious()->faultcode) {
                     echo "DEBUG: Attribute ".$magentoAttributeId.
                         " already exists in attribute set ".$magentoFamilyId."\n";
                 } else {
@@ -230,7 +230,7 @@ class AttributeWriter extends AbstractWriter
                         $this->getSoapUrl()
                     );
                 } catch (SoapCallException $e) {
-                    if (static::SOAP_FAULT_GROUP_ALREADY_IN_SET == $e->getPrevious()->faultcode) {
+                    if (static::SOAP_FAULT_GROUP_ALREADY_IN_SET === $e->getPrevious()->faultcode) {
                         echo "DEBUG: Group ".$groupName." already exists in attribute set ".$familyMagentoId."\n";
                     } else {
                         throw $e;
