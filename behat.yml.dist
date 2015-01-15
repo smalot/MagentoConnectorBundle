@@ -1,0 +1,34 @@
+default:
+    paths:
+        features: features
+    context:
+        class:  Context\MagentoFeatureContext
+        parameters:
+            base_url: http://magento-connector-pim.local/
+            window_width: 1280
+            window_height: 1024
+    extensions:
+        Behat\MinkExtension\Extension:
+            default_session: symfony2
+            show_cmd: chromium-browser %s
+            selenium2: ~
+            base_url: magento.local/
+            files_path: 'features/Context/fixtures/'
+        Behat\Symfony2Extension\Extension:
+            kernel:
+                env: behat
+        SensioLabs\Behat\PageObjectExtension\Extension: ~
+
+jenkins:
+    context:
+        parameters:
+            base_url: http://magento-connector-pim.ci/
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url: http://magento-connector-pim.ci/
+    formatter:
+        name: Context\SummaryFormatter,junit
+        parameters:
+            output_path: null,app/build/logs/behat/
+    filters:
+        tags: ~skip&&~doc
