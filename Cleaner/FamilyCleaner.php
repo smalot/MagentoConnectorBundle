@@ -20,8 +20,6 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class FamilyCleaner extends Cleaner
 {
-    const SOAP_FAULT_PRODUCTS_IN_SETT = 105;
-
     /** @var FamilyMappingManager */
     protected $familyMappingManager;
 
@@ -104,16 +102,11 @@ class FamilyCleaner extends Cleaner
                 );
                 $this->stepExecution->incrementSummaryInfo('family_deleted');
             } catch (SoapCallException $e) {
-                if ($e->getPrevious()->faultcode == self::SOAP_FAULT_PRODUCTS_IN_SET) {
-                    throw new InvalidItemException(
-                        'Unable to remove attribute set as it has related products. ' .
-                        'Try to set "Force attribute set removing" if you want to remove ' .
-                        'attribute set and products.',
-                        [$name]
-                    );
-                } else {
-                    throw $e;
-                }
+                throw new InvalidItemException(
+                    $e->getMessage(),
+                    [$id],
+                    [$e]
+                );
             }
         }
     }
