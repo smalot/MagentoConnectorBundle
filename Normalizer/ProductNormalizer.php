@@ -48,7 +48,8 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         foreach ($categories[ProductLabelDictionary::CATEGORY_HEADER] as $key => $category) {
             $processedProduct[] = [
                 ProductLabelDictionary::CATEGORY_HEADER      => $category,
-                ProductLabelDictionary::CATEGORY_ROOT_HEADER => $categories[ProductLabelDictionary::CATEGORY_ROOT_HEADER][$key]
+                ProductLabelDictionary::CATEGORY_ROOT_HEADER =>
+                    $categories[ProductLabelDictionary::CATEGORY_ROOT_HEADER][$key]
             ];
         }
 
