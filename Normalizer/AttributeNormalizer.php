@@ -51,10 +51,10 @@ class AttributeNormalizer implements NormalizerInterface, SerializerAwareInterfa
             AttributeLabelDictionary::LABEL_HEADER         =>
                 $object->getTranslation($context['defaultLocale'])->getLabel(),
             // Attributes can't be Global as AKeneo doesn't have global scope (see doc)
-            AttributeLabelDictionary::GLOBAL_HEADER        => 0,
-            AttributeLabelDictionary::REQUIRED_HEADER      => (int) $object->isRequired(),
-            AttributeLabelDictionary::VISIBLE_HEADER       => (int) $context['visibility'],
-            AttributeLabelDictionary::IS_UNIQUE_HEADER     => (int) $object->isUnique()
+            AttributeLabelDictionary::GLOBAL_HEADER        => false,
+            AttributeLabelDictionary::REQUIRED_HEADER      => $object->isRequired(),
+            AttributeLabelDictionary::VISIBLE_HEADER       => $context['visibility'],
+            AttributeLabelDictionary::IS_UNIQUE_HEADER     => $object->isUnique()
         ];
 
         if ('pim_catalog_simpleselect' === $pimAttributeType ||
