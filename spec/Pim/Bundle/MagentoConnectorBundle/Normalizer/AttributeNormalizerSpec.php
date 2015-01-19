@@ -78,10 +78,10 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'input'            => 'text',
             'type'             => 'text',
             'label'            => 'My attribute',
-            'global'           => 0,
-            'required'         => 1,
-            'visible_on_front' => 1,
-            'unique'           => 0
+            'global'           => false,
+            'required'         => true,
+            'visible_on_front' => true,
+            'unique'           => false,
         ]);
     }
 
@@ -130,10 +130,10 @@ class AttributeNormalizerSpec extends ObjectBehavior
             'input'            => 'select',
             'type'             => 'varchar',
             'label'            => 'My attribute',
-            'global'           => 0,
-            'required'         => 1,
-            'visible_on_front' => 1,
-            'unique'           => 0,
+            'global'           => false,
+            'required'         => true,
+            'visible_on_front' => true,
+            'unique'           => false,
             'option'           => [
                 'value' => [
                     'option_code' => [0 => 'My option']
