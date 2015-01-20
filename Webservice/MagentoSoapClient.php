@@ -24,29 +24,25 @@ class MagentoSoapClient
 
     protected $clientParameters;
 
-    protected $logDir;
-
-    protected $activateLog;
+    /** @var MagentoSoapClientProfiler */
+    protected $profiler;
 
     /**
      * Create and init the soap client
      *
      * @param MagentoSoapClientParameters $clientParameters
-     * @param string                      $logDir
-     * @param boolean                     $activateLog
      * @param \SoapClient                 $soapClient
+     * @param MagentoSoapClientProfiler   $profiler
      *
      * @throws ConnectionErrorException
      */
     public function __construct(
         MagentoSoapClientParameters $clientParameters,
-        $logDir = '',
-        $activateLog = false,
-        \SoapClient $soapClient = null
+        \SoapClient $soapClient = null,
+        MagentoSoapClientProfiler $profiler = null
     ) {
         $this->clientParameters = $clientParameters;
-        $this->logDir           = $logDir;
-        $this->activateLog      = $activateLog;
+        $this->profiler         = $profiler;
 
         if (!$soapClient) {
             $wsdlUrl     = $this->clientParameters->getSoapUrl();
@@ -152,12 +148,9 @@ class MagentoSoapClient
     {
         if ($this->isConnected()) {
             try {
-                $callStart = microtime(true);
+                $this->profiler->startProfileCallLog($resource);
                 $response = $this->client->call($this->session, $resource, $params);
-                $callEnd = microtime(true);
-                if (true === $this->activateLog) {
-                    $this->logProfileCalls($resource, $callStart, $callEnd);
-                }
+                $this->profiler->endAndWriteProfileCallLog();
             } catch (\SoapFault $e) {
                 if ($resource === 'core_magento.info' && $e->getMessage()
                     === AbstractGuesser::MAGENTO_CORE_ACCESS_DENIED) {
@@ -249,35 +242,5 @@ class MagentoSoapClient
 
             $this->calls = [];
         }
-    }
-
-    /**
-     * @param string $resource
-     * @param string $start
-     * @param string $end
-     */
-    protected function logProfileCalls($resource, $start, $end)
-    {
-        $duration = number_format(($end - $start), 3);
-        $stepStartingDate = date("Y-m-d H:i:s", $start);
-        $filePath = $this->logDir.'soap_profile.log';
-        $this->writeCallLog($filePath, $stepStartingDate, $resource, $duration);
-    }
-
-    /**
-     * @param string $filePath
-     * @param string $stepStartingDate
-     * @param string $resource
-     * @param string $duration
-     */
-    protected function writeCallLog($filePath, $stepStartingDate, $resource, $duration)
-    {
-        $log = fopen($filePath, "a");
-
-        if ([] === file($filePath)) {
-            fwrite($log, "datetime;soap_call_resource;type;duration\n");
-        }
-        fwrite($log, $stepStartingDate.';'.$resource.';'.$duration."\n");
-        fclose($log);
     }
 }
