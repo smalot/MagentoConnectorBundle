@@ -6,7 +6,7 @@ use Pim\Bundle\CatalogBundle\Entity\Attribute;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
-use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\ProductLabelDictionary;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\TypeNotFoundException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -27,19 +27,19 @@ class VariantGroupHelper
     /** @var PriceHelper */
     protected $priceHelper;
 
-    /** @var ValidProductHelper */
-    protected $validProductHelper;
+    /** @var ExportableProductHelper */
+    protected $exportableProductHelper;
 
     /**
      * Constructor
      *
-     * @param PriceHelper        $priceHelper
-     * @param ValidProductHelper $validProductHelper
+     * @param PriceHelper             $priceHelper
+     * @param ExportableProductHelper $exportableProductHelper
      */
-    public function __construct(PriceHelper $priceHelper, ValidProductHelper $validProductHelper)
+    public function __construct(PriceHelper $priceHelper, ExportableProductHelper $exportableProductHelper)
     {
-        $this->priceHelper        = $priceHelper;
-        $this->validProductHelper = $validProductHelper;
+        $this->priceHelper             = $priceHelper;
+        $this->exportableProductHelper = $exportableProductHelper;
     }
 
     /**
@@ -56,7 +56,7 @@ class VariantGroupHelper
         $normalized    = [];
         $channel       = $context['channel'];
         $variationAxes = $this->getVariantAxesCodes($object);
-        $validProducts = $this->validProductHelper->getValidProducts($channel, $object->getProducts());
+        $validProducts = $this->exportableProductHelper->getExportableProducts($channel, $object->getProducts());
 
         if (!empty($validProducts)) {
             $priceChanges = $this->priceHelper->computePriceChanges(

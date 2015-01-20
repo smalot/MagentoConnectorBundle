@@ -1,14 +1,14 @@
 parameters:
-    pim_magento_connector.helper.price.class:             Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper
-    pim_magento_connector.helper.valid_product.class:     Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper
-    pim_magento_connector.helper.attribute_mapping.class: Pim\Bundle\MagentoConnectorBundle\Helper\AttributeMappingHelper
+    pim_magento_connector.helper.price.class:              Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper
+    pim_magento_connector.helper.exportable_product.class: Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper
+    pim_magento_connector.helper.attribute_mapping.class:  Pim\Bundle\MagentoConnectorBundle\Helper\AttributeMappingHelper
 
 services:
     pim_magento_connector.helper.price:
         class: %pim_magento_connector.helper.price.class%
 
-    pim_magento_connector.helper.valid_product:
-        class: %pim_magento_connector.helper.valid_product.class%
+    pim_magento_connector.helper.exportable_product:
+        class: %pim_magento_connector.helper.exportable_product.class%
 
     pim_magento_connector.helper.attribute_mapping:
         class: %pim_magento_connector.helper.attribute_mapping.class%

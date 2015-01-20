@@ -4,7 +4,7 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
-use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\ProductLabelDictionary;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -17,17 +17,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class AssociationNormalizer implements NormalizerInterface
 {
-    /** @var ValidProductHelper */
-    protected $validProductHelper;
+    /** @var ExportableProductHelper */
+    protected $exportableProductHelper;
 
     /**
      * Constructor
      *
-     * @param ValidProductHelper $validProductHelper
+     * @param ExportableProductHelper $exportableProductHelper
      */
-    public function __construct(ValidProductHelper $validProductHelper)
+    public function __construct(ExportableProductHelper $exportableProductHelper)
     {
-        $this->validProductHelper = $validProductHelper;
+        $this->exportableProductHelper = $exportableProductHelper;
     }
 
     /**
@@ -37,14 +37,15 @@ class AssociationNormalizer implements NormalizerInterface
     {
         $associations       = [];
         $channel            = $context['channel'];
-        $validProducts      = $this->validProductHelper->getValidProducts($channel, $association->getProducts());
+        $exportableProducts = $this->exportableProductHelper
+            ->getExportableProducts($channel, $association->getProducts());
         $associationMapping = $context['associationMapping'];
         $assocTypeCode      = $associationMapping[$association->getAssociationType()->getCode()];
 
-        if (!empty($validProducts) && !empty($assocTypeCode)) {
+        if (!empty($exportableProducts) && !empty($assocTypeCode)) {
             $header = ProductLabelDictionary::getAssociationTypeHeader($assocTypeCode);
 
-            foreach ($validProducts as $associatedProduct) {
+            foreach ($exportableProducts as $associatedProduct) {
                 $associations[][$header] = (string) $associatedProduct->getIdentifier();
             }
         }

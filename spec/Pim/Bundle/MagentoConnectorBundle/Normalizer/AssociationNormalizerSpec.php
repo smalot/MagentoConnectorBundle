@@ -9,14 +9,14 @@ use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\MandatoryAttributeNotFoundException;
 
 class AssociationNormalizerSpec extends ObjectBehavior
 {
-    public function let(ValidProductHelper $validProductHelper)
+    public function let(ExportableProductHelper $exportableProductHelper)
     {
-        $this->beConstructedWith($validProductHelper);
+        $this->beConstructedWith($exportableProductHelper);
     }
 
     public function it_is_initializable()
@@ -46,7 +46,7 @@ class AssociationNormalizerSpec extends ObjectBehavior
         ProductInterface $product,
         Collection $productColl,
         Channel $channel,
-        $validProductHelper
+        $exportableProductHelper
     ) {
 
         $context = [
@@ -75,7 +75,7 @@ class AssociationNormalizerSpec extends ObjectBehavior
             ]
         ];
 
-        $validProductHelper->getValidProducts($channel, $productColl)->willReturn([$product]);
+        $exportableProductHelper->getExportableProducts($channel, $productColl)->willReturn([$product]);
 
         $product->getIdentifier()->willReturn('sku foo');
 
