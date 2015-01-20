@@ -25,12 +25,12 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($productValue, $format = null, array $context = [])
     {
-        $locale        = $object->getLocale();
-        $attribute     = $object->getAttribute();
+        $locale        = $productValue->getLocale();
+        $attribute     = $productValue->getAttribute();
         $attributeCode = $attribute->getCode();
-        $data          = $object->getData();
+        $data          = $productValue->getData();
         $value         = null;
 
         switch (gettype($data)) {
@@ -38,7 +38,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
                 $value = $this->normalizer->normalize($data, $format, $context);
                 break;
             case 'string':
-                $value = $this->getStringValue($object, $attribute, $data);
+                $value = $this->getStringValue($productValue, $attribute, $data);
                 break;
             case 'boolean':
                 $value = $this->getBooleanValue($data);
@@ -126,7 +126,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
     /**
      * Return value of a string product value
      *
-     * @param ProductValueInterface $object
+     * @param ProductValueInterface $productValue
      * @param AbstractAttribute     $attribute
      * @param string                $data
      *
@@ -134,7 +134,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
      *
      * @throws BackendTypeNotFoundException
      */
-    protected function getStringValue(ProductValueInterface $object, AbstractAttribute $attribute, $data)
+    protected function getStringValue(ProductValueInterface $productValue, AbstractAttribute $attribute, $data)
     {
         switch ($attribute->getBackendType()) {
             case 'decimal':
@@ -151,7 +151,7 @@ class ProductValueNormalizer implements NormalizerInterface, SerializerAwareInte
                         'ProductValueNormalizer and can not be normalized.',
                         $attribute->getBackendType(),
                         $attribute->getCode(),
-                        (string) $object->getEntity()->getIdentifier()
+                        (string) $productValue->getEntity()->getIdentifier()
                     )
                 );
                 break;

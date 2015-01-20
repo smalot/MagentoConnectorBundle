@@ -36,31 +36,31 @@ class AttributeNormalizer implements NormalizerInterface, SerializerAwareInterfa
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($attribute, $format = null, array $context = [])
     {
-        $pimAttributeType = $object->getAttributeType();
-        $pimBackendType   = $object->getBackendType();
+        $pimAttributeType = $attribute->getAttributeType();
+        $pimBackendType   = $attribute->getBackendType();
         $attributeType    = $this->mappingHelper->getMagentoAttributeType($pimAttributeType);
         $backendType      = $this->mappingHelper->getMagentoBackendType($pimBackendType);
 
         $normalized = [
-            AttributeLabelDictionary::ID_HEADER            => $object->getCode(),
-            AttributeLabelDictionary::DEFAULT_VALUE_HEADER => $object->getDefaultValue(),
+            AttributeLabelDictionary::ID_HEADER            => $attribute->getCode(),
+            AttributeLabelDictionary::DEFAULT_VALUE_HEADER => $attribute->getDefaultValue(),
             AttributeLabelDictionary::INPUT_HEADER         => $attributeType,
             AttributeLabelDictionary::BACKEND_TYPE_HEADER  => $backendType,
             AttributeLabelDictionary::LABEL_HEADER         =>
-                $object->getTranslation($context['defaultLocale'])->getLabel(),
+                $attribute->getTranslation($context['defaultLocale'])->getLabel(),
             // Attributes can't be Global as AKeneo doesn't have global scope (see doc)
             AttributeLabelDictionary::GLOBAL_HEADER        => false,
-            AttributeLabelDictionary::REQUIRED_HEADER      => $object->isRequired(),
+            AttributeLabelDictionary::REQUIRED_HEADER      => $attribute->isRequired(),
             AttributeLabelDictionary::VISIBLE_HEADER       => $context['visibility'],
-            AttributeLabelDictionary::IS_UNIQUE_HEADER     => $object->isUnique()
+            AttributeLabelDictionary::IS_UNIQUE_HEADER     => $attribute->isUnique()
         ];
 
         if ('pim_catalog_simpleselect' === $pimAttributeType ||
             'pim_catalog_multiselect' === $pimAttributeType
         ) {
-            foreach ($object->getOptions() as $option) {
+            foreach ($attribute->getOptions() as $option) {
                 $normalized['option']['value'][$option->getCode()] = $this->getValidOptionValues($option, $context);
                 $normalized['option']['order'][$option->getCode()] = $option->getSortOrder();
             }

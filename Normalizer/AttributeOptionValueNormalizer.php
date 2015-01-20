@@ -20,10 +20,10 @@ class AttributeOptionValueNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($optionValue, $format = null, array $context = [])
     {
-        $storeId = $this->getStoreId($object, $context);
-        $value   = $this->getValue($object);
+        $storeId = $this->getStoreId($optionValue, $context);
+        $value   = $this->getValue($optionValue);
 
         return null !== $storeId ? [$storeId => $value] : [];
     }

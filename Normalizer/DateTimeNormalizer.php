@@ -19,9 +19,9 @@ class DateTimeNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($dateTime, $format = null, array $context = [])
     {
-        return $object->format(static::DATE_FORMAT);
+        return $dateTime->format(static::DATE_FORMAT);
     }
 
     /**

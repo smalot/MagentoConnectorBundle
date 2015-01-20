@@ -30,11 +30,11 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($product, $format = null, array $context = [])
     {
         $productValues = array_merge_recursive(
-            $this->getProductValues($object, $format, $context),
-            $this->getCustomProductValues($object, $context)
+            $this->getProductValues($product, $format, $context),
+            $this->getCustomProductValues($product, $context)
         );
 
         foreach ($productValues as $storeView => &$values) {
@@ -44,7 +44,7 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
         $processedProduct = array_values($productValues);
 
-        $categories = $this->getProductCategories($object, $format, $context);
+        $categories = $this->getProductCategories($product, $format, $context);
         foreach ($categories[ProductLabelDictionary::CATEGORY_HEADER] as $key => $category) {
             $processedProduct[] = [
                 ProductLabelDictionary::CATEGORY_HEADER      => $category,

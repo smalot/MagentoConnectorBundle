@@ -29,22 +29,22 @@ class ProductCategoryNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($category, $format = null, array $context = [])
     {
         $defaultLocale = $context['defaultLocale'];
 
-        if (!$object->isRoot()) {
-            $categoryTree = $this->categoryManager->getEntityRepository()->getPath($object);
+        if (!$category->isRoot()) {
+            $categoryPath = $this->categoryManager->getEntityRepository()->getPath($category);
 
-            foreach ($categoryTree as &$category) {
-                $category = $this->getCategoryLabel($category, $defaultLocale);
+            foreach ($categoryPath as &$path) {
+                $path = $this->getCategoryLabel($path, $defaultLocale);
             }
 
-            $root = array_shift($categoryTree);
+            $root = array_shift($categoryPath);
 
-            $normalized = ['category' => implode('/', $categoryTree), 'root' => $root];
+            $normalized = ['category' => implode('/', $categoryPath), 'root' => $root];
         } else {
-            $normalized = ['category' => '', 'root' => $this->getCategoryLabel($object, $defaultLocale)];
+            $normalized = ['category' => '', 'root' => $this->getCategoryLabel($category, $defaultLocale)];
         }
 
         return $normalized;

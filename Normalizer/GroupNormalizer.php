@@ -35,12 +35,12 @@ class GroupNormalizer implements NormalizerInterface, SerializerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($group, $format = null, array $context = array())
     {
         $normalized = [];
-        if ($object->getType()->isVariant()) {
+        if ($group->getType()->isVariant()) {
             $this->variantGroupHelper->setSerializer($this->normalizer);
-            $normalized = $this->variantGroupHelper->normalize($object, $format, $context);
+            $normalized = $this->variantGroupHelper->normalize($group, $format, $context);
         }
 
         return $normalized;

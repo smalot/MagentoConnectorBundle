@@ -18,11 +18,11 @@ class FamilyNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($family, $format = null, array $context = [])
     {
-        $object->setLocale($context['defaultLocale']);
+        $family->setLocale($context['defaultLocale']);
 
-        return [FamilyLabelDictionary::ATTRIBUTE_SET_NAME_HEADER => $object->getLabel()];
+        return [FamilyLabelDictionary::ATTRIBUTE_SET_NAME_HEADER => $family->getLabel()];
     }
 
     /**

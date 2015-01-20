@@ -17,11 +17,11 @@ class AttributeGroupNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($attributeGroup, $format = null, array $context = [])
     {
-        $object->setLocale($context['defaultLocale']);
+        $attributeGroup->setLocale($context['defaultLocale']);
 
-        return [$object->getLabel() => $object->getSortOrder()];
+        return [$attributeGroup->getLabel() => $attributeGroup->getSortOrder()];
     }
 
     /**

@@ -17,9 +17,9 @@ class ProductPriceNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($productPrice, $format = null, array $context = [])
     {
-        return ($object->getCurrency() === $context['defaultCurrency']) ? $object->getData() : null;
+        return ($productPrice->getCurrency() === $context['defaultCurrency']) ? $productPrice->getData() : null;
     }
 
     /**

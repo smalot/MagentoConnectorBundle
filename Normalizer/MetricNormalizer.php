@@ -17,9 +17,9 @@ class MetricNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($metric, $format = null, array $context = [])
     {
-        return $object->getData();
+        return $metric->getData();
     }
 
     /**

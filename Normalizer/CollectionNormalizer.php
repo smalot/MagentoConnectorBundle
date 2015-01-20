@@ -23,13 +23,17 @@ class CollectionNormalizer implements NormalizerInterface, SerializerAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($collection, $format = null, array $context = [])
     {
-        if ($object->first() instanceof AbstractProductPrice) {
-            $normalized = $this->normalizer->normalize($object->get($context['defaultCurrency']), $format, $context);
+        if ($collection->first() instanceof AbstractProductPrice) {
+            $normalized = $this->normalizer->normalize(
+                $collection->get($context['defaultCurrency']),
+                $format,
+                $context
+            );
         } else {
             $normalized = [];
-            foreach ($object as $item) {
+            foreach ($collection as $item) {
                 $normalized[] = $this->normalizer->normalize($item, $format, $context);
             }
         }

@@ -30,15 +30,15 @@ class ProductMediaNormalizer implements NormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($productMedia, $format = null, array $context = [])
     {
-        $attributeCode = $object->getValue()->getAttribute()->getCode();
+        $attributeCode = $productMedia->getValue()->getAttribute()->getCode();
 
         return [
             [
-                $attributeCode                         => $object->getFileName(),
-                $attributeCode . '_content'            => $this->mediaManager->getBase64($object),
-                ProductLabelDictionary::MEDIA_IMAGE_HEADER    => $object->getFileName(),
+                $attributeCode                                => $productMedia->getFileName(),
+                $attributeCode . '_content'                   => $this->mediaManager->getBase64($productMedia),
+                ProductLabelDictionary::MEDIA_IMAGE_HEADER    => $productMedia->getFileName(),
                 ProductLabelDictionary::MEDIA_DISABLED_HEADER => false
             ]
         ];

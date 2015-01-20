@@ -43,24 +43,24 @@ class VariantGroupHelper
     }
 
     /**
-     * Normalizes an object into a set of arrays/scalars
+     * Normalizes a group into an array
      *
-     * @param object $object  object to normalize
+     * @param Group  $group   group to normalize
      * @param string $format  format the normalization result will be encoded as
      * @param array  $context Context options for the normalizer
      *
      * @return array
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize(Group $group, $format = null, array $context = [])
     {
         $normalized    = [];
         $channel       = $context['channel'];
-        $variationAxes = $this->getVariantAxesCodes($object);
-        $validProducts = $this->validProductHelper->getValidProducts($channel, $object->getProducts());
+        $variationAxes = $this->getVariantAxesCodes($group);
+        $validProducts = $this->validProductHelper->getValidProducts($channel, $group->getProducts());
 
         if (!empty($validProducts)) {
             $priceChanges = $this->priceHelper->computePriceChanges(
-                $object,
+                $group,
                 $validProducts,
                 $context['defaultLocale'],
                 $context['defaultCurrency'],
