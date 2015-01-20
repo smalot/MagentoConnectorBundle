@@ -1,6 +1,7 @@
 # 1.1.13 (2015-**-**)
 ## New features
  - Add an option to prevent or allow removal of products with type non managed by Akeneo.
+ -
 
 # 1.1.12 (2015-01-09)
 ## Bug fixes
