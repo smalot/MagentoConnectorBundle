@@ -53,7 +53,7 @@ class ProductMediaNormalizerSpec extends ObjectBehavior
                 'media_attribute_code' => 'my_media_name',
                 'media_attribute_code_content' => 'base64_code_of_the_media',
                 '_media_image' => 'my_media_name',
-                '_media_is_disabled' => 0
+                '_media_is_disabled' => false
             ]
         ]);
     }

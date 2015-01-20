@@ -58,7 +58,7 @@ class VariantGroupToArrayProcessor extends AbstractConfigurableStepElement imple
             'website'             => 'base',
             'defaultCurrency'     => 'USD',
             'visibility'          => '4',
-            'enabled'             => '1',
+            'enabled'             => true,
             'storeViewMapping'    => [
                 'fr_FR' => 'fr_fr'
             ],

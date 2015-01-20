@@ -31,7 +31,7 @@ class CategoryToArrayProcessorSpec extends ObjectBehavior
             'website'             => 'base',
             'defaultCurrency'     => 'USD',
             'visibility'          => '4',
-            'enabled'             => '1',
+            'enabled'             => true,
             'storeViewMapping'    => [
                 'fr_FR' => 'fr_fr'
             ],
