@@ -20,7 +20,8 @@ use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
  */
 class CategoryCleaner extends Cleaner
 {
-    const SOAP_FAULT_NO_CATEGORY = 102;
+    /** @staticvar string */
+    const SOAP_FAULT_NO_CATEGORY = '102';
 
     /** @var CategoryMappingManager */
     protected $categoryMappingManager;

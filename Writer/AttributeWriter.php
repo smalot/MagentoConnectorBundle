@@ -22,9 +22,14 @@ use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClientParametersRegi
  */
 class AttributeWriter extends AbstractWriter
 {
+    /** @staticvar int */
     const ATTRIBUTE_UPDATE_SIZE               = 2;
-    const SOAP_FAULT_ATTRIBUTE_ALREADY_IN_SET = 109;
-    const SOAP_FAULT_GROUP_ALREADY_IN_SET     = 112;
+
+    /** @staticvar string */
+    const SOAP_FAULT_ATTRIBUTE_ALREADY_IN_SET = '109';
+
+    /** @staticvar string */
+    const SOAP_FAULT_GROUP_ALREADY_IN_SET     = '112';
 
     /**
      * @var AttributeMappingManager
