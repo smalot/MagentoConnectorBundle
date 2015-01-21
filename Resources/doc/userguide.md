@@ -39,6 +39,10 @@ Once completed, save the configuration, and edit it again. The Magento connector
 
 ![Complete export configuration](./images/userguide/edit-config.png)
 
+### Important!
+
+The Magento's default store view code (which is "base", configured in the "Website" field on Akeneo) should not be changed, as it can lead to wrong behavior from the connector.
+
 The store view mapping is not a requirement if your Akeneo locales share the same names than your Magento store views. If not, then you have to map them. Note that you already have mapped a default Akeneo locale with a default Magento store view, so you only have to map additional locales. You are now ready to export your products.
 
 Remember that export profiles, once launched, run as background tasks, so you don't have to wait until structure export finishes to start creating you product export (but of course you have to wait and check it succeeds before running the product export). You can check if export succeeds (or fails and then see why) by going to `Spread > Exports history`.
