@@ -170,7 +170,17 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
     protected function getNormalizedAssociation(ProductInterface $product, array $context)
     {
         $associationParts = $this->normalizer->normalize($product->getAssociations(), 'api_import', $context);
+        if (!is_array($associationParts)) {
+            $associationParts = [];
+        }
 
-        return is_array($associationParts) ? $associationParts[0] : [];
+        $flattenedParts = [];
+        foreach ($associationParts as $parts) {
+            foreach ($parts as $part) {
+                $flattenedParts[] = $part;
+            }
+        }
+
+        return $flattenedParts;
     }
 }
