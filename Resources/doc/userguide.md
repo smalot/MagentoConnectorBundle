@@ -70,3 +70,9 @@ In Akeneo, attribute groups are only related to attributes. It is not the case o
 The problem is that the SOAP API only proposes [methods](http://www.magentocommerce.com/api/soap/catalog/catalogProductAttributeSet/productAttributeSet.html) to add and remove attributes from attribute set, nothing to update them, and the [Product Attributes methods](http://www.magentocommerce.com/api/soap/catalog/catalogProductAttribute/catalogProductAttribute.html) don't handle attribute groups.
 
 So if you want to perform an update, you'd have to remove and add again the attributes you want to change the group, which is not possible if there is already products using these attributes.
+
+## Specific attribute
+
+In Akeneo, you have the possibility to add a specific attribute (which is not related to the product family) to a product. As this is not possible in Magento (an attribute has to be in an attribute set), if you do so, the specific attribute will not be exported to Magento, and the product export will fail.
+
+So don't add specific attributes to products you want to export to Magento.
