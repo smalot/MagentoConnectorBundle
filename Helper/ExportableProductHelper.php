@@ -7,13 +7,13 @@ use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 
 /**
- * Valid product helper
+ * Exportable product helper
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ValidProductHelper
+class ExportableProductHelper
 {
     /**
      * Provides a method to find ready to export products from an array of products
@@ -23,9 +23,9 @@ class ValidProductHelper
      *
      * @return \Pim\Bundle\CatalogBundle\Model\ProductInterface[]
      */
-    public function getValidProducts(Channel $channel, $products)
+    public function getExportableProducts(Channel $channel, $products)
     {
-        $validProducts  = [];
+        $exportableProducts  = [];
         $rootCategoryId = $channel->getCategory()->getId();
 
         foreach ($products as $product) {
@@ -36,11 +36,11 @@ class ValidProductHelper
                 false !== $productCategories &&
                 $this->doesProductBelongToChannel($productCategories, $rootCategoryId)
             ) {
-                $validProducts[] = $product;
+                $exportableProducts[] = $product;
             }
         }
 
-        return $validProducts;
+        return $exportableProducts;
     }
 
     /**

@@ -110,11 +110,11 @@ services:
         class: %pim_magento_connector.normalizer.variant_group_helper.class%
         arguments:
             - '@pim_magento_connector.helper.price'
-            - '@pim_magento_connector.helper.valid_product'
+            - '@pim_magento_connector.helper.exportable_product'
 
     pim_magento_connector.normalizer.association:
         class: %pim_magento_connector.normalizer.association.class%
         arguments:
-            - '@pim_magento_connector.helper.valid_product'
+            - '@pim_magento_connector.helper.exportable_product'
         tags:
             - { name: pim_magento_connector.serializer.normalizer, priority: 100 }

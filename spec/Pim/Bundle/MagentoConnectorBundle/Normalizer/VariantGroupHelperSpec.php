@@ -12,7 +12,7 @@ use Pim\Bundle\CatalogBundle\Entity\Group;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
 use Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper;
-use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\TypeNotFoundException;
 use Prophecy\Argument;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -20,9 +20,9 @@ use Symfony\Component\Serializer\Serializer;
 
 class VariantGroupHelperSpec extends ObjectBehavior
 {
-    public function let(PriceHelper $priceHelper, ValidProductHelper $validProductHelper)
+    public function let(PriceHelper $priceHelper, ExportableProductHelper $exportableProductHelper)
     {
-        $this->beConstructedWith($priceHelper, $validProductHelper);
+        $this->beConstructedWith($priceHelper, $exportableProductHelper);
     }
 
     public function it_is_initializable()
@@ -49,7 +49,7 @@ class VariantGroupHelperSpec extends ObjectBehavior
         ProductValue $productValue2,
         AttributeOption $option2,
         Collection $collection,
-        $validProductHelper,
+        $exportableProductHelper,
         $priceHelper
     ) {
         $context = [
@@ -99,7 +99,7 @@ class VariantGroupHelperSpec extends ObjectBehavior
 
         $variantAxis->getCode()->willReturn('variant_attribute');
 
-        $validProductHelper->getValidProducts(
+        $exportableProductHelper->getExportableProducts(
             $channel,
             Argument::type('\Doctrine\Common\Collections\ArrayCollection')
         )->willReturn([$product1, $product2]);
@@ -170,7 +170,7 @@ class VariantGroupHelperSpec extends ObjectBehavior
         Channel $channel,
         Serializer $normalizer,
         Collection $collection,
-        $validProductHelper,
+        $exportableProductHelper,
         $priceHelper
     ) {
         $context = [
@@ -219,7 +219,7 @@ class VariantGroupHelperSpec extends ObjectBehavior
 
         $variantAxis->getCode()->willReturn('variant_attribute');
 
-        $validProductHelper->getValidProducts(
+        $exportableProductHelper->getExportableProducts(
             $channel,
             Argument::type('\Doctrine\Common\Collections\ArrayCollection')
         )->willReturn([$product1, $product2]);

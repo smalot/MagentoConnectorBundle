@@ -53,7 +53,9 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
             ];
         }
 
-        return $processedProduct;
+        $associationParts = $this->getNormalizedAssociation($object, $context);
+
+        return array_merge($processedProduct, $associationParts);
     }
 
     /**
@@ -155,5 +157,30 @@ class ProductNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
 
         return $productCategories;
+    }
+
+    /**
+     * Get normalized product association parts
+     *
+     * @param ProductInterface $product
+     * @param array            $context
+     *
+     * @return array
+     */
+    protected function getNormalizedAssociation(ProductInterface $product, array $context)
+    {
+        $associationParts = $this->normalizer->normalize($product->getAssociations(), 'api_import', $context);
+        if (!is_array($associationParts)) {
+            $associationParts = [];
+        }
+
+        $flattenedParts = [];
+        foreach ($associationParts as $parts) {
+            foreach ($parts as $part) {
+                $flattenedParts[] = $part;
+            }
+        }
+
+        return $flattenedParts;
     }
 }

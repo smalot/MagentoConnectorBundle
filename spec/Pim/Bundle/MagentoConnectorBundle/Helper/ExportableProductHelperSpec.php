@@ -9,11 +9,11 @@ use Pim\Bundle\CatalogBundle\Model\CategoryInterface;
 use Pim\Bundle\CatalogBundle\Model\Completeness;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 
-class ValidProductHelperSpec extends ObjectBehavior
+class ExportableProductHelperSpec extends ObjectBehavior
 {
     public function it_is_initializable()
     {
-        $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper');
+        $this->shouldHaveType('\Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper');
     }
 
     public function it_returns_ready_to_export_products_from_a_product_array(
@@ -60,6 +60,6 @@ class ValidProductHelperSpec extends ObjectBehavior
         $categoryNotInChannel->getRoot()->willReturn(3);
         $categoryRoot->getId()->willReturn(2);
 
-        $this->getValidProducts($channel, $products)->shouldReturn([$product]);
+        $this->getExportableProducts($channel, $products)->shouldReturn([$product]);
     }
 }

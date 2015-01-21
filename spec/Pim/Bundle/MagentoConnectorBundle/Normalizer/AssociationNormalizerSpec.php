@@ -9,14 +9,14 @@ use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\Association;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
-use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
+use Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\MandatoryAttributeNotFoundException;
 
 class AssociationNormalizerSpec extends ObjectBehavior
 {
-    public function let(ValidProductHelper $validProductHelper)
+    public function let(ExportableProductHelper $exportableProductHelper)
     {
-        $this->beConstructedWith($validProductHelper);
+        $this->beConstructedWith($exportableProductHelper);
     }
 
     public function it_is_initializable()
@@ -44,14 +44,9 @@ class AssociationNormalizerSpec extends ObjectBehavior
         Association $association,
         AssociationType $associationType,
         ProductInterface $product,
-        ProductInterface $ownerProduct,
         Collection $productColl,
-        ProductValue $productValueSku,
-        ProductValue $productValueDescription,
-        ProductValue $productValueShortDesc,
-        ProductValue $productValueName,
         Channel $channel,
-        $validProductHelper
+        $exportableProductHelper
     ) {
 
         $context = [
@@ -80,86 +75,19 @@ class AssociationNormalizerSpec extends ObjectBehavior
             ]
         ];
 
-        $validProductHelper->getValidProducts($channel, $productColl)->willReturn([$product]);
+        $exportableProductHelper->getExportableProducts($channel, $productColl)->willReturn([$product]);
 
-        $ownerProduct->getValue('sku', 'en_US', 'magento')->willReturn($productValueSku);
-        $ownerProduct->getValue('description', 'en_US', 'magento')->willReturn($productValueDescription);
-        $ownerProduct->getValue('short_description', 'en_US', 'magento')->willReturn($productValueShortDesc);
-        $ownerProduct->getValue('name', 'en_US', 'magento')->willReturn($productValueName);
         $product->getIdentifier()->willReturn('sku foo');
-
-        $productValueSku->getData()->willReturn('sku owner');
-        $productValueDescription->getData()->willReturn('Description owner');
-        $productValueShortDesc->getData()->willReturn('Short description owner');
-        $productValueName->getData()->willReturn('Name owner');
 
         $association->getProducts()->willReturn($productColl);
         $association->getAssociationType()->willReturn($associationType);
-        $association->getOwner()->willReturn($ownerProduct);
-
-        $channel->getCode()->willReturn('magento');
 
         $associationType->getCode()->willReturn('X_SELL');
 
         $this->normalize($association, 'api_import', $context)->shouldReturn([
             [
-                'sku' => 'sku owner',
-                'description' => 'Description owner',
-                'short_description' => 'Short description owner',
-                'name' => 'Name owner',
-                'status' => '1'
-            ],
-            [
                 '_links_crosssell_sku' => 'sku foo'
             ]
         ]);
-    }
-
-    public function it_throws_an_error_during_normalization_if_a_mandatory_attribute_is_not_found_in_product(
-        Association $association,
-        AssociationType $associationType,
-        ProductInterface $product,
-        ProductInterface $ownerProduct,
-        Collection $productColl,
-        Channel $channel,
-        $validProductHelper
-    ) {
-
-        $context = [
-            'channel' => $channel,
-            'defaultLocale'       => 'en_US',
-            'associationMapping'  => [
-                'UPSELL'  => 'upsell',
-                'X_SELL'  => 'crosssell',
-                'RELATED' => 'related',
-                'PACK'    => ''
-            ],
-            'attributeMapping'    => [
-                'sku'               => 'sku',
-                'name'              => 'name',
-                'description'       => 'description',
-                'short_description' => 'short_description',
-                'status'            => 'enabled'
-            ]
-        ];
-
-        $validProductHelper->getValidProducts($channel, $productColl)->willReturn([$product]);
-
-        $ownerProduct->getValue('sku', 'en_US', 'magento')->willReturn(null);
-        $ownerProduct->getIdentifier()->willReturn('sku foo');
-
-        $association->getAssociationType()->willReturn($associationType);
-        $association->getProducts()->willReturn($productColl);
-        $association->getOwner()->willReturn($ownerProduct);
-
-        $channel->getCode()->willReturn('magento');
-
-        $associationType->getCode()->willReturn('X_SELL');
-
-        $this->shouldThrow(
-            new MandatoryAttributeNotFoundException(
-                'Mandatory attribute with code "sku" not found in product "sku foo" during association creation.'
-            )
-        )->duringNormalize($association, 'api_import', $context);
     }
 }

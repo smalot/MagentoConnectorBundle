@@ -5,6 +5,7 @@ namespace spec\Pim\Bundle\MagentoConnectorBundle\Normalizer;
 use PhpSpec\ObjectBehavior;
 use Pim\Bundle\CatalogBundle\Entity\Category;
 use Pim\Bundle\CatalogBundle\Entity\Family;
+use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
 use Pim\Bundle\CatalogBundle\Model\Product;
 use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\CatalogBundle\Model\ProductValue;
@@ -53,6 +54,8 @@ class ProductNormalizerSpec extends ObjectBehavior
         ProductValue $productValue3,
         ProductValue $productValue4,
         ProductValue $productValue5,
+        AbstractAssociation $associationXSell,
+        AbstractAssociation $associationUpSell,
         Family $family,
         \DateTime $datetime,
         Category $category
@@ -78,6 +81,7 @@ class ProductNormalizerSpec extends ObjectBehavior
         $product->getCreated()->willReturn($datetime);
         $product->getUpdated()->willReturn($datetime);
         $product->getCategories()->willReturn([$category]);
+        $product->getAssociations()->willReturn([$associationUpSell, $associationXSell]);
 
         $datetime->format('Y-m-d H:i:s')->willReturn('2042-01-01 13:37:00');
         $family->getCode()->willReturn('my_family');
@@ -106,6 +110,136 @@ class ProductNormalizerSpec extends ObjectBehavior
             'root'     => 'my_category_root'
         ]);
         $normalizer->normalize($productValue5, 'api_import', $context)->willReturn(['Default' => ['sku' => 'sku-000']]);
+        $normalizer->normalize([$associationUpSell, $associationXSell], 'api_import', $context)->shouldBeCalled()->willReturn([
+            [
+                [
+                    '_links_upsell_sku' => 'sku-003'
+                ],
+                [
+                    '_links_upsell_sku' => 'sku-002'
+                ],
+                [
+                    '_links_crosssell_sku' => 'sku-001'
+                ],
+                [
+                    '_links_crosssell_sku' => 'sku-002'
+                ]
+            ]
+        ]);
+
+        $this->setSerializer($normalizer);
+        $this->normalize($product, 'api_import', $context)->shouldReturn([
+            [
+                'my_metric_attribute' => '420.000',
+                'sku'                 => 'sku-000',
+                '_type'               => 'simple',
+                '_product_websites'   => 'base',
+                'status'              => 1,
+                'visibility'          => 4,
+                '_attribute_set'      => 'my_family',
+                'created_at'          => '2042-01-01 13:37:00',
+                'updated_at'          => '2042-01-01 13:37:00',
+                '_store'              => 'Default'
+            ],
+            [
+                'bar'    => 'foo',
+                '_store' => 'fr_fr',
+            ],
+            [
+                '_store'                   => '',
+                'my_multiselect_attribute' => 'option1'
+            ],
+            [
+                '_store'                   => '',
+                'my_multiselect_attribute' => 'option2'
+            ],
+            [
+                'my_media_attribute'         => '1-sku_000-my_media_attribute---my_image.jpg',
+                'my_media_attribute_content' => 'bar_base64_code',
+                '_store'                     => ''
+            ],
+            [
+                '_category'      => 'my_category_2/my_category',
+                '_root_category' => 'Default Category'
+            ],
+            [
+                '_links_upsell_sku' => 'sku-003'
+            ],
+            [
+                '_links_upsell_sku' => 'sku-002'
+            ],
+            [
+                '_links_crosssell_sku' => 'sku-001'
+            ],
+            [
+                '_links_crosssell_sku' => 'sku-002'
+            ]
+        ]);
+    }
+
+    public function it_normalizes_a_product_without_association_to_an_array(
+        Serializer $normalizer,
+        Product $product,
+        ProductValue $productValue1,
+        ProductValue $productValue2,
+        ProductValue $productValue3,
+        ProductValue $productValue4,
+        ProductValue $productValue5,
+        Family $family,
+        \DateTime $datetime,
+        Category $category
+    ) {
+        $context = [
+            'defaultStoreView'    => 'Default',
+            'defaultLocale'       => 'en_US',
+            'website'             => 'base',
+            'defaultCurrency'     => 'USD',
+            'visibility'          => '4',
+            'enabled'             => '1',
+            'storeViewMapping'    => [
+                'fr_FR' => 'fr_fr'
+            ],
+            'userCategoryMapping' => [
+                'my_category_root' => 'Default Category'
+            ]
+        ];
+
+        $product->getValues()->willReturn([$productValue1, $productValue2, $productValue3, $productValue4, $productValue5]);
+        $product->isEnabled()->willReturn(true);
+        $product->getFamily()->willReturn($family);
+        $product->getCreated()->willReturn($datetime);
+        $product->getUpdated()->willReturn($datetime);
+        $product->getCategories()->willReturn([$category]);
+        $product->getAssociations()->willReturn([]);
+
+        $datetime->format('Y-m-d H:i:s')->willReturn('2042-01-01 13:37:00');
+        $family->getCode()->willReturn('my_family');
+
+        $normalizer->normalize($productValue1, 'api_import', $context)->willReturn(['Default' => ['my_metric_attribute' => '420.000']]);
+        $normalizer->normalize($productValue2, 'api_import', $context)->willReturn(['fr_fr' => ['bar' => 'foo']]);
+        $normalizer->normalize($productValue3, 'api_import', $context)->willReturn([
+            [
+                '_store'                   => '',
+                'my_multiselect_attribute' => 'option1'
+            ],
+            [
+                '_store'                   => '',
+                'my_multiselect_attribute' => 'option2'
+            ]
+        ]);
+        $normalizer->normalize($productValue4, 'api_import', $context)->willReturn([
+            [
+                'my_media_attribute'         => '1-sku_000-my_media_attribute---my_image.jpg',
+                'my_media_attribute_content' => 'bar_base64_code',
+                '_store'                     => ''
+            ]
+        ]);
+        $normalizer->normalize($category, 'api_import', $context)->willReturn([
+            'category' => 'my_category_2/my_category',
+            'root'     => 'my_category_root'
+        ]);
+        $normalizer->normalize($productValue5, 'api_import', $context)->willReturn(['Default' => ['sku' => 'sku-000']]);
+        $normalizer->normalize([], 'api_import', $context)->shouldBeCalled()->willReturn(null);
 
         $this->setSerializer($normalizer);
         $this->normalize($product, 'api_import', $context)->shouldReturn([
