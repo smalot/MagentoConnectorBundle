@@ -2,6 +2,8 @@
 
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
+use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\ProductLabelDictionary;
+
 /**
  * Product writer used to send products in Api Import
  *
@@ -16,81 +18,17 @@ class ProductWriter extends AbstractWriter
      */
     public function write(array $items)
     {
-        $products = [];
-        foreach ($items as $item) {
-            $products = array_merge($products, $item);
-        }
-
-        $mappedSkus = $this->getMappedSkus($products);
+        $products = $this->getFlattenedItems($items);
         try {
             $this->client->exportProducts($products);
         } catch (\SoapFault $e) {
-            $failedProducts = json_decode($e->getMessage(), true);
-
-            if (null !== $failedProducts) {
-                $errors = $this->getFailedProducts($failedProducts, $mappedSkus);
-                $this->manageFailedProducts($errors);
-            } else {
-                $this->addWarning($e->getMessage());
-            }
-        }
-    }
-
-    /**
-     * Gives lines mapped to skus
-     *
-     * @param array $products
-     *
-     * @return array
-     */
-    protected function getMappedSkus(array $products)
-    {
-        $mappedSkus  = [];
-        $previousSku = '';
-        foreach ($products as $key => $product) {
-            if (!empty($product['sku'])) {
-                $mappedSkus[$key] = $product['sku'];
-                $previousSku     = $product['sku'];
-            } else {
-                $mappedSkus[$key] = $previousSku;
-            }
-        }
-
-        return $mappedSkus;
-    }
-
-    /**
-     * Get failed products with their skus associated to errors
-     * Returns [sku => ['errors', '']]
-     *
-     * @param array $errors
-     * @param array $mappedSku
-     *
-     * @return array
-     */
-    protected function getFailedProducts(array $errors, array $mappedSku)
-    {
-        $failedProducts = [];
-        foreach ($errors as $error => $failedRows) {
-            foreach ($failedRows as $row) {
-                $failedProducts[$mappedSku[$row]][] = $error;
-            }
-        }
-
-        return $failedProducts;
-    }
-
-    /**
-     * Add a warning for each failed product
-     *
-     * @param array $failedProducts
-     */
-    protected function manageFailedProducts(array $failedProducts)
-    {
-        foreach ($failedProducts as $sku => $errors) {
-            foreach ($errors as $error) {
-                $this->addWarning($error, [], [$sku]);
-            }
+            $this->errorHelper->manageErrors(
+                $this->stepExecution,
+                $e,
+                $products,
+                ProductLabelDictionary::SKU_HEADER,
+                $this->getName()
+            );
         }
     }
 }

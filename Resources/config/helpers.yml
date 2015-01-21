@@ -2,6 +2,7 @@ parameters:
     pim_magento_connector.helper.price.class:              Pim\Bundle\MagentoConnectorBundle\Helper\PriceHelper
     pim_magento_connector.helper.exportable_product.class: Pim\Bundle\MagentoConnectorBundle\Helper\ExportableProductHelper
     pim_magento_connector.helper.attribute_mapping.class:  Pim\Bundle\MagentoConnectorBundle\Helper\AttributeMappingHelper
+    pim_magento_connector.helper.error.class:              Pim\Bundle\MagentoConnectorBundle\Writer\ErrorHelper
 
 services:
     pim_magento_connector.helper.price:
@@ -12,3 +13,8 @@ services:
 
     pim_magento_connector.helper.attribute_mapping:
         class: %pim_magento_connector.helper.attribute_mapping.class%
+
+    pim_magento_connector.helper.error:
+        class: %pim_magento_connector.helper.error.class%
+        arguments:
+            - '@event_dispatcher'

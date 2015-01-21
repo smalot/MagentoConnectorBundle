@@ -3,15 +3,11 @@
 namespace Pim\Bundle\MagentoConnectorBundle\Writer;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-use Akeneo\Bundle\BatchBundle\Event\EventInterface;
-use Akeneo\Bundle\BatchBundle\Event\InvalidItemEvent;
 use Akeneo\Bundle\BatchBundle\Item\AbstractConfigurableStepElement;
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
-use Doctrine\Common\Util\ClassUtils;
 use Pim\Bundle\MagentoConnectorBundle\Manager\MagentoConfigurationManager;
 use Pim\Bundle\MagentoConnectorBundle\Webservice\MagentoSoapClient;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Abstract writer
@@ -19,10 +15,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @author     Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright  2014 Akeneo SAS (http://www.akeneo.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- *
- * @deprecated
- *
- * TODO : Move the addWarning method in BatchBundle
  */
 abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     ItemWriterInterface,
@@ -40,17 +32,17 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     /** @var MagentoSoapClient */
     protected $client;
 
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
+    /** @var ErrorHelper */
+    protected $errorHelper;
 
     /**
-     * Constructor
-     *
      * @param MagentoConfigurationManager $configurationManager
+     * @param ErrorHelper                 $errorHelper
      */
-    public function __construct(MagentoConfigurationManager $configurationManager)
+    public function __construct(MagentoConfigurationManager $configurationManager, ErrorHelper $errorHelper)
     {
         $this->configurationManager = $configurationManager;
+        $this->errorHelper          = $errorHelper;
     }
 
     /**
@@ -118,36 +110,22 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     }
 
     /**
-     * Set the event dispatcher
+     * Flatten items by concatenating entity parts into one array
+     * $items = [entity1, e2, e3, ...]
+     * entity = [part1, part2, p3, ...]
+     * Returns [entity1 part1, e1p2, e2p1, e2p2, e3p1, ...]
      *
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    /**
-     * Add a warning based on the stepExecution.
+     * @param array $entities Items received from ItemStep
      *
-     * @param string $message
-     * @param array  $messageParameters
-     * @param mixed  $item
+     * @return array
      */
-    protected function addWarning($message, array $messageParameters = [], $item = [])
+    protected function getFlattenedItems(array $items)
     {
-        $this->stepExecution->addWarning(
-            $this->getName(),
-            $message,
-            $messageParameters,
-            $item
-        );
-
-        if (!is_array($item)) {
-            $item = array();
+        $flattenedItems = [];
+        foreach ($items as $entity) {
+            $flattenedItems = array_merge($flattenedItems, $entity);
         }
 
-        $event = new InvalidItemEvent(ClassUtils::getClass($this), $message, $messageParameters, $item);
-        $this->eventDispatcher->dispatch(EventInterface::INVALID_ITEM, $event);
+        return $flattenedItems;
     }
 }

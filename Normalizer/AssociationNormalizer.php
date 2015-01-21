@@ -21,8 +21,6 @@ class AssociationNormalizer implements NormalizerInterface
     protected $exportableProductHelper;
 
     /**
-     * Constructor
-     *
      * @param ExportableProductHelper $exportableProductHelper
      */
     public function __construct(ExportableProductHelper $exportableProductHelper)
