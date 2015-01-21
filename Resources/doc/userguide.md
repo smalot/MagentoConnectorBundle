@@ -1,4 +1,6 @@
-# User Guide for the Magento Connector Bundle
+# User Guide for the Magento connector bundle
+
+This user guide is primarily focused on the Magento connector bundle v1.1, but hints are presented for the development version (which will be v1.2).
 
 ## Mandatory attributes
 
@@ -18,6 +20,8 @@ You can now create export jobs.
 First, you need to export Akeneo's structure (families, attributes, associations, etc.) to Magento, in order to have the same organisation on both sides.
 
 Go to `Spread > Export profiles` and create a new `magento_full_export` profile.
+
+**Note**: This profile doesn't exist anymore in v1.2. Instead, you have to create a `magento_attribute_export` and run it, then create and run a `magento_category_export`.
 
 *Magento full export creation*:
 
