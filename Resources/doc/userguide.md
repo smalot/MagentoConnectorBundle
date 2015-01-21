@@ -43,7 +43,7 @@ Once completed, save the configuration, and edit it again. The Magento connector
 
 ### Important!
 
-The Magento's default store view code (which is "base", configured in the "Website" field on Akeneo) should not be changed, as it can lead to wrong behavior from the connector.
+The Magento's default store view code (which is "base", configured in the "Website" field in export profiles) should not be changed, as it can lead to wrong behavior from the connector.
 
 The store view mapping is not a requirement if your Akeneo locales share the same names than your Magento store views. If not, then you have to map them. Note that you already have mapped a default Akeneo locale with a default Magento store view, so you only have to map additional locales. You are now ready to export your products.
 
@@ -60,3 +60,13 @@ Optionally, you can also choose if the product is visible or not on Magento, the
 ![Product export extra configuration](./images/userguide/edit-pictures.png)
 
 ![More product export configuration](./images/userguide/edit-associations.png)
+
+# Not supported
+
+## Attribute groups update
+
+In Akeneo, attribute groups are only related to attributes. It is not the case on Magento where they depend on attribute sets. The SOAP API define the group of an attribute when adding it to an attribute set.
+
+The problem is that the SOAP API only proposes [methods](http://www.magentocommerce.com/api/soap/catalog/catalogProductAttributeSet/productAttributeSet.html) to add and remove attributes from attribute set, nothing to update them, and the [Product Attributes methods](http://www.magentocommerce.com/api/soap/catalog/catalogProductAttribute/catalogProductAttribute.html) don't handle attribute groups.
+
+So if you want to perform an update, you'd have to remove and add again the attributes you want to change the group, which is not possible if there is already products using these attributes.
