@@ -32,5 +32,6 @@ services:
         abstract: true
         arguments:
             - '@pim_magento_connector.manager.magento_configuration'
+            - '@pim_magento_connector.helper.error'
         calls:
             - [setEventDispatcher, ['@event_dispatcher']]

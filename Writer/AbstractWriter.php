@@ -43,14 +43,17 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var ErrorHelper */
+    protected $errorHelper;
+
     /**
-     * Constructor
-     *
      * @param MagentoConfigurationManager $configurationManager
+     * @param ErrorHelper                 $errorHelper
      */
-    public function __construct(MagentoConfigurationManager $configurationManager)
+    public function __construct(MagentoConfigurationManager $configurationManager, ErrorHelper $errorHelper)
     {
         $this->configurationManager = $configurationManager;
+        $this->errorHelper          = $errorHelper;
     }
 
     /**
@@ -125,6 +128,40 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * Flatten items by concatenating entity parts into one array
+     * $items = [entity1, e2, e3, ...]
+     * entity = [part1, part2, p3, ...]
+     * Returns [entity1 part1, e1p2, e2p1, e2p2, e3p1, ...]
+     *
+     * @param array $entities Items received from ItemStep
+     *
+     * @return array
+     */
+    protected function getFlattenedItems(array $items)
+    {
+        $flattenedItems = [];
+        foreach ($items as $entity) {
+            $flattenedItems = array_merge($flattenedItems, $entity);
+        }
+
+        return $flattenedItems;
+    }
+
+    /**
+     * Add a warning for each failed entity
+     *
+     * @param array $failedEntities
+     */
+    protected function manageFailedEntities(array $failedEntities)
+    {
+        foreach ($failedEntities as $index => $errors) {
+            foreach ($errors as $error) {
+                $this->addWarning($error, [], [$index]);
+            }
+        }
     }
 
     /**

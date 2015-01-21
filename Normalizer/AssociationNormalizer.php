@@ -4,10 +4,8 @@ namespace Pim\Bundle\MagentoConnectorBundle\Normalizer;
 
 use Pim\Bundle\CatalogBundle\Entity\Channel;
 use Pim\Bundle\CatalogBundle\Model\AbstractAssociation;
-use Pim\Bundle\CatalogBundle\Model\ProductInterface;
 use Pim\Bundle\MagentoConnectorBundle\Helper\ValidProductHelper;
 use Pim\Bundle\MagentoConnectorBundle\Normalizer\Dictionary\ProductLabelDictionary;
-use Pim\Bundle\MagentoConnectorBundle\Normalizer\Exception\MandatoryAttributeNotFoundException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -23,8 +21,6 @@ class AssociationNormalizer implements NormalizerInterface
     protected $validProductHelper;
 
     /**
-     * Constructor
-     *
      * @param ValidProductHelper $validProductHelper
      */
     public function __construct(ValidProductHelper $validProductHelper)
