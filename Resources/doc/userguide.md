@@ -13,6 +13,8 @@ The following Magento's attributes are mandatory for Magento and have to be crea
 - short_description
 - tax_class_id
 
+Also note that you should NEVER try to change/update attributes on Akeneo that are of system type on Magento side (except if you really want to completely break your Magento install).
+
 You can now create export jobs.
 
 ## Exporting structure
