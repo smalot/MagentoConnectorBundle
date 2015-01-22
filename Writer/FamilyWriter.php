@@ -19,7 +19,8 @@ class FamilyWriter extends AbstractWriter
     public function write(array $items)
     {
         try {
-            $this->client->exportAttributeSets($items);
+            $client = $this->getClient();
+            $client->exportAttributeSets($items);
         } catch (\SoapFault $e) {
             $this->errorHelper->manageErrors(
                 $this->stepExecution,

@@ -143,10 +143,6 @@ class ErrorHelper
             $item
         );
 
-        if (!is_array($item)) {
-            $item = [];
-        }
-
         $event = new InvalidItemEvent($writerClassName, $message, $messageParameters, $item);
         $this->eventDispatcher->dispatch(EventInterface::INVALID_ITEM, $event);
     }

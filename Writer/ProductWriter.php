@@ -20,7 +20,8 @@ class ProductWriter extends AbstractWriter
     {
         $products = $this->getFlattenedItems($items);
         try {
-            $this->client->exportProducts($products);
+            $client = $this->getClient();
+            $client->exportProducts($products);
         } catch (\SoapFault $e) {
             $this->errorHelper->manageErrors(
                 $this->stepExecution,

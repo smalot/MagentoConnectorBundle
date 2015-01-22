@@ -19,7 +19,8 @@ class AttributeWriter extends AbstractWriter
     public function write(array $items)
     {
         try {
-            $this->client->exportAttributes($items);
+            $client = $this->getClient();
+            $client->exportAttributes($items);
         } catch (\SoapFault $e) {
             $this->errorHelper->manageErrors(
                 $this->stepExecution,

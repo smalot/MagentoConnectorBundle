@@ -20,7 +20,8 @@ class CategoryWriter extends AbstractWriter
     {
         $categories = $this->getFlattenedItems($items);
         try {
-            $this->client->exportCategories($categories);
+            $client = $this->getClient();
+            $client->exportCategories($categories);
         } catch (\SoapFault $e) {
             $this->errorHelper->manageErrors(
                 $this->stepExecution,

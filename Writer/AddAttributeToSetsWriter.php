@@ -20,7 +20,8 @@ class AddAttributeToSetsWriter extends AbstractWriter
     {
         $associations = $this->getFlattenedItems($items);
         try {
-            $this->client->addAttributeToSets($associations);
+            $client = $this->getClient();
+            $client->addAttributeToSets($associations);
         } catch (\SoapFault $e) {
             $this->errorHelper->manageErrors(
                 $this->stepExecution,

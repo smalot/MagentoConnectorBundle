@@ -52,10 +52,12 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     public function initialize()
     {
         $code = $this->getConfigurationCode();
-        $configuration = $this->configurationManager->getMagentoConfigurationByCode($code);
-        $this->client  = $this->configurationManager->createClient($configuration);
 
-        $this->client->login($configuration->getSoapUsername(), $configuration->getSoapApiKey());
+        $configuration = $this->configurationManager->getMagentoConfigurationByCode($code);
+        $client = $this->configurationManager->createClient($configuration);
+
+        $client->login($configuration->getSoapUsername(), $configuration->getSoapApiKey());
+        $this->setClient($client);
     }
 
     /**
@@ -85,6 +87,26 @@ abstract class AbstractWriter extends AbstractConfigurableStepElement implements
     public function getConfigurationCode()
     {
         return $this->configurationCode;
+    }
+
+    /**
+     * @param MagentoSoapClient $client
+     *
+     * @return ProductWriter
+     */
+    public function setClient(MagentoSoapClient $client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return MagentoSoapClient
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 
     /**
