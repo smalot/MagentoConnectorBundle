@@ -19,4 +19,7 @@ final class FamilyLabelDictionary
 
     /** @staticvar string */
     const ATTRIBUTE_GROUP_ID_HEADER = 'attribute_group_id';
+
+    /** @staticvar string */
+    const ATTRIBUTE_GROUP_GENERAL = 'General';
 }

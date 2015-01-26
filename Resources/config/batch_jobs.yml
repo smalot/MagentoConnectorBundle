@@ -39,6 +39,12 @@ connector:
                         reader:    pim_magento_connector.reader.attribute
                         processor: pim_magento_connector.processor.attribute
                         writer:    pim_magento_connector.writer.attribute
+                export_mandatory_association:
+                    title: pim_magento_connector.jobs.magento_association_mandatory_attribute_to_sets_export.export.title
+                    services:
+                        reader:    pim_magento_connector.reader.family
+                        processor: pim_magento_connector.processor.add_mandatory_attribute_to_sets
+                        writer:    pim_magento_connector.writer.add_attribute_to_sets
                 export_association:
                     title: pim_magento_connector.jobs.magento_association_attribute_to_sets_export.export.title
                     services:

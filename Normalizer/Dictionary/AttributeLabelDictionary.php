@@ -33,7 +33,7 @@ final class AttributeLabelDictionary
     const GLOBAL_HEADER = 'global';
 
     /** @staticvar string */
-    const VISIBLE_HEADER = 'visible_on_front';
+    const VISIBLE_ON_FRONT_HEADER = 'visible_on_front';
 
     /** @staticvar string */
     const IS_UNIQUE_HEADER = 'unique';

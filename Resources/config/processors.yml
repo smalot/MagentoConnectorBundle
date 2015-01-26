@@ -1,10 +1,11 @@
 parameters:
-    pim_magento_connector.processor.product_to_array.class:            Pim\Bundle\MagentoConnectorBundle\Processor\ProductToArrayProcessor
-    pim_magento_connector.processor.variant_group_to_array.class:      Pim\Bundle\MagentoConnectorBundle\Processor\VariantGroupToArrayProcessor
-    pim_magento_connector.processor.attribute.class:                   Pim\Bundle\MagentoConnectorBundle\Processor\AttributeProcessor
-    pim_magento_connector.processor.family.class:                      Pim\Bundle\MagentoConnectorBundle\Processor\FamilyProcessor
-    pim_magento_connector.processor.add_attribute_to_sets.class:       Pim\Bundle\MagentoConnectorBundle\Processor\AddAttributeToSetsProcessor
-    pim_magento_connector.processor.category.class:                    Pim\Bundle\MagentoConnectorBundle\Processor\CategoryToArrayProcessor
+    pim_magento_connector.processor.product_to_array.class:                Pim\Bundle\MagentoConnectorBundle\Processor\ProductToArrayProcessor
+    pim_magento_connector.processor.variant_group_to_array.class:          Pim\Bundle\MagentoConnectorBundle\Processor\VariantGroupToArrayProcessor
+    pim_magento_connector.processor.attribute.class:                       Pim\Bundle\MagentoConnectorBundle\Processor\AttributeProcessor
+    pim_magento_connector.processor.family.class:                          Pim\Bundle\MagentoConnectorBundle\Processor\FamilyProcessor
+    pim_magento_connector.processor.add_mandatory_attribute_to_sets.class: Pim\Bundle\MagentoConnectorBundle\Processor\AddMandatoryAttributeToSetsProcessor
+    pim_magento_connector.processor.add_attribute_to_sets.class:           Pim\Bundle\MagentoConnectorBundle\Processor\AddAttributeToSetsProcessor
+    pim_magento_connector.processor.category.class:                        Pim\Bundle\MagentoConnectorBundle\Processor\CategoryToArrayProcessor
 
 services:
     pim_magento_connector.processor.product_to_array:
@@ -17,6 +18,9 @@ services:
         class: %pim_magento_connector.processor.attribute.class%
         arguments:
             - '@pim_magento_connector.serializer'
+
+    pim_magento_connector.processor.add_mandatory_attribute_to_sets:
+        class: %pim_magento_connector.processor.add_mandatory_attribute_to_sets.class%
 
     pim_magento_connector.processor.add_attribute_to_sets:
         class: %pim_magento_connector.processor.add_attribute_to_sets.class%

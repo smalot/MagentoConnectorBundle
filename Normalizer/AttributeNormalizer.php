@@ -44,17 +44,17 @@ class AttributeNormalizer implements NormalizerInterface, SerializerAwareInterfa
         $backendType      = $this->mappingHelper->getMagentoBackendType($pimBackendType);
 
         $normalized = [
-            AttributeLabelDictionary::ID_HEADER            => $object->getCode(),
-            AttributeLabelDictionary::DEFAULT_VALUE_HEADER => $object->getDefaultValue(),
-            AttributeLabelDictionary::INPUT_HEADER         => $attributeType,
-            AttributeLabelDictionary::BACKEND_TYPE_HEADER  => $backendType,
-            AttributeLabelDictionary::LABEL_HEADER         =>
+            AttributeLabelDictionary::ID_HEADER               => $object->getCode(),
+            AttributeLabelDictionary::DEFAULT_VALUE_HEADER    => $object->getDefaultValue(),
+            AttributeLabelDictionary::INPUT_HEADER            => $attributeType,
+            AttributeLabelDictionary::BACKEND_TYPE_HEADER     => $backendType,
+            AttributeLabelDictionary::LABEL_HEADER            =>
                 $object->getTranslation($context['defaultLocale'])->getLabel(),
             // Attributes can't be Global as AKeneo doesn't have global scope (see doc)
-            AttributeLabelDictionary::GLOBAL_HEADER        => false,
-            AttributeLabelDictionary::REQUIRED_HEADER      => $object->isRequired(),
-            AttributeLabelDictionary::VISIBLE_HEADER       => $context['visibility'],
-            AttributeLabelDictionary::IS_UNIQUE_HEADER     => $object->isUnique()
+            AttributeLabelDictionary::GLOBAL_HEADER           => false,
+            AttributeLabelDictionary::REQUIRED_HEADER         => $object->isRequired(),
+            AttributeLabelDictionary::VISIBLE_ON_FRONT_HEADER => $context['visibility'],
+            AttributeLabelDictionary::IS_UNIQUE_HEADER        => $object->isUnique()
         ];
 
         if ('pim_catalog_simpleselect' === $pimAttributeType ||

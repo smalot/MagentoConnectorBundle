@@ -61,6 +61,15 @@ class FamilyReader extends AbstractConfigurableStepElement implements ItemReader
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function initialize()
+    {
+        $this->executed = false;
+        $this->results  = new \ArrayIterator();
+    }
+
+    /**
      * Returns query
      *
      * @return \Doctrine\ORM\AbstractQuery
