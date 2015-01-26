@@ -201,7 +201,7 @@ class ConfigurableNormalizer extends AbstractNormalizer
         $attributes = $group->getAttributes();
 
         foreach ($attributes as $attribute) {
-            $magentoAttributeCode = $attributeMapping->getTarget($attribute->getCode());
+            $magentoAttributeCode = strtolower($attributeMapping->getTarget($attribute->getCode()));
             $magentoAttributeId = $magentoAttributes[$magentoAttributeCode]['attribute_id'];
             $configurableAttributes['configurable_attributes'][] = $magentoAttributeId;
         }
